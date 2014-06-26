@@ -155,7 +155,7 @@
         //appends the elements
         //TODO:: make it support class
         _compile : function (node, childs) {
-            if (childs instanceof Array) {
+            if (Object.prototype.toString.call(childs)==='[object Array]') {
                 for (var i =0;i<childs.length;i++)
                     node.appendChild(childs[i]);
             } else {
