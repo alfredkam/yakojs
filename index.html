@@ -1,0 +1,21 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<html>
+    <head></head>
+    <body>
+        <div id='graph'></div>
+        <script src='yako.js' type='text/javascript'></script>
+        <script type='text/javascript'>
+            var dataSet = [];
+            for (var i=-0;i<100;i++) {
+                dataSet.push(Math.floor((Math.random() * 1000) + 1));
+            }
+            console.log(dataSet);
+            yako('#graph').set({
+                width: 500,
+                height: 500,
+                style: 'font-family:"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;font-size:12px;'
+            },dataSet);
+        </script>
+    </body>
+</html>
