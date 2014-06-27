@@ -29,6 +29,12 @@ Users then can access your graph module through
 - _constructor
 - root
 
+#Accessing user data & options
+##Data
+- this.root.attributes.data
+##Options
+- this.root.attributes.options
+
 #Accessing yako's private api
 ## this.root.<i>api name</i>
 This will let you access the private apis
