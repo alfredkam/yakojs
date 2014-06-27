@@ -12,6 +12,13 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
         config: Config,
+        clean : {
+            dist : [
+                '.tmp',
+                '<%= config.dist %>/*',
+                '<%= config.dist %>/.*'
+            ]
+        },
         uglify: {
         	minify : {
                 files : [
@@ -31,6 +38,7 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('build',[
+        'clean:dist',
     	'uglify:minify'
     ]);
 };

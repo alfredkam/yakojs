@@ -52,6 +52,17 @@
                     height: 500,
                     'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;font-size:12px'
                 },
+                title : 'just a test',
+                xAxis : {
+                    //including format will show the xAxis Label
+                    format : 'dataTime',
+                    interval: '1s',  //[1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
+                    minUTC: Date.UTC(2013,08,07),
+                    dateTimeLabelFormat: 'YYYY/MM/DD'
+                    // or if wanted custom label
+                    // format: 'label',
+                    // label: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
+                },
                 data: set
             }).hoverable({
                 //the css?

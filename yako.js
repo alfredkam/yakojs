@@ -359,6 +359,8 @@
                     width: '100',
                     height: '200'
                 },
+                xAxis: {},
+                yAxis: {},
                 data : []
             };
             yako.extend(defaults, this.attributes.opts);
