@@ -32,12 +32,17 @@
             }
             console.log(dataSet);
             yako('#graph').set({
+                graph: 'lineGraph',
                 width: 500,
                 height: 500,
                 style: 'font-family:"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;font-size:12px;'
             },dataSet).hoverable({
                 //the css?
             });
+
+            yako('#graph').set({
+                graph: 'piechart'
+            }, dataSet).draw();
         </script>
     </body>
 </html>

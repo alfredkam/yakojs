@@ -9,6 +9,8 @@
     };
     //version
     yako.VERSION = '0.0.1';
+    yako.eventList = {};
+    yako._graphs = {};
     //to extend properties
     yako.extend = function (attr, json) {
         if (!json)
@@ -29,8 +31,6 @@
         }
         return this;
     };
-
-    yako.eventList = {};
     //check if is function
     yako.isFn = function (object) {
        return !!(object && object.constructor && object.call && object.apply);
@@ -65,6 +65,7 @@
     //event ubinding
     yako.unbind = function (self, node, event, fn) {
         var nodes = self._getNode(node, true);
+        //remove specific event & function
         if (event && fn && yako.isFn(fn)) {
             //check if event exist first && remove from array
             if (yako.eventList[node] && yako.eventList[node][event]) {
@@ -92,9 +93,25 @@
                     }
                 });
             }
+        //remove specific event
+        } else if (event && yako.eventList[node] && yako.eventList[node][event]) {
+            var keys = yako.eventList[node][event], len = keys.length;
+            while (len--) {
+                if(nodes && nodes.tagName) {
+                    nodes.removeEventListener(event, keys[len]);
+                } else if(nodes) {
+                    Array.prototype.filter.call(nodes, function (element) {
+                        if (element.nodeName) {
+                            element.removeEventListener(event, keys[len]);
+                        }
+                    });
+                }
+            }
+            yako.eventList[node][event] = [];
+        //remove all event
         } else {
             if (yako.eventList[node] && nodes) {
-                var keys = yako.eventList[node], len = keys.length;
+                var keys = Object.keys(yako.eventList[node]), len = keys.length;
                 while (len--) {
                     var fns = yako.eventList[node][keys[len]];
                     for (var i in fns) {
@@ -114,14 +131,19 @@
         }
         return self;
     }
+    yako.register = function (graphName, prototypes) {
+        if (yako._graphs && yako._graphs[graphName])
+            throw 'Uncaught Exception: graph module conflict for '+ graphName;
+        yako._graphs[graphName] = prototypes;
+    }
     //extend prototype + allow chaining on public functions and most private functions
     yako.extend(api.prototype, {
-        attributes : {},
-        extend : yako.extend,
-        assign : yako.assign,
+        extend: yako.extend,
+        assign: yako.assign,
         //init function
         _init: function (node) {
             this.attributes = {};
+            this._graphs = {};
             this._getNode(node);
             return this;
         },
@@ -276,11 +298,30 @@
             });
             return this;
         },
+        //extends the api
+        _spawn : function (graphName) {
+            if (this._graphs[graphName])
+                return this._graphs[graphName];
+            var self = this;
+            var newApi = function () {};
+            yako._graphs[graphName]._contructor = function () {
+                this.root = self;
+                return this;
+            }
+            yako.extend(newApi.prototype, yako._graphs[graphName]);
+            var x = new newApi();
+            this._graphs[graphName] = x._contructor();
+            return this._graphs[graphName];
+        },
         //the graph data & options setter
         set: function (opts, data) {
             this.attributes.data = data || [];
             this.attributes.opts = opts || {};
-            this._generate();
+            if(opts.graph && yako._graphs[opts.graph]) {
+                return this._spawn(opts.graph);
+            } else {
+                this._generate();
+            }
             return this;
         },
         //the graph hover options
@@ -296,5 +337,4 @@
             .unbind(this, '.graphData', 'mouseover');
         }
     });
-
 })(window, document);
