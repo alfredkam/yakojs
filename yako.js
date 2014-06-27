@@ -131,6 +131,7 @@
         }
         return self;
     }
+    //for registering a module
     yako.register = function (graphName, prototypes) {
         if (yako._graphs && yako._graphs[graphName])
             throw 'Uncaught Exception: graph module conflict for '+ graphName;
@@ -242,34 +243,67 @@
             }
             return circles;
         },
+        //finding min & max between multiple set (any improvments to multiple array search)
+        _findMixMax: function (data) {
+            var min, max, length;
+
+            function compareNumbers(a, b) {
+              return a - b;
+            }
+
+            if (Object.prototype.toString.call(data)!=='[object Array]') {
+                data = [data];
+            }
+
+            max = min = data[0][0];
+            length = data[0].length;
+            for (var i in data) {
+                var _data = (data[i].slice()).sort(compareNumbers);
+                length = (length < _data.length ? _data.length : length);
+                min = (min > _data[0] ? _data[0]: min);
+                max = (max < _data[_data.length-1] ? _data[_data.length-1] : max);
+            }
+            return {
+                min: min, 
+                max: max,
+                len: length
+            };
+        },
         //the parent svg builder
-        _generate : function () {
+        _generate: function () {
             var data = this.attributes.data,
                 opts = this.attributes.opts,
                 svg = this._make('svg',{
                     width : opts.width || 200,
                     height : opts.height || 100
                 }),
-                interval = opts.width / (data.length),
-                //find min / max point
-                //assume all data are positive for now;
-                max = data[0], min = data[0];
+                sets = [];
 
-            for (var j in data) {
-                if (max < data[j])
-                    max = data[j];
-                if (min > data[j])
-                    min = data[j];
+            if (Object.prototype.toString.call(data) !== '[object Array]') {
+                data = [data];
+            }
+    
+            for (var i in data) {
+                sets.push(data[i].data);
+            } 
+            //find min / max point
+            //assume all data are positive for now;
+            var _tmp = this._findMixMax(sets),
+            min = _tmp.min,
+            max = _tmp.max,
+            interval = opts.width / (_tmp.len),
+            heightRatio = (opts.height / (max+10));
+
+            for (var i in data) {
+                var g = this._make('g',null,{
+                    label: data[i].label
+                });
+                this._compile(g, this._path(data[i].data, opts, interval, heightRatio))
+                ._compile(g,this._circle(data[i].data, opts, interval, heightRatio))
+                ._compile(svg,g);
             }
 
-            var heightRatio = (opts.height / (max+10));
-
-            var path = this._path(data, opts, interval, heightRatio);
-            var circle = this._circle(data, opts, interval, heightRatio);
-            
-            this._compile(svg,path)
-            ._compile(svg, circle)
-            ._compile(this.element,svg);
+            this._compile(this.element,svg);
         },
         //attach events
         _attach: function () {

@@ -39,7 +39,7 @@ Users then can access your graph module through
 ## this.root.<i>api name</i>
 This will let you access the private apis
  - _path(data, opts, interval, heightRatio)
- 	- This generates a line
+ 	- This generates a line through a svg path element
  	- data: is an array of values
  	- opts: options, must pass the graph's height through opts.height
  	- interval: the interval between each node
@@ -48,7 +48,7 @@ This will let you access the private apis
 
  - _circle(data, opts, interval, heightRatio)
  	- This is used to generate a circle in between the change in x & y axis between each value in array (used for hovering in on a line)
- 	- data: is an array of values
+ 	- data: is an array of values, the data will also be attached to the data-info attribute
  	- opts: options, must pass the graph's height through opts.height
  	- interval: the interval between each node
  	- heightRatio: this is used to scale the height of the node depending on the value * heightRatio
@@ -58,7 +58,7 @@ This will let you access the private apis
  	- This is used to append the childs to the element object.
  	- elmenetObject: The element can either be an id element object or class element object
  	- childrens: can be a single element or an array of element
- 	- RETURNS this, for chaining
+ 	- RETURNS this (root), for chaining
 
  - _getNode(nodeName <i>[, boolean]</i>)
  	- This is used to get an exisiting dom element

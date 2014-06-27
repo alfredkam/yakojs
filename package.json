@@ -1,0 +1,22 @@
+{
+  "name": "yakojs",
+  "version": "0.0.1",
+  "dependencies": {
+    "grunt": "^0.4.5",
+    "grunt-cli": "^0.1.13"
+  },
+  "keywords": [
+    "graph",
+    "graph library",
+    "graph api",
+    "beautiful graph",
+    "minimal graph"
+  ],
+  "engines": {
+    "node": ">=0.8.0"
+  },
+  "devDependencies": {
+    "grunt-contrib-uglify": "^0.5.0",
+    "matchdep": "^0.3.0"
+  }
+}

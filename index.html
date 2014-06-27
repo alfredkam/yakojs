@@ -27,16 +27,31 @@
         </style>
         <script type='text/javascript'>
             var dataSet = [];
+            var dataSet2 = [];
             for (var i=-0;i<10;i++) {
                 dataSet.push(Math.floor((Math.random() * 1000) + 1));
+                dataSet2.push(Math.floor((Math.random() * 1000) + 1));
             }
-            console.log(dataSet);
+            console.log(dataSet, dataSet2);
+
+            var set = [
+                {
+                    label: 'Auto Generated',
+                    data: dataSet
+                },
+                {
+                    label: 'Auto Generated 2',
+                    data: dataSet2
+                }
+            ];
+
+
             yako('#graph').set({
                 graph: 'lineGraph',
                 width: 500,
                 height: 500,
                 style: 'font-family:"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;font-size:12px;'
-            },dataSet).hoverable({
+            },set).hoverable({
                 //the css?
             });
 
@@ -49,7 +64,7 @@
             // });
             // yako('#graph').set({
             //     graph: 'piechart'
-            // }, dataSet).draw();
+            // }, set).draw();
         </script>
     </body>
 </html>
