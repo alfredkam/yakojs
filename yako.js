@@ -17,7 +17,11 @@
             return;
         var k = Object.keys(json), len = k.length;
         while(len--) {
-            attr[k[len]] = json[k[len]];
+            if (typeof json[k[len]] !== 'object' || Object.prototype.toString.call(json[k[len]]) === '[object Array]') {
+                attr[k[len]] = json[k[len]];
+            } else {    //it has child objects, copy them too.
+                yako.extend(attr[k[len]], json[k[len]]);
+            }
         }
         return this;
     };
@@ -203,17 +207,17 @@
         _path : function (data, opts, interval, heightRatio) {
             var pathToken = "";
             //path generator
-            for (var i=0; i<data.length; i++) {
+            for (var i=0; i<data.data.length; i++) {
                 if (i === 0) {
-                    pathToken += 'M '+interval*i+' '+ (opts.height - (data[i] * heightRatio));
+                    pathToken += 'M '+interval*i+' '+ (opts.chart.height - (data.data[i] * heightRatio));
                 } else {
-                    pathToken += ' L '+interval*i+' '+ (opts.height - (data[i] * heightRatio));
+                    pathToken += ' L '+interval*i+' '+ (opts.chart.height - (data.data[i] * heightRatio));
                 }
             }
             return this._make('path',{
                 fill: 'none',
                 d: pathToken,
-                stroke: 'rgb(144, 237, 125)',
+                stroke: data.color || 'rgb(144, 237, 125)',
                 'stroke-width': '2',
                 'stroke-linejoin': 'round',
                 'stroke-linecap': 'round',
@@ -224,20 +228,21 @@
         _circle : function (data, opts, interval, heightRatio) {
             var circles = [];
 
-            for (var i=0;i<data.length;i++) {
+            for (var i=0;i<data.data.length;i++) {
                 circles.push(this._make('circle',{
-                    fill: 'red',
+                    fill: data.nodeColor || 'red',
                     r: 5,
                     cx: interval*i,
-                    cy: (opts.height - (data[i] * heightRatio)),
+                    cy: (opts.chart.height - (data.data[i] * heightRatio)),
                     class: 'graphData',
                     'z-index': 3
                 },{
                     info: encodeURIComponent(JSON.stringify({
-                        data : data[i],
+                        data : data.data[i],
+                        label : data.label || '',
                         interval : interval * i,
                         cx: interval *i,
-                        cy: (opts.height - (data[i] * heightRatio))
+                        cy: (opts.chart.height - (data.data[i] * heightRatio))
                     }))
                 }));
             }
@@ -264,7 +269,7 @@
                 max = (max < _data[_data.length-1] ? _data[_data.length-1] : max);
             }
             return {
-                min: min, 
+                min: min,
                 max: max,
                 len: length
             };
@@ -274,8 +279,8 @@
             var data = this.attributes.data,
                 opts = this.attributes.opts,
                 svg = this._make('svg',{
-                    width : opts.width || 200,
-                    height : opts.height || 100
+                    width : opts.chart.width,
+                    height : opts.chart.height
                 }),
                 sets = [];
 
@@ -291,18 +296,17 @@
             var _tmp = this._findMixMax(sets),
             min = _tmp.min,
             max = _tmp.max,
-            interval = opts.width / (_tmp.len),
-            heightRatio = (opts.height / (max+10));
+            interval = opts.chart.width / (_tmp.len),
+            heightRatio = (opts.chart.height / (max+10));
 
             for (var i in data) {
                 var g = this._make('g',null,{
                     label: data[i].label
                 });
-                this._compile(g, this._path(data[i].data, opts, interval, heightRatio))
-                ._compile(g,this._circle(data[i].data, opts, interval, heightRatio))
+                this._compile(g, this._path(data[i], opts, interval, heightRatio))
+                ._compile(g,this._circle(data[i], opts, interval, heightRatio))
                 ._compile(svg,g);
             }
-
             this._compile(this.element,svg);
         },
         //attach events
@@ -341,20 +345,36 @@
             yako._graphs[graphName]._contructor = function () {
                 this.root = self;
                 return this;
-            }
+            };
             yako.extend(newApi.prototype, yako._graphs[graphName]);
             var x = new newApi();
             this._graphs[graphName] = x._contructor();
             return this._graphs[graphName];
         },
+        //set default value if they are missing
+        _prepare: function () {
+            var defaults = {
+                chart: {
+                    type: 'line',
+                    width: '100',
+                    height: '200'
+                },
+                data : []
+            };
+            yako.extend(defaults, this.attributes.opts);
+            this.attributes.opts = defaults;
+            return this;
+        },
         //the graph data & options setter
-        set: function (opts, data) {
-            this.attributes.data = data || [];
-            this.attributes.opts = opts || {};
-            if(opts.graph && yako._graphs[opts.graph]) {
-                return this._spawn(opts.graph);
+        set: function (opts) {
+            var opts = opts || {};
+            this.attributes.data = opts.data || [];
+            this.attributes.opts = opts;
+            if(opts.chart && opts.chart.type && yako._graphs[opts.chart.type]) {
+                return this._spawn(opts.chart.type);
             } else {
-                this._generate();
+                this._prepare()
+                ._generate();
             }
             return this;
         },

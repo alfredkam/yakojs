@@ -32,26 +32,28 @@
                 dataSet.push(Math.floor((Math.random() * 1000) + 1));
                 dataSet2.push(Math.floor((Math.random() * 1000) + 1));
             }
-            console.log(dataSet, dataSet2);
-
             var set = [
                 {
                     label: 'Auto Generated',
-                    data: dataSet
+                    data: dataSet,
+                    color: '#1E90FF'
                 },
                 {
                     label: 'Auto Generated 2',
-                    data: dataSet2
+                    data: dataSet2,
+                    color: '#FF7F00'
                 }
             ];
 
-
             yako('#graph').set({
-                graph: 'lineGraph',
-                width: 500,
-                height: 500,
-                style: 'font-family:"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;font-size:12px;'
-            },set).hoverable({
+                chart : {
+                    type: 'line',
+                    width: 500,
+                    height: 500,
+                    'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;font-size:12px'
+                },
+                data: set
+            }).hoverable({
                 //the css?
             });
 
@@ -63,8 +65,14 @@
             //     }
             // });
             // yako('#graph').set({
-            //     graph: 'piechart'
-            // }, set).draw();
+            //     chart : {
+            //         type: 'piechart',
+            //         width: 500,
+            //         height: 500,
+            //         'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;font-size:12px'
+            //     },
+            //     data: set
+            // }).draw();
         </script>
     </body>
 </html>
