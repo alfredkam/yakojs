@@ -1,12 +1,14 @@
 (function (root, doc) {
     'use strict';
-
+    //check if there is a previous version
     var _yako = root.yako || function () {};
     var api = function () {};
     var yako = root.yako = function (node) {
         var x = new api();
         return x._init(node);
     };
+    //version
+    yako.VERSION = '0.0.1';
     //to extend properties
     yako.extend = function (attr, json) {
         if (!json)
@@ -15,7 +17,6 @@
         while(len--) {
             attr[k[len]] = json[k[len]];
         }
-
         return this;
     };
     //to assign attributes NS
@@ -26,16 +27,15 @@
         while(len--) {
             attr.setAttributeNS(null, k[len], json[k[len]]);
         }
-
         return this;
     };
 
     yako.eventList = {};
-
+    //check if is function
     yako.isFn = function (object) {
        return !!(object && object.constructor && object.call && object.apply);
     };
-
+    //event binding
     yako.on = function (self, node, event, fn, useCapture) {
         var useCapture = useCapture || false;
         if (yako.eventList[node]) {
@@ -60,10 +60,9 @@
                 }
             });
         }
-
         return self;
     }
-
+    //event ubinding
     yako.unbind = function (self, node, event, fn) {
         var nodes = self._getNode(node, true);
         if (event && fn && yako.isFn(fn)) {
@@ -83,7 +82,6 @@
             } else {
                 return self;
             }
-
             //remove event
             if(nodes && nodes.tagName) {
                 nodes.removeEventListener(event, fn);
@@ -94,7 +92,6 @@
                     }
                 });
             }
-
         } else {
             if (yako.eventList[node] && nodes) {
                 var keys = yako.eventList[node], len = keys.length;
@@ -205,7 +202,6 @@
                     }))
                 }));
             }
-
             return circles;
         },
         //the parent svg builder
