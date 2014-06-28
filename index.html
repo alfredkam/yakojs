@@ -1,13 +1,33 @@
 <?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <html>
-    <head></head>
+    <head>
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,600' rel='stylesheet' type='text/css'>
+    </head>
     <body>
         <div id='graph'></div>
         <script src='yako.js' type='text/javascript'></script>
+        <style>
+            body {
+                font-family: 'Open Sans', sans-serif;
+            }
+            #graph {
+                position: relative;
+            }
+            .graphData {
+                z-index: 10;
+            }
+
+            .graphHover {
+                background: #fff;
+                border: 1px solid #ccc;
+                border-radius: 2px;
+                padding: 2px 5px;
+            }
+        </style>
         <script type='text/javascript'>
             var dataSet = [];
-            for (var i=-0;i<3;i++) {
+            for (var i=-0;i<10;i++) {
                 dataSet.push(Math.floor((Math.random() * 1000) + 1));
             }
             console.log(dataSet);
@@ -15,7 +35,9 @@
                 width: 500,
                 height: 500,
                 style: 'font-family:"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;font-size:12px;'
-            },dataSet);
+            },dataSet).hoverable({
+                //the css?
+            });
         </script>
     </body>
 </html>
