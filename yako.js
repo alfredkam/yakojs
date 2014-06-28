@@ -114,7 +114,7 @@
         }
         return self;
     }
-
+    //extend prototype + allow chaining on public functions and most private functions
     yako.extend(api.prototype, {
         attributes : {},
         extend : yako.extend,
@@ -150,13 +150,29 @@
             return node;
         },
         //appends the elements
-        //TODO:: make it support class
         _compile : function (node, childs) {
             if (Object.prototype.toString.call(childs)==='[object Array]') {
-                for (var i =0;i<childs.length;i++)
-                    node.appendChild(childs[i]);
+                if (node.tagName) {
+                    for (var i in childs)
+                        node.appendChild(childs[i]);
+                } else {
+                    Array.prototype.filter.call(node, function (element) {
+                        if (element.nodeName) {
+                            for (var i in childs)
+                                element.appendChild(childs[i]);
+                        }
+                    });
+                }
             } else {
-                node.appendChild(childs);
+                if (node.tagName) {
+                    node.appendChild(childs);
+                } else {
+                    Array.prototype.filter.call(node, function (element) {
+                        if (element.nodeName) {
+                            element.appendChild(childs[i]);
+                        }
+                    });
+                }
             }
             return this;
         },
@@ -248,6 +264,7 @@
             yako.on(this, '.graphData', 'mouseover', function (e) {
                 e.target.style.fill = 'blue';
                 var data = JSON.parse(decodeURIComponent(e.target.dataset.info));
+                 //TODO:: make the content customizable by the user
                 div.innerHTML = '<b>Data: ' + data.data + '</b><br><b>Interval: '+data.interval+'</b>';
                 div.style.display = 'block';
                 div.style.top = data.cy + 5;
@@ -273,6 +290,10 @@
            if (this.hover)
             this._attach();
            return this;
+        },
+        removeHover: function () {
+            yako.unbind(this,'.graphData', 'mouseout')
+            .unbind(this, '.graphData', 'mouseover')
         }
     });
 
