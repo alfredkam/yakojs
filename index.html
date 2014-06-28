@@ -25,7 +25,7 @@
                 padding: 2px 5px;
             }
             path, circle {
-                
+
             }
         </style>
         <script type='text/javascript'>
@@ -71,10 +71,13 @@
                 //the css configs, need to define them
             });
 
-            graph.incrementData([{
-                label: 'Auto Generated',
-                data: [500, 600, 700, 800, 900, 1000]
-            }])
+            //demonstrate incrementData
+            window.setInterval(function () {
+                graph.incrementData([{
+                    label: 'Auto Generated',
+                    data: [500, 600, 700, 800, 900, 1000]
+                }])
+            },1000);
 
             //example to add a module / functionality
             // yako.register('piechart',{

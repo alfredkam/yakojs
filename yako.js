@@ -120,11 +120,11 @@
                     var fns = yako.eventList[node][keys[len]];
                     for (var i in fns) {
                         if (nodes && nodes.tagName) {
-                            nodes.removeEventListener(keys[len], fn[i]);
+                            nodes.removeEventListener(keys[len], fns[i]);
                         } else if(nodes) {
                             Array.prototype.filter.call(nodes, function (element) {
                                 if (element.nodeName) {
-                                    element.removeEventListener(keys[len], fn[i]);
+                                    element.removeEventListener(keys[len], fns[i]);
                                 }
                             });
                         }
@@ -321,6 +321,7 @@
                 ._compile(svg,g);
             }
             this._compile(this.element,svg, reRender);
+            return this;
         },
         //attach events
         _attach: function () {
@@ -444,7 +445,7 @@
             //now analyze what is needed to be update;
             this._appendZeroAndData(this.attributes.data, json);
 
-            this._generate(true);
+            this._generate(true)._attach();
 
         },
         _zeroGenerator: function (len) {
