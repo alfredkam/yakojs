@@ -71,7 +71,7 @@
                 var found = false;
                 for (var i in yako.eventList[node][event]) {
                     if (yako.eventList[node][event][i] == fn) {
-                        yako.eventList[node][event].splice(i,1);
+                        yako.eventList[node][event] = yako.eventList[node][event].splice(i,1);
                         found = true;
                         break;
                     }
@@ -293,7 +293,7 @@
         },
         removeHover: function () {
             yako.unbind(this,'.graphData', 'mouseout')
-            .unbind(this, '.graphData', 'mouseover')
+            .unbind(this, '.graphData', 'mouseover');
         }
     });
 
