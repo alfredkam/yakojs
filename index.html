@@ -24,6 +24,9 @@
                 border-radius: 2px;
                 padding: 2px 5px;
             }
+            path, circle {
+                
+            }
         </style>
         <script type='text/javascript'>
             var dataSet = [];
@@ -45,7 +48,7 @@
                 }
             ];
 
-            yako('#graph').set({
+            var graph = yako('#graph').set({
                 chart : {
                     type: 'line',
                     width: 500,
@@ -65,8 +68,13 @@
                 },
                 data: set
             }).hoverable({
-                //the css?
+                //the css configs, need to define them
             });
+
+            graph.incrementData([{
+                label: 'Auto Generated',
+                data: [500, 600, 700, 800, 900, 1000]
+            }])
 
             //example to add a module / functionality
             // yako.register('piechart',{

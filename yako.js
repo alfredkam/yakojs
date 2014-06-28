@@ -65,7 +65,7 @@
             });
         }
         return self;
-    }
+    };
     //event ubinding
     yako.unbind = function (self, node, event, fn) {
         var nodes = self._getNode(node, true);
@@ -134,13 +134,13 @@
             }
         }
         return self;
-    }
+    };
     //for registering a module
     yako.register = function (graphName, prototypes) {
         if (yako._graphs && yako._graphs[graphName])
             throw 'Uncaught Exception: graph module conflict for '+ graphName;
         yako._graphs[graphName] = prototypes;
-    }
+    };
     //extend prototype + allow chaining on public functions and most private functions
     yako.extend(api.prototype, {
         extend: yako.extend,
@@ -177,14 +177,19 @@
             return node;
         },
         //appends the elements
-        _compile : function (node, childs) {
+        _compile : function (node, childs, reRender) {
+            if (typeof childs === Object) childs = [childs];
             if (Object.prototype.toString.call(childs)==='[object Array]') {
                 if (node.tagName) {
+                    if(reRender)
+                        node.innerHTML = '';
                     for (var i in childs)
                         node.appendChild(childs[i]);
                 } else {
                     Array.prototype.filter.call(node, function (element) {
                         if (element.nodeName) {
+                            if(reRender)
+                                element.innerHTML = '';
                             for (var i in childs)
                                 element.appendChild(childs[i]);
                         }
@@ -192,10 +197,14 @@
                 }
             } else {
                 if (node.tagName) {
+                    if(reRender)
+                        node.innerHTML = '';
                     node.appendChild(childs);
                 } else {
                     Array.prototype.filter.call(node, function (element) {
                         if (element.nodeName) {
+                            if(reRender)
+                                element.innerHTML = '';
                             element.appendChild(childs[i]);
                         }
                     });
@@ -217,11 +226,14 @@
             return this._make('path',{
                 fill: 'none',
                 d: pathToken,
-                stroke: data.color || 'rgb(144, 237, 125)',
+                //if stroke is not define, generate a random color!
+                stroke: data.color || '#'+(Math.random()*0xFFFFFF<<0).toString(16),
                 'stroke-width': '2',
                 'stroke-linejoin': 'round',
                 'stroke-linecap': 'round',
                 'z-index': 1
+            },{
+                label: data.label
             });
         },
         //svg circle builder
@@ -275,14 +287,15 @@
             };
         },
         //the parent svg builder
-        _generate: function () {
+        _generate: function (reRender) {
             var data = this.attributes.data,
                 opts = this.attributes.opts,
                 svg = this._make('svg',{
                     width : opts.chart.width,
                     height : opts.chart.height
                 }),
-                sets = [];
+                sets = [],
+                reRender = reRender || false;
 
             if (Object.prototype.toString.call(data) !== '[object Array]') {
                 data = [data];
@@ -290,7 +303,7 @@
     
             for (var i in data) {
                 sets.push(data[i].data);
-            } 
+            };
             //find min / max point
             //assume all data are positive for now;
             var _tmp = this._findMixMax(sets),
@@ -307,7 +320,7 @@
                 ._compile(g,this._circle(data[i], opts, interval, heightRatio))
                 ._compile(svg,g);
             }
-            this._compile(this.element,svg);
+            this._compile(this.element,svg, reRender);
         },
         //attach events
         _attach: function () {
@@ -336,7 +349,7 @@
             });
             return this;
         },
-        //extends the api
+        //extends the api & will not affect the parent name space - a plug & play system
         _spawn : function (graphName) {
             if (this._graphs[graphName])
                 return this._graphs[graphName];
@@ -381,16 +394,119 @@
             return this;
         },
         //the graph hover options
-        hoverable: function (opts, hover) {
-           this.hover = hover || true;
-           this.attributes.hover = opts;
-           if (this.hover)
+        hoverable: function (opts) {
+            this.hover = true;
+            this.attributes.hover = opts;
             this._attach();
-           return this;
+            return this;
         },
+        //remove hover events
         removeHover: function () {
             yako.unbind(this,'.graphData', 'mouseout')
             .unbind(this, '.graphData', 'mouseover');
+            return this;
+        },
+        //to support increment data for 3 scenarios
+        //+ adding new set of data
+        //+ partial update on one set of data
+        //+ updating all data at once
+        //INPUT: json object or array of object
+        //RETURN: this
+        incrementData: function (json) {
+            //to contain all the dom nodes
+            var domArray = [];
+            //this is an id element
+            if (this.element.tagName) {
+                var _arr = this.element.getElementsByTagName('path');
+                Array.prototype.filter.call(_arr, function (e) {
+                    if(e.nodeName) {
+                        domArray.push(e);
+                    }
+                });
+            //this is a class element
+            } else {
+                domArray = {};
+                var i = 0;
+                Array.prototype.filter.call(this.element, function(e) {
+                    if (e.nodeName) {
+                        domArray[e.nodeName+i] = [];
+                        var _arr =  this.element.getElementsByTagName('path');
+                        Array.prototype.filter.call(_arr, function (x) {
+                            if (x.nodeName) {
+                                domArray[e.nodeName+i].push(x);
+                                i++;
+                            }
+                        });
+                    }
+                });
+            }
+
+            //now analyze what is needed to be update;
+            this._appendZeroAndData(this.attributes.data, json);
+
+            this._generate(true);
+
+        },
+        _zeroGenerator: function (len) {
+            var arr = [];
+            while(len--) arr.push(0);
+            return arr;
+        },
+        _appendZeroAndData: function (oldData, newData) {
+            //cast them into an arra
+            if (typeof oldData === Object) oldData = [oldData];
+            if (typeof newData === Object) newData = [newData];
+
+            //just to make your we have both data
+            if(!oldData || !newData)
+                return oldData || newData;
+
+            var oldLen = oldData[0].length,
+                newLen = 0;
+            //check if the corresponding label exist for the data;
+            for (var i in newData) {
+                for (var j in oldData) {
+                    if (oldData[j].label == newData[i].label) {
+                        newData[i]._exist = true;
+                        break;
+                    }
+                }
+            }
+
+            //determine the new max length && check if data exist;
+            //get new len & push non existing data to old data
+            for (var i in newData) {
+                if (newData[i] && newData[i]._exist === undefined) {
+                    if (newData[i].data.length > oldLen &&
+                        (newData[i].data.length - oldLen) > newLen) {
+                        newLen = newData[i].data.length;
+                        oldData.push(newData.splice(i,1));
+                        // console.log(newData);
+                    }
+                } else if (newData[i] && newData[i]._exist === true){
+                    if(newData[i].data.length > newLen)
+                        newLen = newData[i].data.length;
+                }
+            }
+
+            //append new data into old data & zeroing unmatched array length;
+            for (var i in oldData) {
+                var updated = false;
+                for(var j in newData) {
+                    if (oldData[i].label == newData[j].label) {
+                        var zeros = this._zeroGenerator(newLen - newData[j].data.length);
+                        oldData[i].data=(oldData[i].data.concat(newData[j].data.concat(zeros)));
+                        updated = true;
+                        break;
+                    }
+                }
+                if(!updated) {
+                    var zeros = this._zeroGenerator(newLen);
+                    oldData[i].data = oldData[i].data.concat(zeros);
+                }
+            }
+
+            return oldData;
         }
     });
 })(window, document);
