@@ -292,7 +292,8 @@
             if (!opts._shift) return null;
             var height = opts.chart.height - 100;
 
-            //yAXIS
+            //yAxis
+            //TODO:: Automatic rounding to nearest 2 sig figs
             var i = 4,
                 arr = [];
             while(i--) {
@@ -307,14 +308,23 @@
                 arr.push(x);
             }
 
-            //xAxis //[1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
-            var len = data[0].data.length;
-            var ints = opts.xAxis.interval;
-            var formatSpec = '';
-            var format = {};
-            var s = 60, m = 60, h = 24, D = 30, M = 12, Y = 1;
+            //Accepted xAxis - [1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
+            var len = data[0].data.length,
+                ints = opts.xAxis.interval,
+                formatSpec = '',
+                format = {
+                    tickInterval: (ints.match(/\d+/) && ints.match(/\d+/).length ? ints.match(/\d+/)[0] : 1)
+                },
+                s = 60,
+                m = 60,
+                h = 24,
+                D = 30,
+                M = 12,
+                Y = 1;
 
             //what to do if the interval and format dont match
+            //eg: given 1D interval and its requesting a format of per hour
+            //should it be a straight line for that period ?
             if (opts.xAxis.format === 'dateTime') {
                 if (opts.xAxis.dateTimeLabelFormat.match('ss')) {
                     if (ints.match('s$'))
@@ -333,7 +343,7 @@
                         format.tickSize = 1;
                 } else if (opts.xAxis.dateTimeLabelFormat.match('DD')) {
                     if (ints.match('s$'))
-                        format.tickSize = s * m * h; //s * m * h
+                        format.tickSize = s * m * h;
                     if (ints.match('m$'))
                         format.tickSize = m * h;
                     if (ints.match('h$'))
@@ -361,16 +371,16 @@
                     if (ints.match('D$'))
                         format.tickSize = D * M;
                     if (ints.match('M$'))
+                        format.tickSize = M;
+                    if (ints.match('Y$'))
                         format.tickSize = Y;
                 }
 
-                var i = 0;
-                var counter = 0;
-                console.log(format.tickSize);
-                // console.log(format.tickSize);
+                var i = 0,
+                    counter = 0;
                 while (len--) {
                     counter++;
-                    if (format.tickSize === counter|| i === 0) {
+                    if (format.tickSize*format.tickInterval === counter || i === 0) {
                         var x = this._make('text',{
                             y: height + 50,
                             x: 100 + interval * i,
@@ -379,13 +389,19 @@
                         });
                         x.innerHTML = (interval * i).toFixed(0);
                         arr.push(x);
-                        if (i!== 0)
+                        if (i !== 0 || format.tickSize === counter)
                             counter = 0;
                     }
                     i++;
                 }
             }
             return arr;
+        },
+        //sig fig rounding
+        _sigFigs: function (n, sig) {
+            var mult = Math.pow(10,
+                sig - Math.floor(Math.log(n) / Math.LN10) - 1);
+            return Math.round(n * mult) / mult;
         },
         //finding min & max between multiple set (any improvments to multiple array search)
         _findMixMax: function (data) {
@@ -468,8 +484,6 @@
             if (!this.hover)
                 return this;
 
-            // console.log(this.hover);
-            // console.log(this.element);
             var div = doc.createElement('div');
             div.className = 'graphHover';
             div.style.position = 'absolute';
@@ -626,7 +640,6 @@
                         (newData[i].data.length - oldLen) > newLen) {
                         newLen = newData[i].data.length;
                         oldData.push(newData.splice(i,1));
-                        // console.log(newData);
                     }
                 } else if (newData[i] && newData[i]._exist === true){
                     if(newData[i].data.length > newLen)
