@@ -152,15 +152,33 @@
             this._getNode(node);
             return this;
         },
+        _getElement: function (obj, node) {
+            if(node.match(/^#/))
+                return obj.getElementById(node.replace(/^#/,''));
+            else if (node.match(/^\./))
+                return obj.getElementsByClassName(node.replace(/^\./,''));
+            else
+                return obj.getElementsByTagName(node);
+        },
         //retrieving parent node
-        _getNode: function (node, raw) {
+        //TODO:: Update to support, current nesting only supports #ID > Class or #ID > #ID > ... > Class 
+        //.class .class
+        //#id .class [Done]
+        _getNode: function (node, raw, opts) {
             var element;
-            if(node.match(/^#/)) {
-                element = doc.getElementById(node.replace(/^#/,''));
-            } else if (node.match(/^\./)) {
-                element = doc.getElementsByClassName(node.replace(/^\./,''));
+            if (Object.prototype.toString.call(node)==='[object Array]' || node.tagName) {
+                var arr = opts.split(' ');
+                if(arr.length > 1)
+                    return this._getNode(this._getElement(node, arr.shift()), null, arr.join(',',' '));
+                else
+                    return this._getElement(node, arr.shift());
             }
-
+            if (node.split(' ').length > 1) {
+                var arr = node.split(' ');
+                return this._getNode(this._getElement(doc, arr.shift()),null, arr.join(',',' '));
+            } else {
+                element = this._getElement(doc, node);
+            }
             if (raw) {
                 return element;
             } else {
@@ -178,6 +196,7 @@
         },
         //appends the elements
         _compile : function (node, childs, reRender) {
+            if (childs === null ^ childs === undefined) return this;
             if (typeof childs === Object) childs = [childs];
             if (Object.prototype.toString.call(childs)==='[object Array]') {
                 if (node.tagName) {
@@ -214,13 +233,16 @@
         },
         //svg path builder
         _path : function (data, opts, interval, heightRatio) {
-            var pathToken = "";
+            var pathToken = "",
+                shift = 0;
+            if (opts._shift)
+                shift = 100;
             //path generator
             for (var i=0; i<data.data.length; i++) {
                 if (i === 0) {
-                    pathToken += 'M '+interval*i+' '+ (opts.chart.height - (data.data[i] * heightRatio));
+                    pathToken += 'M '+(interval*i+parseInt(shift))+' '+ (opts.chart.height - (data.data[i] * heightRatio) - shift);
                 } else {
-                    pathToken += ' L '+interval*i+' '+ (opts.chart.height - (data.data[i] * heightRatio));
+                    pathToken += ' L '+(interval*i+parseInt(shift))+' '+ (opts.chart.height - (data.data[i] * heightRatio) - shift);
                 }
             }
             return this._make('path',{
@@ -238,14 +260,19 @@
         },
         //svg circle builder
         _circle : function (data, opts, interval, heightRatio) {
-            var circles = [];
+            var circles = [],
+                shift = 0;
+            if (opts._shift)
+                shift = 100;
+            if (opts.chart.showPointer === false)
+                return circles;
 
             for (var i=0;i<data.data.length;i++) {
                 circles.push(this._make('circle',{
                     fill: data.nodeColor || 'red',
                     r: 5,
-                    cx: interval*i,
-                    cy: (opts.chart.height - (data.data[i] * heightRatio)),
+                    cx: (interval*i + parseInt(shift)),
+                    cy: (opts.chart.height - (data.data[i] * heightRatio) - shift),
                     class: 'graphData',
                     'z-index': 3
                 },{
@@ -253,12 +280,112 @@
                         data : data.data[i],
                         label : data.label || '',
                         interval : interval * i,
-                        cx: interval *i,
-                        cy: (opts.chart.height - (data.data[i] * heightRatio))
+                        cx: (interval *i + parseInt(shift)),
+                        cy: (opts.chart.height - (data.data[i] * heightRatio) - shift)
                     }))
                 }));
             }
             return circles;
+        },
+        //computes and distributes the label
+        _label: function (data, opts, interval, heightRatio, min, max) {
+            if (!opts._shift) return null;
+            var height = opts.chart.height - 100;
+
+            //yAXIS
+            var i = 4,
+                arr = [];
+            while(i--) {
+                if (i === 0) break;
+                var x = this._make('text',{
+                    y: height - ((height/ 4) * i),
+                    x: 0,
+                    'font-size': 15,
+                    'font-family': '"Open Sans", sans-serif',
+                });
+                x.innerHTML = ((max/4)*i).toFixed(0);
+                arr.push(x);
+            }
+
+            //xAxis //[1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
+            var len = data[0].data.length;
+            var ints = opts.xAxis.interval;
+            var formatSpec = '';
+            var format = {};
+            var s = 60, m = 60, h = 24, D = 30, M = 12, Y = 1;
+
+            //what to do if the interval and format dont match
+            if (opts.xAxis.format === 'dateTime') {
+                if (opts.xAxis.dateTimeLabelFormat.match('ss')) {
+                    if (ints.match('s$'))
+                        format.tickSize = 1;
+                } else if (opts.xAxis.dateTimeLabelFormat.match('mm')) {
+                    if (ints.match('s$'))
+                        format.tickSize = s * m;
+                    if (ints.match('m$'))
+                        format.tickSize = 1;
+                } else if (opts.xAxis.dateTimeLabelFormat.match('hh')) {
+                    if (ints.match('s$'))
+                        format.tickSize = s * m;
+                    if (ints.match('m$'))
+                        format.tickSize = m;
+                    if (ints.match('h$'))
+                        format.tickSize = 1;
+                } else if (opts.xAxis.dateTimeLabelFormat.match('DD')) {
+                    if (ints.match('s$'))
+                        format.tickSize = s * m * h; //s * m * h
+                    if (ints.match('m$'))
+                        format.tickSize = m * h;
+                    if (ints.match('h$'))
+                        format.tickSize = h;
+                    if (ints.match('D$'))
+                        format.tickSize = 1;
+                } else if (opts.xAxis.dateTimeLabelFormat.match('MM')) {
+                    if (ints.match('s$'))
+                        format.tickSize = s * m * h * D;
+                    if (ints.match('m$'))
+                        format.tickSize = m * h * D;
+                    if (ints.match('h$'))
+                        format.tickSize = h * D;
+                    if (ints.match('D$'))
+                        format.tickSize = D;
+                    if (ints.match('M$'))
+                        format.tickSize = 1;
+                } else if (opts.xAxis.dateTimeLabelFormat.match('YY')) {
+                    if (ints.match('s$'))
+                        format.tickSize = s * m * h * D * M;
+                    if (ints.match('m$'))
+                        format.tickSize = m * h * D * M;
+                    if (ints.match('h$'))
+                        format.tickSize = h * D * M;
+                    if (ints.match('D$'))
+                        format.tickSize = D * M;
+                    if (ints.match('M$'))
+                        format.tickSize = Y;
+                }
+
+                var i = 0;
+                var counter = 0;
+                console.log(format.tickSize);
+                // console.log(format.tickSize);
+                while (len--) {
+                    counter++;
+                    if (format.tickSize === counter|| i === 0) {
+                        var x = this._make('text',{
+                            y: height + 50,
+                            x: 100 + interval * i,
+                            'font-size': 15,
+                            'font-family': '"Open Sans", sans-serif',
+                        });
+                        x.innerHTML = (interval * i).toFixed(0);
+                        arr.push(x);
+                        if (i!== 0)
+                            counter = 0;
+                    }
+                    i++;
+                }
+            }
+            return arr;
         },
         //finding min & max between multiple set (any improvments to multiple array search)
         _findMixMax: function (data) {
@@ -296,21 +423,33 @@
                 }),
                 sets = [],
                 reRender = reRender || false;
-
             if (Object.prototype.toString.call(data) !== '[object Array]') {
                 data = [data];
             }
     
             for (var i in data) {
                 sets.push(data[i].data);
-            };
+            }
+
             //find min / max point
             //assume all data are positive for now;
             var _tmp = this._findMixMax(sets),
             min = _tmp.min,
-            max = _tmp.max,
-            interval = opts.chart.width / (_tmp.len),
+            max = _tmp.max,     //need to round to nearest 100?
+            interval = opts.chart.width / (_tmp.len -1),
             heightRatio = (opts.chart.height / (max+10));
+
+            if (opts.xAxis.format) {
+                if (opts.xAxis.format === 'dateTime') {
+                    if (opts.chart.width - 100 <= 0 || opts.chart.height - 100 <= 0)
+                        console.warn('insufficent width or height (min 100px for labels), ignored format: ' +opts.xAxis.format);
+                    else {
+                        interval = (opts.chart.width - 100) / (_tmp.len-1);
+                        heightRatio = (opts.chart.height - 100) / (max+10);
+                        opts._shift = true;
+                    }
+                }
+            }
 
             for (var i in data) {
                 var g = this._make('g',null,{
@@ -320,7 +459,8 @@
                 ._compile(g,this._circle(data[i], opts, interval, heightRatio))
                 ._compile(svg,g);
             }
-            this._compile(this.element,svg, reRender);
+            this._compile(svg, this._label(data, opts, interval, heightRatio, min, max))
+            ._compile(this.element,svg, reRender);
             return this;
         },
         //attach events
@@ -328,14 +468,17 @@
             if (!this.hover)
                 return this;
 
+            // console.log(this.hover);
+            // console.log(this.element);
             var div = doc.createElement('div');
             div.className = 'graphHover';
             div.style.position = 'absolute';
             div.style.display = 'none';
             this._compile(this.element, div);
+            var self = this;
 
-            yako.unbind(this, '.graphData');
-            yako.on(this, '.graphData', 'mouseover', function (e) {
+            yako.unbind(this,'#'+this.element.id +' .graphData');
+            yako.on(this, '#'+this.element.id +' .graphData', 'mouseover', function (e) {
                 e.target.style.fill = 'blue';
                 var data = JSON.parse(decodeURIComponent(e.target.dataset.info));
                  //TODO:: make the content customizable by the user
@@ -344,7 +487,7 @@
                 div.style.top = data.cy + 5;
                 div.style.left = data.cx + 15;
             });
-            yako.on(this, '.graphData', 'mouseout', function (e) {
+            yako.on(this, '#'+this.element.id +' .graphData', 'mouseout', function (e) {
                 e.target.style.fill = 'red';
                 div.style.display = 'none';
             });
@@ -403,8 +546,8 @@
         },
         //remove hover events
         removeHover: function () {
-            yako.unbind(this,'.graphData', 'mouseout')
-            .unbind(this, '.graphData', 'mouseover');
+            yako.unbind(this,'#'+this.element.id+ ' .graphData', 'mouseout')
+            .unbind(this,'#'+this.element.id+' .graphData', 'mouseover');
             return this;
         },
         //to support increment data for 3 scenarios
@@ -445,7 +588,8 @@
             //now analyze what is needed to be update;
             this._appendZeroAndData(this.attributes.data, json);
 
-            this._generate(true)._attach();
+            this._generate(true)
+            ._attach();
 
         },
         _zeroGenerator: function (len) {
