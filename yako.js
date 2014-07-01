@@ -11,6 +11,7 @@
     yako.VERSION = '0.0.1';
     yako.eventList = {};
     yako._graphs = {};
+
     //to extend properties
     yako.extend = function (attr, json) {
         if (!json)
@@ -25,6 +26,7 @@
         }
         return this;
     };
+
     //to assign attributes NS
     yako.assign = function (attr, json) {
         if (!json)
@@ -39,6 +41,7 @@
     yako.isFn = function (object) {
        return !!(object && object.constructor && object.call && object.apply);
     };
+
     //event binding
     yako.on = function (self, node, event, fn, useCapture) {
         var useCapture = useCapture || false;
@@ -66,6 +69,7 @@
         }
         return self;
     };
+
     //event ubinding
     yako.unbind = function (self, node, event, fn) {
         var nodes = self._getNode(node, true);
@@ -135,12 +139,14 @@
         }
         return self;
     };
+
     //for registering a module
     yako.register = function (graphName, prototypes) {
         if (yako._graphs && yako._graphs[graphName])
             throw 'Uncaught Exception: graph module conflict for '+ graphName;
         yako._graphs[graphName] = prototypes;
     };
+
     //extend prototype + allow chaining on public functions and most private functions
     yako.extend(api.prototype, {
         extend: yako.extend,
@@ -319,6 +325,7 @@
                 format = {
                     tickInterval: (ints.match(/\d+/) && ints.match(/\d+/).length ? ints.match(/\d+/)[0] : 1)
                 },
+                mili = 1000,
                 s = 60,
                 m = 60,
                 h = 24,
@@ -330,6 +337,21 @@
             //eg: given 1D interval and its requesting a format of per hour
             //should it be a straight line for that period ?
             if (opts.xAxis.format === 'dateTime') {
+                //to get the UTC time stamp multiplexer
+                if (ints.match('s$'))
+                    format.utc = mili;
+                else if (ints.match('m$'))
+                    format.utc = s * mili;
+                else if (ints.match('h$'))
+                    format.utc = s * m * mili;
+                else if (ints.match('D$'))
+                    format.utc = s * m * h * mili;
+                else if (ints.match('M$'))
+                    format.utc = s * m * h * D * mili;
+                else if (ints.match('Y'))
+                    format.utc = s * m * h * D * M * mili;
+
+                //figures out the tick size
                 if (opts.xAxis.dateTimeLabelFormat.match('ss')) {
                     if (ints.match('s$'))
                         format.tickSize = 1;
@@ -389,9 +411,9 @@
                             y: height + 50,
                             x: 100 + interval * i,
                             'font-size': 15,
-                            'font-family': '"Open Sans", sans-serif',
+                            'font-family': '"Open Sans", sans-serif'
                         });
-                        x.innerHTML = (interval * (i+opts._shiftIntervals)).toFixed(0);
+                        x.innerHTML = this._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((i+opts._shiftIntervals)) * format.utc)); //(interval * (i+opts._shiftIntervals)).toFixed(0);
                         arr.push(x);
                         if (i !== 0 || format.tickSize === counter)
                             counter = 0;
@@ -400,6 +422,11 @@
                 }
             }
             return arr;
+        },
+        _formatTimeStamp: function (opts, time) {
+            var format = opts.xAxis.dateTimeLabelFormat;
+
+
         },
         //sig fig rounding
         _sigFigs: function (n, sig) {
