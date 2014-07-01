@@ -235,6 +235,7 @@
         _path : function (data, opts, interval, heightRatio) {
             var pathToken = "",
                 shift = 0;
+            //shift for labeling
             if (opts._shift)
                 shift = 100;
             //path generator
@@ -245,6 +246,7 @@
                     pathToken += ' L '+(interval*i+parseInt(shift))+' '+ (opts.chart.height - (data.data[i] * heightRatio) - shift);
                 }
             }
+
             return this._make('path',{
                 fill: 'none',
                 d: pathToken,
@@ -279,7 +281,7 @@
                     info: encodeURIComponent(JSON.stringify({
                         data : data.data[i],
                         label : data.label || '',
-                        interval : interval * i,
+                        interval : interval * (i+opts._shiftIntervals),
                         cx: (interval *i + parseInt(shift)),
                         cy: (opts.chart.height - (data.data[i] * heightRatio) - shift)
                     }))
@@ -293,18 +295,20 @@
             var height = opts.chart.height - 100;
 
             //yAxis
-            //TODO:: Automatic rounding to nearest 2 sig figs
-            var i = 4,
+            //TODO:: NEED TO fix ADJUSTED height - incorrect scaling ???
+            //NEED TO VERIFY
+            var i = 5,
                 arr = [];
             while(i--) {
                 if (i === 0) break;
                 var x = this._make('text',{
-                    y: height - ((height/ 4) * i),
+                    y: (height/4) * (4-i),
                     x: 0,
                     'font-size': 15,
-                    'font-family': '"Open Sans", sans-serif',
+                    'font-family': '"Open Sans", sans-serif'
                 });
-                x.innerHTML = ((max/4)*i).toFixed(0);
+                // console.log(height-this._sigFigs(((max/4)*i),1), this._sigFigs(((max/4)*i),1));
+                x.innerHTML = this._sigFigs(((max/4)*i),1);
                 arr.push(x);
             }
 
@@ -387,7 +391,7 @@
                             'font-size': 15,
                             'font-family': '"Open Sans", sans-serif',
                         });
-                        x.innerHTML = (interval * i).toFixed(0);
+                        x.innerHTML = (interval * (i+opts._shiftIntervals)).toFixed(0);
                         arr.push(x);
                         if (i !== 0 || format.tickSize === counter)
                             counter = 0;
@@ -542,6 +546,8 @@
         set: function (opts) {
             var opts = opts || {};
             this.attributes.data = opts.data || [];
+            opts._originalDataLength = this.attributes.data[0].data.length;
+            opts._shiftIntervals = 0;
             this.attributes.opts = opts;
             if(opts.chart && opts.chart.type && yako._graphs[opts.chart.type]) {
                 return this._spawn(opts.chart.type);
@@ -600,25 +606,40 @@
             }
 
             //now analyze what is needed to be update;
-            this._appendZeroAndData(this.attributes.data, json);
-
-            this._generate(true)
-            ._attach();
-
+            this._appendZeroAndData(this.attributes.data, json)
+                ._shiftData()
+                ._generate(true)
+                ._attach();
         },
+        //if the chart is non - cummulative, shift the labels 
+        _shiftData: function () {
+            var opts = this.attributes.opts;
+            if (opts.chart.accumulateIncrementalData)
+                return this;
+            var data = this.attributes.data,
+                diff = data[0].data.length - opts._originalDataLength;
+            opts._shiftIntervals += (diff);
+            for (var i in data) {
+                for (var j = 0; j<diff;j++)
+                    data[i].data.shift();
+            }
+            return this;
+        },
+        //generates a bunch of zeros
         _zeroGenerator: function (len) {
             var arr = [];
             while(len--) arr.push(0);
             return arr;
         },
+        //appends new data to old data / zeros data if one of the chart is missing data
         _appendZeroAndData: function (oldData, newData) {
-            //cast them into an arra
+            //cast them into an array if they are not in array yet
             if (typeof oldData === Object) oldData = [oldData];
             if (typeof newData === Object) newData = [newData];
 
             //just to make your we have both data
             if(!oldData || !newData)
-                return oldData || newData;
+                return this;
 
             var oldLen = oldData[0].length,
                 newLen = 0;
@@ -664,7 +685,7 @@
                 }
             }
 
-            return oldData;
+            return this;
         }
     });
 })(window, document);

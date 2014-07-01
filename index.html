@@ -59,7 +59,9 @@
                     height: 300,
                     'font-family': '"Open Sans", sans-serif',
                     'font-size': '12',
-                    showPointer: false
+                    showPointer: false,
+                    //this option will toggle the chart to save incrementable data or not
+                    accumulateIncrementalData: false
                 },
                 title : 'just a test',
                 xAxis : {
@@ -94,7 +96,7 @@
 
             window.setInterval(function () {
                 var _d1 = [], _d2 = [];
-                for (var i=-0;i<3;i++) {
+                for (var i=0;i<1;i++) {
                     _d1.push(Math.floor((Math.random() * 500) + 400));
                     _d2.push(Math.floor((Math.random() * 500) + 400));
                 }
