@@ -281,7 +281,7 @@
                     r: 5,
                     cx: (interval*i + parseInt(shift)),
                     cy: (opts.chart.height - (data.data[i] * heightRatio) - shift),
-                    class: 'graphData',
+                    'class': 'graphData',
                     'z-index': 3
                 },{
                     info: encodeURIComponent(JSON.stringify({
@@ -320,10 +320,10 @@
 
             //Accepted xAxis - [1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
             var len = data[0].data.length,
-                ints = opts.xAxis.interval,
+                tick = opts.xAxis.interval,
                 formatSpec = '',
                 format = {
-                    tickInterval: (ints.match(/\d+/) && ints.match(/\d+/).length ? ints.match(/\d+/)[0] : 1)
+                    tickInterval: (/\d+/.test(tick) ? tick.match(/\d+/)[0] : 1)
                 },
                 mili = 1000,
                 s = 60,
@@ -339,68 +339,74 @@
             //should it be a straight line for that period ?
             if (opts.xAxis.format === 'dateTime') {
                 //to get the UTC time stamp multiplexer
-                if (ints.match('s$'))
+                if (/s$/.test(tick))
                     format.utc = mili;
-                else if (ints.match('m$'))
+                else if (/m$/.test(tick))
                     format.utc = s * mili;
-                else if (ints.match('h$'))
+                else if (/h$/.test(tick))
                     format.utc = s * m * mili;
-                else if (ints.match('D$'))
+                else if (/D$/.test(tick))
                     format.utc = s * m * h * mili;
-                else if (ints.match('M$'))
+                else if (/M$/.test(tick))
                     format.utc = s * m * h * D * mili;
-                else if (ints.match('Y'))
+                else if (/Y$/.test(tick))
                     format.utc = s * m * h * D * M * mili;
 
                 //figures out the tick size
-                if (opts.xAxis.dateTimeLabelFormat.match('ss')) {
-                    if (ints.match('s$'))
-                        format.tickSize = 1;
-                } else if (opts.xAxis.dateTimeLabelFormat.match('mm')) {
-                    if (ints.match('s$'))
-                        format.tickSize = s * m;
-                    if (ints.match('m$'))
-                        format.tickSize = 1;
-                } else if (opts.xAxis.dateTimeLabelFormat.match('hh')) {
-                    if (ints.match('s$'))
-                        format.tickSize = s * m;
-                    if (ints.match('m$'))
-                        format.tickSize = m;
-                    if (ints.match('h$'))
-                        format.tickSize = 1;
-                } else if (opts.xAxis.dateTimeLabelFormat.match('DD')) {
-                    if (ints.match('s$'))
+                if (
+                    (/ss/.test(label) && /s$/.test(tick))
+                    || (/mm/.test(label) && /m$/.test(tick))
+                    || (/hh/.test(label) && /h$/.test(tick))
+                    || (/DD/.test(label) && /D$/.test(tick))
+                    || (/MM/.test(label) && /M$/.test(tick))
+                    || (/YY/.test(label) && /Y$/.test(tick))
+                    )
+                {
+                    format.tickSize = 1;
+                } else if (
+                    (/mm/.test(label) && /s$/.test(tick))
+                    || (/hh/.test(label) && /m$/.test(tick))
+                ) {
+                    format.tickSize = s; //m
+                } else if (
+                    /hh/.test(label) && /s$/.test(tick)
+                ) {
+                    format.tickSize = s * m;
+                } else if (
+                    /DD/.test(label)
+                ) {
+                    if (/s$/.test(tick))
                         format.tickSize = s * m * h;
-                    if (ints.match('m$'))
+                    if (/m$/.test(tick))
                         format.tickSize = m * h;
-                    if (ints.match('h$'))
+                    if (/h$/.test(tick))
                         format.tickSize = h;
-                    if (ints.match('D$'))
-                        format.tickSize = 1;
-                } else if (opts.xAxis.dateTimeLabelFormat.match('MM')) {
-                    if (ints.match('s$'))
+                } else if (
+                    /MM/.test(label)
+                ) {
+                    if (/s$/.test(tick))
                         format.tickSize = s * m * h * D;
-                    if (ints.match('m$'))
+                    if (/m$/.test(tick))
                         format.tickSize = m * h * D;
-                    if (ints.match('h$'))
+                    if (/h$/.test(tick))
                         format.tickSize = h * D;
-                    if (ints.match('D$'))
+                    if (/D$/.test(tick))
                         format.tickSize = D;
-                    if (ints.match('M$'))
-                        format.tickSize = 1;
-                } else if (opts.xAxis.dateTimeLabelFormat.match('YY')) {
-                    if (ints.match('s$'))
+                } else if (
+                    /YY/.test(label)
+                ) {
+                    if (/s$/.test(tick))
                         format.tickSize = s * m * h * D * M;
-                    if (ints.match('m$'))
+                    if (/m$/.test(tick))
                         format.tickSize = m * h * D * M;
-                    if (ints.match('h$'))
+                    if (/h$/.test(tick))
                         format.tickSize = h * D * M;
-                    if (ints.match('D$'))
+                    if (/D$/.test(tick))
                         format.tickSize = D * M;
-                    if (ints.match('M$'))
+                    if (/M$/.test(tick))
                         format.tickSize = M;
-                    if (ints.match('Y$'))
-                        format.tickSize = Y;
+                } else {
+                    throw 'Error: Incorrect Label Format';
                 }
 
                 var i = 0,
