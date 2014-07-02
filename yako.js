@@ -148,7 +148,7 @@
     };
 
     //extend prototype + allow chaining on public functions and most private functions
-    yako.extend(api.prototype, {
+    yako.extend(graphInstance.prototype, {
         extend: yako.extend,
         assign: yako.assign,
         //init function
@@ -331,7 +331,8 @@
                 h = 24,
                 D = 30,
                 M = 12,
-                Y = 1;
+                Y = 1,
+                label = opts.xAxis.dateTimeLabelFormat;
 
             //what to do if the interval and format dont match
             //eg: given 1D interval and its requesting a format of per hour
@@ -430,25 +431,16 @@
                 str = format,
                 flag = false;
 
-            if (format.match('YYYY'))
+            if (/YYYY/.test(str))
                 str = str.replace('YYYY',dateObj.getFullYear());
-            else if (format.match('YY'))
+            else if (/YY/.test(str))
                 str = str.replace('YY',(dateObj.getFullYear()).replace(/^\d{1,2}/,''));
 
-            if (format.match('MM'))
-                str = str.replace(/MM/,dateObj.getMonth()+1);
-
-            if (format.match('DD'))
-                str = str.replace(/DD/, dateObj.getDate());
-
-            if (format.match('hh'))
-                str = str.replace(/hh/, dateObj.getHours()+1);
-
-            if (format.match('mm'))
-                str = str.replace(/mm/,dateObj.getMinutes());
-
-            if (format.match('ss'))
-                str = str.replace(/ss/,dateObj.getSeconds());
+            str = str.replace(/MM/,dateObj.getMonth()+1)
+                .replace(/DD/, dateObj.getDate())
+                .replace(/hh/, dateObj.getHours()+1)
+                .replace(/mm/,dateObj.getMinutes())
+                .replace(/ss/,dateObj.getSeconds());
 
             return str;
         },
