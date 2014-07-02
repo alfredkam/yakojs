@@ -311,7 +311,7 @@
                     y: (height/4) * (4-i),
                     x: 0,
                     'font-size': 15,
-                    'font-family': '"Open Sans", sans-serif'
+                    'font-family': opts.chart['font-family']
                 });
                 // console.log(height-this._sigFigs(((max/4)*i),1), this._sigFigs(((max/4)*i),1));
                 x.innerHTML = this._sigFigs(((max/4)*i),1);
@@ -325,13 +325,13 @@
                 format = {
                     tickInterval: (/\d+/.test(tick) ? tick.match(/\d+/)[0] : 1)
                 },
-                // mili = 1000,
-                // s = 60,
-                // m = 60,
-                // h = 24,
-                // D = 30,
-                // M = 12,
-                // Y = 1,
+                mili = 1000,
+                s = 60,
+                m = 60,
+                h = 24,
+                D = 30,
+                M = 12,
+                Y = 1,
                 label = opts.xAxis.dateTimeLabelFormat;
 
             //what to do if the interval and format dont match
@@ -340,17 +340,17 @@
             if (opts.xAxis.format === 'dateTime') {
                 //to get the UTC time stamp multiplexer
                 if (/s$/.test(tick))
-                    format.utc = 1000; //mili;
+                    format.utc = mili;
                 else if (/m$/.test(tick))
-                    format.utc = 60000;//s * mili;
+                    format.utc = s * mili;
                 else if (/h$/.test(tick))
-                    format.utc = 360000;//s * m * mili;
+                    format.utc = s * m * mili;
                 else if (/D$/.test(tick))
-                    format.utc = 86400000;//s * m * h * mili;
+                    format.utc = s * m * h * mili;
                 else if (/M$/.test(tick))
-                    format.utc = 2592000000;//s * m * h * D * mili;
+                    format.utc = s * m * h * D * mili;
                 else if (/Y$/.test(tick))
-                    format.utc = 31104000000;//s * m * h * D * M * mili;
+                    format.utc = s * m * h * D * M * mili;
 
                 //figures out the tick size
                 if (
@@ -367,43 +367,44 @@
                     (/mm/.test(label) && /s$/.test(tick))
                     || (/hh/.test(label) && /m$/.test(tick))
                 ) {
-                    format.tickSize = 60; //s; //m
+                    format.tickSize = s; //m
                 } else if (
-                    (/hh/.test(label) && /s$/.test(tick))
-                    || (/YY/.test(label) && /D$/.test(tick))
+                    /hh/.test(label) && /s$/.test(tick)
                 ) {
-                    format.tickSize = 360; //s * m; || D * M;
+                    format.tickSize = s * m;
                 } else if (
                     /DD/.test(label)
                 ) {
                     if (/s$/.test(tick))
-                        format.tickSize = 8640;//s * m * h;
+                        format.tickSize = s * m * h;
                     if (/m$/.test(tick))
-                        format.tickSize = 1440; //m * h;
+                        format.tickSize = m * h;
                     if (/h$/.test(tick))
-                        format.tickSize = 24; //h;
+                        format.tickSize = h;
                 } else if (
                     /MM/.test(label)
                 ) {
                     if (/s$/.test(tick))
-                        format.tickSize = 2592000;//s * m * h * D;
+                        format.tickSize = s * m * h * D;
                     if (/m$/.test(tick))
-                        format.tickSize = 43200;//m * h * D;
+                        format.tickSize = m * h * D;
                     if (/h$/.test(tick))
-                        format.tickSize = 720//h * D;
+                        format.tickSize = h * D;
                     if (/D$/.test(tick))
-                        format.tickSize = 30;//D;
+                        format.tickSize = D;
                 } else if (
                     /YY/.test(label)
                 ) {
                     if (/s$/.test(tick))
-                        format.tickSize = 3110400;//s * m * h * D * M;
+                        format.tickSize = s * m * h * D * M;
                     if (/m$/.test(tick))
-                        format.tickSize = 518400;//m * h * D * M;
+                        format.tickSize = m * h * D * M;
                     if (/h$/.test(tick))
-                        format.tickSize = 8640;//h * D * M;
+                        format.tickSize = h * D * M;
+                    if(/YY/.test(label) && /D$/.test(tick))
+                        format.tickSize = D * M;
                     if (/M$/.test(tick))
-                        format.tickSize = 12;//M;
+                        format.tickSize = M;
                 } else {
                     throw 'Error: Incorrect Label Format';
                 }
@@ -417,7 +418,7 @@
                             y: height + 50,
                             x: 100 + interval * i,
                             'font-size': 15,
-                            'font-family': '"Open Sans", sans-serif'
+                            'font-family': opts.chart['font-family']
                         });
                         x.innerHTML = this._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((i+opts._shiftIntervals)) * format.utc)); //(interval * (i+opts._shiftIntervals)).toFixed(0);
                         arr.push(x);
@@ -520,6 +521,7 @@
                 }
             }
 
+            //adding each path & circle
             for (var i in data) {
                 var g = this._make('g',null,{
                     label: data[i].label
@@ -528,6 +530,7 @@
                 ._compile(g,this._circle(data[i], opts, interval, heightRatio))
                 ._compile(svg,g);
             }
+            //adding a label
             this._compile(svg, this._label(data, opts, interval, heightRatio, min, max))
             ._compile(this.element,svg, reRender);
             return this;
@@ -581,7 +584,8 @@
                 chart: {
                     type: 'line',
                     width: '100',
-                    height: '200'
+                    height: '200',
+                    'font-family' : '"Open Sans", sans-serif'
                 },
                 xAxis: {},
                 yAxis: {},
