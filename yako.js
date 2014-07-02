@@ -2,9 +2,9 @@
     'use strict';
     //check if there is a previous version
     var _yako = root.yako || function () {};
-    var api = function () {};
+    var graphInstance = function () {};
     var yako = root.yako = function (node) {
-        var x = new api();
+        var x = new graphInstance();
         return x._init(node);
     };
     //version
@@ -490,7 +490,8 @@
                 opts = this.attributes.opts,
                 svg = this._make('svg',{
                     width : opts.chart.width,
-                    height : opts.chart.height
+                    height : opts.chart.height,
+                    viewBox : '0 0 '+opts.chart.width + ' '+opts.chart.height
                 }),
                 sets = [],
                 reRender = reRender || false;
