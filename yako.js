@@ -325,13 +325,13 @@
                 format = {
                     tickInterval: (/\d+/.test(tick) ? tick.match(/\d+/)[0] : 1)
                 },
-                mili = 1000,
-                s = 60,
-                m = 60,
-                h = 24,
-                D = 30,
-                M = 12,
-                Y = 1,
+                // mili = 1000,
+                // s = 60,
+                // m = 60,
+                // h = 24,
+                // D = 30,
+                // M = 12,
+                // Y = 1,
                 label = opts.xAxis.dateTimeLabelFormat;
 
             //what to do if the interval and format dont match
@@ -340,17 +340,17 @@
             if (opts.xAxis.format === 'dateTime') {
                 //to get the UTC time stamp multiplexer
                 if (/s$/.test(tick))
-                    format.utc = mili;
+                    format.utc = 1000; //mili;
                 else if (/m$/.test(tick))
-                    format.utc = s * mili;
+                    format.utc = 60000;//s * mili;
                 else if (/h$/.test(tick))
-                    format.utc = s * m * mili;
+                    format.utc = 360000;//s * m * mili;
                 else if (/D$/.test(tick))
-                    format.utc = s * m * h * mili;
+                    format.utc = 86400000;//s * m * h * mili;
                 else if (/M$/.test(tick))
-                    format.utc = s * m * h * D * mili;
+                    format.utc = 2592000000;//s * m * h * D * mili;
                 else if (/Y$/.test(tick))
-                    format.utc = s * m * h * D * M * mili;
+                    format.utc = 31104000000;//s * m * h * D * M * mili;
 
                 //figures out the tick size
                 if (
@@ -367,44 +367,43 @@
                     (/mm/.test(label) && /s$/.test(tick))
                     || (/hh/.test(label) && /m$/.test(tick))
                 ) {
-                    format.tickSize = s; //m
+                    format.tickSize = 60; //s; //m
                 } else if (
-                    /hh/.test(label) && /s$/.test(tick)
+                    (/hh/.test(label) && /s$/.test(tick))
+                    || (/YY/.test(label) && /D$/.test(tick))
                 ) {
-                    format.tickSize = s * m;
+                    format.tickSize = 360; //s * m; || D * M;
                 } else if (
                     /DD/.test(label)
                 ) {
                     if (/s$/.test(tick))
-                        format.tickSize = s * m * h;
+                        format.tickSize = 8640;//s * m * h;
                     if (/m$/.test(tick))
-                        format.tickSize = m * h;
+                        format.tickSize = 1440; //m * h;
                     if (/h$/.test(tick))
-                        format.tickSize = h;
+                        format.tickSize = 24; //h;
                 } else if (
                     /MM/.test(label)
                 ) {
                     if (/s$/.test(tick))
-                        format.tickSize = s * m * h * D;
+                        format.tickSize = 2592000;//s * m * h * D;
                     if (/m$/.test(tick))
-                        format.tickSize = m * h * D;
+                        format.tickSize = 43200;//m * h * D;
                     if (/h$/.test(tick))
-                        format.tickSize = h * D;
+                        format.tickSize = 720//h * D;
                     if (/D$/.test(tick))
-                        format.tickSize = D;
+                        format.tickSize = 30;//D;
                 } else if (
                     /YY/.test(label)
                 ) {
                     if (/s$/.test(tick))
-                        format.tickSize = s * m * h * D * M;
+                        format.tickSize = 3110400;//s * m * h * D * M;
                     if (/m$/.test(tick))
-                        format.tickSize = m * h * D * M;
+                        format.tickSize = 518400;//m * h * D * M;
                     if (/h$/.test(tick))
-                        format.tickSize = h * D * M;
-                    if (/D$/.test(tick))
-                        format.tickSize = D * M;
+                        format.tickSize = 8640;//h * D * M;
                     if (/M$/.test(tick))
-                        format.tickSize = M;
+                        format.tickSize = 12;//M;
                 } else {
                     throw 'Error: Incorrect Label Format';
                 }
