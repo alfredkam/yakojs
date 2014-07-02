@@ -423,10 +423,34 @@
             }
             return arr;
         },
+        //formats the time stamp
         _formatTimeStamp: function (opts, time) {
-            var format = opts.xAxis.dateTimeLabelFormat;
+            var format = opts.xAxis.dateTimeLabelFormat,
+                dateObj = new Date(time),
+                str = format,
+                flag = false;
 
+            if (format.match('YYYY'))
+                str = str.replace('YYYY',dateObj.getFullYear());
+            else if (format.match('YY'))
+                str = str.replace('YY',(dateObj.getFullYear()).replace(/^\d{1,2}/,''));
 
+            if (format.match('MM'))
+                str = str.replace(/MM/,dateObj.getMonth()+1);
+
+            if (format.match('DD'))
+                str = str.replace(/DD/, dateObj.getDate());
+
+            if (format.match('hh'))
+                str = str.replace(/hh/, dateObj.getHours()+1);
+
+            if (format.match('mm'))
+                str = str.replace(/mm/,dateObj.getMinutes());
+
+            if (format.match('ss'))
+                str = str.replace(/ss/,dateObj.getSeconds());
+
+            return str;
         },
         //sig fig rounding
         _sigFigs: function (n, sig) {

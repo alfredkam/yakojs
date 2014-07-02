@@ -43,7 +43,9 @@
                 {
                     label: 'Auto Generated',
                     data: dataSet,
+                    //color controls the line
                     color: '#1E90FF'
+                    //nodeColor controls the pointer color
                 },
                 {
                     label: 'Auto Generated 2',
@@ -55,10 +57,12 @@
             var graph = yako('#graph').set({
                 chart : {
                     type: 'line',
+                    //controls the width and height of the graph
                     width: 1000,
                     height: 300,
                     'font-family': '"Open Sans", sans-serif',
                     'font-size': '12',
+                    //this options will show hide the hover pointer
                     showPointer: false,
                     //this option will toggle the chart to save incrementable data or not
                     accumulateIncrementalData: false
@@ -67,14 +71,26 @@
                 xAxis : {
                     //including format will show the xAxis Label
                     format : 'dateTime',
+                    //interval indicates the data interval, the number of the interval indicates the label tick interval
+                    //s - seconds
+                    //m - minutes
+                    //h - hours
+                    //D - days
+                    //M - months
+                    //Y - years
                     interval: '4h',  //[1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
+                    //min start date
+                    //do not need end date, expecting there would be zeros to fill the gaps
                     minUTC: Date.UTC(2013,08,07),
-                    dateTimeLabelFormat: 'YYYY/MM/DD hh'
+                    //this controls the dateTime label format (still working on it)
+                    //depending on the format, it will affect the label, try :: dateTimeLabelFormat: 'hhh'
+                    dateTimeLabelFormat: 'YYYY/MM/DD hhh'
                     // or if wanted custom label
                     // format: 'label',
                     // label: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
                 },
                 data: set
+                //calling hoverable enables hover
             }).hoverable({
                 //the css configs, need to define them
             });
@@ -100,6 +116,14 @@
                     _d1.push(Math.floor((Math.random() * 500) + 400));
                     _d2.push(Math.floor((Math.random() * 500) + 400));
                 }
+                //to support increment data for 3 scenarios
+                //+ adding new set of data - ie. adding another line
+                //+ partial update on one set of data
+                //+ updating all data at once
+                //INPUT: json object or array of object
+                //When increment with 'accumulateIncrementalData' as false, 
+                //+it is important to note it will only retain x length of data base on the data length that you've feed in
+                //+it will shift the timestamp depending on the tick size you've set
                 graph.incrementData([{
                     label : 'Auto Generated',
                     data: _d1
