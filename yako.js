@@ -542,7 +542,7 @@
             var _tmp = this._findMixMax(sets),
             min = _tmp.min,
             max = _tmp.max,     //need to round to nearest 100?
-            interval = opts.chart.width / (_tmp.len -1),
+            interval = opts.chart.width / (_tmp.len-1),
             heightRatio = (opts.chart.height / (max+10));
 
             if (opts.xAxis.format) {
@@ -550,7 +550,8 @@
                     if (opts.chart.width - 100 <= 0 || opts.chart.height - 100 <= 0)
                         console.warn('insufficent width or height (min 100px for labels), ignored format: ' +opts.xAxis.format);
                     else {
-                        interval = (opts.chart.width - 100) / (_tmp.len-1);
+                        //TODO:: standardize this part
+                        interval = (opts.chart.width - 50) / (_tmp.len-1);
                         heightRatio = (opts.chart.height - 100) / (max+10);
                         opts._shift = true;
                     }
@@ -589,7 +590,17 @@
               frame = 0,  //current frame
               newData = data.data,
               oldData = oldData.data,
-              height = opts.chart.height;
+              height = opts.chart.height,
+              dataAdded = this.attributes._newDataLength;
+
+          // //data to render
+          // var data = [];
+          // for (var x=0;x<dataAdded;x++) {
+          //     data.push(oldData[i]);
+          // }
+          // data.concat(newData);
+          //
+          //     console.log(dataAdded);
 
           //we will be shifiting the yaxis only for linear graph
           var animateGraph = function (path) {
@@ -597,11 +608,16 @@
               window.setTimeout(function() {
                 var pathToken = '';
 
-                for (var i=0; i<oldData.length; i++) {
-                    var xaxis = (((interval*i-1)  + ((interval*(i-1) - interval*(i))/frames * frame))+parseInt(paddingForLabel)),
-                        yaxis = (height - (oldData[i] * heightRatio) - paddingForLabel);
+                for (var i=0; i<oldData.length + dataAdded; i++) {
+                    var xaxis = (((interval*i-1)  + ((interval*(i-1) - interval*(i))/frames * frame))+parseInt(paddingForLabel));
 
-                    if (xaxis < paddingForLabel && i== 0) {
+                    if (i >= oldData.length) {
+                      var yaxis = (height-(newData[i-dataAdded] * heightRatio) - paddingForLabel);
+                    } else {
+                      var yaxis = (height - (oldData[i] * heightRatio) - paddingForLabel);
+                    }
+
+                    if (xaxis < paddingForLabel && i == 0) {
                       yaxis = height - (oldData[i] + ((newData[i] - oldData[i])/frames * frame))*heightRatio - paddingForLabel;
                     }
 
@@ -734,6 +750,8 @@
                 return this;
             var data = this.attributes.data,
                 diff = data[0].data.length - opts._originalDataLength;
+                // diff = this.attributes.newDataLength;
+
             opts._shiftIntervals += (diff);
             for (var i in data) {
                 for (var j = 0; j<diff;j++)
@@ -762,6 +780,7 @@
 
             var oldLen = oldData[0].length,
                 newLen = 0;
+
             //check if the corresponding label exist for the data;
             for (var i in newData) {
                 for (var j in oldData) {
@@ -786,6 +805,9 @@
                         newLen = newData[i].data.length;
                 }
             }
+
+            //store the length
+            this.attributes._newDataLength = newLen;
 
             //append new data into old data & zeroing unmatched array length;
             for (var i in oldData) {
