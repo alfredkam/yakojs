@@ -167,7 +167,7 @@
                 return obj.getElementsByTagName(node);
         },
         //retrieving parent node
-        //TODO:: Update to support, current nesting only supports #ID > Class or #ID > #ID > ... > Class 
+        //TODO:: Update to support, current nesting only supports #ID > Class or #ID > #ID > ... > Class
         //.class .class
         //#id .class [Done]
         _getNode: function (node, raw, opts) {
@@ -237,21 +237,23 @@
             }
             return this;
         },
+        _pathGenerator: function (data, interval, paddingForLabel, height, heightRatio) {
+          var pathToken ='';
+          //path generator
+          for (var i=0; i<data.length; i++) {
+              if (i === 0) {
+                  pathToken += 'M '+(interval*i+parseInt(paddingForLabel))+' '+ (height - (data[i] * heightRatio) - paddingForLabel);
+              } else {
+                  pathToken += ' L '+(interval*i+parseInt(paddingForLabel))+' '+ (height - (data[i] * heightRatio) - paddingForLabel);
+              }
+          }
+
+          return pathToken;
+        },
         //svg path builder
-        _path : function (data, opts, interval, heightRatio) {
-            var pathToken = "",
-                shift = 0;
-            //shift for labeling
-            if (opts._shift)
-                shift = 100;
-            //path generator
-            for (var i=0; i<data.data.length; i++) {
-                if (i === 0) {
-                    pathToken += 'M '+(interval*i+parseInt(shift))+' '+ (opts.chart.height - (data.data[i] * heightRatio) - shift);
-                } else {
-                    pathToken += ' L '+(interval*i+parseInt(shift))+' '+ (opts.chart.height - (data.data[i] * heightRatio) - shift);
-                }
-            }
+        _path : function (data, opts, interval, heightRatio, paddingForLabel) {
+            //get the path
+            var pathToken = this._pathGenerator(data.data, interval, paddingForLabel, opts.chart.height, heightRatio);
 
             return this._make('path',{
                 fill: 'none',
@@ -261,7 +263,8 @@
                 'stroke-width': '2',
                 'stroke-linejoin': 'round',
                 'stroke-linecap': 'round',
-                'z-index': 1
+                'z-index': 1,
+                'class': '_yakoTransitions'
             },{
                 label: data.label
             });
@@ -270,10 +273,14 @@
         _circle : function (data, opts, interval, heightRatio) {
             var circles = [],
                 shift = 0;
+
             if (opts._shift)
-                shift = 100;
+                shift = 50;
+
             if (opts.chart.showPointer === false)
                 return circles;
+
+            var utcMult = this._utcMultiplier(opts.xAxis.interval);
 
             for (var i=0;i<data.data.length;i++) {
                 circles.push(this._make('circle',{
@@ -287,6 +294,7 @@
                     info: encodeURIComponent(JSON.stringify({
                         data : data.data[i],
                         label : data.label || '',
+                        date: (opts.xAxis.format === 'dateTime' ? this._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((i+opts._shiftIntervals)) * utcMult)) : ''),
                         interval : interval * (i+opts._shiftIntervals),
                         cx: (interval *i + parseInt(shift)),
                         cy: (opts.chart.height - (data.data[i] * heightRatio) - shift)
@@ -295,10 +303,35 @@
             }
             return circles;
         },
+        _utcMultiplier: function(tick) {
+            var mili = 1000,
+                s = 60,
+                m = 60,
+                h = 24,
+                D = 30,
+                M = 12,
+                Y = 1,
+                multiplier = 0;
+            if (/s$/.test(tick))
+                multiplier = mili;
+            else if (/m$/.test(tick))
+                multiplier = s * mili;
+            else if (/h$/.test(tick))
+                multiplier = s * m * mili;
+            else if (/D$/.test(tick))
+                multiplier = s * m * h * mili;
+            else if (/M$/.test(tick))
+                multiplier = s * m * h * D * mili;
+            else if (/Y$/.test(tick))
+                multiplier = s * m * h * D * M * mili;
+
+            return multiplier;
+        },
         //computes and distributes the label
         _label: function (data, opts, interval, heightRatio, min, max) {
             if (!opts._shift) return null;
-            var height = opts.chart.height - 100;
+            var padding = 50,
+                height = opts.chart.height - (padding * 2); //100 is the factor for the height
 
             //yAxis
             //TODO:: NEED TO fix ADJUSTED height - incorrect scaling ???
@@ -306,18 +339,21 @@
             var i = 5,
                 arr = [];
             while(i--) {
-                if (i === 0) break;
+                // if (i === 0) break;
+                // console.log(i, (height/4) * (4-i));
                 var x = this._make('text',{
-                    y: (height/4) * (4-i),
+                    y: ((height/4) * (4-i)) + padding,
                     x: 0,
                     'font-size': 15,
                     'font-family': opts.chart['font-family']
                 });
                 // console.log(height-this._sigFigs(((max/4)*i),1), this._sigFigs(((max/4)*i),1));
-                x.innerHTML = this._sigFigs(((max/4)*i),1);
+                var value = this._sigFigs(((max/4)*i),1);
+                x.innerHTML = (isNaN(value)? 0 : value);
                 arr.push(x);
             }
 
+            //xAxis
             //Accepted xAxis - [1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
             var len = data[0].data.length,
                 tick = opts.xAxis.interval,
@@ -339,18 +375,7 @@
             //should it be a straight line for that period ?
             if (opts.xAxis.format === 'dateTime') {
                 //to get the UTC time stamp multiplexer
-                if (/s$/.test(tick))
-                    format.utc = mili;
-                else if (/m$/.test(tick))
-                    format.utc = s * mili;
-                else if (/h$/.test(tick))
-                    format.utc = s * m * mili;
-                else if (/D$/.test(tick))
-                    format.utc = s * m * h * mili;
-                else if (/M$/.test(tick))
-                    format.utc = s * m * h * D * mili;
-                else if (/Y$/.test(tick))
-                    format.utc = s * m * h * D * M * mili;
+                format.utc = this._utcMultiplier(tick);
 
                 //figures out the tick size
                 if (
@@ -415,8 +440,8 @@
                     counter++;
                     if (format.tickSize*format.tickInterval === counter || i === 0) {
                         var x = this._make('text',{
-                            y: height + 50,
-                            x: 100 + interval * i,
+                            y: height + padding+20,
+                            x: padding + interval * i,
                             'font-size': 15,
                             'font-family': opts.chart['font-family']
                         });
@@ -442,9 +467,19 @@
             else if (/YY/.test(str))
                 str = str.replace('YY',(dateObj.getFullYear()).replace(/^\d{1,2}/,''));
 
+            if (/hh/.test(str) && /ap/.test(str)) {
+              if ((dateObj.getHours())  > 12)
+                str = str.replace(/hh/, (dateObj.getHours()) - 12)
+                        .replace(/ap/, 'pm');
+              else
+                str = str.replace(/hh/, (dateObj.getHours() == 0? 12 :  dateObj.getHours()))
+                        .replace(/ap/,'am');
+
+            } else
+              str = str.replace(/hh/, (dateObj.getHours() == 0? 12 :  dateObj.getHours()))
+
             str = str.replace(/MM/,dateObj.getMonth()+1)
                 .replace(/DD/, dateObj.getDate())
-                .replace(/hh/, dateObj.getHours()+1)
                 .replace(/mm/,dateObj.getMinutes())
                 .replace(/ss/,dateObj.getSeconds());
 
@@ -493,10 +528,11 @@
                 }),
                 sets = [],
                 reRender = reRender || false;
+
             if (Object.prototype.toString.call(data) !== '[object Array]') {
                 data = [data];
             }
-    
+
             for (var i in data) {
                 sets.push(data[i].data);
             }
@@ -520,20 +556,75 @@
                     }
                 }
             }
+            //determine if padding for labels is needed
+            var paddingForLabel = (opts._shift ? 50 : 0);
+
+            //we are now adding on to exisiting data and to allow animation
+            if (reRender) {
+              var nodes = this._getNode('#'+this.element.id+' g');
+              for (var i in data) {
+                this._reRenderPath(nodes, data[i], opts, interval, heightRatio, paddingForLabel, this.attributes.oldData[i]);
+              }
+              return this;
+            }
 
             //adding each path & circle
             for (var i in data) {
                 var g = this._make('g',null,{
                     label: data[i].label
                 });
-                this._compile(g, this._path(data[i], opts, interval, heightRatio))
-                ._compile(g,this._circle(data[i], opts, interval, heightRatio))
+                this._compile(g, this._path(data[i], opts, interval, heightRatio, paddingForLabel))
+                ._compile(g,this._circle(data[i], opts, interval, heightRatio, paddingForLabel))
                 ._compile(svg,g);
             }
             //adding a label
-            this._compile(svg, this._label(data, opts, interval, heightRatio, min, max))
+            this._compile(svg, this._label(data, opts, interval, heightRatio, min, max, paddingForLabel))
             ._compile(this.element,svg, reRender);
             return this;
+        },
+        //reRenderPath
+        _reRenderPath: function (nodes, data, opts, interval, heightRatio, paddingForLabel, oldData) {
+          //now need to look for the new one
+          var frames = 30, // per second;
+              frame = 0,  //current frame
+              newData = data.data,
+              oldData = oldData.data,
+              height = opts.chart.height;
+
+          //we will be shifiting the yaxis only for linear graph
+          var animateGraph = function (path) {
+            if (frame <= frames) {
+              window.setTimeout(function() {
+                var pathToken = '';
+
+                for (var i=0; i<oldData.length; i++) {
+                    var xaxis = (((interval*i-1)  + ((interval*(i-1) - interval*(i))/frames * frame))+parseInt(paddingForLabel)),
+                        yaxis = (height - (oldData[i] * heightRatio) - paddingForLabel);
+
+                    if (xaxis < paddingForLabel && i== 0) {
+                      yaxis = height - (oldData[i] + ((newData[i] - oldData[i])/frames * frame))*heightRatio - paddingForLabel;
+                    }
+
+                    if (i === 0) {
+                        pathToken += 'M '+(xaxis < paddingForLabel ? paddingForLabel : xaxis)+' '+ yaxis;
+                    } else {
+                        pathToken += ' L '+ (xaxis < paddingForLabel ? paddingForLabel : xaxis) +' '+ yaxis;
+                    }
+                }
+                path.setAttributeNS(null, 'd', pathToken);
+                frame++;
+                animateGraph(path);
+              }, 1000/frames);
+            }
+          }
+
+          var self = this;
+          Array.prototype.filter.call(nodes, function (e) {
+              if(e.nodeName && e.dataset.label == data.label) {
+                  var path = e.getElementsByTagName('path')[0];
+                  animateGraph(path);
+              }
+          });
         },
         //attach events
         _attach: function () {
@@ -552,7 +643,7 @@
                 e.target.style.fill = 'blue';
                 var data = JSON.parse(decodeURIComponent(e.target.dataset.info));
                  //TODO:: make the content customizable by the user
-                div.innerHTML = '<b>Data: ' + data.data + '</b><br><b>Interval: '+data.interval+'</b>';
+                div.innerHTML = '<b>Data: ' + data.data + '</b><br><b>Interval: '+( data.date ? data.date : data.interval )+'</b>';
                 div.style.display = 'block';
                 div.style.top = data.cy + 5;
                 div.style.left = data.cx + 15;
@@ -589,7 +680,8 @@
                 },
                 xAxis: {},
                 yAxis: {},
-                data : []
+                data : [],
+                _shiftIntervals: 0
             };
             yako.extend(defaults, this.attributes.opts);
             this.attributes.opts = defaults;
@@ -600,7 +692,6 @@
             var opts = opts || {};
             this.attributes.data = opts.data || [];
             opts._originalDataLength = this.attributes.data[0].data.length;
-            opts._shiftIntervals = 0;
             this.attributes.opts = opts;
             if(opts.chart && opts.chart.type && yako._graphs[opts.chart.type]) {
                 return this._spawn(opts.chart.type);
@@ -630,41 +721,13 @@
         //INPUT: json object or array of object
         //RETURN: this
         incrementData: function (json) {
-            //to contain all the dom nodes
-            var domArray = [];
-            //this is an id element
-            if (this.element.tagName) {
-                var _arr = this.element.getElementsByTagName('path');
-                Array.prototype.filter.call(_arr, function (e) {
-                    if(e.nodeName) {
-                        domArray.push(e);
-                    }
-                });
-            //this is a class element
-            } else {
-                domArray = {};
-                var i = 0;
-                Array.prototype.filter.call(this.element, function(e) {
-                    if (e.nodeName) {
-                        domArray[e.nodeName+i] = [];
-                        var _arr =  this.element.getElementsByTagName('path');
-                        Array.prototype.filter.call(_arr, function (x) {
-                            if (x.nodeName) {
-                                domArray[e.nodeName+i].push(x);
-                                i++;
-                            }
-                        });
-                    }
-                });
-            }
-
-            //now analyze what is needed to be update;
+            //analyze what is needed to be update;
             this._appendZeroAndData(this.attributes.data, json)
                 ._shiftData()
                 ._generate(true)
                 ._attach();
         },
-        //if the chart is non - cummulative, shift the labels 
+        //if the chart is accumulateIncrementalData = false, shift the labels (ie: we discard the old data that is outside of the view box)
         _shiftData: function () {
             var opts = this.attributes.opts;
             if (opts.chart.accumulateIncrementalData)
@@ -693,6 +756,9 @@
             //just to make your we have both data
             if(!oldData || !newData)
                 return this;
+
+            //deep copy hack
+            this.attributes.oldData = JSON.parse(JSON.stringify(oldData));
 
             var oldLen = oldData[0].length,
                 newLen = 0;
