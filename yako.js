@@ -586,21 +586,13 @@
         //reRenderPath
         _reRenderPath: function (nodes, data, opts, interval, heightRatio, paddingForLabel, oldData) {
           //now need to look for the new one
-          var frames = 30, // per second;
+          var frames = 60, // per second;
               frame = 0,  //current frame
               newData = data.data,
               oldData = oldData.data,
               height = opts.chart.height,
               dataAdded = this.attributes._newDataLength;
 
-          // //data to render
-          // var data = [];
-          // for (var x=0;x<dataAdded;x++) {
-          //     data.push(oldData[i]);
-          // }
-          // data.concat(newData);
-          //
-          //     console.log(dataAdded);
 
           //we will be shifiting the yaxis only for linear graph
           var animateGraph = function (path) {
@@ -609,22 +601,34 @@
                 var pathToken = '';
 
                 for (var i=0; i<oldData.length + dataAdded; i++) {
-                    var xaxis = (((interval*i-1)  + ((interval*(i-1) - interval*(i))/frames * frame))+parseInt(paddingForLabel));
+                    //for smoothing the shifting
+                    var xaxis = (((interval*i-dataAdded)  + ((interval*(i-dataAdded) - interval*(i))/frames * frame))+parseInt(paddingForLabel));
 
+                    //to determine which set of data to use
                     if (i >= oldData.length) {
                       var yaxis = (height-(newData[i-dataAdded] * heightRatio) - paddingForLabel);
                     } else {
                       var yaxis = (height - (oldData[i] * heightRatio) - paddingForLabel);
                     }
 
-                    if (xaxis < paddingForLabel && i == 0) {
-                      yaxis = height - (oldData[i] + ((newData[i] - oldData[i])/frames * frame))*heightRatio - paddingForLabel;
+                    //smoothing the case when leaving the grid
+                    if (xaxis < paddingForLabel && i < dataAdded) {
+                      // yaxis = height - (oldData[i] + ((newData[i] - oldData[i])/frames * frame)) * heightRatio - paddingForLabel;
+                      // console.log(yaxis);
+                      // xaxis =
+                                            // yaxis = height - (oldData[i] + ((newData[i])))
+                        xaxis = paddingForLabel;
+                        yaxis = (height - (oldData[i] * heightRatio));
+                        // yaxis = 0;
+                        // yaxis = height - (oldData[i] + ((oldData[i+1] - oldData[i])/frames * frame)) * heightRatio - paddingForLabel;
                     }
 
                     if (i === 0) {
-                        pathToken += 'M '+(xaxis < paddingForLabel ? paddingForLabel : xaxis)+' '+ yaxis;
+                        // pathToken += 'M '+(xaxis < paddingForLabel ? paddingForLabel : xaxis)+' '+ yaxis;
+                        pathToken += 'M '+ xaxis +' '+ yaxis;
                     } else {
-                        pathToken += ' L '+ (xaxis < paddingForLabel ? paddingForLabel : xaxis) +' '+ yaxis;
+                        // pathToken += ' L '+ (xaxis < paddingForLabel ? paddingForLabel : xaxis) +' '+ yaxis;
+                        pathToken += ' L '+ xaxis +' '+ yaxis;
                     }
                 }
                 path.setAttributeNS(null, 'd', pathToken);
