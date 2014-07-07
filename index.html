@@ -69,6 +69,9 @@
                     'font-size': '12',
                     //this options will show hide the hover pointer
                     showPointer: false,
+                    realtime : {
+                      zero : true
+                    },
                     //this option will toggle the chart to save incrementable data or not
                     accumulateIncrementalData: false
                 },
@@ -135,7 +138,7 @@
 
             window.setInterval(function () {
                 var _d1 = [], _d2 = [];
-                for (var i=0;i<2;i++) {
+                for (var i=0;i<1;i++) {
                     _d1.push(Math.floor((Math.random() * 500) + 400));
                     _d2.push(Math.floor((Math.random() * 500) + 400));
                 }
@@ -154,8 +157,8 @@
                     label : 'Auto Generated 2',
                     data: _d2
                 }])
-            },3000);
-            
+            },5000);
+
             //example to add a module / functionality
             // yako.register('piechart',{
             //     draw: function () {

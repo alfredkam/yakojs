@@ -583,27 +583,33 @@
             ._compile(this.element,svg, reRender);
             return this;
         },
-        //reRenderPath
+        //reRender Path
         _reRenderPath: function (nodes, data, opts, interval, heightRatio, paddingForLabel, oldData) {
           //now need to look for the new one
-          var frames = 60, // per second;
+          var frames = 70, // per second;
               frame = 0,  //current frame
               newData = data.data,
               oldData = oldData.data,
               height = opts.chart.height,
               dataAdded = this.attributes._newDataLength;
 
-          var posToBlockOut = 0;     
+          var posToBlockOut = 0;
+          var before = new Date();
 
           //we will be shifiting the yaxis only for linear graph
+          //TODO:: OPTIMIZE the code
           var animateGraph = function (path) {
             if (frame <= frames) {
               window.setTimeout(function() {
+                // to counter inactive tabs
+                var now = new Date(),
+                elapseTime = (now.getTime() - before.getTime());
+                
                 var pathToken = '';
                 //this code can be shrinked once the math is fixed
                 for (var i=0; i<oldData.length + dataAdded; i++) {
                     //for smoothing the shifting
-                    var xaxis = (((interval*i-dataAdded)  + ((interval*(i-dataAdded) - interval*(i))/frames * frame))+parseInt(paddingForLabel));
+                    var xaxis = (((interval*i-dataAdded)  + ((interval*(i-dataAdded) - interval*(i))/frames * frame)) + parseInt(paddingForLabel));
 
                     //to determine which set of data to use
                     if (i >= oldData.length) {
@@ -633,8 +639,17 @@
                         pathToken += ' L '+ xaxis +' '+ yaxis;
                     }
                 }
+                //draws the new graph
                 path.setAttributeNS(null, 'd', pathToken);
+
+                //inactive graph interval correction
+                if (elapseTime > 1000/frames) {
+                  frame += Math.floor(elapseTime/interval);
+                }
+
+                //increment the frames
                 frame++;
+                before = new Date();
                 animateGraph(path);
               }, 1000/frames);
             }
@@ -698,7 +713,10 @@
                     type: 'line',
                     width: '100',
                     height: '200',
-                    'font-family' : '"Open Sans", sans-serif'
+                    'font-family' : '"Open Sans", sans-serif',
+                    realtime : {
+                      zero : undefined
+                    }
                 },
                 xAxis: {},
                 yAxis: {},
@@ -743,11 +761,14 @@
         //INPUT: json object or array of object
         //RETURN: this
         incrementData: function (json) {
-            //analyze what is needed to be update;
+            //analyze what is needed to be update
+            // this.attributes.prevData = json;
             this._appendZeroAndData(this.attributes.data, json)
                 ._shiftData()
                 ._generate(true)
                 ._attach();
+            //to keep delivering previous data untill new data comes in.
+            // this._autoflow(json);
         },
         //if the chart is accumulateIncrementalData = false, shift the labels (ie: we discard the old data that is outside of the view box)
         _shiftData: function () {
