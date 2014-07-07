@@ -593,13 +593,14 @@
               height = opts.chart.height,
               dataAdded = this.attributes._newDataLength;
 
+          var posToBlockOut = 0;     
 
           //we will be shifiting the yaxis only for linear graph
           var animateGraph = function (path) {
             if (frame <= frames) {
               window.setTimeout(function() {
                 var pathToken = '';
-
+                //this code can be shrinked once the math is fixed
                 for (var i=0; i<oldData.length + dataAdded; i++) {
                     //for smoothing the shifting
                     var xaxis = (((interval*i-dataAdded)  + ((interval*(i-dataAdded) - interval*(i))/frames * frame))+parseInt(paddingForLabel));
@@ -611,23 +612,24 @@
                       var yaxis = (height - (oldData[i] * heightRatio) - paddingForLabel);
                     }
 
-                    //smoothing the case when leaving the grid
-                    if (xaxis < paddingForLabel && i < dataAdded) {
-                      // yaxis = height - (oldData[i] + ((newData[i] - oldData[i])/frames * frame)) * heightRatio - paddingForLabel;
-                      // console.log(yaxis);
-                      // xaxis =
-                                            // yaxis = height - (oldData[i] + ((newData[i])))
+                    //smoothing the line when leaving the grid
+                    if (xaxis <= paddingForLabel) {
                         xaxis = paddingForLabel;
-                        yaxis = (height - (oldData[i] * heightRatio));
-                        // yaxis = 0;
-                        // yaxis = height - (oldData[i] + ((oldData[i+1] - oldData[i])/frames * frame)) * heightRatio - paddingForLabel;
+                        yaxis = height - (oldData[posToBlockOut] + ((oldData[posToBlockOut+1] - oldData[posToBlockOut]) * frame / frames)) * heightRatio - paddingForLabel;
+
+                        if (
+                            (oldData[posToBlockOut+1] - oldData[posToBlockOut]) <=
+                            ((oldData[posToBlockOut+1] - oldData[posToBlockOut]) * (frame+1) / frames)
+                        ) {
+                            if (posToBlockOut < i) {
+                                posToBlockOut = i;
+                            }
+                        }
                     }
 
                     if (i === 0) {
-                        // pathToken += 'M '+(xaxis < paddingForLabel ? paddingForLabel : xaxis)+' '+ yaxis;
                         pathToken += 'M '+ xaxis +' '+ yaxis;
                     } else {
-                        // pathToken += ' L '+ (xaxis < paddingForLabel ? paddingForLabel : xaxis) +' '+ yaxis;
                         pathToken += ' L '+ xaxis +' '+ yaxis;
                     }
                 }
