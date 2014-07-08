@@ -316,7 +316,7 @@
                 'stroke-width': '2',
                 'stroke-linejoin': 'round',
                 'stroke-linecap': 'round',
-                'z-index': 1,
+                'z-index': 9,
                 'class': '_yakoTransitions'
             },{
                 label: data.label
@@ -401,7 +401,7 @@
           }
         },
         //computes and distributes the label
-        _label: function (data, opts, interval, heightRatio, min, max, paddingForLabel, reRender) {
+        _labelAndBorders: function (data, opts, interval, heightRatio, min, max, paddingForLabel, reRender) {
             if (!opts._shift) return null;
             var padding = paddingForLabel,
                 height = opts.chart.height - (padding * 2); //100 is the factor for the height
@@ -413,14 +413,14 @@
                 arr = [],
             gLabelYaxis = this._make('g',{
               'class': 'yaxis'
-            },{
-              label: 'yaxis'
             }),
             gLabelXaxis = this._make('g', {
               'class': 'xaxis'
-            }, {
-              label: 'xaxis'
-            });
+            }),
+            gBorders = this._make('g', {
+              'class': 'borders',
+              'z-index': '1'
+            })
 
             if (reRender) {
               var yaxis = this._getNode('#'+this.element.id+' .yaxis')[0];
@@ -434,22 +434,33 @@
                 var factor = (heightFactor * (max-value));
                 factor = (isNaN(factor)? height : factor);
                 var x = this._make('text',{
-                    y: factor + padding,
+                    y: factor + padding + 5,
                     x: 0,
-                    'font-size': 15,
+                    'font-size': 12,
                     'font-family': opts.chart['font-family']
                 });
+                var xaxis = parseInt((factor+padding).toFixed(0)) + 0.5;
+                var border = this._make('path',{
+                  'd' : 'M '+padding + ' '+ xaxis + ' L ' + (opts.chart.width) + ' ' + xaxis,
+                  'stroke-width': '1',
+                  'stroke': '#c0c0c0',
+                  'fill': 'none',
+                  'opacity': '1',
+                  'stroke-linecap': 'round'
+                })
 
                 x.innerHTML = (isNaN(value)? 0 : value);
                 if (reRender) {
                   this._compile(yaxis, x);
                 } else {
-                  this._compile(gLabelYaxis, x);
+                  this._compile(gLabelYaxis, x)
+                    ._compile(gBorders, border);
                 }
 
             }
 
             arr.push(gLabelYaxis);
+            arr.push(gBorders);
 
             //xAxis
             //Accepted xAxis - [1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
@@ -696,7 +707,7 @@
                 this._reRenderPath(nodes, data[i], opts, interval, heightRatio, paddingForLabel, this.attributes.oldData[i]);
               }
 
-              this._label(data, opts, interval, heightRatio, min, max, paddingForLabel, true);
+              this._labelAndBorders(data, opts, interval, heightRatio, min, max, paddingForLabel, true);
 
               return this;
             }
@@ -711,7 +722,7 @@
                 ._compile(svg,g);
             }
             //adding a label
-            this._compile(svg, this._label(data, opts, interval, heightRatio, min, max, paddingForLabel, false))
+            this._compile(svg, this._labelAndBorders(data, opts, interval, heightRatio, min, max, paddingForLabel, false))
             ._compile(this.element,svg, reRender);
             return this;
         },
