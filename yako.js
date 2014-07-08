@@ -1,3 +1,56 @@
+// Closure
+(function(){
+
+	/**
+	 * Decimal adjustment of a number.
+	 *
+	 * @param	{String}	type	The type of adjustment.
+	 * @param	{Number}	value	The number.
+	 * @param	{Integer}	exp		The exponent (the 10 logarithm of the adjustment base).
+	 * @returns	{Number}			The adjusted value.
+	 */
+	function decimalAdjust(type, value, exp) {
+		// If the exp is undefined or zero...
+		if (typeof exp === 'undefined' || +exp === 0) {
+			return Math[type](value);
+		}
+		value = +value;
+		exp = +exp;
+		// If the value is not a number or the exp is not an integer...
+		if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+			return NaN;
+		}
+		// Shift
+		value = value.toString().split('e');
+		value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+		// Shift back
+		value = value.toString().split('e');
+		return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
+	}
+
+	// Decimal round
+	if (!Math.round10) {
+		Math.round10 = function(value, exp) {
+			return decimalAdjust('round', value, exp);
+		};
+	}
+	// Decimal floor
+	if (!Math.floor10) {
+		Math.floor10 = function(value, exp) {
+			return decimalAdjust('floor', value, exp);
+		};
+	}
+	// Decimal ceil
+	if (!Math.ceil10) {
+		Math.ceil10 = function(value, exp) {
+			return decimalAdjust('ceil', value, exp);
+		};
+	}
+
+})();
+
+
+
 (function (root, doc) {
     'use strict';
     //check if there is a previous version
@@ -327,31 +380,76 @@
 
             return multiplier;
         },
+        _roundToNearestFiveAndTens: function (numerial) {
+          var num = Math.round(numerial);
+          if (num > 10) {
+            var n = this._sigFigs(numerial, 2).toString();
+
+            if (n[1] < 7.5  && n[1] >= 2.5) {
+              n = n.substr(0,1) + '5' + n.substr(2);
+            } else if (n[1] < 2.5){
+              n = n.substr(0,1) + '0' + n.substr(2);
+            } else {
+              n = (parseInt(n[0])+1) + '0' + n.substr(2);
+            }
+            return parseInt(n);
+          } else {
+            // if (num > 9.25) {
+            //   return 10;
+            // }
+            return this._sigFigs(numerial, 1);
+          }
+        },
         //computes and distributes the label
-        _label: function (data, opts, interval, heightRatio, min, max) {
+        _label: function (data, opts, interval, heightRatio, min, max, paddingForLabel, reRender) {
             if (!opts._shift) return null;
-            var padding = 50,
+            var padding = paddingForLabel,
                 height = opts.chart.height - (padding * 2); //100 is the factor for the height
 
             //yAxis
             //TODO:: NEED TO fix ADJUSTED height - incorrect scaling ???
             //NEED TO VERIFY
             var i = 5,
-                arr = [];
+                arr = [],
+            gLabelYaxis = this._make('g',{
+              'class': 'yaxis'
+            },{
+              label: 'yaxis'
+            }),
+            gLabelXaxis = this._make('g', {
+              'class': 'xaxis'
+            }, {
+              label: 'xaxis'
+            });
+
+            if (reRender) {
+              var yaxis = this._getNode('#'+this.element.id+' .yaxis')[0];
+              yaxis.innerHTML = '';
+            }
+
+            var heightFactor = height / max;
+
             while(i--) {
-                // if (i === 0) break;
-                // console.log(i, (height/4) * (4-i));
+                var value = this._roundToNearestFiveAndTens((max/4)*(4-i));
+                var factor = (heightFactor * (max-value));
+                factor = (isNaN(factor)? height : factor);
                 var x = this._make('text',{
-                    y: ((height/4) * (4-i)) + padding,
+                    y: factor + padding,
                     x: 0,
                     'font-size': 15,
                     'font-family': opts.chart['font-family']
                 });
-                // console.log(height-this._sigFigs(((max/4)*i),1), this._sigFigs(((max/4)*i),1));
-                var value = this._sigFigs(((max/4)*i),1);
+
                 x.innerHTML = (isNaN(value)? 0 : value);
-                arr.push(x);
+                if (reRender) {
+                  this._compile(yaxis, x);
+                } else {
+                  this._compile(gLabelYaxis, x);
+                }
+
             }
+
+            arr.push(gLabelYaxis);
 
             //xAxis
             //Accepted xAxis - [1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
@@ -434,24 +532,54 @@
                     throw 'Error: Incorrect Label Format';
                 }
 
+
+                //this is re rendering the labels
+                if (reRender) {
+                  var xaxis = this._getNode('#'+this.element.id+' .xaxis')[0];
+                  xaxis.innerHTML = '';
+                  var i = 0,
+                      counter = 0;
+                  while (len--) {
+                      counter++;
+                      if (format.tickSize*format.tickInterval === counter || i === 0) {
+                          var x = this._make('text',{
+                            //TODO:: remove plus 20
+                              y: height + padding+20,
+                              x: padding + interval * i,
+                              'font-size': 15,
+                              'font-family': opts.chart['font-family']
+                          });
+                          x.innerHTML = this._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((i+opts._shiftIntervals)) * format.utc)); //(interval * (i+opts._shiftIntervals)).toFixed(0);
+                          this._compile(xaxis, x);
+                          if (i !== 0 || format.tickSize === counter)
+                              counter = 0;
+                      }
+                      i++;
+                  }
+                  return this;
+                }
+
+                //this is not re render the labels but adding in new document objects
                 var i = 0,
                     counter = 0;
                 while (len--) {
                     counter++;
                     if (format.tickSize*format.tickInterval === counter || i === 0) {
                         var x = this._make('text',{
+                            //TODO:: remove plus 20
                             y: height + padding+20,
                             x: padding + interval * i,
                             'font-size': 15,
                             'font-family': opts.chart['font-family']
                         });
                         x.innerHTML = this._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((i+opts._shiftIntervals)) * format.utc)); //(interval * (i+opts._shiftIntervals)).toFixed(0);
-                        arr.push(x);
+                        this._compile(gLabelXaxis, x);
                         if (i !== 0 || format.tickSize === counter)
                             counter = 0;
                     }
                     i++;
                 }
+                arr.push(gLabelXaxis);
             }
             return arr;
         },
@@ -509,8 +637,9 @@
                 var _data = (data[i].slice()).sort(compareNumbers);
                 length = (length < _data.length ? _data.length : length);
                 min = (min > _data[0] ? _data[0]: min);
-                max = (max < _data[_data.length-1] ? _data[_data.length-1] : max);
+                max = Math.ceil10(this._sigFigs((max < _data[_data.length-1] ? _data[_data.length-1] : max),1),1);
             }
+
             return {
                 min: min,
                 max: max,
@@ -552,7 +681,7 @@
                     else {
                         //TODO:: standardize this part
                         interval = (opts.chart.width - 50) / (_tmp.len-1);
-                        heightRatio = (opts.chart.height - 100) / (max+10);
+                        heightRatio = (opts.chart.height - 100) / (max);
                         opts._shift = true;
                     }
                 }
@@ -566,6 +695,9 @@
               for (var i in data) {
                 this._reRenderPath(nodes, data[i], opts, interval, heightRatio, paddingForLabel, this.attributes.oldData[i]);
               }
+
+              this._label(data, opts, interval, heightRatio, min, max, paddingForLabel, true);
+
               return this;
             }
 
@@ -579,7 +711,7 @@
                 ._compile(svg,g);
             }
             //adding a label
-            this._compile(svg, this._label(data, opts, interval, heightRatio, min, max, paddingForLabel))
+            this._compile(svg, this._label(data, opts, interval, heightRatio, min, max, paddingForLabel, false))
             ._compile(this.element,svg, reRender);
             return this;
         },
@@ -604,7 +736,7 @@
                 // to counter inactive tabs
                 var now = new Date(),
                 elapseTime = (now.getTime() - before.getTime());
-                
+
                 var pathToken = '';
                 //this code can be shrinked once the math is fixed
                 for (var i=0; i<oldData.length + dataAdded; i++) {
@@ -762,7 +894,6 @@
         //RETURN: this
         incrementData: function (json) {
             //analyze what is needed to be update
-            // this.attributes.prevData = json;
             this._appendZeroAndData(this.attributes.data, json)
                 ._shiftData()
                 ._generate(true)
