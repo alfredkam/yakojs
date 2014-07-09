@@ -544,52 +544,116 @@
                 }
 
 
+
                 //this is re rendering the labels
                 if (reRender) {
-                  var xaxis = this._getNode('#'+this.element.id+' .xaxis')[0];
-                  xaxis.innerHTML = '';
-                  var i = 0,
-                      counter = 0;
-                  while (len--) {
-                      counter++;
-                      if (format.tickSize*format.tickInterval === counter || i === 0) {
-                          var x = this._make('text',{
-                            //TODO:: remove plus 20
-                              y: height + padding+20,
-                              x: padding + interval * i,
-                              'font-size': 15,
-                              'font-family': opts.chart['font-family']
-                          });
-                          x.innerHTML = this._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((i+opts._shiftIntervals)) * format.utc)); //(interval * (i+opts._shiftIntervals)).toFixed(0);
-                          this._compile(xaxis, x);
-                          if (i !== 0 || format.tickSize === counter)
-                              counter = 0;
-                      }
-                      i++;
-                  }
+									var self = this;
+                  var xaxisNodes = this._getNode('#'+this.element.id+' .xaxis')[0].getElementsByTagName('text');
+									var textNodes = [];
+									Array.prototype.filter.call(xaxisNodes, function (element) {
+										if (element.nodeName) {
+											// element.dataset.tickPos = parseInt(element.dataset.tickPos) ;
+											textNodes.push(element);
+										}
+									});
+
+
+									//to check if the async from previous loop is still happening so the animation will not be running 2 seperate event loops at the same time
+									var lock = this.lock.label;
+									// var currentLock = this.lock.currentLock;
+									if (lock == 0) {
+										var flag = true ;
+										this.lock.label = 1;
+									} else {
+										var flag = false;
+										// this.lock.label = 1;
+									}
+
+									//animate the label for xaxis
+									var frames = 70, frame = 0, self = this;
+									var animateXaxis = function () {
+										window.setTimeout(function () {
+											if (frame < frames && flag == true) {
+												for (var i in textNodes) {
+													var tickPos = parseInt(textNodes[i].dataset.tickPos);
+													// console.log(tickPos);
+													var xaxis = (tickPos * interval) + ((((tickPos-1)* interval) - (tickPos * interval))/ frames * frame) + padding;
+
+													textNodes[i].setAttributeNS(null, 'x', xaxis);
+													if (xaxis <= padding) {
+														textNodes[i].setAttributeNS(null, 'opacity', ((frames - frame * 2)/ frames));
+													}
+													// x.innerHTML = self._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((i+opts._shiftIntervals)) * format.utc));
+												}
+												frame++;
+												if (frame > frames-1) {
+													for (var o in textNodes) {
+														textNodes[o].dataset.tickPos = parseInt(textNodes[o].dataset.tickPos) - 1;
+													}
+													//adding a new text node
+													if (textNodes[0].dataset.tickPos == -1) {
+														var tickInterval = parseInt(textNodes[1].dataset.tickPos) + parseInt(textNodes[textNodes.length-1].dataset.tickPos);
+														var node = self._make('text', {
+															y: height + padding +20,
+															x: padding + interval * tickInterval,
+															'font-size': 12,
+															'font-family': opts.chart['font-family']
+														}, {
+															tickPos: tickInterval
+														});
+														node.innerHTML = self._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((tickInterval+opts._shiftIntervals)) * format.utc));
+														textNodes[0].parentNode.appendChild(node);
+														textNodes[0].parentNode.removeChild(textNodes[0]);
+														// xaxisNode.removeChild(textNodes[0]);
+														// xaxisNode.appendChild(textNodes[0]);
+													}
+
+													self.lock.label = 0;
+												}
+												animateXaxis();
+											} else {
+												if (!flag) {
+													if (self.lock.label == 0) {
+														flag = true;
+														self.lock.label = 1;
+													}
+													frame++;
+													animateXaxis();
+												}
+											}
+
+										}, 1000/frames);
+									};
+
+									animateXaxis();
                   return this;
                 }
 
                 //this is not re render the labels but adding in new document objects
                 var i = 0,
-                    counter = 0;
+                    counter = 0,
+										dataPointsCounter = -1;
                 while (len--) {
                     counter++;
                     if (format.tickSize*format.tickInterval === counter || i === 0) {
                         var x = this._make('text',{
                             //TODO:: remove plus 20
-                            y: height + padding+20,
+                            y: height + padding +20,
                             x: padding + interval * i,
-                            'font-size': 15,
+                            'font-size': 12,
                             'font-family': opts.chart['font-family']
-                        });
+                        },{
+													tickPos: i
+												});
                         x.innerHTML = this._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((i+opts._shiftIntervals)) * format.utc)); //(interval * (i+opts._shiftIntervals)).toFixed(0);
                         this._compile(gLabelXaxis, x);
+												dataPointsCounter++;
                         if (i !== 0 || format.tickSize === counter)
                             counter = 0;
                     }
                     i++;
                 }
+								this.attributes._dataPointsCount = dataPointsCounter;
                 arr.push(gLabelXaxis);
             }
             return arr;
@@ -681,8 +745,8 @@
             //assume all data are positive for now;
             var _tmp = this._findMixMax(sets),
             min = _tmp.min,
-            max = _tmp.max,     //need to round to nearest 100?
-            interval = opts.chart.width / (_tmp.len-1),
+            max = _tmp.max,     //rounding to 8 sigFigs
+            interval = this._sigFigs((opts.chart.width / (_tmp.len-1)),8),
             heightRatio = (opts.chart.height / (max+10));
 
             if (opts.xAxis.format) {
@@ -712,9 +776,15 @@
               return this;
             }
 
+						//svg z index is compiled by order
+
+						this._compile(svg, this._labelAndBorders(data, opts, interval, heightRatio, min, max, paddingForLabel, false));
+
             //adding each path & circle
             for (var i in data) {
-                var g = this._make('g',null,{
+                var g = this._make('g',{
+									'z-index': 9
+								},{
                     label: data[i].label
                 });
                 this._compile(g, this._path(data[i], opts, interval, heightRatio, paddingForLabel))
@@ -722,8 +792,7 @@
                 ._compile(svg,g);
             }
             //adding a label
-            this._compile(svg, this._labelAndBorders(data, opts, interval, heightRatio, min, max, paddingForLabel, false))
-            ._compile(this.element,svg, reRender);
+            this._compile(this.element,svg, reRender);
             return this;
         },
         //reRender Path
@@ -786,9 +855,9 @@
                 path.setAttributeNS(null, 'd', pathToken);
 
                 //inactive graph interval correction
-                if (elapseTime > 1000/frames) {
-                  frame += Math.floor(elapseTime/interval);
-                }
+                // if (elapseTime > 1000/frames) {
+                //   frame += Math.floor(elapseTime/interval);
+                // }
 
                 //increment the frames
                 frame++;
@@ -868,6 +937,9 @@
             };
             yako.extend(defaults, this.attributes.opts);
             this.attributes.opts = defaults;
+						this.lock = {};
+						this.lock.label = 0;
+						// this.lock.currentLabel = 0;
             return this;
         },
         //the graph data & options setter
