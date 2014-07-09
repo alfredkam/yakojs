@@ -2,6 +2,8 @@ node_modules/
 *.sublime-*
 .DS_Store
 dist/
+dist.html
+app.js
 .tmp
 .build
 npm_debug.log
