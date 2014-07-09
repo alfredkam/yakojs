@@ -458,10 +458,8 @@
                 }
 
             }
-
             arr.push(gLabelYaxis);
             arr.push(gBorders);
-
             //xAxis
             //Accepted xAxis - [1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
             var len = data[0].data.length,
@@ -543,118 +541,105 @@
                     throw 'Error: Incorrect Label Format';
                 }
 
-
-
                 //this is re rendering the labels
                 if (reRender) {
-									var self = this;
-                  var xaxisNodes = this._getNode('#'+this.element.id+' .xaxis')[0].getElementsByTagName('text');
-									var textNodes = [];
-									Array.prototype.filter.call(xaxisNodes, function (element) {
-										if (element.nodeName) {
-											// element.dataset.tickPos = parseInt(element.dataset.tickPos) ;
-											textNodes.push(element);
-										}
-									});
-
-
-									//to check if the async from previous loop is still happening so the animation will not be running 2 seperate event loops at the same time
-									var lock = this.lock.label;
-									// var currentLock = this.lock.currentLock;
-									if (lock == 0) {
-										var flag = true ;
-										this.lock.label = 1;
-									} else {
-										var flag = false;
-										// this.lock.label = 1;
+					var self = this;
+                    var xaxisNodes = this._getNode('#'+this.element.id+' .xaxis')[0].getElementsByTagName('text');
+					var textNodes = [];
+					Array.prototype.filter.call(xaxisNodes, function (element) {
+						if (element.nodeName) {
+							// element.dataset.tickPos = parseInt(element.dataset.tickPos) ;
+							textNodes.push(element);
+						}
+					});
+					//to check if the async from previous loop is still happening so the animation will not be running 2 seperate event loops at the same time
+					var lock = this.lock.label;
+					// var currentLock = this.lock.currentLock;
+					if (lock == 0) {
+						var flag = true ;
+						this.lock.label = 1;
+					} else {
+						var flag = false;
+						// this.lock.label = 1;
+					}
+					//animate the label for xaxis
+					var frames = 70, frame = 0, self = this;
+					var animateXaxis = function () {
+						window.setTimeout(function () {
+							if (frame < frames && flag == true) {
+								for (var i in textNodes) {
+									var tickPos = parseInt(textNodes[i].dataset.tickPos);
+									var xaxis = (tickPos * interval) + ((((tickPos-1)* interval) - (tickPos * interval))/ frames * frame) + padding;
+									textNodes[i].setAttributeNS(null, 'x', xaxis);
+									if (xaxis <= padding) {
+										textNodes[i].setAttributeNS(null, 'opacity', ((frames - frame * 2)/ frames));
 									}
-
-									//animate the label for xaxis
-									var frames = 70, frame = 0, self = this;
-									var animateXaxis = function () {
-										window.setTimeout(function () {
-											if (frame < frames && flag == true) {
-												for (var i in textNodes) {
-													var tickPos = parseInt(textNodes[i].dataset.tickPos);
-													// console.log(tickPos);
-													var xaxis = (tickPos * interval) + ((((tickPos-1)* interval) - (tickPos * interval))/ frames * frame) + padding;
-
-													textNodes[i].setAttributeNS(null, 'x', xaxis);
-													if (xaxis <= padding) {
-														textNodes[i].setAttributeNS(null, 'opacity', ((frames - frame * 2)/ frames));
-													}
-													// x.innerHTML = self._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((i+opts._shiftIntervals)) * format.utc));
-												}
-												frame++;
-												if (frame > frames-1) {
-													for (var o in textNodes) {
-														textNodes[o].dataset.tickPos = parseInt(textNodes[o].dataset.tickPos) - 1;
-													}
-													//adding a new text node
-													if (textNodes[0].dataset.tickPos == -1) {
-														var tickInterval = parseInt(textNodes[1].dataset.tickPos) + parseInt(textNodes[textNodes.length-1].dataset.tickPos);
-														var node = self._make('text', {
-															y: height + padding +20,
-															x: padding + interval * tickInterval,
-															'font-size': 12,
-															'font-family': opts.chart['font-family']
-														}, {
-															tickPos: tickInterval
-														});
-														node.innerHTML = self._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((tickInterval+opts._shiftIntervals)) * format.utc));
-														textNodes[0].parentNode.appendChild(node);
-														textNodes[0].parentNode.removeChild(textNodes[0]);
-														// xaxisNode.removeChild(textNodes[0]);
-														// xaxisNode.appendChild(textNodes[0]);
-													}
-
-													self.lock.label = 0;
-												}
-												animateXaxis();
-											} else {
-												if (!flag) {
-													if (self.lock.label == 0) {
-														flag = true;
-														self.lock.label = 1;
-													}
-													frame++;
-													animateXaxis();
-												}
-											}
-
-										}, 1000/frames);
-									};
-
+								}
+								frame++;
+								if (frame > frames-1) {
+									for (var o in textNodes) {
+										textNodes[o].dataset.tickPos = parseInt(textNodes[o].dataset.tickPos) - 1;
+									}
+									//adding a new text node
+									if (textNodes[0].dataset.tickPos == -1) {
+										var tickInterval = parseInt(self.attributes._tickGap) + parseInt(textNodes[textNodes.length-1].dataset.tickPos);
+										var node = self._make('text', {
+											y: height + padding +20,
+											x: padding + interval * tickInterval,
+											'font-size': 12,
+											'font-family': opts.chart['font-family']
+										}, {
+											tickPos: tickInterval
+										});
+										node.innerHTML = self._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((tickInterval+opts._shiftIntervals)) * format.utc));
+										textNodes[0].parentNode.appendChild(node);
+										textNodes[0].parentNode.removeChild(textNodes[0]);
+									}
+									self.lock.label = 0;
+								}
+								animateXaxis();
+							} else {
+								if (!flag) {
+									if (self.lock.label == 0) {
+										flag = true;
+										self.lock.label = 1;
+									}
+									frame++;
 									animateXaxis();
+								}
+							}
+						}, 1000/frames);
+					};
+					animateXaxis();
                   return this;
                 }
 
                 //this is not re render the labels but adding in new document objects
                 var i = 0,
                     counter = 0,
-										dataPointsCounter = -1;
+                    tickIntervalArray = [];
                 while (len--) {
                     counter++;
                     if (format.tickSize*format.tickInterval === counter || i === 0) {
+                        tickIntervalArray.push(i);
                         var x = this._make('text',{
-                            //TODO:: remove plus 20
+                            //plus 20 is for padding
                             y: height + padding +20,
                             x: padding + interval * i,
                             'font-size': 12,
                             'font-family': opts.chart['font-family']
                         },{
-													tickPos: i
-												});
+    						tickPos: i
+    					});
                         x.innerHTML = this._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((i+opts._shiftIntervals)) * format.utc)); //(interval * (i+opts._shiftIntervals)).toFixed(0);
                         this._compile(gLabelXaxis, x);
-												dataPointsCounter++;
                         if (i !== 0 || format.tickSize === counter)
                             counter = 0;
                     }
                     i++;
                 }
-								this.attributes._dataPointsCount = dataPointsCounter;
                 arr.push(gLabelXaxis);
+                this.attributes._tickGap = tickIntervalArray[1] - tickIntervalArray[0]
             }
             return arr;
         },
@@ -685,7 +670,6 @@
                 .replace(/DD/, dateObj.getDate())
                 .replace(/mm/,dateObj.getMinutes())
                 .replace(/ss/,dateObj.getSeconds());
-
             return str;
         },
         //sig fig rounding
