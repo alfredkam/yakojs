@@ -49,8 +49,7 @@
 
 })();
 
-
-
+// Closure
 (function (root, doc) {
     'use strict';
     //check if there is a previous version
@@ -193,6 +192,42 @@
             }
         }
         return self;
+    };
+
+    //animation watcher
+    //function to execute
+    var queue = [];
+    yako.watcher = function (fn) {
+        if(queue.length == 0) {
+            queue.push(fn);
+            yako.manager();
+        }
+        queue.push(fn);
+    };
+    //manages timer
+    yako.manager = function () {
+        //make a copy and empty queue
+        var workers = queue.slice(0);
+        var frames = 70, frame = 0;
+        queue = [];
+        function render() {
+            for (var i in workers) {
+                    workers[i](frame);
+            }
+            frame++;
+            timer();
+        }
+        function init() {
+            if (frame >= frames-1) {
+                if (queue.length !== 0)
+                    yako.manager();
+                return;
+            }
+            window.setTimeout(function () {
+                render();
+            }, 1000/frames);
+        };
+        init();
     };
 
     //for registering a module
@@ -708,7 +743,7 @@
                 }),
                 sets = [],
                 reRender = reRender || false;
-                
+
             //this will allow us to have responsive grpah    
             this.element.style.width = '100%';
             this.element.style['max-width'] = opts.chart.width;
@@ -834,9 +869,9 @@
                 path.setAttributeNS(null, 'd', pathToken);
 
                 //inactive graph interval correction
-                // if (elapseTime > 1000/frames) {
-                //   frame += Math.floor(elapseTime/interval);
-                // }
+                if (elapseTime > 1000/frames) {
+                  frame += Math.floor(elapseTime/interval);
+                }
 
                 //increment the frames
                 frame++;
