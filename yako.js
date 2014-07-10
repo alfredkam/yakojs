@@ -95,6 +95,7 @@
        return !!(object && object.constructor && object.call && object.apply);
     };
 
+    //TODO:: replace this with jymin
     //event binding
     yako.on = function (self, node, event, fn, useCapture) {
         var useCapture = useCapture || false;
@@ -123,6 +124,7 @@
         return self;
     };
 
+    //TODO:: replace this with jymin
     //event ubinding
     yako.unbind = function (self, node, event, fn) {
         var nodes = self._getNode(node, true);
@@ -222,9 +224,16 @@
         //retrieving parent node
         //TODO:: Update to support, current nesting only supports #ID > Class or #ID > #ID > ... > Class
         //.class .class
+        //TODO:: replace this with jymin - with all() - need to ask if it supports feeding in an HTMLElement
         //#id .class [Done]
         _getNode: function (node, raw, opts) {
-            var element;
+            if (node instanceof HTMLElement && (opts === undefined || opts === null)) {
+                this.element = node;
+                return this;
+            }
+            if (node instanceof HTMLElement && (opts !== undefined || opts !== null)) {
+                return this._getElement(node, opts);
+            }
             if (Object.prototype.toString.call(node)==='[object Array]' || node.tagName) {
                 var arr = opts.split(' ');
                 if(arr.length > 1)
@@ -236,7 +245,7 @@
                 var arr = node.split(' ');
                 return this._getNode(this._getElement(doc, arr.shift()),null, arr.join(',',' '));
             } else {
-                element = this._getElement(doc, node);
+                var element = this._getElement(doc, node);
             }
             if (raw) {
                 return element;
@@ -380,26 +389,6 @@
 
             return multiplier;
         },
-        _roundToNearestFiveAndTens: function (numerial) {
-          var num = Math.round(numerial);
-          if (num > 10) {
-            var n = this._sigFigs(numerial, 2).toString();
-
-            if (n[1] < 7.5  && n[1] >= 2.5) {
-              n = n.substr(0,1) + '5' + n.substr(2);
-            } else if (n[1] < 2.5){
-              n = n.substr(0,1) + '0' + n.substr(2);
-            } else {
-              n = (parseInt(n[0])+1) + '0' + n.substr(2);
-            }
-            return parseInt(n);
-          } else {
-            // if (num > 9.25) {
-            //   return 10;
-            // }
-            return this._sigFigs(numerial, 1);
-          }
-        },
         //computes and distributes the label
         _labelAndBorders: function (data, opts, interval, heightRatio, min, max, paddingForLabel, reRender) {
             if (!opts._shift) return null;
@@ -423,14 +412,14 @@
             })
 
             if (reRender) {
-              var yaxis = this._getNode('#'+this.element.id+' .yaxis')[0];
+              var yaxis = this._getNode(this.element, null, '.yaxis')[0];
               yaxis.innerHTML = '';
             }
 
             var heightFactor = height / max;
 
             while(i--) {
-                var value = this._roundToNearestFiveAndTens((max/4)*(4-i));
+                var value = (max/4)*(4-i);
                 var factor = (heightFactor * (max-value));
                 factor = (isNaN(factor)? height : factor);
                 var x = this._make('text',{
@@ -544,7 +533,7 @@
                 //this is re rendering the labels
                 if (reRender) {
 					var self = this;
-                    var xaxisNodes = this._getNode('#'+this.element.id+' .xaxis')[0].getElementsByTagName('text');
+                    var xaxisNodes = this._getNode(this.element, null, '.xaxis')[0].getElementsByTagName('text');
 					var textNodes = [];
 					Array.prototype.filter.call(xaxisNodes, function (element) {
 						if (element.nodeName) {
@@ -562,6 +551,7 @@
 						var flag = false;
 						// this.lock.label = 1;
 					}
+                    //TODO:: this part to handle the animation is pretty dirty - requires cleaning and merging all animation under one timer.
 					//animate the label for xaxis
 					var frames = 70, frame = 0, self = this;
 					var animateXaxis = function () {
@@ -580,19 +570,19 @@
 									for (var o in textNodes) {
 										textNodes[o].dataset.tickPos = parseInt(textNodes[o].dataset.tickPos) - 1;
 									}
-									//adding a new text node
 									if (textNodes[0].dataset.tickPos == -1) {
-										var tickInterval = parseInt(self.attributes._tickGap) + parseInt(textNodes[textNodes.length-1].dataset.tickPos);
-										var node = self._make('text', {
-											y: height + padding +20,
-											x: padding + interval * tickInterval,
-											'font-size': 12,
-											'font-family': opts.chart['font-family']
-										}, {
-											tickPos: tickInterval
-										});
-										node.innerHTML = self._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((tickInterval+opts._shiftIntervals)) * format.utc));
-										textNodes[0].parentNode.appendChild(node);
+                                        s//adding a new text node
+                                        var tickInterval = parseInt(self.attributes._tickGap);
+                                        var node = self._make('text', {
+                                            y: height + padding +20,
+                                            x: padding + interval * tickInterval,
+                                            'font-size': 12,
+                                            'font-family': opts.chart['font-family']
+                                        }, {
+                                            tickPos: tickInterval
+                                        });
+                                        node.innerHTML = self._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((tickInterval+opts._shiftIntervals)) * format.utc));
+                                        textNodes[0].parentNode.appendChild(node);
 										textNodes[0].parentNode.removeChild(textNodes[0]);
 									}
 									self.lock.label = 0;
@@ -639,7 +629,8 @@
                     i++;
                 }
                 arr.push(gLabelXaxis);
-                this.attributes._tickGap = tickIntervalArray[1] - tickIntervalArray[0]
+                //some how -2 is the magic number
+                this.attributes._tickGap = tickIntervalArray[tickIntervalArray.length-1] + tickIntervalArray[1] - tickIntervalArray[0] - 2;
             }
             return arr;
         },
@@ -696,12 +687,12 @@
                 var _data = (data[i].slice()).sort(compareNumbers);
                 length = (length < _data.length ? _data.length : length);
                 min = (min > _data[0] ? _data[0]: min);
-                max = Math.ceil10(this._sigFigs((max < _data[_data.length-1] ? _data[_data.length-1] : max),1),1);
+                max = Math.ceil10((max < _data[_data.length-1] ? _data[_data.length-1] : max),1);
             }
 
             return {
                 min: min,
-                max: max,
+                max: (isNaN(max) ^ max == 0? 10 : max),
                 len: length
             };
         },
@@ -710,12 +701,17 @@
             var data = this.attributes.data,
                 opts = this.attributes.opts,
                 svg = this._make('svg',{
-                    width : opts.chart.width,
+                    width : '100%',//opts.chart.width,
                     height : opts.chart.height,
-                    viewBox : '0 0 '+opts.chart.width + ' '+opts.chart.height
+                    viewBox : '0 0 '+opts.chart.width + ' '+opts.chart.height,
+                    'preserveaspectratio': 'none'
                 }),
                 sets = [],
                 reRender = reRender || false;
+                
+            //this will allow us to have responsive grpah    
+            this.element.style.width = '100%';
+            this.element.style['max-width'] = opts.chart.width;
 
             if (Object.prototype.toString.call(data) !== '[object Array]') {
                 data = [data];
@@ -750,7 +746,7 @@
 
             //we are now adding on to exisiting data and to allow animation
             if (reRender) {
-              var nodes = this._getNode('#'+this.element.id+' g');
+              var nodes = this._getNode(this.element, null, 'g');
               for (var i in data) {
                 this._reRenderPath(nodes, data[i], opts, interval, heightRatio, paddingForLabel, this.attributes.oldData[i]);
               }
@@ -760,15 +756,14 @@
               return this;
             }
 
-						//svg z index is compiled by order
-
-						this._compile(svg, this._labelAndBorders(data, opts, interval, heightRatio, min, max, paddingForLabel, false));
+			//svg z index is compiled by order
+			this._compile(svg, this._labelAndBorders(data, opts, interval, heightRatio, min, max, paddingForLabel, false));
 
             //adding each path & circle
             for (var i in data) {
                 var g = this._make('g',{
-									'z-index': 9
-								},{
+    				'z-index': 9
+    			},{
                     label: data[i].label
                 });
                 this._compile(g, this._path(data[i], opts, interval, heightRatio, paddingForLabel))

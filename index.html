@@ -44,7 +44,7 @@
                 dataSet.push(Math.floor((Math.random() * 1000) + 1));
                 dataSet2.push(Math.floor((Math.random() * 1000) + 1));
                 // dataSet.push(Math.floor((Math.random() * 10) + 10));
-                // dataSet2.push(Math.floor((Math.random() * 10) + 10));
+                // dataSet2.push(Math.floor((Math.random() * 10) + 10));i
             }
             var set = [
                 {
@@ -61,7 +61,7 @@
                 }
             ];
 
-            var graph = yako('#graph').set({
+            var graph = yako(document.getElementById('graph')).set({
                 chart : {
                     type: 'line',
                     //controls the width and height of the graph
