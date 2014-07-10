@@ -746,7 +746,7 @@
 
             //this will allow us to have responsive grpah    
             this.element.style.width = '100%';
-            this.element.style['max-width'] = opts.chart.width;
+            this.element.style.maxWidth = opts.chart.width+'px';
 
             if (Object.prototype.toString.call(data) !== '[object Array]') {
                 data = [data];
