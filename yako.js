@@ -197,38 +197,71 @@
     //animation watcher
     //function to execute
     var queue = [];
-    yako.watcher = function (fn) {
-        if(queue.length == 0) {
-            queue.push(fn);
-            yako.manager();
-        }
-        queue.push(fn);
+    var blockQueue = {};
+    var waitQueue = {};
+    yako.queue = function (token, opts, fn) {
+        opts = opts || {};
+        queue[token] = queue[token] || [];
+        blockQueue[token] = blockQueue[token] || 0;
+        waitQueue[token] = waitQueue[token] || false;
+        queue[token].push({
+            opts : opts,
+            fn: fn
+        });
     };
-    //manages timer
-    yako.manager = function () {
+
+    //the watcher that manages the interval cycle;
+    //the aim of this module is to have all animation to be watched under one event timer instead of spawning multiple ones
+    yako.startCycle = function (token) {
         //make a copy and empty queue
-        var workers = queue.slice(0);
-        var frames = 70, frame = 0;
-        queue = [];
+        var workers = queue[token].slice(0);
+        var frames = 69, frame = 0;
+        var interval = 900/frames;
+        var before = new Date();
+        if (blockQueue[token] != 0) {
+            waitQueue[token] = true;
+            return;
+        }
+        blockQueue[token] = 0;
+        queue[token] = [];
         function render() {
-            for (var i in workers) {
-                    workers[i](frame);
+            var now = new Date();
+            var elapsedTime = (now.getTime() - before.getTime());
+            //inactive graph interval correction
+            if (elapsedTime > interval) {
+                frame += Math.floor(elapsedTime/interval);
+            } else {
+                frame++;
             }
-            frame++;
+            for (var i in workers) {    
+                blockQueue[token]++;
+                workers[i].fn(frame-1, frames, workers[i].opts, function () {
+                    blockQueue[token]--;
+                });
+            }
+            before = new Date();
             timer();
         }
-        function init() {
-            if (frame >= frames-1) {
-                if (queue.length !== 0)
-                    yako.manager();
-                return;
+        function timer() {
+            if (frame <= frames) {
+                window.setTimeout(function () {
+                    render();
+                }, interval);
+            } else {
+                if (blockQueue[token] === 0 && waitQueue[token]) {
+                    waitQueue[token] = false;
+                    yako.startCycle(token);
+                }
             }
-            window.setTimeout(function () {
-                render();
-            }, 1000/frames);
         };
-        init();
+        timer();
     };
+
+
+    //generates a token for the graph
+    yako.makeToken = function () {
+        return Math.random().toString(36).substr(2);
+    }
 
     //for registering a module
     yako.register = function (graphName, prototypes) {
@@ -243,6 +276,7 @@
         assign: yako.assign,
         //init function
         _init: function (node) {
+            this.token = yako.makeToken();
             this.attributes = {};
             this._graphs = {};
             this._getNode(node);
@@ -567,6 +601,7 @@
 
                 //this is re rendering the labels
                 if (reRender) {
+                    // return this;
 					var self = this;
                     var xaxisNodes = this._getNode(this.element, null, '.xaxis')[0].getElementsByTagName('text');
 					var textNodes = [];
@@ -786,8 +821,8 @@
                 this._reRenderPath(nodes, data[i], opts, interval, heightRatio, paddingForLabel, this.attributes.oldData[i]);
               }
 
-              this._labelAndBorders(data, opts, interval, heightRatio, min, max, paddingForLabel, true);
-
+              // this._labelAndBorders(data, opts, interval, heightRatio, min, max, paddingForLabel, true);
+              yako.startCycle(this.token);
               return this;
             }
 
@@ -820,18 +855,11 @@
               dataAdded = this.attributes._newDataLength;
 
           var posToBlockOut = 0;
-          var before = new Date();
-
           //we will be shifiting the yaxis only for linear graph
           //TODO:: OPTIMIZE the code
-          var animateGraph = function (path) {
-            if (frame <= frames) {
-              window.setTimeout(function() {
-                // to counter inactive tabs
-                var now = new Date(),
-                elapseTime = (now.getTime() - before.getTime());
-
-                var pathToken = '';
+          var animateGraph = function (frame, frames, options, done) {
+                var pathToken = '', 
+                path = options.path;
                 //this code can be shrinked once the math is fixed
                 for (var i=0; i<oldData.length + dataAdded; i++) {
                     //for smoothing the shifting
@@ -867,25 +895,17 @@
                 }
                 //draws the new graph
                 path.setAttributeNS(null, 'd', pathToken);
-
-                //inactive graph interval correction
-                if (elapseTime > 1000/frames) {
-                  frame += Math.floor(elapseTime/interval);
-                }
-
-                //increment the frames
-                frame++;
-                before = new Date();
-                animateGraph(path);
-              }, 1000/frames);
-            }
+                done();
           }
 
           var self = this;
           Array.prototype.filter.call(nodes, function (e) {
               if(e.nodeName && e.dataset.label == data.label) {
                   var path = e.getElementsByTagName('path')[0];
-                  animateGraph(path);
+                  //animateGraph(path
+                    yako.queue(self.token, {
+                        path: path
+                    }, animateGraph);
               }
           });
         },
