@@ -46,7 +46,6 @@
 			return decimalAdjust('ceil', value, exp);
 		};
 	}
-
 })();
 
 // Closure
@@ -189,72 +188,86 @@
                     }
                     yako.eventList[node][keys[len]] = [];
                 }
-            }
+            }   
         }
         return self;
     };
 
     //animation watcher
     //function to execute
-    var queue = [];
+    var queue = [], _done = [], _job = [], _complete = [];
     var blockQueue = {};
     var waitQueue = {};
     yako.queue = function (token, opts, fn) {
         opts = opts || {};
         queue[token] = queue[token] || [];
+        _job[token] = _job[token] || [];
+        _complete[token] = _complete[token] || [];
         blockQueue[token] = blockQueue[token] || 0;
         waitQueue[token] = waitQueue[token] || false;
         queue[token].push({
             opts : opts,
             fn: fn
         });
+        // if (yako.isFn(done)) {
+        //     // console.log('a??');
+        //     _done[token].push({
+        //         done: done
+        //     });
+        // }
     };
 
     //the watcher that manages the interval cycle;
     //the aim of this module is to have all animation to be watched under one event timer instead of spawning multiple ones
-    yako.startCycle = function (token) {
+    yako.startCycle = function (token, complete, nextState, nextComplete) {
         //make a copy and empty queue
-        var workers = queue[token].slice(0);
+        var workers = nextState || queue[token].slice(0);
+        var complete = nextComplete || complete;
         var frames = 69, frame = 0;
         var interval = 900/frames;
         var before = new Date();
-        if (blockQueue[token] != 0) {
-            waitQueue[token] = true;
+        if (waitQueue[token] == true) {
+            _job[token].push(workers);
+            _complete[token].push(complete);
+            queue[token] = [];
             return;
         }
+        waitQueue[token] = true;
         blockQueue[token] = 0;
-        queue[token] = [];
-        function render() {
-            var now = new Date();
-            var elapsedTime = (now.getTime() - before.getTime());
-            //inactive graph interval correction
-            if (elapsedTime > interval) {
-                frame += Math.floor(elapsedTime/interval);
-            } else {
-                frame++;
-            }
-            for (var i in workers) {    
-                blockQueue[token]++;
-                workers[i].fn(frame-1, frames, workers[i].opts, function () {
-                    blockQueue[token]--;
-                });
-            }
-            before = new Date();
-            timer();
+        if (complete == null) { 
+            queue[token] = [];
         }
-        function timer() {
+        function render() {
             if (frame <= frames) {
                 window.setTimeout(function () {
-                    render();
+                    var now = new Date();
+                    var elapsedTime = (now.getTime() - before.getTime());
+                    // inactive gracorrectionph interval 
+                    if (elapsedTime > interval) {
+                        frame += Math.floor(elapsedTime/interval);
+                    } else {
+                        frame++;
+                    }
+                    for (var i in workers) {    
+                        blockQueue[token]++;
+                        workers[i].fn(frame-1, frames, workers[i].opts, function () {
+                            blockQueue[token]--;
+                        });
+                    }
+                    before = new Date();
+                    render();  
                 }, interval);
             } else {
-                if (blockQueue[token] === 0 && waitQueue[token]) {
+                if (blockQueue[token] == 0) {
+                    complete();
                     waitQueue[token] = false;
-                    yako.startCycle(token);
+                    if (_job[token].length !== 0) {
+                        yako.startCycle(token, null, _job[token].shift(), _complete[token].shift());
+                    }
                 }
             }
         };
-        timer();
+        render();
     };
 
 
@@ -461,7 +474,8 @@
         //computes and distributes the label
         _labelAndBorders: function (data, opts, interval, heightRatio, min, max, paddingForLabel, reRender) {
             if (!opts._shift) return null;
-            var padding = paddingForLabel,
+            var self = this,
+                padding = paddingForLabel,
                 height = opts.chart.height - (padding * 2); //100 is the factor for the height
 
             //yAxis
@@ -480,12 +494,12 @@
               'z-index': '1'
             })
 
-            if (reRender) {
-              var yaxis = this._getNode(this.element, null, '.yaxis')[0];
-              yaxis.innerHTML = '';
-            }
-
             var heightFactor = height / max;
+
+            if (reRender) {
+                var yaxis = self._getNode(self.element, null, '.yaxis')[0];
+                yaxis.innerHTML = '';
+            }
 
             while(i--) {
                 var value = (max/4)*(4-i);
@@ -508,8 +522,9 @@
                 })
 
                 x.innerHTML = (isNaN(value)? 0 : value);
+
                 if (reRender) {
-                  this._compile(yaxis, x);
+                        self._compile(yaxis, x);
                 } else {
                   this._compile(gLabelYaxis, x)
                     ._compile(gBorders, border);
@@ -602,15 +617,24 @@
                 //this is re rendering the labels
                 if (reRender) {
                     // return this;
+
+                    // yako.queue(self.token,null, function () {
+                    //     var yaxis = self._getNode(self.element, null, '.yaxis')[0];
+                    //     yaxis.innerHTML = '';
+                    //     self._compile(yaxis, x);
+                    // });
+
 					var self = this;
                     var xaxisNodes = this._getNode(this.element, null, '.xaxis')[0].getElementsByTagName('text');
 					var textNodes = [];
+
 					Array.prototype.filter.call(xaxisNodes, function (element) {
 						if (element.nodeName) {
 							// element.dataset.tickPos = parseInt(element.dataset.tickPos) ;
 							textNodes.push(element);
 						}
 					});
+
 					//to check if the async from previous loop is still happening so the animation will not be running 2 seperate event loops at the same time
 					var lock = this.lock.label;
 					// var currentLock = this.lock.currentLock;
@@ -623,54 +647,47 @@
 					}
                     //TODO:: this part to handle the animation is pretty dirty - requires cleaning and merging all animation under one timer.
 					//animate the label for xaxis
-					var frames = 70, frame = 0, self = this;
-					var animateXaxis = function () {
-						window.setTimeout(function () {
-							if (frame < frames && flag == true) {
-								for (var i in textNodes) {
-									var tickPos = parseInt(textNodes[i].dataset.tickPos);
-									var xaxis = (tickPos * interval) + ((((tickPos-1)* interval) - (tickPos * interval))/ frames * frame) + padding;
-									textNodes[i].setAttributeNS(null, 'x', xaxis);
-									if (xaxis <= padding) {
-										textNodes[i].setAttributeNS(null, 'opacity', ((frames - frame * 2)/ frames));
-									}
+					var animateXaxis = function (frame, frames, options, done) {
+							for (var i in textNodes) {
+								var tickPos = parseInt(textNodes[i].dataset.tickPos);
+                                // var xaxis = parseInt(textNodes[i])
+                                var pos = textNodes[i].x.baseVal[0].value;
+                                // return
+								// var xaxis = (tickPos * interval) + ((((tickPos-1)* interval) - (tickPos * interval))/ frames * frame) + padding;
+                                // var xaxis = pos 0 ((interval / frames)); 
+                                // console.log(xaxis);   
+								textNodes[i].setAttributeNS(null, 'x', xaxis);
+							    if (parseInt(textNodes[i].dataset.tickPos) == 0) {
+									textNodes[i].setAttributeNS(null, 'opacity', ((frames - frame * 2)/ frames));
 								}
-								frame++;
-								if (frame > frames-1) {
-									for (var o in textNodes) {
-										textNodes[o].dataset.tickPos = parseInt(textNodes[o].dataset.tickPos) - 1;
-									}
-									if (textNodes[0].dataset.tickPos == -1) {
-                                        s//adding a new text node
-                                        var tickInterval = parseInt(self.attributes._tickGap);
-                                        var node = self._make('text', {
-                                            y: height + padding +20,
-                                            x: padding + interval * tickInterval,
-                                            'font-size': 12,
-                                            'font-family': opts.chart['font-family']
-                                        }, {
-                                            tickPos: tickInterval
-                                        });
-                                        node.innerHTML = self._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((tickInterval+opts._shiftIntervals)) * format.utc));
-                                        textNodes[0].parentNode.appendChild(node);
-										textNodes[0].parentNode.removeChild(textNodes[0]);
-									}
-									self.lock.label = 0;
-								}
-								animateXaxis();
-							} else {
-								if (!flag) {
-									if (self.lock.label == 0) {
-										flag = true;
-										self.lock.label = 1;
-									}
-									frame++;
-									animateXaxis();
-								}
+
+                                // if ((tickPos-1) * interval + padding >= xaxis) {
+                                //     textNodes[i].dataset.tickPos = tickPos - 1;
+                                // }
 							}
-						}, 1000/frames);
+							// if (frame >= frames) {
+							// 	for (var o in textNodes) {
+							// 		textNodes[o].dataset.tickPos = parseInt(textNodes[o].dataset.tickPos) - 1;
+							// 	}
+							// 	if (textNodes[0].dataset.tickPos == -1) {
+       //                              //adding a new text node
+       //                              var tickGap = parseInt(self.attributes._tickGap);
+       //                              var node = self._make('text', {
+       //                                  y: height + padding + 20,
+       //                                  x: padding + interval * tickGap,
+       //                                  'font-size': 12,
+       //                                  'font-family': opts.chart['font-family']
+       //                              }, {
+       //                                  tickPos: tickGap
+       //                              });
+       //                              node.innerHTML = self._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((tickGap+opts._shiftIntervals)) * format.utc));
+       //                              textNodes[0].parentNode.appendChild(node);
+							// 		textNodes[0].parentNode.removeChild(textNodes[0]);
+							// 	}
+							// } 
+                            done();   
 					};
-					animateXaxis();
+					// yako.queue(self.token, null, animateXaxis);
                   return this;
                 }
 
@@ -689,8 +706,8 @@
                             'font-size': 12,
                             'font-family': opts.chart['font-family']
                         },{
-    						tickPos: i
-    					});
+                            tickPos : i
+                        });
                         x.innerHTML = this._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((i+opts._shiftIntervals)) * format.utc)); //(interval * (i+opts._shiftIntervals)).toFixed(0);
                         this._compile(gLabelXaxis, x);
                         if (i !== 0 || format.tickSize === counter)
@@ -700,7 +717,8 @@
                 }
                 arr.push(gLabelXaxis);
                 //some how -2 is the magic number
-                this.attributes._tickGap = tickIntervalArray[tickIntervalArray.length-1] + tickIntervalArray[1] - tickIntervalArray[0] - 2;
+                // this.attributes._tickGap = tickIntervalArray[tickIntervalArray.length-1] + tickIntervalArray[1] - tickIntervalArray[0] - 2;
+                this.attributes._tickGap = tickIntervalArray[1];
             }
             return arr;
         },
@@ -717,8 +735,8 @@
                 str = str.replace('YY',(dateObj.getFullYear()).replace(/^\d{1,2}/,''));
 
             if (/hh/.test(str) && /ap/.test(str)) {
-              if ((dateObj.getHours())  > 12)
-                str = str.replace(/hh/, (dateObj.getHours()) - 12)
+              if ((dateObj.getHours())  > 11)
+                str = str.replace(/hh/, (dateObj.getHours() - 12 === 0 ? 12 : dateObj.getHours() - 12))
                         .replace(/ap/, 'pm');
               else
                 str = str.replace(/hh/, (dateObj.getHours() == 0? 12 :  dateObj.getHours()))
@@ -777,7 +795,8 @@
                     'preserveaspectratio': 'none'
                 }),
                 sets = [],
-                reRender = reRender || false;
+                reRender = reRender || false,
+                self = this;
 
             //this will allow us to have responsive grpah    
             this.element.style.width = '100%';
@@ -816,14 +835,26 @@
 
             //we are now adding on to exisiting data and to allow animation
             if (reRender) {
-              var nodes = this._getNode(this.element, null, 'g');
-              for (var i in data) {
-                this._reRenderPath(nodes, data[i], opts, interval, heightRatio, paddingForLabel, this.attributes.oldData[i]);
-              }
-
-              // this._labelAndBorders(data, opts, interval, heightRatio, min, max, paddingForLabel, true);
-              yako.startCycle(this.token);
-              return this;
+                this._labelAndBorders(data, opts, interval, heightRatio, min, max, paddingForLabel, true);
+                var nodes = this._getNode(this.element, null, 'g');
+                for (var i in data) {
+                    this._reRenderPath(nodes, data[i], opts, interval, heightRatio, paddingForLabel, this.attributes.oldData[i]);
+                }
+                yako.startCycle(this.token, function () {
+                    var textNodes = [];
+                    var xaxisNodes = self._getNode(self.element, null, '.xaxis')[0].getElementsByTagName('text');
+                    Array.prototype.filter.call(xaxisNodes, function (element) {
+                        if (element.nodeName) {
+                            // element.dataset.tickPos = parseInt(element.dataset.tickPos) ;
+                            textNodes.push(element);
+                        }
+                    });
+                    for (var y in textNodes) {
+                        // console.log(textNodes[y]);
+                        textNodes[y].dataset.tickPos = parseInt(textNodes[y].dataset.tickPos) - 1;
+                    }
+                });
+                return this;
             }
 
 			//svg z index is compiled by order
@@ -844,23 +875,45 @@
             this._compile(this.element,svg, reRender);
             return this;
         },
-        //reRender Path
+        //reRender the path by modify the current path element, such that we dont do a deletion and insertion.
         _reRenderPath: function (nodes, data, opts, interval, heightRatio, paddingForLabel, oldData) {
           //now need to look for the new one
-          var frames = 70, // per second;
-              frame = 0,  //current frame
-              newData = data.data,
+          var newData = data.data,
               oldData = oldData.data,
               height = opts.chart.height,
               dataAdded = this.attributes._newDataLength;
 
           var posToBlockOut = 0;
-          //we will be shifiting the yaxis only for linear graph
+          var self = this;
+
+
+
+          //text nodes
+            var xaxisNodes = this._getNode(this.element, null, '.xaxis')[0].getElementsByTagName('text');
+            var textNodes = [];
+            Array.prototype.filter.call(xaxisNodes, function (element) {
+                if (element.nodeName) {
+                    // element.dataset.tickPos = parseInt(element.dataset.tickPos) ;
+                    textNodes.push(element);
+                }
+            });
+
+            // if (textNodes.)
+            var nodeOpacity = textNodes[0].style.opacity;
+            if(nodeOpacity !== '' && nodeOpacity < 0) {
+                var shifted = textNodes.shift();
+                shifted.parentNode.removeChild(shifted);
+            }
+
+            var tickGap = this.attributes._tickGap;
+         
+          //We will be shifiting the yaxis only for linear graph
+          //This function would be queued into the same timer to render all components for this specific graph, such that we do not overload the timer
           //TODO:: OPTIMIZE the code
           var animateGraph = function (frame, frames, options, done) {
                 var pathToken = '', 
                 path = options.path;
-                //this code can be shrinked once the math is fixed
+                var o = 0;
                 for (var i=0; i<oldData.length + dataAdded; i++) {
                     //for smoothing the shifting
                     var xaxis = (((interval*i-dataAdded)  + ((interval*(i-dataAdded) - interval*(i))/frames * frame)) + parseInt(paddingForLabel));
@@ -886,23 +939,62 @@
                             }
                         }
                     }
+                    // console.log(i % tickGap);
 
                     if (i === 0) {
                         pathToken += 'M '+ xaxis +' '+ yaxis;
                     } else {
                         pathToken += ' L '+ xaxis +' '+ yaxis;
                     }
+                    // console.log(o);
+                    var textPos = parseInt(textNodes[o].dataset.tickPos);
+                    // console.log(textPos);
+                    // console.log(textPos, i);
+                    /*
+                    if (i==0 || i % tickGap == 0) {
+                        if (textNodes[o+1] === undefined) {
+                            //add missing node
+                            var node = self._make('text', {
+                                y: opts.chart.height - paddingForLabel + 20,
+                                x: interval*(i+tickGap)+parseInt(paddingForLabel),
+                                'font-size': 12,
+                                'font-family': opts.chart['font-family']
+                            },{
+                                tickPos : textPos + tickGap
+                            });
+                            node.innerHTML = self._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt((((i+tickGap-1)+opts._shiftIntervals)) *  self._utcMultiplier(opts.xAxis.interval)));
+                            textNodes.push(node);
+                            textNodes[0].parentNode.appendChild(node);
+                        } 
+                        if (i==0) {
+                            textNodes[0].style.opacity = ((frames - frame * 2)/ frames);
+                            // textNodes[0].setAttributeNS(null, 'opacity', ((frames - frame * 2)/ frames));
+                            textNodes[0].setAttributeNS(null, 'x', paddingForLabel - interval/frames * frame);
+                        } else { 
+                            textNodes[o].setAttributeNS(null, 'x', xaxis);
+                        }
+                        // textNodes[o].dataset.tickPos = i - 1;
+                        o+=1;
+                        // console.log('hit');
+                    } */
                 }
                 //draws the new graph
                 path.setAttributeNS(null, 'd', pathToken);
-                done();
+
+                //call done for work completion
+                done(function () {
+                    for(var y in textNodes) {
+                        console.log('called??');
+                        textNodes[y].dataset.tickPos = parseInt(textNodes[y].dataset.tickPos) - 1;
+                    }
+                });
           }
 
           var self = this;
+          //gets the associated path
           Array.prototype.filter.call(nodes, function (e) {
               if(e.nodeName && e.dataset.label == data.label) {
-                  var path = e.getElementsByTagName('path')[0];
-                  //animateGraph(path
+                    var path = e.getElementsByTagName('path')[0];
                     yako.queue(self.token, {
                         path: path
                     }, animateGraph);
@@ -911,6 +1003,7 @@
         },
         //attach events
         _attach: function () {
+            return this;
             if (!this.hover)
                 return this;
 

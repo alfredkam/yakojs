@@ -3,9 +3,25 @@
 <html>
     <head>
         <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,600' rel='stylesheet' type='text/css'>
+        <link href='bootstrap.min.css' rel='stylesheet' type='text/css'>
     </head>
     <body>
-        <div id='graph' class='graph'></div>
+        <div>
+            <div class='col-sm-6'>
+                <div id='graph' class='graph'></div>
+            </div>
+            <div class='col-sm-6'>
+                <div id='graph4' class='graph'></div>
+            </div>
+        </div>
+         <div>
+            <div class='col-sm-6'>
+                <div id='graph5' class='graph'></div>
+            </div>
+            <div class='col-sm-6'>
+                <div id='graph6' class='graph'></div>
+            </div>
+        </div>
         <div id='graph2' class='graph'></div>
         <div id='graph3' class='graph'></div>
         <script src='yako.js' type='text/javascript'></script>
@@ -47,6 +63,21 @@
                 // dataSet2.push(Math.floor((Math.random() * 10) + 10));i
             }
             var set = [
+                {
+                    label: 'Auto Generated',
+                    data: dataSet,
+                    //color controls the line
+                    color: '#1E90FF'
+                    //nodeColor controls the pointer color
+                },
+                {
+                    label: 'Auto Generated 2',
+                    data: dataSet2,
+                    color: '#FF7F00'
+                }
+            ];
+
+               var set2 = [
                 {
                     label: 'Auto Generated',
                     data: dataSet,
@@ -105,6 +136,137 @@
                 //the css configs, need to define them
             });
 
+            var graph4 = yako(document.getElementById('graph4')).set({
+                chart : {
+                    type: 'line',
+                    //controls the width and height of the graph
+                    width: 1000,
+                    height: 300,
+                    'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+                    'font-size': '12',
+                    //this options will show hide the hover pointer
+                    showPointer: false,
+                    realtime : {
+                      zero : true
+                    },
+                    //this option will toggle the chart to save incrementable data or not
+                    accumulateIncrementalData: false
+                },
+                title : 'just a test',
+                xAxis : {
+                    //including format will show the xAxis Label
+                    format : 'dateTime',
+                    //interval indicates the data interval, the number of the interval indicates the label tick interval
+                    //s - seconds
+                    //m - minutes
+                    //h - hours
+                    //D - days
+                    //M - months
+                    //Y - years
+                    interval: '1h',  //[1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
+                    //min start date
+                    //do not need end date, expecting there would be zeros to fill the gaps
+                    minUTC: Date.UTC(2013,08,07),
+                    //this controls the dateTime label format
+                    //depending on the format, it will affect the label, try :: dateTimeLabelFormat: 'hhh'
+                    dateTimeLabelFormat: 'MM/DD hh ap'
+                    // or if wanted custom label
+                    // format: 'label',
+                    // label: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
+                },
+                data: set2
+                //calling hoverable enables hover
+            }).hoverable({
+                //the css configs, need to define them
+            });
+
+            var graph5 = yako(document.getElementById('graph5')).set({
+                chart : {
+                    type: 'line',
+                    //controls the width and height of the graph
+                    width: 1000,
+                    height: 300,
+                    'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+                    'font-size': '12',
+                    //this options will show hide the hover pointer
+                    showPointer: false,
+                    realtime : {
+                      zero : true
+                    },
+                    //this option will toggle the chart to save incrementable data or not
+                    accumulateIncrementalData: false
+                },
+                title : 'just a test',
+                xAxis : {
+                    //including format will show the xAxis Label
+                    format : 'dateTime',
+                    //interval indicates the data interval, the number of the interval indicates the label tick interval
+                    //s - seconds
+                    //m - minutes
+                    //h - hours
+                    //D - days
+                    //M - months
+                    //Y - years
+                    interval: '3h',  //[1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
+                    //min start date
+                    //do not need end date, expecting there would be zeros to fill the gaps
+                    minUTC: Date.UTC(2013,08,07),
+                    //this controls the dateTime label format
+                    //depending on the format, it will affect the label, try :: dateTimeLabelFormat: 'hhh'
+                    dateTimeLabelFormat: 'MM/DD hh ap'
+                    // or if wanted custom label
+                    // format: 'label',
+                    // label: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
+                },
+                data: JSON.parse(JSON.stringify(set2))
+                //calling hoverable enables hover
+            }).hoverable({
+                //the css configs, need to define them
+            });
+            var graph6 = yako(document.getElementById('graph6')).set({
+                chart : {
+                    type: 'line',
+                    //controls the width and height of the graph
+                    width: 1000,
+                    height: 300,
+                    'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+                    'font-size': '12',
+                    //this options will show hide the hover pointer
+                    showPointer: false,
+                    realtime : {
+                      zero : true
+                    },
+                    //this option will toggle the chart to save incrementable data or not
+                    accumulateIncrementalData: false
+                },
+                title : 'just a test',
+                xAxis : {
+                    //including format will show the xAxis Label
+                    format : 'dateTime',
+                    //interval indicates the data interval, the number of the interval indicates the label tick interval
+                    //s - seconds
+                    //m - minutes
+                    //h - hours
+                    //D - days
+                    //M - months
+                    //Y - years
+                    interval: '5h',  //[1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
+                    //min start date
+                    //do not need end date, expecting there would be zeros to fill the gaps
+                    minUTC: Date.UTC(2013,08,07),
+                    //this controls the dateTime label format
+                    //depending on the format, it will affect the label, try :: dateTimeLabelFormat: 'hhh'
+                    dateTimeLabelFormat: 'MM/DD hh ap'
+                    // or if wanted custom label
+                    // format: 'label',
+                    // label: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
+                },
+                data: JSON.parse(JSON.stringify(set2))
+                //calling hoverable enables hover
+            }).hoverable({
+                //the css configs, need to define them
+            });
+
             yako('#graph2').set({
                 chart : {
                     type: 'line',
@@ -139,10 +301,16 @@
             //demonstrates incrementData
 
             window.setInterval(function () {
-                var _d1 = [], _d2 = [];
+                var _d1 = [], _d2 = [], _d3 = [], _d4 = [], _d5 = [], _d6 = [], _d7 = [], _d8 = [];
                 for (var i=0;i<1;i++) {
                     _d1.push(Math.floor((Math.random() * 10) + 10));
                     _d2.push(Math.floor((Math.random() * 10) + 10));
+                    _d3.push(Math.floor((Math.random() * 500) + 200));
+                    _d4.push(Math.floor((Math.random() * 500) + 200));
+                    _d5.push(Math.floor((Math.random() * 500) + 200));
+                    _d6.push(Math.floor((Math.random() * 500) + 200));
+                    _d7.push(Math.floor((Math.random() * 700) + 200));
+                    _d8.push(Math.floor((Math.random() * 100) + 200));
                 }
                 //to support increment data for 3 scenarios
                 //+ adding new set of data - ie. adding another line
@@ -159,7 +327,28 @@
                     label : 'Auto Generated 2',
                     data: _d2
                 }])
-            },1000);
+                graph4.incrementData([{
+                    label : 'Auto Generated',
+                    data: _d3
+                },{
+                    label : 'Auto Generated 2',
+                    data: _d4
+                }]);
+                graph5.incrementData([{
+                    label : 'Auto Generated',
+                    data: _d5
+                },{
+                    label : 'Auto Generated 2',
+                    data: _d6
+                }]);
+                graph6.incrementData([{
+                    label : 'Auto Generated',
+                    data: _d7
+                },{
+                    label : 'Auto Generated 2',
+                    data: _d8
+                }]);
+            },900);
 
             //example to add a module / functionality
             // yako.register('piechart',{
