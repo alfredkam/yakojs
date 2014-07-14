@@ -195,7 +195,7 @@
 
     //animation watcher
     //function to execute
-    var queue = [], _done = [], _job = [], _complete = [];
+    var queue = [], _job = [], _complete = [], _cycle = [];
     var blockQueue = {};
     var waitQueue = {};
     yako.queue = function (token, opts, fn) {
@@ -205,16 +205,11 @@
         _complete[token] = _complete[token] || [];
         blockQueue[token] = blockQueue[token] || 0;
         waitQueue[token] = waitQueue[token] || false;
+        _cycle[token] = _cycle[token] || 0;
         queue[token].push({
             opts : opts,
             fn: fn
         });
-        // if (yako.isFn(done)) {
-        //     // console.log('a??');
-        //     _done[token].push({
-        //         done: done
-        //     });
-        // }
     };
 
     //the watcher that manages the interval cycle;
@@ -250,6 +245,7 @@
                     }
                     for (var i in workers) {    
                         blockQueue[token]++;
+                        workers[i].opts._cycle = _cycle[token];
                         workers[i].fn(frame-1, frames, workers[i].opts, function () {
                             blockQueue[token]--;
                         });
@@ -260,6 +256,7 @@
             } else {
                 if (blockQueue[token] == 0) {
                     complete();
+                    _cycle[token]+=1;
                     waitQueue[token] = false;
                     if (_job[token].length !== 0) {
                         yako.startCycle(token, null, _job[token].shift(), _complete[token].shift());
@@ -616,78 +613,86 @@
 
                 //this is re rendering the labels
                 if (reRender) {
-                    // return this;
-
-                    // yako.queue(self.token,null, function () {
-                    //     var yaxis = self._getNode(self.element, null, '.yaxis')[0];
-                    //     yaxis.innerHTML = '';
-                    //     self._compile(yaxis, x);
-                    // });
-
 					var self = this;
                     var xaxisNodes = this._getNode(this.element, null, '.xaxis')[0].getElementsByTagName('text');
 					var textNodes = [];
 
 					Array.prototype.filter.call(xaxisNodes, function (element) {
 						if (element.nodeName) {
-							// element.dataset.tickPos = parseInt(element.dataset.tickPos) ;
 							textNodes.push(element);
 						}
 					});
+                    var oldData = this.attributes.oldData[0].data,
+                    dataAdded = this.attributes._newDataLength,
+                    tickGap = this.attributes._tickGap;
 
-					//to check if the async from previous loop is still happening so the animation will not be running 2 seperate event loops at the same time
-					var lock = this.lock.label;
-					// var currentLock = this.lock.currentLock;
-					if (lock == 0) {
-						var flag = true ;
-						this.lock.label = 1;
-					} else {
-						var flag = false;
-						// this.lock.label = 1;
-					}
                     //TODO:: this part to handle the animation is pretty dirty - requires cleaning and merging all animation under one timer.
 					//animate the label for xaxis
+                    this.currentCycle = this.currentCycle || 0;
+                    this.tickCycle = this.tickCycle || 0;
 					var animateXaxis = function (frame, frames, options, done) {
-							for (var i in textNodes) {
-								var tickPos = parseInt(textNodes[i].dataset.tickPos);
-                                // var xaxis = parseInt(textNodes[i])
-                                var pos = textNodes[i].x.baseVal[0].value;
-                                // return
-								// var xaxis = (tickPos * interval) + ((((tickPos-1)* interval) - (tickPos * interval))/ frames * frame) + padding;
-                                // var xaxis = pos 0 ((interval / frames)); 
-                                // console.log(xaxis);   
-								textNodes[i].setAttributeNS(null, 'x', xaxis);
-							    if (parseInt(textNodes[i].dataset.tickPos) == 0) {
-									textNodes[i].setAttributeNS(null, 'opacity', ((frames - frame * 2)/ frames));
-								}
+                        var textNodes = options.nodes;
+                        var o = 0;
+                        if (self.currentCycle != options._cycle) {
+                            self.currentCycle +=1;
+                            self.tickCycle +=1;
+                            if (self.tickCycle == tickGap) {
+                                self.tickCycle = 0;
+                            }
+                        }
+                        var flagToRemove = false;
+					    for (var i=0; i<oldData.length + dataAdded; i++) {
+                            var xaxis = (((interval*i-1)  + ((interval*(i-1) - interval*(i))/frames * (frame))) + parseInt(padding));
+                            if ((i+self.tickCycle) % tickGap == 0) {
+                                if (textNodes[o+1] === undefined) {
+                                    var tickInterval = parseInt(self.attributes._tickGap);
+                                    var node = self._make('text', {
+                                        y: opts.chart.height - padding + 20,
+                                        x: 1500,
+                                        'font-size': 12,
+                                        'font-family': opts.chart['font-family']
+                                    });
+                                    self.attributes._lastTickPos += tickGap;
+                                    node.innerHTML = self._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((self.attributes._lastTickPos)) *  self._utcMultiplier(opts.xAxis.interval)));
+                                    textNodes.push(node);
+                                    textNodes[o].parentNode.appendChild(node);
+                                } else {
+                                    //the new position calculation is not correct!!!
+                                    if (xaxis < textNodes[o].attributes.x.value) {
+                                        textNodes[o].setAttributeNS(null, 'x', xaxis);
+                                    } else {
+                                        if (options._cycle > 3 && options._cycle < 6 && self.element.id=='graph4') {
+                                            console.log(xaxis, textNodes[o].attributes.x.value, i, (((interval*i-1)  + ((interval*(i-1) - interval*(i))/frames * (frame))) + parseInt(padding)));
+                                            console.log(textNodes[o].attributes);
+                                            return
+                                            // textNodes[o].setAttributeNS(null, 'x', xaxis);
+                                            // return;
+                                        }
+                                        // console.log(xaxis, )
+                                        // console.log('post', i);
+                                    }
+                                }
+                                o+=1;
+                            }
+                            if (i == 0 && (xaxis <= padding && textNodes[0].x.baseVal[0].value <= padding)) {
+                                // console.log(textNodes[0].x.baseVal[0].value);
+                                textNodes[0].style.opacity = ((frames - frame * 2)/ frames);
+                            }
+                            if (i==0 && (xaxis <= 0 && textNodes[0].x.baseVal[0].value <= 0)) {
+                                     flagToRemove = true;
+                            }
+                        }
 
-                                // if ((tickPos-1) * interval + padding >= xaxis) {
-                                //     textNodes[i].dataset.tickPos = tickPos - 1;
-                                // }
-							}
-							// if (frame >= frames) {
-							// 	for (var o in textNodes) {
-							// 		textNodes[o].dataset.tickPos = parseInt(textNodes[o].dataset.tickPos) - 1;
-							// 	}
-							// 	if (textNodes[0].dataset.tickPos == -1) {
-       //                              //adding a new text node
-       //                              var tickGap = parseInt(self.attributes._tickGap);
-       //                              var node = self._make('text', {
-       //                                  y: height + padding + 20,
-       //                                  x: padding + interval * tickGap,
-       //                                  'font-size': 12,
-       //                                  'font-family': opts.chart['font-family']
-       //                              }, {
-       //                                  tickPos: tickGap
-       //                              });
-       //                              node.innerHTML = self._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((tickGap+opts._shiftIntervals)) * format.utc));
-       //                              textNodes[0].parentNode.appendChild(node);
-							// 		textNodes[0].parentNode.removeChild(textNodes[0]);
-							// 	}
-							// } 
-                            done();   
+                        if (flagToRemove) {
+                            if(textNodes[0].parentNode) {
+                                textNodes[0].parentNode.removeChild(textNodes[0]);
+                            }
+                        }
+                        done();   
 					};
-					// yako.queue(self.token, null, animateXaxis);
+					yako.queue(self.token, {
+                        nodes: textNodes
+                    }, animateXaxis);
                   return this;
                 }
 
@@ -716,9 +721,9 @@
                     i++;
                 }
                 arr.push(gLabelXaxis);
-                //some how -2 is the magic number
-                // this.attributes._tickGap = tickIntervalArray[tickIntervalArray.length-1] + tickIntervalArray[1] - tickIntervalArray[0] - 2;
+                this.attributes._lastTickPos = tickIntervalArray[tickIntervalArray.length-1];
                 this.attributes._tickGap = tickIntervalArray[1];
+                this.attributes._tickGapCircuit = 0;
             }
             return arr;
         },
@@ -840,19 +845,8 @@
                 for (var i in data) {
                     this._reRenderPath(nodes, data[i], opts, interval, heightRatio, paddingForLabel, this.attributes.oldData[i]);
                 }
-                yako.startCycle(this.token, function () {
-                    var textNodes = [];
-                    var xaxisNodes = self._getNode(self.element, null, '.xaxis')[0].getElementsByTagName('text');
-                    Array.prototype.filter.call(xaxisNodes, function (element) {
-                        if (element.nodeName) {
-                            // element.dataset.tickPos = parseInt(element.dataset.tickPos) ;
-                            textNodes.push(element);
-                        }
-                    });
-                    for (var y in textNodes) {
-                        // console.log(textNodes[y]);
-                        textNodes[y].dataset.tickPos = parseInt(textNodes[y].dataset.tickPos) - 1;
-                    }
+                yako.startCycle(this.token, function (){
+                    //complete
                 });
                 return this;
             }
@@ -899,11 +893,8 @@
             });
 
             // if (textNodes.)
-            var nodeOpacity = textNodes[0].style.opacity;
-            if(nodeOpacity !== '' && nodeOpacity < 0) {
-                var shifted = textNodes.shift();
-                shifted.parentNode.removeChild(shifted);
-            }
+
+            var xaxisNodeElement = this._getNode(this.element, null, '.xaxis')[0];
 
             var tickGap = this.attributes._tickGap;
          
@@ -917,7 +908,6 @@
                 for (var i=0; i<oldData.length + dataAdded; i++) {
                     //for smoothing the shifting
                     var xaxis = (((interval*i-dataAdded)  + ((interval*(i-dataAdded) - interval*(i))/frames * frame)) + parseInt(paddingForLabel));
-
                     //to determine which set of data to use
                     if (i >= oldData.length) {
                       var yaxis = (height-(newData[i-dataAdded] * heightRatio) - paddingForLabel);
@@ -939,55 +929,16 @@
                             }
                         }
                     }
-                    // console.log(i % tickGap);
-
                     if (i === 0) {
                         pathToken += 'M '+ xaxis +' '+ yaxis;
                     } else {
                         pathToken += ' L '+ xaxis +' '+ yaxis;
                     }
-                    // console.log(o);
-                    var textPos = parseInt(textNodes[o].dataset.tickPos);
-                    // console.log(textPos);
-                    // console.log(textPos, i);
-                    /*
-                    if (i==0 || i % tickGap == 0) {
-                        if (textNodes[o+1] === undefined) {
-                            //add missing node
-                            var node = self._make('text', {
-                                y: opts.chart.height - paddingForLabel + 20,
-                                x: interval*(i+tickGap)+parseInt(paddingForLabel),
-                                'font-size': 12,
-                                'font-family': opts.chart['font-family']
-                            },{
-                                tickPos : textPos + tickGap
-                            });
-                            node.innerHTML = self._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt((((i+tickGap-1)+opts._shiftIntervals)) *  self._utcMultiplier(opts.xAxis.interval)));
-                            textNodes.push(node);
-                            textNodes[0].parentNode.appendChild(node);
-                        } 
-                        if (i==0) {
-                            textNodes[0].style.opacity = ((frames - frame * 2)/ frames);
-                            // textNodes[0].setAttributeNS(null, 'opacity', ((frames - frame * 2)/ frames));
-                            textNodes[0].setAttributeNS(null, 'x', paddingForLabel - interval/frames * frame);
-                        } else { 
-                            textNodes[o].setAttributeNS(null, 'x', xaxis);
-                        }
-                        // textNodes[o].dataset.tickPos = i - 1;
-                        o+=1;
-                        // console.log('hit');
-                    } */
                 }
-                //draws the new graph
                 path.setAttributeNS(null, 'd', pathToken);
 
                 //call done for work completion
-                done(function () {
-                    for(var y in textNodes) {
-                        console.log('called??');
-                        textNodes[y].dataset.tickPos = parseInt(textNodes[y].dataset.tickPos) - 1;
-                    }
-                });
+                done();
           }
 
           var self = this;
