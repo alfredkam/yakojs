@@ -1,6 +1,5 @@
     // Closure
     (function(){
-
         /**
          * Decimal adjustment of a number.
          *
@@ -388,7 +387,6 @@
                       pathToken += ' L '+(interval*i+parseInt(paddingForLabel))+' '+ (height - (data[i] * heightRatio) - paddingForLabel);
                   }
               }
-
               return pathToken;
             },
             //svg path builder
@@ -526,7 +524,6 @@
                       this._compile(gLabelYaxis, x)
                         ._compile(gBorders, border);
                     }
-
                 }
                 arr.push(gLabelYaxis);
                 arr.push(gBorders);
@@ -1132,7 +1129,6 @@
                             newLen = newData[i].data.length;
                     }
                 }
-
                 //store the length
                 this.attributes._newDataLength = newLen;
 
