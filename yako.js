@@ -219,7 +219,7 @@
         var workers = nextState || queue[token].slice(0);
         var complete = nextComplete || complete;
         var frames = 69, frame = 0;
-        var interval = 900/frames;
+        var interval = 1000/frames;
         var before = new Date();
         if (waitQueue[token] == true) {
             _job[token].push(workers);
@@ -630,20 +630,36 @@
 					//animate the label for xaxis
                     this.currentCycle = this.currentCycle || 0;
                     this.tickCycle = this.tickCycle || 0;
+                    this.defaultStartValue = 0;
 					var animateXaxis = function (frame, frames, options, done) {
-                        var textNodes = options.nodes;
-                        var o = 0;
+                        // var textNodes = options.nodes;
+                        var o = self.defaultStartValue;
                         if (self.currentCycle != options._cycle) {
                             self.currentCycle +=1;
                             self.tickCycle +=1;
                             if (self.tickCycle == tickGap) {
                                 self.tickCycle = 0;
                             }
+                            if(textNodes[0].attributes.x.value < 0) {
+                                var shifted = textNodes.shift();
+                                if (shifted.parentNode)
+                                    shifted.parentNode.removeChild(shifted);
+                                textNodes = [];
+                                Array.prototype.filter.call(xaxisNodes, function (element) {
+                                    if (element.nodeName) {
+                                        textNodes.push(element);
+                                    }
+                                });  
+                                // textNodes[0];
+                            }
                         }
                         var flagToRemove = false;
 					    for (var i=0; i<oldData.length + dataAdded; i++) {
                             var xaxis = (((interval*i-1)  + ((interval*(i-1) - interval*(i))/frames * (frame))) + parseInt(padding));
                             if ((i+self.tickCycle) % tickGap == 0) {
+                                // if (textNodes[o].attributes.x.value <= 0) {
+                                //     o+=1;
+                                // }
                                 if (textNodes[o+1] === undefined) {
                                     var tickInterval = parseInt(self.attributes._tickGap);
                                     var node = self._make('text', {
@@ -657,23 +673,35 @@
                                     textNodes.push(node);
                                     textNodes[o].parentNode.appendChild(node);
                                 } else {
+                                        // if (options._cycle > 3 && options._cycle < 6 && self.element.id=='graph4') {
+                                        //     console.log(xaxis);
+                                        //     console.log(textNodes[o].parentNode.parentNode.parentNode.id);
+                                        // }
                                     //the new position calculation is not correct!!!
-                                    if (xaxis < textNodes[o].attributes.x.value) {
+                                    if ( xaxis < textNodes[o].attributes.x.value) {
                                         textNodes[o].setAttributeNS(null, 'x', xaxis);
                                     } else {
-                                        if (options._cycle > 3 && options._cycle < 6 && self.element.id=='graph4') {
-                                            console.log(xaxis, textNodes[o].attributes.x.value, i, (((interval*i-1)  + ((interval*(i-1) - interval*(i))/frames * (frame))) + parseInt(padding)));
-                                            console.log(textNodes[o].attributes);
-                                            return
-                                            // textNodes[o].setAttributeNS(null, 'x', xaxis);
-                                            // return;
+                                        if (textNodes[o].attributes.x.value <= 0) {
+                                            // self.defaultStartValue = 1;
+                                            // console.log(o, i);
+                                            // textNodes.shift();
+                                            // textNodes[o+1].setAttributeNS(null, 'x', xaxis);
+                                            // break;
+                                            // console.log(o, i);
+                                            // // console.log(o, i, textNodes.length);
+                                            // // o+=1; i+=1;
+                                            // var shifted = textNodes[o].shift();
+                                            // if(shifted.parentNode)
+                                            //     shifted.parentNode.removeChild(shifted);
+
                                         }
-                                        // console.log(xaxis, )
-                                        // console.log('post', i);
                                     }
                                 }
                                 o+=1;
                             }
+                            // console.log(textNodes);
+
+                            // console.log(textNodes);
                             if (i == 0 && (xaxis <= padding && textNodes[0].x.baseVal[0].value <= padding)) {
                                 // console.log(textNodes[0].x.baseVal[0].value);
                                 textNodes[0].style.opacity = ((frames - frame * 2)/ frames);
@@ -690,9 +718,7 @@
                         }
                         done();   
 					};
-					yako.queue(self.token, {
-                        nodes: textNodes
-                    }, animateXaxis);
+					yako.queue(self.token, null, animateXaxis);
                   return this;
                 }
 
