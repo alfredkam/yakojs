@@ -377,14 +377,14 @@
                 }
                 return this;
             },
-            _pathGenerator: function (data, interval, paddingForLabel, height, heightRatio) {
-              var pathToken ='';
+            _pathGenerator: function (data, interval, paddingForLabel, height, heightRatio, padding) {
+              var pathToken = '';
               //path generator
               for (var i=0; i<data.length; i++) {
                   if (i === 0) {
-                      pathToken += 'M '+(interval*i+parseInt(paddingForLabel))+' '+ (height - (data[i] * heightRatio) - paddingForLabel);
+                      pathToken += 'M '+(interval*i+parseInt(paddingForLabel))+' '+ (height - (data[i] * heightRatio)-padding);
                   } else {
-                      pathToken += ' L '+(interval*i+parseInt(paddingForLabel))+' '+ (height - (data[i] * heightRatio) - paddingForLabel);
+                      pathToken += ' L '+(interval*i+parseInt(paddingForLabel))+' '+ (height - (data[i] * heightRatio)-padding);
                   }
               }
               return pathToken;
@@ -392,8 +392,11 @@
             //svg path builder
             _path : function (data, opts, interval, heightRatio, paddingForLabel) {
                 //get the path
-                var pathToken = this._pathGenerator(data.data, interval, paddingForLabel, opts.chart.height, heightRatio);
-
+                //padding is for yaxis
+                var padding = 5;
+                if (opts._shift)
+                    padding = 20;
+                var pathToken = this._pathGenerator(data.data, interval, paddingForLabel, opts.chart.height, heightRatio, padding);
                 return this._make('path',{
                     fill: 'none',
                     d: pathToken,
@@ -471,7 +474,7 @@
                 if (!opts._shift) return null;
                 var self = this,
                     padding = paddingForLabel,
-                    height = opts.chart.height - (padding * 2); //100 is the factor for the height
+                    height = opts.chart.height - 25;// - padding ;// * 3/2; //100 is the factor for the height
 
                 //yAxis
                 //TODO:: NEED TO fix ADJUSTED height - incorrect scaling ???
@@ -497,16 +500,16 @@
                 }
 
                 while(i--) {
-                    var value = (max/4)*(4-i);
-                    var factor = (heightFactor * (max-value));
-                    factor = (isNaN(factor)? height : factor);
+                    var value = (max/4)*(4-i),
+                    factor = (heightFactor * (max-value));
+                    factor = (isNaN(factor)? height : factor);// + padding/4;
                     var x = this._make('text',{
-                        y: factor + padding + 5,
+                        y: factor + 10,
                         x: 0,
                         'font-size': 12,
                         'font-family': opts.chart['font-family']
                     });
-                    var xaxis = parseInt((factor+padding).toFixed(0)) + 0.5;
+                    var xaxis = parseInt((factor+5).toFixed(0)) + 0.5;
                     var border = this._make('path',{
                       'd' : 'M '+padding + ' '+ xaxis + ' L ' + (opts.chart.width) + ' ' + xaxis,
                       'stroke-width': '1',
@@ -660,7 +663,7 @@
                                     if (textNodes[o+1] === undefined) {
                                         var tickInterval = parseInt(self.attributes._tickGap);
                                         var node = self._make('text', {
-                                            y: opts.chart.height - padding + 20,
+                                            y: height + 20,
                                             x: 1500,
                                             'font-size': 12,
                                             'font-family': opts.chart['font-family']
@@ -677,22 +680,24 @@
                                         //the new position calculation is not correct!!!
                                         if ( xaxis < textNodes[o].attributes.x.value) {
                                             textNodes[o].setAttributeNS(null, 'x', xaxis);
-                                        } else {
-                                            if (textNodes[o].attributes.x.value <= 0) {
-                                                // self.defaultStartValue = 1;
-                                                // console.log(o, i);
-                                                // textNodes.shift();
-                                                // textNodes[o+1].setAttributeNS(null, 'x', xaxis);
-                                                // break;
-                                                // console.log(o, i);
-                                                // // console.log(o, i, textNodes.length);
-                                                // // o+=1; i+=1;
-                                                // var shifted = textNodes[o].shift();
-                                                // if(shifted.parentNode)
-                                                //     shifted.parentNode.removeChild(shifted);
+                                        } 
 
-                                            }
-                                        }
+                                        // else {
+                                        //     if (textNodes[o].attributes.x.value <= 0) {
+                                        //         // self.defaultStartValue = 1;
+                                        //         // console.log(o, i);
+                                        //         // textNodes.shift();
+                                        //         // textNodes[o+1].setAttributeNS(null, 'x', xaxis);
+                                        //         // break;
+                                        //         // console.log(o, i);
+                                        //         // // console.log(o, i, textNodes.length);
+                                        //         // // o+=1; i+=1;
+                                        //         // var shifted = textNodes[o].shift();
+                                        //         // if(shifted.parentNode)
+                                        //         //     shifted.parentNode.removeChild(shifted);
+
+                                        //     }
+                                        // }
                                     }
                                     o+=1;
                                 }
@@ -719,7 +724,7 @@
                       return this;
                     }
 
-                    //this is not re render the labels but adding in new document objects
+                    //this is not re-render the labels but adding in new document objects
                     var i = 0,
                         counter = 0,
                         tickIntervalArray = [];
@@ -729,7 +734,7 @@
                             tickIntervalArray.push(i);
                             var x = this._make('text',{
                                 //plus 20 is for padding
-                                y: height + padding +20,
+                                y: height + 20,
                                 x: padding + interval * i,
                                 'font-size': 12,
                                 'font-family': opts.chart['font-family']
@@ -844,7 +849,7 @@
                 min = _tmp.min,
                 max = _tmp.max,     //rounding to 8 sigFigs
                 interval = this._sigFigs((opts.chart.width / (_tmp.len-1)),8),
-                heightRatio = (opts.chart.height / (max+10));
+                heightRatio = (opts.chart.height - 10) / (max);
 
                 if (opts.xAxis.format) {
                     if (opts.xAxis.format === 'dateTime') {
@@ -852,14 +857,15 @@
                             console.warn('insufficent width or height (min 100px for labels), ignored format: ' +opts.xAxis.format);
                         else {
                             //TODO:: standardize this part
-                            interval = (opts.chart.width - 50) / (_tmp.len-1);
-                            heightRatio = (opts.chart.height - 100) / (max);
+                            interval = (opts.chart.width-25) / (_tmp.len-1);
+                            heightRatio = (opts.chart.height-25.5) / (max);
                             opts._shift = true;
                         }
                     }
                 }
+
                 //determine if padding for labels is needed
-                var paddingForLabel = (opts._shift ? 50 : 0);
+                var paddingForLabel = (opts._shift ? 40 : 0);
 
                 //we are now adding on to exisiting data and to allow animation
                 if (reRender) {
@@ -915,16 +921,15 @@
                         var xaxis = (((interval*i-dataAdded)  + ((interval*(i-dataAdded) - interval*(i))/frames * frame)) + parseInt(paddingForLabel));
                         //to determine which set of data to use
                         if (i >= oldData.length) {
-                          var yaxis = (height-(newData[i-dataAdded] * heightRatio) - paddingForLabel);
+                          var yaxis = (height-(newData[i-dataAdded] * heightRatio) - 20);
                         } else {
-                          var yaxis = (height - (oldData[i] * heightRatio) - paddingForLabel);
+                          var yaxis = (height - (oldData[i] * heightRatio) - 20);
                         }
 
                         //smoothing the line when leaving the grid
                         if (xaxis <= paddingForLabel) {
                             xaxis = paddingForLabel;
-                            yaxis = height - (oldData[posToBlockOut] + ((oldData[posToBlockOut+1] - oldData[posToBlockOut]) * frame / frames)) * heightRatio - paddingForLabel;
-
+                            yaxis = height - (oldData[posToBlockOut] + ((oldData[posToBlockOut+1] - oldData[posToBlockOut]) * frame / frames)) * heightRatio - 20;
                             if (
                                 (oldData[posToBlockOut+1] - oldData[posToBlockOut]) <=
                                 ((oldData[posToBlockOut+1] - oldData[posToBlockOut]) * (frame+1) / frames)
