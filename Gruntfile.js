@@ -25,7 +25,7 @@ module.exports = function (grunt) {
                     {
                         expand : true,
                         cwd : '<%= config.app %>',
-                        src : ['**/*.js', '!**/*.min.js','!node_modules/*/**','!Gruntfile.js'],
+                        src : ['**/*.js', '!**/*.min.js','!node_modules/*/**','!Gruntfile.js','!app.js'],
                         dest : '<%= config.dist %>',
                     }
                 ]
