@@ -121,6 +121,7 @@
             return self;
         };
 
+
         //TODO:: replace this with jymin
         //event ubinding
         yako.unbind = function (self, node, event, fn) {
@@ -665,7 +666,7 @@
                                         var node = self._make('text', {
                                             y: height + 20,
                                             x: 1500,
-                                            'font-size': 12,
+                                            'font-size': 10,
                                             'font-family': opts.chart['font-family']
                                         });
                                         self.attributes._lastTickPos += tickGap;
@@ -673,31 +674,10 @@
                                         textNodes.push(node);
                                         textNodes[o].parentNode.appendChild(node);
                                     } else {
-                                            // if (options._cycle > 3 && options._cycle < 6 && self.element.id=='graph4') {
-                                            //     console.log(xaxis);
-                                            //     console.log(textNodes[o].parentNode.parentNode.parentNode.id);
-                                            // }
                                         //the new position calculation is not correct!!!
                                         if ( xaxis < textNodes[o].attributes.x.value) {
                                             textNodes[o].setAttributeNS(null, 'x', xaxis);
-                                        } 
-
-                                        // else {
-                                        //     if (textNodes[o].attributes.x.value <= 0) {
-                                        //         // self.defaultStartValue = 1;
-                                        //         // console.log(o, i);
-                                        //         // textNodes.shift();
-                                        //         // textNodes[o+1].setAttributeNS(null, 'x', xaxis);
-                                        //         // break;
-                                        //         // console.log(o, i);
-                                        //         // // console.log(o, i, textNodes.length);
-                                        //         // // o+=1; i+=1;
-                                        //         // var shifted = textNodes[o].shift();
-                                        //         // if(shifted.parentNode)
-                                        //         //     shifted.parentNode.removeChild(shifted);
-
-                                        //     }
-                                        // }
+                                        }
                                     }
                                     o+=1;
                                 }
@@ -736,7 +716,7 @@
                                 //plus 20 is for padding
                                 y: height + 20,
                                 x: padding + interval * i,
-                                'font-size': 12,
+                                'font-size': 10,
                                 'font-family': opts.chart['font-family']
                             },{
                                 tickPos : i
@@ -822,10 +802,11 @@
                 var data = this.attributes.data,
                     opts = this.attributes.opts,
                     svg = this._make('svg',{
-                        width : '100%',//opts.chart.width,
+                        width : '100%',
                         height : opts.chart.height,
+                        //No view box?
                         viewBox : '0 0 '+opts.chart.width + ' '+opts.chart.height,
-                        'preserveaspectratio': 'none'
+                        // 'preserveAspectRatio': 'none'
                     }),
                     sets = [],
                     reRender = reRender || false,
@@ -833,7 +814,6 @@
 
                 //this will allow us to have responsive grpah    
                 this.element.style.width = '100%';
-                this.element.style.maxWidth = opts.chart.width+'px';
 
                 if (Object.prototype.toString.call(data) !== '[object Array]') {
                     data = [data];
@@ -857,7 +837,7 @@
                             console.warn('insufficent width or height (min 100px for labels), ignored format: ' +opts.xAxis.format);
                         else {
                             //TODO:: standardize this part
-                            interval = (opts.chart.width-25) / (_tmp.len-1);
+                            interval = (opts.chart.width-42) / (_tmp.len-1);
                             heightRatio = (opts.chart.height-25.5) / (max);
                             opts._shift = true;
                         }
@@ -1040,8 +1020,20 @@
                     return this._spawn(opts.chart.type);
                 } else {
                     this._prepare()
+                    ._reSize()
                     ._generate();
                 }
+                return this;
+            },
+            _reSize: function () {
+                var self = this;
+                self.attributes.opts.chart.width = self.element.scrollWidth;
+                window.addEventListener('resize', function () {
+                    // console.log('resuzed');
+                    self.attributes.opts.chart.width = self.element.scrollWidth;
+                    self.element.innerHTML = '';
+                    self._generate();
+                }, false);
                 return this;
             },
             //the graph hover options
