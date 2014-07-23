@@ -58,11 +58,16 @@
             return x._init(node);
         };
         //version
-        yako.VERSION = '0.0.1';
+        yako.VERSION = '0.0.2';
         yako.eventList = {};
         yako._graphs = {};
 
-        //to extend properties
+        /**
+         * deep extend object or json properties
+         * @param  {object} object to extend
+         * @param  {object} object
+         * @return {object} global function object 
+         */
         yako.extend = function (attr, json) {
             if (!json)
                 return;
@@ -77,7 +82,12 @@
             return this;
         };
 
-        //to assign attributes NS
+        /**
+         * extend attributes NS
+         * @param  {object} object to be assigned
+         * @param  {object} object
+         * @return {object} global function object 
+         */
         yako.assign = function (attr, json) {
             if (!json)
                 return;
@@ -87,7 +97,12 @@
             }
             return this;
         };
-        //check if is function
+
+        /**
+         * check if its a function
+         * @param  {variable} ambiguous variable
+         * @return {boolean} true if its an object 
+         */
         yako.isFn = function (object) {
            return !!(object && object.constructor && object.call && object.apply);
         };
@@ -192,8 +207,12 @@
             return self;
         };
 
-        //animation watcher
-        //function to execute
+        /**
+         * queues the job to be executed by the watcher (yako.startCycle)
+         * @param  {string} token to identify the queue
+         * @param  {object} json object params to pass to object to execute
+         * @param  {object} object to excute
+         */
         var queue = [], _job = [], _complete = [], _cycle = [];
         var blockQueue = {};
         var waitQueue = {};
@@ -211,8 +230,14 @@
             });
         };
 
-        //the watcher that manages the interval cycle;
-        //the aim of this module is to have all animation to be watched under one event timer instead of spawning multiple ones
+        /**
+         * starts the cycle
+         * the aim of this module is to have all animation to be watched under one event timer instead of spawning multiple ones
+         * @param  {string} token to identify the queue
+         * @param  {object} object to excute on complete of the cycle
+         * @param  {object} the next object to excute
+         * @param  {object} the next object to excute on complete of the cycle
+         */
         yako.startCycle = function (token, complete, nextState, nextComplete) {
             //make a copy and empty queue
             var workers = nextState || queue[token].slice(0);
@@ -266,8 +291,10 @@
             render();
         };
 
-
-        //generates a token for the graph
+        /**
+         * generates a token for the graph
+         * @return {string} a random string with numbers
+         */        
         yako.makeToken = function () {
             return Math.random().toString(36).substr(2);
         }
@@ -808,7 +835,11 @@
                     len: length
                 };
             },
-            //the parent svg builder
+            /**
+             * the parent generator that manages the svg generation
+             * @param  {boolean}  true to reRender
+             * @return {object} global function object 
+             */
             _generate: function (reRender) {
                 var data = this.attributes.data,
                     opts = this.attributes.opts,
