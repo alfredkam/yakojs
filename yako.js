@@ -503,12 +503,13 @@
                 while(i--) {
                     var value = (max/4)*(4-i),
                     factor = (heightFactor * (max-value));
-                    factor = (isNaN(factor)? height : factor);// + padding/4;
+                    factor = (isNaN(factor)? height : factor);
                     var x = this._make('text',{
                         y: factor + 10,
-                        x: 0,
+                        x: padding - 10,
                         'font-size': 12,
-                        'font-family': opts.chart['font-family']
+                        'font-family': opts.chart['font-family'],
+                        'text-anchor': 'end'
                     });
                     var xaxis = parseInt((factor+5).toFixed(0)) + 0.5;
                     var border = this._make('path',{
@@ -790,10 +791,25 @@
                     min = (min > _data[0] ? _data[0]: min);
                     max = Math.ceil10((max < _data[_data.length-1] ? _data[_data.length-1] : max),1);
                 }
+                if (!isNaN(max) && ! max == 0) {
+                    while(true) {
+                        var result = max % 5;
+                        if (result !== 0) {
+                            max+= 5 - result;
+                        }
+
+                        result = max % 4;
+                        if (result !== 0) {
+                            max+= 4 - result;
+                        } else {
+                            break;
+                        }
+                    }
+                }
 
                 return {
                     min: min,
-                    max: (isNaN(max) ^ max == 0? 10 : max),
+                    max: (isNaN(max) ^ max == 0? 8 : max),
                     len: length
                 };
             },
