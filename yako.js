@@ -121,7 +121,6 @@
             return self;
         };
 
-
         //TODO:: replace this with jymin
         //event ubinding
         yako.unbind = function (self, node, event, fn) {
@@ -332,7 +331,6 @@
                     this.element = element;
                     return this;
                 }
-                // return (this.element !== null ? this : (throw 'Uncaught Node Element: '+ node + ' is null'));
             },
             //building svg elements
             _make: function (tag, props, data) {
@@ -651,8 +649,7 @@
                                         if (element.nodeName) {
                                             textNodes.push(element);
                                         }
-                                    });  
-                                    // textNodes[0];
+                                    });
                                 }
                             }
                             var flagToRemove = false;
@@ -682,9 +679,7 @@
                                     }
                                     o+=1;
                                 }
-                                // console.log(textNodes);
 
-                                // console.log(textNodes);
                                 if (i == 0 && (xaxis <= padding && textNodes[0].x.baseVal[0].value <= padding)) {
                                     // console.log(textNodes[0].x.baseVal[0].value);
                                     textNodes[0].style.opacity = ((frames - frame * 2)/ frames);
@@ -1031,12 +1026,14 @@
                 }
                 return this;
             },
+            //detecting resize and update the graph
+            //TODO:: update it such that it will only affect xaxis changes
             _reSize: function () {
-                var self = this;
-                self.attributes.opts.chart.width = self.element.scrollWidth;
+                var self = this,
+                var width = self.attributes.opts.chart.width;
+                width = self.element.scrollWidth;
                 window.addEventListener('resize', function () {
-                    // console.log('resuzed');
-                    self.attributes.opts.chart.width = self.element.scrollWidth;
+                    width = self.element.scrollWidth;
                     self.element.innerHTML = '';
                     self._generate();
                 }, false);
