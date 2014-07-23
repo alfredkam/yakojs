@@ -900,10 +900,8 @@
                 var newData = data.data,
                   oldData = oldData.data,
                   height = opts.chart.height,
-                  dataAdded = this.attributes._newDataLength;
-
-                var posToBlockOut = 0;
-                var self = this;
+                  dataAdded = this.attributes._newDataLength,
+                  self = this;
              
               //We will be shifiting the yaxis only for linear graph
               //This function would be queued into the same timer to render all components for this specific graph, such that we do not overload the timer
@@ -912,7 +910,7 @@
                     var pathToken = '', 
                     path = options.path;
                     var o = 0;
-                    for (var i=0; i<oldData.length + dataAdded; i++) {
+                    for (var i=0; i < oldData.length + dataAdded; i++) {
                         //for smoothing the shifting
                         var xaxis = (((interval*i-dataAdded)  + ((interval*(i-dataAdded) - interval*(i))/frames * frame)) + parseInt(paddingForLabel));
                         //to determine which set of data to use
@@ -925,16 +923,9 @@
                         //smoothing the line when leaving the grid
                         if (xaxis <= paddingForLabel) {
                             xaxis = paddingForLabel;
-                            yaxis = height - (oldData[posToBlockOut] + ((oldData[posToBlockOut+1] - oldData[posToBlockOut]) * frame / frames)) * heightRatio - 20;
-                            if (
-                                (oldData[posToBlockOut+1] - oldData[posToBlockOut]) <=
-                                ((oldData[posToBlockOut+1] - oldData[posToBlockOut]) * (frame+1) / frames)
-                            ) {
-                                if (posToBlockOut < i) {
-                                    posToBlockOut = i;
-                                }
-                            }
+                            yaxis = height - (oldData[0] + ((oldData[1] - oldData[0]) * frame / frames)) * heightRatio - 20;
                         }
+
                         if (i === 0) {
                             pathToken += 'M '+ xaxis +' '+ yaxis;
                         } else {
@@ -942,7 +933,6 @@
                         }
                     }
                     path.setAttributeNS(null, 'd', pathToken);
-
                     //call done for work completion
                     done();
               }
