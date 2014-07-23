@@ -865,6 +865,14 @@
                     sets.push(data[i].data);
                 }
 
+                //need to account for the old data that is getting pushed out
+                if (this.attributes.oldData) {
+                    var od = this.attributes.oldData;
+                    for(var i in od) {
+                        sets.push(od[i].data);
+                    }
+                }
+                // console.log(this.attributes.oldData);
                 //find min / max point
                 //assume all data are positive for now;
                 var _tmp = this._findMixMax(sets),
@@ -913,7 +921,7 @@
                         label: data[i].label
                     });
                     this._compile(g, this._path(data[i], opts, interval, heightRatio, paddingForLabel))
-                    ._compile(g,this._circle(data[i], opts, interval, heightRatio, paddingForLabel))
+                    // ._compile(g,this._circle(data[i], opts, interval, heightRatio, paddingForLabel))
                     ._compile(svg,g);
                 }
                 //adding a label
