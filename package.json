@@ -1,6 +1,6 @@
 {
   "name": "yako",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A minimal and light weight graph",
   "dependencies": {
     "consolidate": "^0.10.0",

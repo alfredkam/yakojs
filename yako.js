@@ -293,7 +293,7 @@
 
         /**
          * generates a token for the graph
-         * @return {string} a random string with numbers
+         * @return {string} a random string with numbers 
          */        
         yako.makeToken = function () {
             return Math.random().toString(36).substr(2);
@@ -1060,11 +1060,10 @@
             //detecting resize and update the graph
             //TODO:: update it such that it will only affect xaxis changes
             _reSize: function () {
-                var self = this,
-                var width = self.attributes.opts.chart.width;
-                width = self.element.scrollWidth;
+                var self = this;
+                self.attributes.opts.chart.width = self.element.scrollWidth;
                 window.addEventListener('resize', function () {
-                    width = self.element.scrollWidth;
+                    self.attributes.opts.chart.width = self.element.scrollWidth;
                     self.element.innerHTML = '';
                     self._generate();
                 }, false);
