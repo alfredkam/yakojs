@@ -305,12 +305,12 @@
                 for (var i=0;i<1;i++) {
                     _d1.push(0);
                     _d2.push(20);
-                    _d3.push(Math.floor((Math.random() * 500) + 200));
-                    _d4.push(Math.floor((Math.random() * 500) + 200));
-                    _d5.push(Math.floor((Math.random() * 500) + 200));
-                    _d6.push(Math.floor((Math.random() * 500) + 200));
-                    _d7.push(Math.floor((Math.random() * 700) + 200));
-                    _d8.push(Math.floor((Math.random() * 100) + 200));
+                    _d3.push(Math.floor((Math.random() * 5) + 1));
+                    _d4.push(Math.floor((Math.random() * 5) + 1));
+                    _d5.push(Math.floor((Math.random() * 40) + 1));
+                    _d6.push(Math.floor((Math.random() * 40) + 1));
+                    _d7.push(Math.floor((Math.random() * 8000) + 1));
+                    _d8.push(Math.floor((Math.random() * 8000) + 1));
                 }
                 //to support increment data for 3 scenarios
                 //+ adding new set of data - ie. adding another line
@@ -320,27 +320,27 @@
                 //When increment with 'accumulateIncrementalData' as false,
                 //+it is important to note it will only retain x length of data base on the data length that you've feed in
                 //+it will shift the timestamp depending on the tick size you've set
-                // graph.incrementData([{
-                //     label : 'Auto Generated',
-                //     data: _d1
-                // },{
-                //     label : 'Auto Generated 2',
-                //     data: _d2
-                // }])
-                // graph4.incrementData([{
-                //     label : 'Auto Generated',
-                //     data: _d3
-                // },{
-                //     label : 'Auto Generated 2',
-                //     data: _d4
-                // }]);
-                // graph5.incrementData([{
-                //     label : 'Auto Generated',
-                //     data: _d5
-                // },{
-                //     label : 'Auto Generated 2',
-                //     data: _d6
-                // }]);
+                graph.incrementData([{
+                    label : 'Auto Generated',
+                    data: _d1
+                },{
+                    label : 'Auto Generated 2',
+                    data: _d2
+                }])
+                graph4.incrementData([{
+                    label : 'Auto Generated',
+                    data: _d3
+                },{
+                    label : 'Auto Generated 2',
+                    data: _d4
+                }]);
+                graph5.incrementData([{
+                    label : 'Auto Generated',
+                    data: _d5
+                },{
+                    label : 'Auto Generated 2',
+                    data: _d6
+                }]);
                 graph6.incrementData([{
                     label : 'Auto Generated',
                     data: _d7
@@ -348,7 +348,7 @@
                     label : 'Auto Generated 2',
                     data: _d8
                 }]);
-            },1100);
+            },1000);
 
             //example to add a module / functionality
             // yako.register('piechart',{

@@ -495,16 +495,143 @@
 
                 return multiplier;
             },
-            //computes and distributes the label
-            _labelAndBorders: function (data, opts, interval, heightRatio, min, max, splits, paddingForLabel, reRender) {
+            //for reRendering labels and borders
+            _reRenderLabelAndBorders: function (data, opts, interval, heightRatio, min, max, splits, paddingForLabel) {
                 if (!opts._shift) return null;
                 var self = this,
                     padding = paddingForLabel,
-                    height = opts.chart.height - 25;// - padding ;// * 3/2; //100 is the factor for the height
+                    height = opts.chart.height - 25,
+                    heightFactor = height / max;
+                //animate the label for xaxis
+                this.currentCycle = this.currentCycle || 0;
+                this.tickCycle = this.tickCycle || 0;
+                this.defaultStartValue = 0;
+                var delayedRenderYAxis = function (frame, frames, options, done) {
+                    if (self.currentCycle != options._cycle || self.currentCycle == 0) {
+                        var yaxis = self._getNode(self.element, null, '.yaxis')[0];
+                        yaxis.innerHTML = '';
+                        var borders = self._getNode(self.element, null, '.borders')[0];
+                        borders.innerHTML = '';
+                        var i = splits + 1;
+                        while(i--) {
+                            var value = (max/splits)*(splits-i),
+                            factor = (heightFactor * (max-value));
+                            factor = (isNaN(factor)? height : factor);
+                            var x = self._make('text',{
+                                y: factor + 10,
+                                x: padding - 10,
+                                'font-size': 12,
+                                'font-family': opts.chart['font-family'],
+                                'text-anchor': 'end'
+                            });
+                            var xaxis = parseInt((factor+5).toFixed(0)) + 0.5;
+                            var border = self._make('path',{
+                              'd' : 'M '+padding + ' '+ xaxis + ' L ' + (opts.chart.width) + ' ' + xaxis,
+                              'stroke-width': '1',
+                              'stroke': '#c0c0c0',
+                              'fill': 'none',
+                              'opacity': '1',
+                              'stroke-linecap': 'round'
+                            });
+
+                            self._compile(yaxis, x)
+                            ._compile(borders, border);
+                            x.innerHTML = (isNaN(value)? 0 : value);
+                        }
+                    }
+                    done();
+                }
+                yako.queue(self.token, null, delayedRenderYAxis);
+
+                var xaxisNodes = this._getNode(this.element, null, '.xaxis')[0].getElementsByTagName('text');
+                var textNodes = [];
+
+                Array.prototype.filter.call(xaxisNodes, function (element) {
+                    if (element.nodeName) {
+                        textNodes.push(element);
+                    }
+                });
+                var oldData = this.attributes.oldData[0].data,
+                dataAdded = this.attributes._newDataLength,
+                tickGap = this.attributes._tickGap;
+
+                //TODO:: this part to handle the animation is pretty dirty - requires cleaning and merging all animation under one timer.
+
+                var animateXaxis = function (frame, frames, options, done) {
+                    // var textNodes = options.nodes;
+                    var o = self.defaultStartValue;
+                    if (self.currentCycle != options._cycle) {
+                        self.currentCycle +=1;
+                        self.tickCycle +=1;
+                        if (self.tickCycle == tickGap) {
+                            self.tickCycle = 0;
+                        }
+                        if(textNodes[0].attributes.x.value < 0) {
+                            var shifted = textNodes.shift();
+                            if (shifted.parentNode)
+                                shifted.parentNode.removeChild(shifted);
+                            textNodes = [];
+                            Array.prototype.filter.call(xaxisNodes, function (element) {
+                                if (element.nodeName) {
+                                    textNodes.push(element);
+                                }
+                            });
+                        }
+                    }
+                    var flagToRemove = false;
+                    for (var i=0; i<oldData.length + dataAdded; i++) {
+                        var xaxis = (((interval*i-1)  + ((interval*(i-1) - interval*(i))/frames * (frame))) + parseInt(padding));
+                        if ((i+self.tickCycle) % tickGap == 0) {
+                            // if (textNodes[o].attributes.x.value <= 0) {
+                            //     o+=1;
+                            // }
+                            if (textNodes[o+1] === undefined) {
+                                var tickInterval = parseInt(self.attributes._tickGap);
+                                var node = self._make('text', {
+                                    y: height + 20,
+                                    x: 1500,
+                                    'font-size': 10,
+                                    'font-family': opts.chart['font-family']
+                                });
+                                self.attributes._lastTickPos += tickGap;
+                                node.innerHTML = self._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((self.attributes._lastTickPos)) *  self._utcMultiplier(opts.xAxis.interval)));
+                                textNodes.push(node);
+                                textNodes[o].parentNode.appendChild(node);
+                            } else {
+                                //the new position calculation is not correct!!!
+                                if ( xaxis < textNodes[o].attributes.x.value) {
+                                    textNodes[o].setAttributeNS(null, 'x', xaxis);
+                                }
+                            }
+                            o+=1;
+                        }
+
+                        if (i == 0 && (xaxis <= padding && textNodes[0].x.baseVal[0].value <= padding)) {
+                            textNodes[0].style.opacity = ((frames - frame * 2)/ frames);
+                        }
+                        if (i==0 && (xaxis <= 0 && textNodes[0].x.baseVal[0].value <= 0)) {
+                                 flagToRemove = true;
+                        }
+                    }
+
+                    if (flagToRemove) {
+                        if(textNodes[0].parentNode) {
+                            textNodes[0].parentNode.removeChild(textNodes[0]);
+                        }
+                    }
+                    done();   
+                };
+                yako.queue(self.token, null, animateXaxis);
+                return this;
+            },
+            //computes and distributes the label
+            _labelAndBorders: function (data, opts, interval, heightRatio, min, max, splits, paddingForLabel) {
+                if (!opts._shift) return null;
+                var self = this,
+                    padding = paddingForLabel,
+                    height = opts.chart.height - 25;
 
                 //yAxis
-                //TODO:: NEED TO fix ADJUSTED height - incorrect scaling ???
-                //NEED TO VERIFY
                 var i = splits + 1,
                     arr = [],
                 gLabelYaxis = this._make('g',{
@@ -519,11 +646,6 @@
                 })
 
                 var heightFactor = height / max;
-
-                if (reRender) {
-                    var yaxis = self._getNode(self.element, null, '.yaxis')[0];
-                    yaxis.innerHTML = '';
-                }
 
                 while(i--) {
                     var value = (max/splits)*(splits-i),
@@ -545,18 +667,13 @@
                       'opacity': '1',
                       'stroke-linecap': 'round'
                     })
-
+                    this._compile(gLabelYaxis, x)
+                    ._compile(gBorders, border);
                     x.innerHTML = (isNaN(value)? 0 : value);
-
-                    if (reRender) {
-                            self._compile(yaxis, x);
-                    } else {
-                      this._compile(gLabelYaxis, x)
-                        ._compile(gBorders, border);
-                    }
                 }
                 arr.push(gLabelYaxis);
                 arr.push(gBorders);
+
                 //xAxis
                 //Accepted xAxis - [1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
                 var len = data[0].data.length,
@@ -636,94 +753,6 @@
                             format.tickSize = M;
                     } else {
                         throw 'Error: Incorrect Label Format';
-                    }
-
-                    //this is re rendering the labels
-                    if (reRender) {
-                        var self = this;
-                        var xaxisNodes = this._getNode(this.element, null, '.xaxis')[0].getElementsByTagName('text');
-                        var textNodes = [];
-
-                        Array.prototype.filter.call(xaxisNodes, function (element) {
-                            if (element.nodeName) {
-                                textNodes.push(element);
-                            }
-                        });
-                        var oldData = this.attributes.oldData[0].data,
-                        dataAdded = this.attributes._newDataLength,
-                        tickGap = this.attributes._tickGap;
-
-                        //TODO:: this part to handle the animation is pretty dirty - requires cleaning and merging all animation under one timer.
-                        //animate the label for xaxis
-                        this.currentCycle = this.currentCycle || 0;
-                        this.tickCycle = this.tickCycle || 0;
-                        this.defaultStartValue = 0;
-                        var animateXaxis = function (frame, frames, options, done) {
-                            // var textNodes = options.nodes;
-                            var o = self.defaultStartValue;
-                            if (self.currentCycle != options._cycle) {
-                                self.currentCycle +=1;
-                                self.tickCycle +=1;
-                                if (self.tickCycle == tickGap) {
-                                    self.tickCycle = 0;
-                                }
-                                if(textNodes[0].attributes.x.value < 0) {
-                                    var shifted = textNodes.shift();
-                                    if (shifted.parentNode)
-                                        shifted.parentNode.removeChild(shifted);
-                                    textNodes = [];
-                                    Array.prototype.filter.call(xaxisNodes, function (element) {
-                                        if (element.nodeName) {
-                                            textNodes.push(element);
-                                        }
-                                    });
-                                }
-                            }
-                            var flagToRemove = false;
-                            for (var i=0; i<oldData.length + dataAdded; i++) {
-                                var xaxis = (((interval*i-1)  + ((interval*(i-1) - interval*(i))/frames * (frame))) + parseInt(padding));
-                                if ((i+self.tickCycle) % tickGap == 0) {
-                                    // if (textNodes[o].attributes.x.value <= 0) {
-                                    //     o+=1;
-                                    // }
-                                    if (textNodes[o+1] === undefined) {
-                                        var tickInterval = parseInt(self.attributes._tickGap);
-                                        var node = self._make('text', {
-                                            y: height + 20,
-                                            x: 1500,
-                                            'font-size': 10,
-                                            'font-family': opts.chart['font-family']
-                                        });
-                                        self.attributes._lastTickPos += tickGap;
-                                        node.innerHTML = self._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((self.attributes._lastTickPos)) *  self._utcMultiplier(opts.xAxis.interval)));
-                                        textNodes.push(node);
-                                        textNodes[o].parentNode.appendChild(node);
-                                    } else {
-                                        //the new position calculation is not correct!!!
-                                        if ( xaxis < textNodes[o].attributes.x.value) {
-                                            textNodes[o].setAttributeNS(null, 'x', xaxis);
-                                        }
-                                    }
-                                    o+=1;
-                                }
-
-                                if (i == 0 && (xaxis <= padding && textNodes[0].x.baseVal[0].value <= padding)) {
-                                    textNodes[0].style.opacity = ((frames - frame * 2)/ frames);
-                                }
-                                if (i==0 && (xaxis <= 0 && textNodes[0].x.baseVal[0].value <= 0)) {
-                                         flagToRemove = true;
-                                }
-                            }
-
-                            if (flagToRemove) {
-                                if(textNodes[0].parentNode) {
-                                    textNodes[0].parentNode.removeChild(textNodes[0]);
-                                }
-                            }
-                            done();   
-                        };
-                        yako.queue(self.token, null, animateXaxis);
-                      return this;
                     }
 
                     //this is not re-render the labels but adding in new document objects
@@ -813,22 +842,8 @@
                     max = Math.ceil10((max < _data[_data.length-1] ? _data[_data.length-1] : max),max.toString().length - 1);
                 }
 
-                // if (!isNaN(max) && ! max == 0) {
-                //     while(true) {
-                //         var result = max % 5;
-                //         if (result !== 0) {
-                //             max+= 5 - result;
-                //         }
-
-                //         result = max % 4;
-                //         if (result !== 0) {
-                //             max+= 4 - result;
-                //         } else {
-                //             break;
-                //         }
-                //     }
-                // }
-
+                var set = {};
+                //TODO:: this piece of code a bit naive, should be optimized during next refactor
                 if (!isNaN(max) && !max == 0) {
                     var leftInt4 = parseInt(max.toString()[0]),
                         leftInt5 = parseInt(max.toString()[0]),
@@ -838,34 +853,55 @@
                         if (res4 !== 0)
                             leftInt4+= 4 - res4;
 
-                        while (true) {
-                            var res5 = leftInt5 % 5;
-                            if (res5 !== 0)
-                                leftInt5+= 5 - res5;
+                        set.l = leftInt4;
+                        set.s = leftInt4/4;
+                        set.f = 4;
+                 
+                        var res5 = leftInt5 % 5;
+                        if (res5 !== 0)
+                            leftInt5+= 5 - res5;
 
-                            var res2 = leftInt5 % 2;
-                            if (res2 !== 0) {
-                                leftInt5+= 2 - res2;
-                            } else {
-                                break;
-                            }
+                        if (leftInt5/5 < set.s) {
+                            set.l = leftInt5;
+                            set.s = leftInt5/5;
+                            set.f = 5; 
                         }
 
-                        
+                        var res2 = leftInt2 % 2;
+                        if (res2 !== 0)
+                            leftInt2+= 2 - res2;
 
-                    // console.log(leftInt4, leftInt5);
-                    if (leftInt4 < leftInt5) {
-                        max = parseInt(leftInt4 + max.toString().substr(1,max.toString().length - 1))
-                    } else {
-                        max = parseInt(leftInt5 + max.toString().substr(1,max.toString().length - 1))
-                    }
+                        if (leftInt2 % 2 == 0) {
+                            if (leftInt2/2 <= set.s) {
+                                set.l = leftInt2;
+                                set.s = leftInt2/2;
+                                set.f = 2; 
+                            }   
+                        }
+
+                        if (10 < max && max <= 20) {
+                            set.l = 2;
+                            set.s = leftInt2/4;
+                            set.f = 4;
+                        } else if ( 5 < max && max <= 10 ) {
+                            set.l = 1;
+                            set.s = leftInt2/5;
+                            set.f = 5;
+                        }
+
+                        if ( 1 < max && max < 5) {
+                            max = 5;
+                            set.f = 5;
+                        } else {
+                            max = parseInt(set.l + max.toString().substr(1,max.toString().length - 1))
+                        }
                 }
 
                 return {
                     min: min,
-                    max: (isNaN(max) ^ max == 0? 8 : max),
+                    max: (isNaN(max) ^ max == 0? 1 : max),
                     len: length,
-                    splits: (leftInt4 < leftInt5 ? 4 : 5)
+                    splits: (isNaN(max) ^ max == 0? 4 : set.f)  //the number of line splits
                 };
             },
             /**
@@ -933,8 +969,7 @@
 
                 //we are now adding on to exisiting data and to allow animation
                 if (reRender) {
-                    console.log(max);
-                    this._labelAndBorders(data, opts, interval, heightRatio, min, max, splits, paddingForLabel, true);
+                    this._reRenderLabelAndBorders(data, opts, interval, heightRatio, min, max, splits, paddingForLabel, true);
                     var nodes = this._getNode(this.element, null, 'g');
                     for (var i in data) {
                         this._reRenderPath(nodes, data[i], opts, interval, heightRatio, paddingForLabel, this.attributes.oldData[i]);
