@@ -496,7 +496,7 @@
                 return multiplier;
             },
             //computes and distributes the label
-            _labelAndBorders: function (data, opts, interval, heightRatio, min, max, paddingForLabel, reRender) {
+            _labelAndBorders: function (data, opts, interval, heightRatio, min, max, splits, paddingForLabel, reRender) {
                 if (!opts._shift) return null;
                 var self = this,
                     padding = paddingForLabel,
@@ -505,7 +505,7 @@
                 //yAxis
                 //TODO:: NEED TO fix ADJUSTED height - incorrect scaling ???
                 //NEED TO VERIFY
-                var i = 5,
+                var i = splits + 1,
                     arr = [],
                 gLabelYaxis = this._make('g',{
                   'class': 'yaxis'
@@ -526,7 +526,7 @@
                 }
 
                 while(i--) {
-                    var value = (max/4)*(4-i),
+                    var value = (max/splits)*(splits-i),
                     factor = (heightFactor * (max-value));
                     factor = (isNaN(factor)? height : factor);
                     var x = this._make('text',{
@@ -708,7 +708,6 @@
                                 }
 
                                 if (i == 0 && (xaxis <= padding && textNodes[0].x.baseVal[0].value <= padding)) {
-                                    // console.log(textNodes[0].x.baseVal[0].value);
                                     textNodes[0].style.opacity = ((frames - frame * 2)/ frames);
                                 }
                                 if (i==0 && (xaxis <= 0 && textNodes[0].x.baseVal[0].value <= 0)) {
@@ -794,7 +793,7 @@
                 return Math.round(n * mult) / mult;
             },
             //finding min & max between multiple set (any improvments to multiple array search)
-            _findMixMax: function (data) {
+            _findMinMax: function (data) {
                 var min, max, length;
 
                 function compareNumbers(a, b) {
@@ -811,28 +810,62 @@
                     var _data = (data[i].slice()).sort(compareNumbers);
                     length = (length < _data.length ? _data.length : length);
                     min = (min > _data[0] ? _data[0]: min);
-                    max = Math.ceil10((max < _data[_data.length-1] ? _data[_data.length-1] : max),1);
+                    max = Math.ceil10((max < _data[_data.length-1] ? _data[_data.length-1] : max),max.toString().length - 1);
                 }
-                if (!isNaN(max) && ! max == 0) {
-                    while(true) {
-                        var result = max % 5;
-                        if (result !== 0) {
-                            max+= 5 - result;
+
+                // if (!isNaN(max) && ! max == 0) {
+                //     while(true) {
+                //         var result = max % 5;
+                //         if (result !== 0) {
+                //             max+= 5 - result;
+                //         }
+
+                //         result = max % 4;
+                //         if (result !== 0) {
+                //             max+= 4 - result;
+                //         } else {
+                //             break;
+                //         }
+                //     }
+                // }
+
+                if (!isNaN(max) && !max == 0) {
+                    var leftInt4 = parseInt(max.toString()[0]),
+                        leftInt5 = parseInt(max.toString()[0]),
+                        leftInt2 = parseInt(max.toString()[0]);
+
+                        var res4 = leftInt4 % 4;
+                        if (res4 !== 0)
+                            leftInt4+= 4 - res4;
+
+                        while (true) {
+                            var res5 = leftInt5 % 5;
+                            if (res5 !== 0)
+                                leftInt5+= 5 - res5;
+
+                            var res2 = leftInt5 % 2;
+                            if (res2 !== 0) {
+                                leftInt5+= 2 - res2;
+                            } else {
+                                break;
+                            }
                         }
 
-                        result = max % 4;
-                        if (result !== 0) {
-                            max+= 4 - result;
-                        } else {
-                            break;
-                        }
+                        
+
+                    // console.log(leftInt4, leftInt5);
+                    if (leftInt4 < leftInt5) {
+                        max = parseInt(leftInt4 + max.toString().substr(1,max.toString().length - 1))
+                    } else {
+                        max = parseInt(leftInt5 + max.toString().substr(1,max.toString().length - 1))
                     }
                 }
 
                 return {
                     min: min,
                     max: (isNaN(max) ^ max == 0? 8 : max),
-                    len: length
+                    len: length,
+                    splits: (leftInt4 < leftInt5 ? 4 : 5)
                 };
             },
             /**
@@ -875,9 +908,10 @@
                 // console.log(this.attributes.oldData);
                 //find min / max point
                 //assume all data are positive for now;
-                var _tmp = this._findMixMax(sets),
+                var _tmp = this._findMinMax(sets),
                 min = _tmp.min,
-                max = _tmp.max,     //rounding to 8 sigFigs
+                max = _tmp.max,
+                splits = _tmp.splits,
                 interval = this._sigFigs((opts.chart.width / (_tmp.len-1)),8),
                 heightRatio = (opts.chart.height - 10) / (max);
 
@@ -899,7 +933,8 @@
 
                 //we are now adding on to exisiting data and to allow animation
                 if (reRender) {
-                    this._labelAndBorders(data, opts, interval, heightRatio, min, max, paddingForLabel, true);
+                    console.log(max);
+                    this._labelAndBorders(data, opts, interval, heightRatio, min, max, splits, paddingForLabel, true);
                     var nodes = this._getNode(this.element, null, 'g');
                     for (var i in data) {
                         this._reRenderPath(nodes, data[i], opts, interval, heightRatio, paddingForLabel, this.attributes.oldData[i]);
@@ -911,7 +946,7 @@
                 }
 
                 //svg z index is compiled by order
-                this._compile(svg, this._labelAndBorders(data, opts, interval, heightRatio, min, max, paddingForLabel, false));
+                this._compile(svg, this._labelAndBorders(data, opts, interval, heightRatio, min, max, splits, paddingForLabel, false));
 
                 //adding each path & circle
                 for (var i in data) {
