@@ -805,14 +805,20 @@
                   else
                     str = str.replace(/hh/, (dateObj.getHours() == 0? 12 :  dateObj.getHours()))
                             .replace(/ap/,'am');
-
                 } else
                   str = str.replace(/hh/, (dateObj.getHours() == 0? 12 :  dateObj.getHours()))
 
                 str = str.replace(/MM/,dateObj.getMonth()+1)
-                    .replace(/DD/, dateObj.getDate())
-                    .replace(/mm/,dateObj.getMinutes())
+                    .replace(/DD/, dateObj.getDate());
+
+                if (/mm/.test(str) && /ss/.test(str)) {
+                    str = str.replace(/mm/,(dateObj.getMinutes().toString().length == 1 ? '0'+dateObj.getMinutes(): dateObj.getMinutes()))
+                    .replace(/ss/,(dateObj.getSeconds().toString().length == 1 ? '0'+dateObj.getSeconds(): dateObj.getSeconds()));
+                } else {
+                    str = str.replace(/mm/,dateObj.getMinutes())
                     .replace(/ss/,dateObj.getSeconds());
+                }
+                    
                 return str;
             },
             //sig fig rounding
