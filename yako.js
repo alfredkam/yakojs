@@ -839,62 +839,63 @@
                     var _data = (data[i].slice()).sort(compareNumbers);
                     length = (length < _data.length ? _data.length : length);
                     min = (min > _data[0] ? _data[0]: min);
-                    max = Math.ceil10((max < _data[_data.length-1] ? _data[_data.length-1] : max),max.toString().length - 1);
+                    max = (max < _data[_data.length-1] ? _data[_data.length-1] : max);
                 }
 
                 var set = {};
                 //TODO:: this piece of code a bit naive, should be optimized during next refactor
                 if (!isNaN(max) && !max == 0) {
-                    var leftInt4 = parseInt(max.toString()[0]),
-                        leftInt5 = parseInt(max.toString()[0]),
-                        leftInt2 = parseInt(max.toString()[0]);
+                    var leftInt4 = parseInt(Math.ceil10(max,max.toString().length - 1).toString()[0]),
+                        leftInt5 = parseInt(Math.ceil10(max,max.toString().length - 1).toString()[0]),
+                        leftInt2 = parseInt(Math.ceil10(max,max.toString().length - 1).toString()[0]);
 
-                        var res4 = leftInt4 % 4;
-                        if (res4 !== 0)
-                            leftInt4+= 4 - res4;
+                    var res4 = leftInt4 % 4;
+                    if (res4 !== 0)
+                        leftInt4+= 4 - res4;
 
-                        set.l = leftInt4;
-                        set.s = leftInt4/4;
+                    set.l = leftInt4;
+                    set.s = leftInt4/4;
+                    set.f = 4;
+             
+                    var res5 = leftInt5 % 5;
+                    if (res5 !== 0)
+                        leftInt5+= 5 - res5;
+
+                    if (leftInt5/5 < set.s) {
+                        set.l = leftInt5;
+                        set.s = leftInt5/5;
+                        set.f = 5; 
+                    }
+
+                    var res2 = leftInt2 % 2;
+                    if (res2 !== 0)
+                        leftInt2+= 2 - res2;
+
+                    if (leftInt2 % 2 == 0) {
+                        if (leftInt2/2 <= set.s) {
+                            set.l = leftInt2;
+                            set.s = leftInt2/2;
+                            set.f = 2; 
+                        }   
+                    }
+
+                    if (15 < max && max <= 20) {
+                        set.l = 2;
                         set.f = 4;
-                 
-                        var res5 = leftInt5 % 5;
-                        if (res5 !== 0)
-                            leftInt5+= 5 - res5;
+                    } else if ( 5 < max && max <= 10 ) {
+                        set.l = 1;
+                        set.f = 5;
+                    }
 
-                        if (leftInt5/5 < set.s) {
-                            set.l = leftInt5;
-                            set.s = leftInt5/5;
-                            set.f = 5; 
-                        }
-
-                        var res2 = leftInt2 % 2;
-                        if (res2 !== 0)
-                            leftInt2+= 2 - res2;
-
-                        if (leftInt2 % 2 == 0) {
-                            if (leftInt2/2 <= set.s) {
-                                set.l = leftInt2;
-                                set.s = leftInt2/2;
-                                set.f = 2; 
-                            }   
-                        }
-
-                        if (10 < max && max <= 20) {
-                            set.l = 2;
-                            set.s = leftInt2/4;
-                            set.f = 4;
-                        } else if ( 5 < max && max <= 10 ) {
-                            set.l = 1;
-                            set.s = leftInt2/5;
-                            set.f = 5;
-                        }
-
-                        if ( 1 < max && max < 5) {
-                            max = 5;
-                            set.f = 5;
-                        } else {
-                            max = parseInt(set.l + max.toString().substr(1,max.toString().length - 1))
-                        }
+                    if ( 1 < max && max < 5) {
+                        max = 5;
+                        set.f = 5;
+                    } else if ( 10 < max && max <= 15) {
+                        max = 15;
+                        set.f = 3;
+                    } else {
+                        max = parseInt(set.l + Math.ceil10(max,max.toString().length - 1).toString().substr(1,Math.ceil10(max,max.toString().length - 1).toString().length - 1))
+                    }
                 }
 
                 return {
