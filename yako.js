@@ -906,9 +906,9 @@
 
                 return {
                     min: min,
-                    max: (isNaN(max) ^ max == 0? 1 : max),
+                    max: (isNaN(max) ^ max == 0? 2 : max),
                     len: length,
-                    splits: (isNaN(max) ^ max == 0? 4 : set.f)  //the number of line splits
+                    splits: (isNaN(max) ^ max == 0? 2 : set.f)  //the number of line splits
                 };
             },
             /**
