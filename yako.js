@@ -1145,12 +1145,15 @@
             //detecting resize and update the graph
             //TODO:: update it such that it will only affect xaxis changes
             _reSize: function () {
-                var self = this;
+                var self = this,
+                    prev = self.element.scrollWidth;
                 self.attributes.opts.chart.width = self.element.scrollWidth;
                 window.addEventListener('resize', function () {
-                    self.attributes.opts.chart.width = self.element.scrollWidth;
-                    self.element.innerHTML = '';
-                    self._generate();
+                    if (prev !== self.element.scrollWidth) {
+                        self.attributes.opts.chart.width = self.element.scrollWidth;
+                        self.element.innerHTML = '';
+                        self._generate();
+                    }
                 }, false);
                 return this;
             },
