@@ -851,56 +851,47 @@
                 var set = {};
                 //TODO:: this piece of code a bit naive, should be optimized during next refactor
                 if (!isNaN(max) && !max == 0) {
-                    var leftInt4 = parseInt(Math.ceil10(max,max.toString().length - 1).toString()[0]),
-                        leftInt5 = parseInt(Math.ceil10(max,max.toString().length - 1).toString()[0]),
-                        leftInt2 = parseInt(Math.ceil10(max,max.toString().length - 1).toString()[0]);
-
-                    var res4 = leftInt4 % 4;
-                    if (res4 !== 0)
-                        leftInt4+= 4 - res4;
-
-                    set.l = leftInt4;
-                    set.s = leftInt4/4;
-                    set.f = 4;
-             
-                    var res5 = leftInt5 % 5;
-                    if (res5 !== 0)
-                        leftInt5+= 5 - res5;
-
-                    if (leftInt5/5 < set.s) {
-                        set.l = leftInt5;
-                        set.s = leftInt5/5;
-                        set.f = 5; 
-                    }
-
-                    var res2 = leftInt2 % 2;
-                    if (res2 !== 0)
-                        leftInt2+= 2 - res2;
-
-                    if (leftInt2 % 2 == 0) {
-                        if (leftInt2/2 <= set.s) {
-                            set.l = leftInt2;
-                            set.s = leftInt2/2;
-                            set.f = 2; 
-                        }   
-                    }
-
-                    if (15 < max && max <= 20) {
-                        set.l = 2;
-                        set.f = 4;
-                    } else if ( 5 < max && max <= 10 ) {
-                        set.l = 1;
-                        set.f = 5;
-                    }
-
-                    if ( 1 < max && max < 5) {
-                        max = 5;
-                        set.f = 5;
-                    } else if ( 10 < max && max <= 15) {
-                        max = 15;
-                        set.f = 3;
-                    } else {
-                        max = parseInt(set.l + Math.ceil10(max,max.toString().length - 1).toString().substr(1,Math.ceil10(max,max.toString().length - 1).toString().length - 1))
+                    var ceil = Math.ceil10(max, max.toString().length - 1);
+                    if (ceil.toString().length > 1) {
+                        var leftInt = parseInt(ceil.toString().substr(0,2));
+                        set.l = leftInt.toString()[0];
+                        
+                        if (set.l > 4) {
+                            if (set.l === 9) {
+                                set.l = 10;
+                                set.f = 5;
+                            //even
+                            } else if (set.l % 2 == 0) {
+                                set.f = set.l/2;
+                            //odd
+                            } else {
+                                set.f = set.l;
+                            }
+                            max = parseInt(set.l + Math.ceil10(max,max.toString().length - 1).toString().substr(1,Math.ceil10(max,max.toString().length - 1).toString().length - 1))
+                        } else {
+                            var secondaryCeil = Math.ceil(max, max.toString().length-2),
+                            secondaryLeftInt = parseInt(secondaryCeil.toString().substr(0,2));
+                            if (secondaryLeftInt.toString()[1] > 5) {
+                                set.l = leftInt;
+                            } else {
+                                set.l = leftInt - 5;
+                            }
+                            set.f = set.l / 5;
+                            max = parseInt(set.l + Math.ceil10(max,max.toString().length - 1).toString().substr(1,Math.ceil10(max,max.toString().length - 1).toString().length - 2))
+                        }
+                    //signal digit
+                    } else { 
+                        if (ceil % 2 == 0) {
+                            max = ceil;
+                            set.f = ceil / 2;
+                        } else if (ceil === 9) {
+                            max = 10;
+                            set.f = 5;
+                        //odd
+                        } else {
+                            max = ceil;
+                            set.f = ceil;
+                        }
                     }
                 }
 
