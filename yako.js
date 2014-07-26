@@ -849,7 +849,7 @@
                 }
 
                 var set = {};
-                //find label and #borders best fit.
+                //find label and #borders best fit
                 if (!isNaN(max) && !max == 0) {
                     var ceil = Math.ceil10(max, max.toString().length - 1);
                     if (max.toString().length > 1 && ceil !== 10) {
@@ -962,6 +962,8 @@
                     }
                 }
 
+                this.heightRatio = heightRatio;
+
                 //determine if padding for labels is needed
                 var paddingForLabel = (opts._shift ? 40 : 0);
 
@@ -1052,7 +1054,6 @@
             },
             //attach events
             _attach: function () {
-                return this;
                 if (!this.hover)
                     return this;
 
@@ -1063,20 +1064,14 @@
                 this._compile(this.element, div);
                 var self = this;
 
-                yako.unbind(this,'#'+this.element.id +' .graphData');
-                yako.on(this, '#'+this.element.id +' .graphData', 'mouseover', function (e) {
-                    e.target.style.fill = 'blue';
-                    var data = JSON.parse(decodeURIComponent(e.target.dataset.info));
-                     //TODO:: make the content customizable by the user
-                    div.innerHTML = '<b>Data: ' + data.data + '</b><br><b>Interval: '+( data.date ? data.date : data.interval )+'</b>';
-                    div.style.display = 'block';
-                    div.style.top = data.cy + 5;
-                    div.style.left = data.cx + 15;
-                });
-                yako.on(this, '#'+this.element.id +' .graphData', 'mouseout', function (e) {
-                    e.target.style.fill = 'red';
-                    div.style.display = 'none';
-                });
+                //yaxis math :: height - (oldData[i] * heightRatio) - 20;
+
+                // yako.unbind(this,'#'+this.element.id +' svg');
+                self.element.getElementsByTagName('svg')[0].addEventListener('mousemove', function (e) {
+                    var data = self.attributes.data;
+                    console.log('x',e.x, 'y',e.y, 'top',self.element.scrollTop,'left', self.element.scrollLeft);
+
+                }, false);
                 return this;
             },
             //extends the api & will not affect the parent name space - a plug & play system
@@ -1171,8 +1166,7 @@
                 //analyze what is needed to be update
                 this._appendZeroAndData(this.attributes.data, json)
                     ._shiftData()
-                    ._generate(true)
-                    ._attach();
+                    ._generate(true);
                 //to keep delivering previous data untill new data comes in.
                 // this._autoflow(json);
             },
