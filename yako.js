@@ -849,7 +849,7 @@
                 }
 
                 var set = {};
-                //TODO:: this piece of code a bit naive, should be optimized during next refactor
+                //find label and #borders best fit.
                 if (!isNaN(max) && !max == 0) {
                     var ceil = Math.ceil10(max, max.toString().length - 1);
                     if (max.toString().length > 1 && ceil !== 10) {
@@ -879,7 +879,7 @@
                             set.f = set.l / 5;
                             max = parseInt(set.l + Math.ceil10(max,max.toString().length - 1).toString().substr(1,Math.ceil10(max,max.toString().length - 1).toString().length - 2))
                         }
-                    //singal digit
+                    //single digit
                     } else {
                         if (ceil % 2 == 0) {
                             max = ceil;
