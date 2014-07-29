@@ -1062,14 +1062,18 @@
                 div.style.position = 'absolute';
                 div.style.display = 'none';
                 this._compile(this.element, div);
-                var self = this;
+                var self = this,
+                element = self.element;
+                var padding = (this.attributes.opts._shift ? 40 : 0);
+                var offset = element.getBoundingClientRect();
 
                 //yaxis math :: height - (oldData[i] * heightRatio) - 20;
 
                 // yako.unbind(this,'#'+this.element.id +' svg');
                 self.element.getElementsByTagName('svg')[0].addEventListener('mousemove', function (e) {
                     var data = self.attributes.data;
-                    console.log('x',e.x, 'y',e.y, 'top',self.element.scrollTop,'left', self.element.scrollLeft);
+                    console.log('x', e.x-offset.left-padding, 'y', e.y-offset.top+doc.body.scrollTop);
+                    
 
                 }, false);
                 return this;
