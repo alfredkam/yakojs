@@ -72,6 +72,7 @@
             if (!json)
                 return;
             var k = Object.keys(json), len = k.length;
+            if (attr == undefined) return;
             while(len--) {
                 if (typeof json[k[len]] !== 'object' || Object.prototype.toString.call(json[k[len]]) === '[object Array]') {
                     attr[k[len]] = json[k[len]];
@@ -1068,12 +1069,10 @@
                 var offset = element.getBoundingClientRect();
 
                 //yaxis math :: height - (oldData[i] * heightRatio) - 20;
-
                 // yako.unbind(this,'#'+this.element.id +' svg');
                 self.element.getElementsByTagName('svg')[0].addEventListener('mousemove', function (e) {
                     var data = self.attributes.data;
                     console.log('x', e.x-offset.left-padding, 'y', e.y-offset.top+doc.body.scrollTop);
-                    
 
                 }, false);
                 return this;
