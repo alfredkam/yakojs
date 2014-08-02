@@ -360,10 +360,19 @@
                     return this;
                 }
             },
+            _extendDataSet: function (node, data) {
+                if (!data) return this;
+                var keys = Object.keys(data);
+                for(var i in keys) {
+                    node.dataset[keys[i]] = data[keys[i]]
+                }
+                return this;
+            },
             //building svg elements
             _make: function (tag, props, data) {
                 var node = doc.createElementNS('http://www.w3.org/2000/svg',tag);
                 this.assign(node,props);
+                // this._extendDataSet(node, data);
                 this.extend(node.dataset, data);
                 return node;
             },
@@ -433,9 +442,7 @@
                     'stroke-linejoin': 'round',
                     'stroke-linecap': 'round',
                     'z-index': 9,
-                    'class': '_yakoTransitions'
-                },{
-                    label: data.label
+                    'class': '_yakoTransitions-'+data.label
                 });
             },
             //svg circle builder
@@ -940,7 +947,7 @@
                         sets.push(od[i].data);
                     }
                 }
-                // console.log(this.attributes.oldData);
+    
                 //find min / max point
                 //assume all data are positive for now;
                 var _tmp = this._findMinMax(sets),
@@ -971,7 +978,7 @@
                 //we are now adding on to exisiting data and to allow animation
                 if (reRender) {
                     this._reRenderLabelAndBorders(data, opts, interval, heightRatio, min, max, splits, paddingForLabel, true);
-                    var nodes = this._getNode(this.element, null, 'g');
+                    var nodes = this._getNode(this.element, null, 'path');
                     for (var i in data) {
                         this._reRenderPath(nodes, data[i], opts, interval, heightRatio, paddingForLabel, this.attributes.oldData[i]);
                     }
@@ -1043,15 +1050,11 @@
               }
 
               var self = this;
-              //gets the associated path
-              Array.prototype.filter.call(nodes, function (e) {
-                  if(e.nodeName && e.dataset.label == data.label) {
-                        var path = e.getElementsByTagName('path')[0];
-                        yako.queue(self.token, {
-                            path: path
-                        }, animateGraph);
-                  }
-              });
+
+              var path = this._getNode(this.element,null, '._yakoTransitions-'+data.label)[0];
+              yako.queue(self.token, {
+                  path: path
+              }, animateGraph);
             },
             //attach events
             _attach: function () {
@@ -1122,6 +1125,9 @@
                 this.attributes.data = opts.data || [];
                 opts._originalDataLength = this.attributes.data[0].data.length;
                 this.attributes.opts = opts;
+                for(var i in opts.data) {
+                    opts.data[i].label = opts.data[i].label.replace(/\s/g,'-');
+                }
                 if(opts.chart && opts.chart.type && yako._graphs[opts.chart.type]) {
                     return this._spawn(opts.chart.type);
                 } else {
@@ -1214,6 +1220,7 @@
                 //check if the corresponding label exist for the data;
                 for (var i in newData) {
                     for (var j in oldData) {
+                        newData[i].label = newData[i].label.replace(/\s/g,'-');
                         if (oldData[j].label == newData[i].label) {
                             newData[i]._exist = true;
                             break;
