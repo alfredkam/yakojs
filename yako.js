@@ -108,106 +108,6 @@
            return !!(object && object.constructor && object.call && object.apply);
         };
 
-        //TODO:: replace this with jymin
-        //event binding
-        yako.on = function (self, node, event, fn, useCapture) {
-            var useCapture = useCapture || false;
-            if (yako.eventList[node]) {
-                if (yako.eventList[node][event]) {
-                    yako.eventList[node][event].push(fn);
-                } else {
-                    yako.eventList[node][event] = [];
-                    yako.eventList[node][event].push(fn);
-                }
-            } else {
-                yako.eventList[node] = {};
-                yako.eventList[node][event] = [];
-                yako.eventList[node][event].push(fn);
-            }
-            var nodes = self._getNode(node, true);
-            if (nodes && nodes.tagName) {
-                nodes.addEventListener(event, fn, useCapture);
-            } else if (nodes) {
-                Array.prototype.filter.call(nodes, function (element) {
-                    if (element.nodeName) {
-                        element.addEventListener(event, fn, useCapture);
-                    }
-                });
-            }
-            return self;
-        };
-
-        //TODO:: replace this with jymin or remove this block of code entirely.
-        //event ubinding
-        yako.unbind = function (self, node, event, fn) {
-            var nodes = self._getNode(node, true);
-            //remove specific event & function
-            if (event && fn && yako.isFn(fn)) {
-                //check if event exist first && remove from array
-                if (yako.eventList[node] && yako.eventList[node][event]) {
-                    var found = false;
-                    for (var i in yako.eventList[node][event]) {
-                        if (yako.eventList[node][event][i] == fn) {
-                            yako.eventList[node][event].splice(i,1);
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found) {
-                        return self;
-                    }
-                } else {
-                    return self;
-                }
-                //remove event
-                if(nodes && nodes.tagName) {
-                    nodes.removeEventListener(event, fn);
-                } else if(nodes) {
-                    Array.prototype.filter.call(nodes, function (element) {
-                        if (element.nodeName) {
-                            element.removeEventListener(event, fn);
-                        }
-                    });
-                }
-            //remove specific event
-            } else if (event && yako.eventList[node] && yako.eventList[node][event]) {
-                var keys = yako.eventList[node][event], len = keys.length;
-                while (len--) {
-                    if(nodes && nodes.tagName) {
-                        nodes.removeEventListener(event, keys[len]);
-                    } else if(nodes) {
-                        Array.prototype.filter.call(nodes, function (element) {
-                            if (element.nodeName) {
-                                element.removeEventListener(event, keys[len]);
-                            }
-                        });
-                    }
-                }
-                yako.eventList[node][event] = [];
-            //remove all event
-            } else {
-                if (yako.eventList[node] && nodes) {
-                    var keys = Object.keys(yako.eventList[node]), len = keys.length;
-                    while (len--) {
-                        var fns = yako.eventList[node][keys[len]];
-                        for (var i in fns) {
-                            if (nodes && nodes.tagName) {
-                                nodes.removeEventListener(keys[len], fns[i]);
-                            } else if(nodes) {
-                                Array.prototype.filter.call(nodes, function (element) {
-                                    if (element.nodeName) {
-                                        element.removeEventListener(keys[len], fns[i]);
-                                    }
-                                });
-                            }
-                        }
-                        yako.eventList[node][keys[len]] = [];
-                    }
-                }   
-            }
-            return self;
-        };
-
         /**
          * queues the job to be executed by the watcher (yako.startCycle)
          * @param  {string} token to identify the queue
@@ -1076,7 +976,6 @@
                 var padding = (this.attributes.opts._shift ? 40 : 0),
                 opts = this.attributes.opts;
                 var offset = element.getBoundingClientRect();
-                // yako.unbind(this,'#'+this.element.id +' svg');
 
                 var utcMult = this._utcMultiplier(opts.xAxis.interval);
                 var graph = self.element.getElementsByTagName('svg')[0];
@@ -1179,12 +1078,6 @@
             hoverable: function (fn) {
                 this.hover = true;
                 this._attach(fn);
-                return this;
-            },
-            //remove hover events
-            removeHover: function () {
-                yako.unbind(this,'#'+this.element.id+ ' .graphData', 'mouseout')
-                .unbind(this,'#'+this.element.id+' .graphData', 'mouseover');
                 return this;
             },
             //to support increment data for 3 scenarios
