@@ -517,9 +517,9 @@
                 var delayedRenderYAxis = function (frame, frames, options, done) {
                     if (self.currentCycle != options._cycle || self.currentCycle == 0) {
                         var yaxis = self._getNode(self.element, null, '.yaxis')[0];
-                        yaxis.innerHTML = '';
+                        yaxis.textContent = '';
                         var borders = self._getNode(self.element, null, '.borders')[0];
-                        borders.innerHTML = '';
+                        borders.textContent = '';
                         var i = splits + 1;
                         while(i--) {
                             var value = (max/splits)*(splits-i),
@@ -541,10 +541,10 @@
                               'opacity': '1',
                               'stroke-linecap': 'round'
                             });
-
+                            x.textContent = (isNaN(value)? 0 : value);
                             self._compile(yaxis, x)
                             ._compile(borders, border);
-                            x.innerHTML = (isNaN(value)? 0 : value);
+                            
                         }
                     }
                     done();
@@ -568,6 +568,7 @@
                 var animateXaxis = function (frame, frames, options, done) {
                     // var textNodes = options.nodes;
                     var o = self.defaultStartValue;
+
                     if (self.currentCycle != options._cycle) {
                         self.currentCycle +=1;
                         self.tickCycle +=1;
@@ -602,7 +603,7 @@
                                     'font-family': opts.chart['font-family']
                                 });
                                 self.attributes._lastTickPos += tickGap;
-                                node.innerHTML = self._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((self.attributes._lastTickPos)) *  self._utcMultiplier(opts.xAxis.interval)));
+                                node.textContent = self._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((self.attributes._lastTickPos)) *  self._utcMultiplier(opts.xAxis.interval)));
                                 textNodes.push(node);
                                 textNodes[o].parentNode.appendChild(node);
                             } else {
@@ -614,10 +615,10 @@
                             o+=1;
                         }
 
-                        if (i == 0 && (xaxis <= padding && textNodes[0].x.baseVal[0].value <= padding)) {
+                        if (i == 0 && (xaxis <= padding && textNodes[0].getAttribute('x') <= padding)) {
                             textNodes[0].style.opacity = ((frames - frame * 2)/ frames);
                         }
-                        if (i==0 && (xaxis <= 0 && textNodes[0].x.baseVal[0].value <= 0)) {
+                        if (i==0 && (xaxis <= 0 && textNodes[0].getAttribute('x') <= 0)) {
                                  flagToRemove = true;
                         }
                     }
@@ -675,9 +676,10 @@
                       'opacity': '1',
                       'stroke-linecap': 'round'
                     })
+                    x.textContent = (isNaN(value)? 0 : value);
                     this._compile(gLabelYaxis, x)
                     ._compile(gBorders, border);
-                    x.innerHTML = (isNaN(value)? 0 : value);
+                    
                 }
                 arr.push(gLabelYaxis);
                 arr.push(gBorders);
@@ -780,7 +782,7 @@
                             },{
                                 tickPos : i
                             });
-                            x.innerHTML = this._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((i+opts._shiftIntervals)) * format.utc)); //(interval * (i+opts._shiftIntervals)).toFixed(0);
+                            x.textContent = this._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((i+opts._shiftIntervals)) * format.utc)); //(interval * (i+opts._shiftIntervals)).toFixed(0);
                             this._compile(gLabelXaxis, x);
                             if (i !== 0 || format.tickSize === counter)
                                 counter = 0;
@@ -919,10 +921,12 @@
                 var data = this.attributes.data,
                     opts = this.attributes.opts,
                     svg = this._make('svg',{
-                        width : '100%',
-                        height : opts.chart.height,
+                        width: '100%',
+                        height: opts.chart.height,
                         //No view box?
-                        viewBox : '0 0 '+opts.chart.width + ' '+opts.chart.height,
+                        xlms: 'http://www.w3.org/2000/svg',
+                        version: '1.1',
+                        viewBox: '0 0 '+opts.chart.width + ' '+opts.chart.height,
                         // 'preserveAspectRatio': 'none'
                     }),
                     sets = [],
