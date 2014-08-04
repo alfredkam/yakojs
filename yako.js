@@ -137,7 +137,7 @@
             return self;
         };
 
-        //TODO:: replace this with jymin
+        //TODO:: replace this with jymin or remove this block of code entirely.
         //event ubinding
         yako.unbind = function (self, node, event, fn) {
             var nodes = self._getNode(node, true);
@@ -765,7 +765,7 @@
                         throw 'Error: Incorrect Label Format';
                     }
 
-                    //this is not re-render the labels but adding in new document objects
+                    //this part not re-render the labels but adding in new document objects
                     var i = 0,
                         counter = 0,
                         tickIntervalArray = [];
@@ -837,7 +837,7 @@
                     sig - Math.floor(Math.log(n) / Math.LN10) - 1);
                 return Math.round(n * mult) / mult;
             },
-            //finding min & max between multiple set (any improvments to multiple array search)
+            //finding min & max between multiple set (any improvments to multiple array search?)
             _findMinMax: function (data) {
                 var min, max, length;
 
@@ -963,18 +963,20 @@
 
                 if (opts.xAxis.format) {
                     if (opts.xAxis.format === 'dateTime') {
-                        if (opts.chart.width - 100 <= 0 || opts.chart.height - 100 <= 0)
-                            console.warn('insufficent width or height (min 100px for labels), ignored format: ' +opts.xAxis.format);
-                        else {
+                        //should throw warning
+                        // if (opts.chart.width - 100 <= 0 || opts.chart.height - 100 <= 0)
+                        //     // console.warn('insufficent width or height (min 100px for labels), ignored format: ' +opts.xAxis.format);
+                        // else {
                             //TODO:: standardize this part
                             interval = (opts.chart.width-42) / (_tmp.len-1);
                             heightRatio = (opts.chart.height-25.5) / (max);
                             opts._shift = true;
-                        }
+                        // }
                     }
                 }
 
                 this.heightRatio = heightRatio;
+                this.interval = interval;
 
                 //determine if padding for labels is needed
                 var paddingForLabel = (opts._shift ? 40 : 0);
@@ -1003,7 +1005,6 @@
                         label: data[i].label
                     });
                     this._compile(g, this._path(data[i], opts, interval, heightRatio, paddingForLabel))
-                    // ._compile(g,this._circle(data[i], opts, interval, heightRatio, paddingForLabel))
                     ._compile(svg,g);
                 }
                 //adding a label
@@ -1061,7 +1062,7 @@
               }, animateGraph);
             },
             //attach events
-            _attach: function () {
+            _attach: function (fn) {
                 if (!this.hover)
                     return this;
 
@@ -1072,16 +1073,34 @@
                 this._compile(this.element, div);
                 var self = this,
                 element = self.element;
-                var padding = (this.attributes.opts._shift ? 40 : 0);
+                var padding = (this.attributes.opts._shift ? 40 : 0),
+                opts = this.attributes.opts;
                 var offset = element.getBoundingClientRect();
-
-                //yaxis math :: height - (oldData[i] * heightRatio) - 20;
                 // yako.unbind(this,'#'+this.element.id +' svg');
-                self.element.getElementsByTagName('svg')[0].addEventListener('mousemove', function (e) {
+
+                var utcMult = this._utcMultiplier(opts.xAxis.interval);
+                var graph = self.element.getElementsByTagName('svg')[0];
+                graph.addEventListener('mousemove', function (e) {
                     var data = self.attributes.data;
-                    console.log('x', e.x-offset.left-padding, 'y', e.y-offset.top+doc.body.scrollTop);
+                    var x = e.x-offset.left-padding,
+                        y = e.y-offset.top+doc.body.scrollTop,
+                        pos = Math.floor(x/self.interval);
+                    var result = [];
+                    for (var i in data) {
+                        result.push({
+                            label: data[i].label,
+                            y: data[i].data[pos],
+                            x: (opts.xAxis && opts.xAxis.format && opts.xAxis.format === 'datetime' ? opts.self._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((pos+opts._shiftIntervals)) * utcMult)) : pos)
+                        })
+                    }
+
+                    div.innerHTML = fn(result);
+                    div.style.display = 'block';
 
                 }, false);
+                graph.addEventListener('mouseout', function (e) {
+                    div.style.display = 'none';
+                });
                 return this;
             },
             //extends the api & will not affect the parent name space - a plug & play system
@@ -1120,13 +1139,13 @@
                 this.attributes.opts = defaults;
                             this.lock = {};
                             this.lock.label = 0;
-                            // this.lock.currentLabel = 0;
                 return this;
             },
             //the graph data & options setter
             set: function (opts) {
                 var opts = opts || {};
-                this.attributes.data = opts.data || [];
+                //make sure the data will not cause memory reference error, if some sets of data a shared among other graphs
+                this.attributes.data = JSON.parse(JSON.stringify(opts.data)) || [];
                 opts._originalDataLength = this.attributes.data[0].data.length;
                 this.attributes.opts = opts;
                 for(var i in opts.data) {
@@ -1157,10 +1176,9 @@
                 return this;
             },
             //the graph hover options
-            hoverable: function (opts) {
+            hoverable: function (fn) {
                 this.hover = true;
-                this.attributes.hover = opts;
-                this._attach();
+                this._attach(fn);
                 return this;
             },
             //remove hover events
@@ -1180,8 +1198,6 @@
                 this._appendZeroAndData(this.attributes.data, json)
                     ._shiftData()
                     ._generate(true);
-                //to keep delivering previous data untill new data comes in.
-                // this._autoflow(json);
             },
             //if the chart is accumulateIncrementalData = false, shift the labels (ie: we discard the old data that is outside of the view box)
             _shiftData: function () {

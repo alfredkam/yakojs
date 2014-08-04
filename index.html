@@ -78,6 +78,7 @@
                 }
             ];
 
+
                var set2 = [
                 {
                     label: 'Auto Generated',
@@ -133,7 +134,7 @@
                 },
                 data: set
                 //calling hoverable enables hover
-            }).hoverable({
+            }).hoverable(function (data) {
                 //the css configs, need to define them
             });
 
@@ -177,7 +178,7 @@
                 },
                 data: set2
                 //calling hoverable enables hover
-            }).hoverable({
+            }).hoverable(function (data) {
                 //the css configs, need to define them
             });
 
@@ -221,7 +222,7 @@
                 },
                 data: JSON.parse(JSON.stringify(set2))
                 //calling hoverable enables hover
-            }).hoverable({
+            }).hoverable(function (data) {
                 //the css configs, need to define them
             });
             var graph6 = yako(document.getElementById('graph6')).set({
@@ -264,7 +265,7 @@
                 },
                 data: JSON.parse(JSON.stringify(set2))
                 //calling hoverable enables hover
-            }).hoverable({
+            }).hoverable(function (data) {
                 //the css configs, need to define them
             });
 
@@ -283,7 +284,7 @@
                      dateTimeLabelFormat: 'YYYY/MM/DD hhh',
                      interval: '2h'
                 }
-            }).hoverable({
+            }).hoverable(function (data) {
                 //the css configs, need to define them
             });
 
