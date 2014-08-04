@@ -24,6 +24,7 @@
             </div>
         </div>
         <div id='graph2' class='graph'></div>
+        <div id='graph7' class='graph'></div>
         <div id='graph3' class='graph'></div>
         <script src='yako.js' type='text/javascript'></script>
         <style>
@@ -57,11 +58,9 @@
         <script type='text/javascript'>
             var dataSet = [];
             var dataSet2 = [];
-            for (var i=-0;i<10;i++) {
-                dataSet.push(0);
-                dataSet2.push(500);
-                // dataSet.push(Math.floor((Math.random() * 10) + 10));
-                // dataSet2.push(Math.floor((Math.random() * 10) + 10));i
+            for (var i=0;i<10;i++) {
+                dataSet.push(Math.floor((Math.random() * 500) + 10));
+                dataSet2.push(Math.floor((Math.random() * 500) + 10));
             }
             var set = [
                 {
@@ -79,7 +78,7 @@
             ];
 
 
-               var set2 = [
+            var set2 = [
                 {
                     label: 'Auto Generated',
                     data: dataSet,
@@ -132,10 +131,8 @@
                     // format: 'label',
                     // label: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
                 },
-                data: set
+                data: JSON.parse(JSON.stringify(set2))
                 //calling hoverable enables hover
-            }).hoverable(function (data) {
-                //the css configs, need to define them
             });
 
             var graph4 = yako(document.getElementById('graph4')).set({
@@ -176,12 +173,9 @@
                     // format: 'label',
                     // label: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
                 },
-                data: set2
+                data: JSON.parse(JSON.stringify(set2))
                 //calling hoverable enables hover
-            }).hoverable(function (data) {
-                //the css configs, need to define them
             });
-
             var graph5 = yako(document.getElementById('graph5')).set({
                 chart : {
                     type: 'line',
@@ -222,8 +216,6 @@
                 },
                 data: JSON.parse(JSON.stringify(set2))
                 //calling hoverable enables hover
-            }).hoverable(function (data) {
-                //the css configs, need to define them
             });
             var graph6 = yako(document.getElementById('graph6')).set({
                 chart : {
@@ -263,10 +255,8 @@
                     // format: 'label',
                     // label: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
                 },
-                data: JSON.parse(JSON.stringify(set2))
+                data: set2
                 //calling hoverable enables hover
-            }).hoverable(function (data) {
-                //the css configs, need to define them
             });
 
             yako('#graph2').set({
@@ -285,6 +275,38 @@
                      interval: '2h'
                 }
             }).hoverable(function (data) {
+                var res = '<div>'+data[0].x+'</div>';
+                for(var i in data) {
+                    res+='<div><label style="color:'+data[i].color+'">'+data[i].label+':</label>&nbsp;<label>'+data[i].y+'</label></div>';
+                }
+                res+= '</div>';
+                return res;
+                //the css configs, need to define them
+            });
+
+            yako('#graph7').set({
+                chart : {
+                    type: 'line',
+                    width: 700,
+                    height: 300,
+                    'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+                },
+                title : 'just a test',
+                data: set,
+                xAxis: {
+                     multi: true,
+                     format : 'dateTime',
+                     minUTC: Date.UTC(2013,08,07),
+                     dateTimeLabelFormat: 'YYYY/MM/DD hhh',
+                     interval: '2h'
+                }
+            }).hoverable(function (data) {
+                var res = '<div>'+data[0].x+'</div>';
+                for(var i in data) {
+                    res+='<div><label style="color:'+data[i].color+'">'+data[i].label+':</label>&nbsp;<label>'+data[i].y+'</label></div>';
+                }
+                res+= '</div>';
+                return res;
                 //the css configs, need to define them
             });
 

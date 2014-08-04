@@ -329,6 +329,8 @@
             _path : function (data, opts, interval, heightRatio, paddingForLabel) {
                 //get the path
                 //padding is for yaxis
+                //if stroke is not define, generate a random color!
+                data.color = data.color || '#'+(Math.random()*0xFFFFFF<<0).toString(16);
                 var padding = 5;
                 if (opts._shift)
                     padding = 20;
@@ -336,8 +338,7 @@
                 return this._make('path',{
                     fill: 'none',
                     d: pathToken,
-                    //if stroke is not define, generate a random color!
-                    stroke: data.color || '#'+(Math.random()*0xFFFFFF<<0).toString(16),
+                    stroke: data.color,
                     'stroke-width': '2',
                     'stroke-linejoin': 'round',
                     'stroke-linecap': 'round',
@@ -979,25 +980,63 @@
 
                 var utcMult = this._utcMultiplier(opts.xAxis.interval);
                 var graph = self.element.getElementsByTagName('svg')[0];
+                var interval = self.interval;
+                var labels = [];
+                //forever regex is slow so clean up the need of regex here.
+                var data = self.attributes.data;
+                for (var i in data) {
+                    labels.push(data[i].label.replace(/-/g,' '));
+                }
                 graph.addEventListener('mousemove', function (e) {
                     var data = self.attributes.data;
                     var x = e.x-offset.left-padding,
                         y = e.y-offset.top+doc.body.scrollTop,
-                        pos = Math.floor(x/self.interval);
+                        pos = Math.floor(x/interval);
                     var result = [];
                     for (var i in data) {
                         result.push({
-                            label: data[i].label,
+                            label: labels[i],
                             y: data[i].data[pos],
-                            x: (opts.xAxis && opts.xAxis.format && opts.xAxis.format === 'datetime' ? opts.self._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((pos+opts._shiftIntervals)) * utcMult)) : pos)
+                            x: (opts.xAxis && opts.xAxis.format && opts.xAxis.format === 'dateTime' ? self._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((pos+opts._shiftIntervals)) * utcMult)) : pos),
+                            color: data[i].color
                         })
                     }
 
                     div.innerHTML = fn(result);
+                    // console.log(div.offsetWidth);
+
+                    var offsetX = div.offsetWidth,
+                        offsetY = div.offsetHeight;
+
+                    //top left corner
+                    if (opts.chart.width - offsetX > x 
+                        && y <= opts.chart.height / 2) {
+                        div.style.top = y + 20;
+                        div.style.left = x + padding;
+                    // top right corner
+                    } else if (opts.chart.width - offsetX <= x 
+                        && y <= opts.chart.height / 2) {
+                        div.style.top = y + 20;
+                        div.style.left = x + padding - offsetX;
+                    //bottom right corner
+                    } else if (opts.chart.width - offsetX <= x 
+                        && y >= opts.chart.height - offsetY) {
+                        div.style.top = y + 20;
+                        div.style.left = x + padding - offsetX;
+                    //every where else
+                    } else {
+                        div.style.top = y - offsetY - 10;
+                        div.style.left = x + padding;
+                    }
+
                     div.style.display = 'block';
 
                 }, false);
                 graph.addEventListener('mouseout', function (e) {
+                    e.preventDefault();
+                    if (e.toElement && e.toElement.className == 'graphHover') {
+                        return;
+                    }
                     div.style.display = 'none';
                 });
                 return this;
@@ -1044,7 +1083,7 @@
             set: function (opts) {
                 var opts = opts || {};
                 //make sure the data will not cause memory reference error, if some sets of data a shared among other graphs
-                this.attributes.data = JSON.parse(JSON.stringify(opts.data)) || [];
+                this.attributes.data = opts.data || [];
                 opts._originalDataLength = this.attributes.data[0].data.length;
                 this.attributes.opts = opts;
                 for(var i in opts.data) {
