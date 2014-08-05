@@ -554,6 +554,11 @@
                     var value = (max/splits)*(splits-i),
                     factor = (heightFactor * (max-value));
                     factor = (isNaN(factor)? height : factor);
+
+                    if (value < 0) {
+                        continue;
+                    }
+
                     if (multi && iteration > 0) {
                         //even iteration
                         if (iteration % 2 == 0) {
@@ -881,7 +886,6 @@
                 }
             },
             _emptyData: function (opts) {
-                console.log(opts);
                 var height = (opts.chart.height-10) / 4;
                 var i = 5,
                     arr = [];
@@ -1063,7 +1067,7 @@
               }, animateGraph);
             },
             //attach events
-            _attach: function (fn) {
+            _attach: function (fn, offset) {
                 if (!this.hover || this.attributes.data.length == 0)
                     return this;
 
@@ -1076,7 +1080,10 @@
                 element = self.element;
                 var padding = (this.attributes.opts._shift ? 40 : 0),
                 opts = this.attributes.opts;
-                var offset = element.getBoundingClientRect();
+                // var offset = {
+                //     left: window.pageXOffset,
+                //     top: window.pageYOffset
+                // }
 
                 var utcMult = this._utcMultiplier(opts.xAxis.interval);
                 var graph = self.element.getElementsByTagName('svg')[0];
@@ -1087,6 +1094,7 @@
                 for (var i in data) {
                     labels.push(data[i].label.replace(/-/g,' '));
                 }
+                console.log(offset);
                 graph.addEventListener('mousemove', function (e) {
                     var data = self.attributes.data;
                     var x = e.x-offset.left-padding,
@@ -1107,6 +1115,9 @@
 
                     var offsetX = div.offsetWidth,
                         offsetY = div.offsetHeight;
+
+
+                    console.log(e.y, offset.top, doc.body.scrollTop);
 
                     //top left corner
                     if (opts.chart.width - offsetX > x 
@@ -1215,23 +1226,30 @@
             },
             //the graph hover options
             hoverable: function (fn) {
-                this.attributes.hover = fn;
                 this.hover = true;
-                this._attach(fn);
+                var offset = this.element.getBoundingClientRect();
+                this.attributes.hover = {
+                    fn: fn,
+                    offset: JSON.parse(JSON.stringify(offset))
+                };
+                this._attach(fn, offset);
                 return this;
             },
 
             // NON incremental data - for adding data in static graphs
             addData: function (json) {
+                var hover = this.attributes.hover;
                 this.attributes.data.push(json);
                 this.element.innerHTML = '';
+                console.log(hover);
                 this._generate()
-                    ._attach(this.attributes.hover);
+                    ._attach(hover.fn, hover.offset);
                 return this;
             },
             // NON incremental data - for remove data in a static graphs
             removeData: function (json) {
                 var data = this.attributes.data;
+                var hover = this.attributes.hover;
                 for (var i in data) {
                     if (data[i].label == json.label && data[i].data == json.data) {
                         this.attributes.data.splice(i,1);
@@ -1240,7 +1258,7 @@
                 }
                 this.element.innerHTML = '';
                 this._generate()
-                    ._attach(this.attributes.hover);
+                    ._attach(hover.fn, hover.offset);
                 return this;
             },
             //to support increment data for 3 scenarios
