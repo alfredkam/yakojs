@@ -329,8 +329,6 @@
             _path : function (data, opts, interval, heightRatio, paddingForLabel, multi, maxIterations) {
                 //get the path
                 //padding is for yaxis
-                //if stroke is not define, generate a random color!
-                data.color = data.color || '#'+(Math.random()*0xFFFFFF<<0).toString(16);
                 var padding = 5;
                 if (opts._shift)
                     padding = 20;
@@ -561,7 +559,7 @@
                         if (iteration % 2 == 0) {
                             var x = this._make('text',{
                                 y: factor + 10,
-                                x: padding * Math.ceil(maxIterations / 2) - 10,
+                                x: padding * ((iteration/2)+1) - 10,
                                 'font-size': 12,
                                 'font-family': opts.chart['font-family'],
                                 'text-anchor': 'end',
@@ -571,7 +569,7 @@
                         } else {
                             var x = this._make('text',{
                                 y: factor + 10,
-                                x: opts.chart.width - ((Math.floor(maxIterations / 2 ))*padding) + 10,
+                                x: opts.chart.width - ((Math.ceil(iteration / 2 ))*padding) + 10,
                                 'font-size': 12,
                                 'font-family': opts.chart['font-family'],
                                 'text-anchor': 'start',
@@ -771,8 +769,7 @@
                 } else {
                     str = str.replace(/mm/,dateObj.getMinutes())
                     .replace(/ss/,dateObj.getSeconds());
-                }
-                    
+                } 
                 return str;
             },
             //sig fig rounding
@@ -883,6 +880,24 @@
                     return findBestFit(min, max);
                 }
             },
+            _emptyData: function (opts) {
+                console.log(opts);
+                var height = (opts.chart.height-10) / 4;
+                var i = 5,
+                    arr = [];
+
+                while(i--) {
+                    arr.push(this._make('path',{
+                        'd' : 'M '+ 0 + ' '+ (height*i+5) + ' L ' + opts.chart.width + ' ' +(height*i+5),
+                        'stroke-width': '1',
+                        'stroke': '#c0c0c0',
+                        'fill': 'none',
+                        'opacity': '1',
+                        'stroke-linecap': 'round'
+                    }));
+                }
+                return arr;
+            },
             /**
              * the parent generator that manages the svg generation
              * @param  {boolean}  true to reRender
@@ -911,6 +926,9 @@
                 }
 
                 for (var i in data) {
+                    //sets a random color if color is not determined.
+                    data[i].color = data[i].color || '#'+(Math.random()*0xFFFFFF<<0).toString(16);
+                    //pushes the data into a set for future analysis
                     sets.push(data[i].data);
                 }
 
@@ -920,6 +938,13 @@
                     for(var i in od) {
                         sets.push(od[i].data);
                     }
+                }
+
+                //empty data
+                if (data.length === 0) {
+                    this._compile(svg, this._emptyData(opts))
+                        ._compile(this.element, svg, reRender);
+                    return this;
                 }
     
                 //find min / max point
@@ -935,8 +960,6 @@
                 if (opts.xAxis.format) {
                     if (opts.xAxis.format === 'dateTime') {
                         // should throw warning
-                        // TODO:: standardize this part
-
                         if (multi) {
                             interval = (opts.chart.width-(40*sets.length)) / (range[0].len-1);
                             heightRatio = [];
@@ -983,7 +1006,7 @@
                         label: data[i].label
                     });
                     this._compile(g, this._path(data[i], opts, interval, (multi? heightRatio[i]: heightRatio), paddingForLabel, multi, range.length))
-                    ._compile(svg,g);
+                        ._compile(svg,g);
                 }
                 //adding a label
                 this._compile(this.element, svg, reRender);
@@ -1041,7 +1064,7 @@
             },
             //attach events
             _attach: function (fn) {
-                if (!this.hover)
+                if (!this.hover || this.attributes.data.length == 0)
                     return this;
 
                 var div = doc.createElement('div');
@@ -1161,7 +1184,7 @@
                 var opts = opts || {};
                 //make sure the data will not cause memory reference error, if some sets of data a shared among other graphs
                 this.attributes.data = opts.data || [];
-                opts._originalDataLength = this.attributes.data[0].data.length;
+                opts._originalDataLength = (opts.data?opts.data[0].data.length:0);
                 this.attributes.opts = opts;
                 for(var i in opts.data) {
                     opts.data[i].label = opts.data[i].label.replace(/\s/g,'-');
@@ -1192,8 +1215,32 @@
             },
             //the graph hover options
             hoverable: function (fn) {
+                this.attributes.hover = fn;
                 this.hover = true;
                 this._attach(fn);
+                return this;
+            },
+
+            // NON incremental data - for adding data in static graphs
+            addData: function (json) {
+                this.attributes.data.push(json);
+                this.element.innerHTML = '';
+                this._generate()
+                    ._attach(this.attributes.hover);
+                return this;
+            },
+            // NON incremental data - for remove data in a static graphs
+            removeData: function (json) {
+                var data = this.attributes.data;
+                for (var i in data) {
+                    if (data[i].label == json.label && data[i].data == json.data) {
+                        this.attributes.data.splice(i,1);
+                        break;
+                    }
+                }
+                this.element.innerHTML = '';
+                this._generate()
+                    ._attach(this.attributes.hover);
                 return this;
             },
             //to support increment data for 3 scenarios

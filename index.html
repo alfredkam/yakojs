@@ -26,6 +26,7 @@
         <div id='graph2' class='graph'></div>
         <div id='graph7' class='graph'></div>
         <div id='graph3' class='graph'></div>
+        <div id='graph8' class='graph'></div>
         <script src='yako.js' type='text/javascript'></script>
         <style>
             body {
@@ -59,10 +60,12 @@
             var dataSet = [];
             var dataSet2 = [];
             var dataSet3 = [];
+            var dataSet4 = [];
             for (var i=0;i<10;i++) {
                 dataSet.push(Math.floor((Math.random() * 500) + 10));
                 dataSet2.push(Math.floor((Math.random() * 500) + 10));
                 dataSet3.push(Math.floor((Math.random() * 500) + 10));
+                dataSet4.push(Math.floor((Math.random() * 500) + 10));
             }
             var set = [
                 {
@@ -291,7 +294,7 @@
                 //the css configs, need to define them
             });
 
-            yako('#graph7').set({
+            var graph7 = yako('#graph7').set({
                 chart : {
                     type: 'line',
                     width: 700,
@@ -299,7 +302,7 @@
                     'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
                 },
                 title : 'just a test',
-                data: set,
+                data: JSON.parse(JSON.stringify(set)),
                 xAxis: {
                      multi: true,
                      format : 'dateTime',
@@ -317,7 +320,19 @@
                 //the css configs, need to define them
             });
 
-             yako('#graph3').set({
+            graph7.addData({
+                label: 'Auto Generated 4',
+                data: dataSet4
+            });
+
+            window.setTimeout(function () {
+                graph7.removeData({
+                    label: 'Auto Generated 4',
+                    data: dataSet4,
+                });
+            }, 1000);
+
+            yako('#graph3').set({
                 chart : {
                     type: 'line',
                     width: 700,
@@ -326,8 +341,33 @@
                     showPointer: false
                 },
                 title : 'just a test',
-                data: set,
-            })
+                data: set
+            });
+
+            var graph8 = yako('#graph8').set({
+                chart : {
+                    type: 'line',
+                    width: 700,
+                    height: 300,
+                    'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+                },
+                title : 'just a test',
+                xAxis: {
+                     multi: true,
+                     format : 'dateTime',
+                     minUTC: Date.UTC(2013,08,07),
+                     dateTimeLabelFormat: 'YYYY/MM/DD hhh',
+                     interval: '2h'
+                }
+            }).hoverable(function (data) {
+                var res = '<div>'+data[0].x+'</div>';
+                for(var i in data) {
+                    res+='<div><label style="color:'+data[i].color+'">'+data[i].label+':</label>&nbsp;<label>'+data[i].y+'</label></div>';
+                }
+                res+= '</div>';
+                return res;
+                //the css configs, need to define them
+            });
 
             //demonstrates incrementData
 
