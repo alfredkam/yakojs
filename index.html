@@ -58,9 +58,11 @@
         <script type='text/javascript'>
             var dataSet = [];
             var dataSet2 = [];
+            var dataSet3 = [];
             for (var i=0;i<10;i++) {
                 dataSet.push(Math.floor((Math.random() * 500) + 10));
                 dataSet2.push(Math.floor((Math.random() * 500) + 10));
+                dataSet3.push(Math.floor((Math.random() * 500) + 10));
             }
             var set = [
                 {
@@ -74,6 +76,11 @@
                     label: 'Auto Generated 2',
                     data: dataSet2,
                     color: '#FF7F00'
+                },
+                {
+                    label: 'Auto Generated 3',
+                    data: dataSet3,
+                    color: '#FF00FF'
                 }
             ];
 

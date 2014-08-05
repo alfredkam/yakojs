@@ -313,20 +313,20 @@
                 }
                 return this;
             },
-            _pathGenerator: function (data, interval, paddingForLabel, height, heightRatio, padding) {
+            _pathGenerator: function (data, interval, paddingForLabel, height, heightRatio, padding, multi, maxIterations) {
               var pathToken = '';
               //path generator
               for (var i=0; i<data.length; i++) {
                   if (i === 0) {
-                      pathToken += 'M '+(interval*i+parseInt(paddingForLabel))+' '+ (height - (data[i] * heightRatio)-padding);
+                      pathToken += 'M '+(interval*i+(parseInt(paddingForLabel)*(multi?Math.ceil(maxIterations / 2):1)))+' '+ (height - (data[i] * heightRatio)-padding);
                   } else {
-                      pathToken += ' L '+(interval*i+parseInt(paddingForLabel))+' '+ (height - (data[i] * heightRatio)-padding);
+                      pathToken += ' L '+(interval*i+(parseInt(paddingForLabel)*(multi?Math.ceil(maxIterations / 2):1)))+' '+ (height - (data[i] * heightRatio)-padding);
                   }
               }
               return pathToken;
             },
             //svg path builder
-            _path : function (data, opts, interval, heightRatio, paddingForLabel) {
+            _path : function (data, opts, interval, heightRatio, paddingForLabel, multi, maxIterations) {
                 //get the path
                 //padding is for yaxis
                 //if stroke is not define, generate a random color!
@@ -334,7 +334,7 @@
                 var padding = 5;
                 if (opts._shift)
                     padding = 20;
-                var pathToken = this._pathGenerator(data.data, interval, paddingForLabel, opts.chart.height, heightRatio, padding);
+                var pathToken = this._pathGenerator(data.data, interval, paddingForLabel, opts.chart.height, heightRatio, padding, multi, maxIterations);
                 return this._make('path',{
                     fill: 'none',
                     d: pathToken,
@@ -534,26 +534,21 @@
                 yako.queue(self.token, null, animateXaxis);
                 return this;
             },
-            //computes and distributes the label
-            _labelAndBorders: function (data, opts, interval, heightRatio, min, max, splits, paddingForLabel) {
-                if (!opts._shift) return null;
-                var self = this,
-                    padding = paddingForLabel,
-                    height = opts.chart.height - 25;
+            _makeYAxis: function(opts, height, range, padding, multi, iteration, maxIterations, color, label) {
+                var min = range.min,
+                    max = range.max,
+                    splits = range.splits;
 
                 //yAxis
                 var i = splits + 1,
                     arr = [],
                 gLabelYaxis = this._make('g',{
-                  'class': 'yaxis'
-                }),
-                gLabelXaxis = this._make('g', {
-                  'class': 'xaxis'
+                  'class': 'yaxis yaxis-'+label
                 }),
                 gBorders = this._make('g', {
                   'class': 'borders',
                   'z-index': '1'
-                })
+                });
 
                 var heightFactor = height / max;
 
@@ -561,34 +556,82 @@
                     var value = (max/splits)*(splits-i),
                     factor = (heightFactor * (max-value));
                     factor = (isNaN(factor)? height : factor);
-                    var x = this._make('text',{
-                        y: factor + 10,
-                        x: padding - 10,
-                        'font-size': 12,
-                        'font-family': opts.chart['font-family'],
-                        'text-anchor': 'end'
-                    });
+                    if (multi && iteration > 0) {
+                        //even iteration
+                        if (iteration % 2 == 0) {
+                            var x = this._make('text',{
+                                y: factor + 10,
+                                x: padding * Math.ceil(maxIterations / 2) - 10,
+                                'font-size': 12,
+                                'font-family': opts.chart['font-family'],
+                                'text-anchor': 'end',
+                                fill: color
+                            });  
+                        //odd iteration
+                        } else {
+                            var x = this._make('text',{
+                                y: factor + 10,
+                                x: opts.chart.width - ((Math.floor(maxIterations / 2 ))*padding) + 10,
+                                'font-size': 12,
+                                'font-family': opts.chart['font-family'],
+                                'text-anchor': 'start',
+                                fill: color
+                            });  
+                        }
+                        
+                    } else {
+                        var x = this._make('text',{
+                            y: factor + 10,
+                            x: padding - 10,
+                            'font-size': 12,
+                            'font-family': opts.chart['font-family'],
+                            'text-anchor': 'end',
+                            fill: (multi ? color: '#333')
+                        });
+                    }
                     var xaxis = parseInt((factor+5).toFixed(0)) + 0.5;
                     var border = this._make('path',{
-                      'd' : 'M '+padding + ' '+ xaxis + ' L ' + (opts.chart.width) + ' ' + xaxis,
+                      'd' : 'M '+(multi && maxIterations > 2 ? padding * Math.ceil(maxIterations / 2): padding) + ' '+ xaxis + ' L ' + (multi? opts.chart.width - (padding * Math.floor(maxIterations / 2)): opts.chart.width) + ' ' + xaxis,
                       'stroke-width': '1',
                       'stroke': '#c0c0c0',
                       'fill': 'none',
                       'opacity': '1',
                       'stroke-linecap': 'round'
                     })
-                    x.textContent = (isNaN(value)? 0 : value);
-                    this._compile(gLabelYaxis, x)
-                    ._compile(gBorders, border);
+                    x.textContent = (isNaN(value)? 0 : Math.floor(value));
+                    this._compile(gLabelYaxis, x);
+
+                    if (iteration && iteration > 0)
+                        continue;
+                    this._compile(gBorders, border);
                     
                 }
                 arr.push(gLabelYaxis);
                 arr.push(gBorders);
+                return arr;
+            },
+            //computes and distributes the label
+            _labelAndBorders: function (data, opts, interval, heightRatio, range, padding, multi) {
+                if (!opts._shift) return null;
+                var self = this,
+                    height = opts.chart.height - 25,
+                    arr = [];
+
+                if (multi) {
+                    for (var i in range) {
+                        arr = arr.concat(this._makeYAxis(opts, height, {max: range[i].max, min: range[i].min, splits: range[0].splits} , padding, multi, i, range.length, data[i].color, data[i].label));
+                    }
+                } else {
+                    arr = arr.concat(this._makeYAxis(opts, height, range, padding, multi));
+                }
 
                 //xAxis
                 //Accepted xAxis - [1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
                 var len = data[0].data.length,
                     tick = opts.xAxis.interval,
+                    gLabelXaxis = this._make('g', {
+                      'class': 'xaxis'
+                    }),
                     formatSpec = '',
                     format = {
                         tickInterval: (/\d+/.test(tick) ? tick.match(/\d+/)[0] : 1)
@@ -677,13 +720,13 @@
                             var x = this._make('text',{
                                 //plus 20 is for padding
                                 y: height + 20,
-                                x: padding + interval * i,
+                                x: (multi? padding*Math.ceil(range.length/ 2 ):padding) + interval * i,
                                 'font-size': 10,
                                 'font-family': opts.chart['font-family']
                             },{
                                 tickPos : i
                             });
-                            x.textContent = this._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((i+opts._shiftIntervals)) * format.utc)); //(interval * (i+opts._shiftIntervals)).toFixed(0);
+                            x.textContent = this._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((i+opts._shiftIntervals)) * format.utc));
                             this._compile(gLabelXaxis, x);
                             if (i !== 0 || format.tickSize === counter)
                                 counter = 0;
@@ -739,7 +782,7 @@
                 return Math.round(n * mult) / mult;
             },
             //finding min & max between multiple set (any improvments to multiple array search?)
-            _findMinMax: function (data) {
+            _findMinMax: function (data, multi) {
                 var min, max, length;
 
                 function compareNumbers(a, b) {
@@ -750,68 +793,95 @@
                     data = [data];
                 }
 
-                max = min = data[0][0];
+                //different initialization
+                if (multi) {
+                    max = min = [];
+                    for (var i in data) {
+                        max[i] = min[i] = data[i][0];
+                    }
+                } else {
+                    max = min = data[0][0];
+                }
+
                 length = data[0].length;
                 for (var i in data) {
                     var _data = (data[i].slice()).sort(compareNumbers);
                     length = (length < _data.length ? _data.length : length);
-                    min = (min > _data[0] ? _data[0]: min);
-                    max = (max < _data[_data.length-1] ? _data[_data.length-1] : max);
-                }
-
-                var set = {};
-                //find label and #borders best fit
-                if (!isNaN(max) && !max == 0) {
-                    var ceil = Math.ceil10(max, max.toString().length - 1);
-                    if (max.toString().length > 1 && ceil !== 10) {
-                        var leftInt = parseInt(ceil.toString().substr(0,2));
-                        set.l = leftInt.toString()[0];
-                        
-                        if (set.l > 4) {
-                            if (set.l === 9) {
-                                set.l = 10;
-                                set.f = 5;
-                            //even
-                            } else if (set.l % 2 == 0) {
-                                set.f = set.l/2;
-                            //odd
-                            } else {
-                                set.f = set.l;
-                            }
-                            max = parseInt(set.l + Math.ceil10(max,max.toString().length - 1).toString().substr(1,Math.ceil10(max,max.toString().length - 1).toString().length - 1))
-                        } else {
-                            var secondaryCeil = Math.ceil(max, max.toString().length-2),
-                            secondaryLeftInt = parseInt(secondaryCeil.toString().substr(0,2));
-                            if (secondaryLeftInt.toString()[1] > 4) {
-                                set.l = leftInt;
-                            } else {
-                                set.l = leftInt - 5;
-                            }
-                            set.f = set.l / 5;
-                            max = parseInt(set.l + Math.ceil10(max,max.toString().length - 1).toString().substr(1,Math.ceil10(max,max.toString().length - 1).toString().length - 2))
-                        }
-                    //single digit
+                    //if multi we want the min / max to be independent
+                    if (multi) {
+                        min[i] = _data[0];
+                        max[i] = _data[_data.length-1];
                     } else {
-                        if (ceil % 2 == 0) {
-                            max = ceil;
-                            set.f = ceil / 2;
-                        } else if (ceil === 9) {
-                            max = 10;
-                            set.f = 5;
-                        //odd
-                        } else {
-                            max = ceil;
-                            set.f = ceil;
-                        }
+                    //its not multi, we find the entire picture's min max
+                        min = (min > _data[0] ? _data[0]: min);
+                        max = (max < _data[_data.length-1] ? _data[_data.length-1] : max);
                     }
                 }
 
-                return {
-                    min: min,
-                    max: (isNaN(max) ^ max == 0? 2 : max),
-                    len: length,
-                    splits: (isNaN(max) ^ max == 0? 2 : set.f)  //the number of line splits
-                };
+                var findBestFit = function (min, max) {
+                    var set = {};
+                    //find label and #borders best fit
+                    if (!isNaN(max) && !max == 0) {
+                        var ceil = Math.ceil10(max, max.toString().length - 1);
+                        if (max.toString().length > 1 && ceil !== 10) {
+                            var leftInt = parseInt(ceil.toString().substr(0,2));
+                            set.l = leftInt.toString()[0];
+                            
+                            if (set.l > 4) {
+                                if (set.l === 9) {
+                                    set.l = 10;
+                                    set.f = 5;
+                                //even
+                                } else if (set.l % 2 == 0) {
+                                    set.f = set.l/2;
+                                //odd
+                                } else {
+                                    set.f = set.l;
+                                }
+                                max = parseInt(set.l + Math.ceil10(max,max.toString().length - 1).toString().substr(1,Math.ceil10(max,max.toString().length - 1).toString().length - 1))
+                            } else {
+                                var secondaryCeil = Math.ceil(max, max.toString().length-2),
+                                secondaryLeftInt = parseInt(secondaryCeil.toString().substr(0,2));
+                                if (secondaryLeftInt.toString()[1] > 4) {
+                                    set.l = leftInt;
+                                } else {
+                                    set.l = leftInt - 5;
+                                }
+                                set.f = set.l / 5;
+                                max = parseInt(set.l + Math.ceil10(max,max.toString().length - 1).toString().substr(1,Math.ceil10(max,max.toString().length - 1).toString().length - 2))
+                            }
+                        //single digit
+                        } else {
+                            if (ceil % 2 == 0) {
+                                max = ceil;
+                                set.f = ceil / 2;
+                            } else if (ceil === 9) {
+                                max = 10;
+                                set.f = 5;
+                            //odd
+                            } else {
+                                max = ceil;
+                                set.f = ceil;
+                            }
+                        }
+                    }
+                    return {
+                        max: (isNaN(max) ^ max == 0? 2 : max),
+                        splits: (isNaN(max) ^ max == 0? 2 : set.f), //the number of line splits
+                        len: length,
+                        min: min
+                    }
+                }
+
+                if (multi) {
+                    var result = [];
+                    for (var i in max) {
+                        result.push(findBestFit(min[i], max[i]));
+                    }
+                    return result;
+                } else {
+                    return findBestFit(min, max);
+                }
             },
             /**
              * the parent generator that manages the svg generation
@@ -828,7 +898,6 @@
                         xlms: 'http://www.w3.org/2000/svg',
                         version: '1.1',
                         viewBox: '0 0 '+opts.chart.width + ' '+opts.chart.height,
-                        // 'preserveAspectRatio': 'none'
                     }),
                     sets = [],
                     reRender = reRender || false,
@@ -855,24 +924,31 @@
     
                 //find min / max point
                 //assume all data are positive for now;
-                var _tmp = this._findMinMax(sets),
-                min = _tmp.min,
-                max = _tmp.max,
-                splits = _tmp.splits,
-                interval = this._sigFigs((opts.chart.width / (_tmp.len-1)),8),
-                heightRatio = (opts.chart.height - 10) / (max);
+                var multi = (opts.xAxis && opts.xAxis.multi ? opts.xAxis.multi : false),
+                    range = this._findMinMax(sets, multi),
+                    min = range.min,
+                    max = range.max,
+                    splits = range.splits,
+                    interval = this._sigFigs((opts.chart.width / (range.len-1)),8),
+                    heightRatio = (opts.chart.height - 10) / (max);
 
                 if (opts.xAxis.format) {
                     if (opts.xAxis.format === 'dateTime') {
-                        //should throw warning
-                        // if (opts.chart.width - 100 <= 0 || opts.chart.height - 100 <= 0)
-                        //     // console.warn('insufficent width or height (min 100px for labels), ignored format: ' +opts.xAxis.format);
-                        // else {
-                            //TODO:: standardize this part
-                            interval = (opts.chart.width-42) / (_tmp.len-1);
+                        // should throw warning
+                        // TODO:: standardize this part
+
+                        if (multi) {
+                            interval = (opts.chart.width-(40*sets.length)) / (range[0].len-1);
+                            heightRatio = [];
+                            for (var i in range) {
+                                heightRatio.push((opts.chart.height-25.5) / (range[i].max));
+                            }
+                        } else {
+                            interval = (opts.chart.width-40) / (range.len-1);    //this part adjust the interval base on the width offset;
                             heightRatio = (opts.chart.height-25.5) / (max);
-                            opts._shift = true;
-                        // }
+                        }
+                       
+                        opts._shift = true;
                     }
                 }
 
@@ -883,6 +959,7 @@
                 var paddingForLabel = (opts._shift ? 40 : 0);
 
                 //we are now adding on to exisiting data and to allow animation
+                //NOTE:: We will not do MULTIPLE AXIS for real time data
                 if (reRender) {
                     this._reRenderLabelAndBorders(data, opts, interval, heightRatio, min, max, splits, paddingForLabel, true);
                     var nodes = this._getNode(this.element, null, 'path');
@@ -896,7 +973,7 @@
                 }
 
                 //svg z index is compiled by order
-                this._compile(svg, this._labelAndBorders(data, opts, interval, heightRatio, min, max, splits, paddingForLabel, false));
+                this._compile(svg, this._labelAndBorders(data, opts, interval, heightRatio, range, paddingForLabel, multi));
 
                 //adding each path & circle
                 for (var i in data) {
@@ -905,11 +982,11 @@
                     },{
                         label: data[i].label
                     });
-                    this._compile(g, this._path(data[i], opts, interval, heightRatio, paddingForLabel))
+                    this._compile(g, this._path(data[i], opts, interval, (multi? heightRatio[i]: heightRatio), paddingForLabel, multi, range.length))
                     ._compile(svg,g);
                 }
                 //adding a label
-                this._compile(this.element,svg, reRender);
+                this._compile(this.element, svg, reRender);
                 return this;
             },
             //reRender the path by modify the current path element, such that we dont do a deletion and insertion.
