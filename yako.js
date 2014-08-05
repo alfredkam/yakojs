@@ -1094,7 +1094,6 @@
                 for (var i in data) {
                     labels.push(data[i].label.replace(/-/g,' '));
                 }
-                console.log(offset);
                 graph.addEventListener('mousemove', function (e) {
                     var data = self.attributes.data;
                     var x = e.x-offset.left-padding,
@@ -1115,9 +1114,6 @@
 
                     var offsetX = div.offsetWidth,
                         offsetY = div.offsetHeight;
-
-
-                    console.log(e.y, offset.top, doc.body.scrollTop);
 
                     //top left corner
                     if (opts.chart.width - offsetX > x 
@@ -1241,7 +1237,6 @@
                 var hover = this.attributes.hover;
                 this.attributes.data.push(json);
                 this.element.innerHTML = '';
-                console.log(hover);
                 this._generate()
                     ._attach(hover.fn, hover.offset);
                 return this;
