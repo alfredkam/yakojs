@@ -463,7 +463,6 @@
                 tickGap = this.attributes._tickGap;
 
                 //TODO:: this part to handle the animation is pretty dirty - requires cleaning and merging all animation under one timer.
-
                 var animateXaxis = function (frame, frames, options, done) {
                     // var textNodes = options.nodes;
                     var o = self.defaultStartValue;
@@ -918,6 +917,12 @@
                         version: '1.1',
                         viewBox: '0 0 '+opts.chart.width + ' '+opts.chart.height,
                     }),
+                    highlight = this._make('g', {
+                        className: '_yako-highlight',
+                        'z-index': '0'   
+                    }),
+                    hightlightRect = this._make('rect',{
+                    }),
                     sets = [],
                     reRender = reRender || false,
                     self = this;
@@ -960,6 +965,8 @@
                     splits = range.splits,
                     interval = this._sigFigs((opts.chart.width / (range.len-1)),8),
                     heightRatio = (opts.chart.height - 10) / (max);
+                this.attributes._multi = multi;
+                this.attributes._range = range;
 
                 if (opts.xAxis.format) {
                     if (opts.xAxis.format === 'dateTime') {
@@ -1000,7 +1007,9 @@
                 }
 
                 //svg z index is compiled by order
-                this._compile(svg, this._labelAndBorders(data, opts, interval, heightRatio, range, paddingForLabel, multi));
+                this._compile(highlight, hightlightRect)
+                    ._compile(svg, highlight)
+                    ._compile(svg, this._labelAndBorders(data, opts, interval, heightRatio, range, paddingForLabel, multi));
 
                 //adding each path & circle
                 for (var i in data) {
@@ -1012,6 +1021,7 @@
                     this._compile(g, this._path(data[i], opts, interval, (multi? heightRatio[i]: heightRatio), paddingForLabel, multi, range.length))
                         ._compile(svg,g);
                 }
+
                 //adding a label
                 this._compile(this.element, svg, reRender);
                 return this;
@@ -1080,22 +1090,23 @@
                 element = self.element;
                 var padding = (this.attributes.opts._shift ? 40 : 0),
                 opts = this.attributes.opts;
-                // var offset = {
-                //     left: window.pageXOffset,
-                //     top: window.pageYOffset
-                // }
 
                 var utcMult = this._utcMultiplier(opts.xAxis.interval);
                 var graph = self.element.getElementsByTagName('svg')[0];
                 var interval = self.interval;
-                var labels = [];
-                //forever regex is slow so clean up the need of regex here.
-                var data = self.attributes.data;
+                var labels = [],
+                attributes = self.attributes,
+                rect = self._getElement(this.element, 'rect')[0],
+                multi = attributes._multi;
+
+                //forever regex is slow so we clean up the need of regex here.
+                var data = attributes.data;
                 for (var i in data) {
                     labels.push(data[i].label.replace(/-/g,' '));
                 }
+
                 graph.addEventListener('mousemove', function (e) {
-                    var data = self.attributes.data;
+                    var data = attributes.data;
                     var x = e.x-offset.left-padding,
                         y = e.y-offset.top+doc.body.scrollTop,
                         pos = Math.floor(x/interval);
@@ -1106,15 +1117,29 @@
                             y: data[i].data[pos],
                             x: (opts.xAxis && opts.xAxis.format && opts.xAxis.format === 'dateTime' ? self._formatTimeStamp(opts, opts.xAxis.minUTC+ parseInt(((pos+opts._shiftIntervals)) * utcMult)) : pos),
                             color: data[i].color
-                        })
+                        });
                     }
 
+                    //if no data - return 'this' and dont update the html.
+                    if (result[0].y === undefined)
+                        return self;
+
                     div.innerHTML = fn(result);
-                    // console.log(div.offsetWidth);
+
+                    //highlight the section of the hover
+                    yako.assign(rect, {
+                        'x': (multi ? padding*Math.ceil(attributes._range.length/ 2):padding) + (pos*interval),
+                        'y': 0,
+                        'width': interval,
+                        'height': opts.chart.height - 20,
+                        'fill-opacity': 0.1,
+                        'fill': 'blue'
+                    });
 
                     var offsetX = div.offsetWidth,
                         offsetY = div.offsetHeight;
 
+                    //determining how to show in each corner so its contained in the graph box
                     //top left corner
                     if (opts.chart.width - offsetX > x 
                         && y <= opts.chart.height / 2) {
@@ -1139,12 +1164,19 @@
                     div.style.display = 'block';
 
                 }, false);
+
                 graph.addEventListener('mouseout', function (e) {
                     e.preventDefault();
                     if (e.toElement && e.toElement.className == 'graphHover') {
                         return;
                     }
                     div.style.display = 'none';
+                    yako.assign(rect, {
+                        'x': 0,
+                        'y': 0,
+                        'width': 0,
+                        'height': 0
+                    });
                 });
                 return this;
             },
