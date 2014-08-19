@@ -10,12 +10,12 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['mocha'],
+    frameworks: ['mocha', 'fixture'],
 
 
     // list of files / patterns to load in the browser
     files: [
-      {pattern: 'index.html', watched: true, included: false, served: true},
+      {pattern: 'test/index.test.html', included: true},
       {pattern: 'node_modules/chai/chai.js', include: true},
       'yako.js',
       'test/**/*.unit-test.js',
@@ -31,6 +31,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+        'test/index.test.html': ['html2js'],
         'yako.js': ['coverage']
     },
 

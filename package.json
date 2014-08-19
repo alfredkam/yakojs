@@ -39,6 +39,7 @@
     "karma": "^0.12.21",
     "karma-chrome-launcher": "~0.1",
     "karma-coverage": "^0.2.6",
+    "karma-fixture": "^0.2.1-1",
     "karma-ie-launcher": "^0.1.5",
     "karma-jasmine": "~0.1",
     "karma-mocha": "~0.1",
