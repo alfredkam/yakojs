@@ -1,0 +1,154 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<html>
+    <head>
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,600' rel='stylesheet' type='text/css'>
+    </head>
+    <body>
+        <div id='graph' class='graph'></div>
+        <div id='graph2' class='graph'></div>
+        <script src='dist/yako.js' type='text/javascript'></script>
+        <style>
+            body {
+                font-family: 'Open Sans', sans-serif;
+            }
+            .graph {
+                position: relative;
+            }
+            .graphData {
+                z-index: 10;
+            }
+
+            .graphHover {
+                background: #fff;
+                border: 1px solid #ccc;
+                border-radius: 2px;
+                padding: 2px 5px;
+            }
+            svg, svg * {
+                -moz-transition: all 0.1s linear;
+                -webkit-transition: all 0.1s linear;
+                -o-transition: all 0.1s linear;
+                transition: all 0.1s linear;
+            }
+        </style>
+        <script type='text/javascript'>
+            var dataSet = [];
+            var dataSet2 = [];
+            for (var i=-0;i<10;i++) {
+                dataSet.push(Math.floor((Math.random() * 1000) + 1));
+                dataSet2.push(Math.floor((Math.random() * 1000) + 1));
+            }
+            var set = [
+                {
+                    label: 'Auto Generated',
+                    data: dataSet,
+                    //color controls the line
+                    color: '#1E90FF'
+                    //nodeColor controls the pointer color
+                },
+                {
+                    label: 'Auto Generated 2',
+                    data: dataSet2,
+                    color: '#FF7F00'
+                }
+            ];
+
+            var graph = yako('#graph').set({
+                chart : {
+                    type: 'line',
+                    //controls the width and height of the graph
+                    width: 1000,
+                    height: 300,
+                    'font-family': '"Open Sans", sans-serif',
+                    'font-size': '12',
+                    //this options will show hide the hover pointer
+                    showPointer: false,
+                    //this option will toggle the chart to save incrementable data or not
+                    accumulateIncrementalData: false
+                },
+                title : 'just a test',
+                xAxis : {
+                    //including format will show the xAxis Label
+                    format : 'dateTime',
+                    //interval indicates the data interval, the number of the interval indicates the label tick interval
+                    //s - seconds
+                    //m - minutes
+                    //h - hours
+                    //D - days
+                    //M - months
+                    //Y - years
+                    interval: '4h',  //[1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
+                    //min start date
+                    //do not need end date, expecting there would be zeros to fill the gaps
+                    minUTC: Date.UTC(2013,08,07),
+                    //this controls the dateTime label format
+                    //depending on the format, it will affect the label, try :: dateTimeLabelFormat: 'hhh'
+                    dateTimeLabelFormat: 'YYYY/MM/DD hhh'
+                    // or if wanted custom label
+                    // format: 'label',
+                    // label: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
+                },
+                data: set
+                //calling hoverable enables hover
+            }).hoverable({
+                //the css configs, need to define them
+            });
+
+            yako('#graph2').set({
+                chart : {
+                    type: 'line',
+                    width: 1000,
+                    height: 300,
+                    'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;font-size:12px',
+                },
+                title : 'just a test',
+                data: set
+            }).hoverable({
+                //the css configs, need to define them
+            });
+
+            //demonstrates incrementData
+
+            window.setInterval(function () {
+                var _d1 = [], _d2 = [];
+                for (var i=0;i<1;i++) {
+                    _d1.push(Math.floor((Math.random() * 500) + 400));
+                    _d2.push(Math.floor((Math.random() * 500) + 400));
+                }
+                //to support increment data for 3 scenarios
+                //+ adding new set of data - ie. adding another line
+                //+ partial update on one set of data
+                //+ updating all data at once
+                //INPUT: json object or array of object
+                //When increment with 'accumulateIncrementalData' as false,
+                //+it is important to note it will only retain x length of data base on the data length that you've feed in
+                //+it will shift the timestamp depending on the tick size you've set
+                graph.incrementData([{
+                    label : 'Auto Generated',
+                    data: _d1
+                },{
+                    label : 'Auto Generated 2',
+                    data: _d2
+                }])
+            },3000);
+
+            //example to add a module / functionality
+            // yako.register('piechart',{
+            //     draw: function () {
+            //         console.log('drawing !!!!');
+            //         console.log(this.root);
+            //     }
+            // });
+            // yako('#graph').set({
+            //     chart : {
+            //         type: 'piechart',
+            //         width: 500,
+            //         height: 500,
+            //         'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;font-size:12px'
+            //     },
+            //     data: set
+            // }).draw();
+        </script>
+    </body>
+</html>

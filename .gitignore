@@ -1,8 +1,7 @@
 node_modules/
+coverage/
 *.sublime-*
 .DS_Store
-dist/
-dist.html
 app.js
 .tmp
 .build

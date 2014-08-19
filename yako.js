@@ -1,4 +1,5 @@
     // Closure
+    // this snippet of code is from MDN
     (function(){
         /**
          * Decimal adjustment of a number.
@@ -69,14 +70,16 @@
          * @return {object} global function object 
          */
         yako.extend = function (attr, json) {
-            if (!json)
-                return;
+            if (!json || !attr) return;
+
             var k = Object.keys(json), len = k.length;
-            if (attr == undefined) return;
             while(len--) {
                 if (typeof json[k[len]] !== 'object' || Object.prototype.toString.call(json[k[len]]) === '[object Array]') {
                     attr[k[len]] = json[k[len]];
                 } else {    //it has child objects, copy them too.
+                    if (!attr[k[len]]) {
+                        attr[k[len]] = {};
+                    }
                     yako.extend(attr[k[len]], json[k[len]]);
                 }
             }
@@ -90,8 +93,8 @@
          * @return {object} global function object 
          */
         yako.assign = function (attr, json) {
-            if (!json)
-                return;
+            if (!json || !attr) return;
+            
             var k = Object.keys(json), len = k.length;
             while(len--) {
                 attr.setAttributeNS(null, k[len], json[k[len]]);
