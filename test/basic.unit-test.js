@@ -80,7 +80,7 @@ describe('yako initialization test', function () {
       });
 
       it('yako objects should be a different object', function () {
-        var graph = yako(document.getElementById('graph2')).set({
+        var graph2 = yako(document.getElementById('graph2')).set({
             chart : {
                 type: 'line',
                 //controls the width and height of the graph
@@ -122,7 +122,7 @@ describe('yako initialization test', function () {
             //calling hoverable enables hover
         });
 
-        var graph = yako(document.getElementById('graph3')).set({
+        var graph3 = yako(document.getElementById('graph3')).set({
             chart : {
                 type: 'line',
                 //controls the width and height of the graph
@@ -149,13 +149,13 @@ describe('yako initialization test', function () {
                 //D - days
                 //M - months
                 //Y - years
-                interval: '4h',  //[1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
+                interval: '2Y',  //[1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
                 //min start date
                 //do not need end date, expecting there would be zeros to fill the gaps
                 minUTC: Date.UTC(2013,08,07),
                 //this controls the dateTime label format
                 //depending on the format, it will affect the label, try :: dateTimeLabelFormat: 'hhh'
-                dateTimeLabelFormat: 'MM/DD hh ap'
+                dateTimeLabelFormat: 'YYY'
                 // or if wanted custom label
                 // format: 'label',
                 // label: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.

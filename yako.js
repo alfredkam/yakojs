@@ -145,11 +145,11 @@
         yako.startCycle = function (token, complete, nextState, nextComplete) {
             //make a copy and empty queue
             var workers = nextState || queue[token].slice(0);
-            var complete = nextComplete || complete;
+            complete = nextComplete || complete;
             var frames = 69, frame = 0;
             var interval = 1000/frames;
             var before = new Date();
-            if (waitQueue[token] == true) {
+            if (waitQueue[token] === true) {
                 _job[token].push(workers);
                 _complete[token].push(complete);
                 queue[token] = [];
@@ -157,7 +157,7 @@
             }
             waitQueue[token] = true;
             blockQueue[token] = 0;
-            if (complete == null) { 
+            if (complete === null) { 
                 queue[token] = [];
             }
             function render() {
@@ -191,7 +191,7 @@
                         }
                     }
                 }
-            };
+            }
             render();
         };
 
@@ -201,7 +201,7 @@
          */        
         yako.makeToken = function () {
             return Math.random().toString(36).substr(2);
-        }
+        };
 
         //for registering a module
         yako.register = function (graphName, prototypes) {
@@ -236,6 +236,8 @@
             //TODO:: replace this with jymin - with all() - need to ask if it supports feeding in an HTMLElement
             //#id .class [Done]
             _getNode: function (node, raw, opts) {
+                var element,
+                    arr;
                 if (node instanceof HTMLElement && (opts === undefined || opts === null)) {
                     this.element = node;
                     return this;
@@ -244,17 +246,17 @@
                     return this._getElement(node, opts);
                 }
                 if (Object.prototype.toString.call(node)==='[object Array]' || node.tagName) {
-                    var arr = opts.split(' ');
+                    arr = opts.split(' ');
                     if(arr.length > 1)
                         return this._getNode(this._getElement(node, arr.shift()), null, arr.join(',',' '));
                     else
                         return this._getElement(node, arr.shift());
                 }
                 if (node.split(' ').length > 1) {
-                    var arr = node.split(' ');
+                    arr = node.split(' ');
                     return this._getNode(this._getElement(doc, arr.shift()),null, arr.join(',',' '));
                 } else {
-                    var element = this._getElement(doc, node);
+                    element = this._getElement(doc, node);
                 }
                 if (raw) {
                     return element;
@@ -267,7 +269,7 @@
                 if (!data) return this;
                 var keys = Object.keys(data);
                 for(var i in keys) {
-                    node.dataset[keys[i]] = data[keys[i]]
+                    node.dataset[keys[i]] = data[keys[i]];
                 }
                 return this;
             },
@@ -325,6 +327,10 @@
                   } else {
                       pathToken += ' L '+(interval*i+(parseInt(paddingForLabel)*(multi?Math.ceil(maxIterations / 2):1)))+' '+ (height - (data[i] * heightRatio)-padding);
                   }
+              }
+              // eliminates the error calls when attributiting this to the svg path
+              if (pathToken === '') {
+                pathToken = 'M 0 0';
               }
               return pathToken;
             },
@@ -417,7 +423,7 @@
                 this.tickCycle = this.tickCycle || 0;
                 this.defaultStartValue = 0;
                 var delayedRenderYAxis = function (frame, frames, options, done) {
-                    if (self.currentCycle != options._cycle || self.currentCycle == 0) {
+                    if (self.currentCycle != options._cycle || self.currentCycle === 0) {
                         var yaxis = self._getNode(self.element, null, '.yaxis')[0];
                         yaxis.textContent = '';
                         var borders = self._getNode(self.element, null, '.borders')[0];
@@ -450,7 +456,7 @@
                         }
                     }
                     done();
-                }
+                };
                 yako.queue(self.token, null, delayedRenderYAxis);
 
                 var xaxisNodes = this._getNode(this.element, null, '.xaxis')[0].getElementsByTagName('text');
@@ -491,7 +497,7 @@
                     var flagToRemove = false;
                     for (var i=0; i<oldData.length + dataAdded; i++) {
                         var xaxis = (((interval*i-1)  + ((interval*(i-1) - interval*(i))/frames * (frame))) + parseInt(padding));
-                        if ((i+self.tickCycle) % tickGap == 0) {
+                        if ((i+self.tickCycle) % tickGap === 0) {
                             // if (textNodes[o].attributes.x.value <= 0) {
                             //     o+=1;
                             // }
@@ -516,10 +522,10 @@
                             o+=1;
                         }
 
-                        if (i == 0 && (xaxis <= padding && textNodes[0].getAttribute('x') <= padding)) {
+                        if (i === 0 && (xaxis <= padding && textNodes[0].getAttribute('x') <= padding)) {
                             textNodes[0].style.opacity = ((frames - frame * 2)/ frames);
                         }
-                        if (i==0 && (xaxis <= 0 && textNodes[0].getAttribute('x') <= 0)) {
+                        if (i === 0 && (xaxis <= 0 && textNodes[0].getAttribute('x') <= 0)) {
                                  flagToRemove = true;
                         }
                     }
@@ -550,7 +556,8 @@
                   'z-index': '1'
                 });
 
-                var heightFactor = height / max;
+                var heightFactor = height / max,
+                    x;
 
                 while(i--) {
                     var value = (max/splits)*(splits-i),
@@ -563,8 +570,8 @@
 
                     if (multi && iteration > 0) {
                         //even iteration
-                        if (iteration % 2 == 0) {
-                            var x = this._make('text',{
+                        if (iteration % 2 === 0) {
+                            x = this._make('text',{
                                 y: factor + 10,
                                 x: padding * ((iteration/2)+1) - 10,
                                 'font-size': 12,
@@ -574,7 +581,7 @@
                             });  
                         //odd iteration
                         } else {
-                            var x = this._make('text',{
+                            x = this._make('text',{
                                 y: factor + 10,
                                 x: opts.chart.width - ((Math.ceil(iteration / 2 ))*padding) + 10,
                                 'font-size': 12,
@@ -585,7 +592,7 @@
                         }
                         
                     } else {
-                        var x = this._make('text',{
+                        x = this._make('text',{
                             y: factor + 10,
                             x: padding - 10,
                             'font-size': 12,
@@ -602,7 +609,7 @@
                       'fill': 'none',
                       'opacity': '1',
                       'stroke-linecap': 'round'
-                    })
+                    });
                     x.textContent = (isNaN(value)? 0 : Math.floor(value));
                     this._compile(gLabelYaxis, x);
 
@@ -659,18 +666,18 @@
 
                     //figures out the tick size
                     if (
-                        (/ss/.test(label) && /s$/.test(tick))
-                        || (/mm/.test(label) && /m$/.test(tick))
-                        || (/hh/.test(label) && /h$/.test(tick))
-                        || (/DD/.test(label) && /D$/.test(tick))
-                        || (/MM/.test(label) && /M$/.test(tick))
-                        || (/YY/.test(label) && /Y$/.test(tick))
+                        (/ss/.test(label) && /s$/.test(tick)) || 
+                        (/mm/.test(label) && /m$/.test(tick)) || 
+                        (/hh/.test(label) && /h$/.test(tick)) ||
+                        (/DD/.test(label) && /D$/.test(tick)) ||
+                        (/MM/.test(label) && /M$/.test(tick)) ||
+                        (/YY/.test(label) && /Y$/.test(tick))
                         )
                     {
                         format.tickSize = 1;
                     } else if (
-                        (/mm/.test(label) && /s$/.test(tick))
-                        || (/hh/.test(label) && /m$/.test(tick))
+                        (/mm/.test(label) && /s$/.test(tick)) ||
+                        (/hh/.test(label) && /m$/.test(tick))
                     ) {
                         format.tickSize = s; //m
                     } else if (
@@ -755,28 +762,29 @@
                 if (/YYYY/.test(str))
                     str = str.replace('YYYY',dateObj.getFullYear());
                 else if (/YY/.test(str))
-                    str = str.replace('YY',(dateObj.getFullYear()).replace(/^\d{1,2}/,''));
+                    str = str.replace('YY',(dateObj.getFullYear().toString()).replace(/^\d{1,2}/,''));
 
-                if (/hh/.test(str) && /ap/.test(str)) {
-                  if ((dateObj.getHours())  > 11)
-                    str = str.replace(/hh/, (dateObj.getHours() - 12 === 0 ? 12 : dateObj.getHours() - 12))
-                            .replace(/ap/, 'pm');
-                  else
-                    str = str.replace(/hh/, (dateObj.getHours() == 0? 12 :  dateObj.getHours()))
-                            .replace(/ap/,'am');
-                } else
-                  str = str.replace(/hh/, (dateObj.getHours() == 0? 12 :  dateObj.getHours()))
-
-                str = str.replace(/MM/,dateObj.getMonth()+1)
-                    .replace(/DD/, dateObj.getDate());
-
-                if (/mm/.test(str) && /ss/.test(str)) {
+                if (/mm/.test(str) && /ss/.test(str) || /hh/.test(str) && /mm/.test(str)) {
                     str = str.replace(/mm/,(dateObj.getMinutes().toString().length == 1 ? '0'+dateObj.getMinutes(): dateObj.getMinutes()))
                     .replace(/ss/,(dateObj.getSeconds().toString().length == 1 ? '0'+dateObj.getSeconds(): dateObj.getSeconds()));
                 } else {
                     str = str.replace(/mm/,dateObj.getMinutes())
                     .replace(/ss/,dateObj.getSeconds());
                 } 
+
+                if (/hh/.test(str) && /ap/.test(str)) {
+                  if ((dateObj.getHours())  > 11)
+                    str = str.replace(/hh/, (dateObj.getHours() - 12 === 0 ? 12 : dateObj.getHours() - 12))
+                            .replace(/ap/, 'pm');
+                  else
+                    str = str.replace(/hh/, (dateObj.getHours() === 0? 12 :  dateObj.getHours()))
+                            .replace(/ap/,'am');
+                } else
+                  str = str.replace(/hh/, (dateObj.getHours() === 0? 12 :  dateObj.getHours()));
+
+                str = str.replace(/MM/,dateObj.getMonth()+1)
+                    .replace(/DD/, dateObj.getDate());
+
                 return str;
             },
             //sig fig rounding
@@ -824,8 +832,9 @@
 
                 var findBestFit = function (min, max) {
                     var set = {};
+                    var max_ = max;
                     //find label and #borders best fit
-                    if (!isNaN(max) && !max == 0) {
+                    if (!isNaN(max) && max !== 0) {
                         var ceil = Math.ceil10(max, max.toString().length - 1);
                         if (max.toString().length > 1 && ceil !== 10) {
                             var leftInt = parseInt(ceil.toString().substr(0,2));
@@ -836,27 +845,27 @@
                                     set.l = 10;
                                     set.f = 5;
                                 //even
-                                } else if (set.l % 2 == 0) {
+                                } else if (set.l % 2 === 0) {
                                     set.f = set.l/2;
                                 //odd
                                 } else {
                                     set.f = set.l;
                                 }
-                                max = parseInt(set.l + Math.ceil10(max,max.toString().length - 1).toString().substr(1,Math.ceil10(max,max.toString().length - 1).toString().length - 1))
+                                max = parseInt(set.l + Math.ceil10(max,max.toString().length - 1).toString().substr(1,Math.ceil10(max,max.toString().length - 1).toString().length - 1));
                             } else {
                                 var secondaryCeil = Math.ceil(max, max.toString().length-2),
                                 secondaryLeftInt = parseInt(secondaryCeil.toString().substr(0,2));
-                                if (secondaryLeftInt.toString()[1] > 4) {
+                                if (secondaryLeftInt.toString()[1] > 4 || secondaryLeftInt.toString()[1] === 0) {
                                     set.l = leftInt;
                                 } else {
                                     set.l = leftInt - 5;
                                 }
                                 set.f = set.l / 5;
-                                max = parseInt(set.l + Math.ceil10(max,max.toString().length - 1).toString().substr(1,Math.ceil10(max,max.toString().length - 1).toString().length - 2))
+                                max = parseInt(set.l + Math.ceil10(max,max.toString().length - 1).toString().substr(1,Math.ceil10(max,max.toString().length - 1).toString().length - 2));
                             }
                         //single digit
                         } else {
-                            if (ceil % 2 == 0) {
+                            if (ceil % 2 === 0) {
                                 max = ceil;
                                 set.f = ceil / 2;
                             } else if (ceil === 9) {
@@ -870,12 +879,12 @@
                         }
                     }
                     return {
-                        max: (isNaN(max) ^ max == 0? 2 : max),
-                        splits: (isNaN(max) ^ max == 0? 2 : set.f), //the number of line splits
+                        max: (isNaN(max) ^ max === 0? 2 : max),
+                        splits: (isNaN(max) ^ max === 0? 2 : set.f), //the number of line splits
                         len: length,
                         min: min
-                    }
-                }
+                    };
+                };
 
                 if (multi) {
                     var result = [];
@@ -927,8 +936,8 @@
                     hightlightRect = this._make('rect',{
                     }),
                     sets = [],
-                    reRender = reRender || false,
                     self = this;
+                reRender = reRender || false;
 
                 //this will allow us to have responsive grpah    
                 this.element.style.width = '100%';
@@ -1033,26 +1042,27 @@
             _reRenderPath: function (nodes, data, opts, interval, heightRatio, paddingForLabel, oldData) {
               //now need to look for the new one
                 var newData = data.data,
-                  oldData = oldData.data,
                   height = opts.chart.height,
                   dataAdded = this.attributes._newDataLength,
                   self = this;
-             
-              //We will be shifiting the yaxis only for linear graph
-              //This function would be queued into the same timer to render all components for this specific graph, such that we do not overload the timer
-              //TODO:: OPTIMIZE the code
-              var animateGraph = function (frame, frames, options, done) {
+                oldData = oldData.data;
+
+                //We will be shifiting the yaxis only for linear graph
+                //This function would be queued into the same timer to render all components for this specific graph, such that we do not overload the timer
+                //TODO:: OPTIMIZE the code
+                var animateGraph = function (frame, frames, options, done) {
                     var pathToken = '', 
-                    path = options.path;
-                    var o = 0;
+                    path = options.path,
+                    o = 0,
+                    yaxis;
                     for (var i=0; i < oldData.length + dataAdded; i++) {
                         //for smoothing the shifting
                         var xaxis = (((interval*i-dataAdded)  + ((interval*(i-dataAdded) - interval*(i))/frames * frame)) + parseInt(paddingForLabel));
                         //to determine which set of data to use
                         if (i >= oldData.length) {
-                          var yaxis = (height-(newData[i-dataAdded] * heightRatio) - 20);
+                            yaxis = (height-(newData[i-dataAdded] * heightRatio) - 20);
                         } else {
-                          var yaxis = (height - (oldData[i] * heightRatio) - 20);
+                            yaxis = (height - (oldData[i] * heightRatio) - 20);
                         }
 
                         //smoothing the line when leaving the grid
@@ -1070,18 +1080,16 @@
                     path.setAttributeNS(null, 'd', pathToken);
                     //call done for work completion
                     done();
-              }
+                };
 
-              var self = this;
-
-              var path = this._getNode(this.element,null, '._yakoTransitions-'+data.label)[0];
-              yako.queue(self.token, {
+                var path = this._getNode(this.element,null, '._yakoTransitions-'+data.label)[0];
+                yako.queue(self.token, {
                   path: path
-              }, animateGraph);
+                }, animateGraph);
             },
             //attach events
             _attach: function (fn, offset) {
-                if (!this.hover || this.attributes.data.length == 0)
+                if (!this.hover || this.attributes.data.length === 0)
                     return this;
 
                 var div = doc.createElement('div');
@@ -1144,18 +1152,18 @@
 
                     //determining how to show in each corner so its contained in the graph box
                     //top left corner
-                    if (opts.chart.width - offsetX > x 
-                        && y <= opts.chart.height / 2) {
+                    if (opts.chart.width - offsetX > x &&
+                        y <= opts.chart.height / 2) {
                         div.style.top = y + 20;
                         div.style.left = x + padding;
                     // top right corner
-                    } else if (opts.chart.width - offsetX <= x 
-                        && y <= opts.chart.height / 2) {
+                    } else if (opts.chart.width - offsetX <= x &&
+                        y <= opts.chart.height / 2) {
                         div.style.top = y + 20;
                         div.style.left = x + padding - offsetX;
                     //bottom right corner
-                    } else if (opts.chart.width - offsetX <= x 
-                        && y >= opts.chart.height - offsetY) {
+                    } else if (opts.chart.width - offsetX <= x &&
+                        y >= opts.chart.height - offsetY) {
                         div.style.top = y + 20;
                         div.style.left = x + padding - offsetX;
                     //every where else
@@ -1221,16 +1229,22 @@
                             this.lock.label = 0;
                 return this;
             },
-            //the graph data & options setter
+            // the graph data & options setter
             set: function (opts) {
-                var opts = opts || {};
-                //make sure the data will not cause memory reference error, if some sets of data a shared among other graphs
+                opts = opts || {};
+                // to deal with no data fed in
+                if (opts && (!opts.data || opts.data.length === 0)) {
+                    opts.data = undefined;
+                }
+                // make sure the data will not cause memory reference error, if some sets of data a shared among other graphs
                 this.attributes.data = opts.data || [];
                 opts._originalDataLength = (opts.data?opts.data[0].data.length:0);
                 this.attributes.opts = opts;
+
                 for(var i in opts.data) {
                     opts.data[i].label = opts.data[i].label.replace(/\s/g,'-');
                 }
+
                 if(opts.chart && opts.chart.type && yako._graphs[opts.chart.type]) {
                     return this._spawn(opts.chart.type);
                 } else {
@@ -1240,8 +1254,8 @@
                 }
                 return this;
             },
-            //detecting resize and update the graph
-            //TODO:: update it such that it will only affect xaxis changes
+            // detecting resize and update the graph
+            // TODO:: update it such that it will only affect xaxis changes
             _reSize: function () {
                 var self = this,
                     prev = self.element.scrollWidth;
@@ -1272,8 +1286,13 @@
                 var hover = this.attributes.hover;
                 this.attributes.data.push(json);
                 this.element.innerHTML = '';
-                this._generate()
-                    ._attach(hover.fn, hover.offset);
+
+                if (hover) {
+                     this._generate()
+                        ._attach(hover.fn, hover.offset);
+                } else {
+                   this._generate();
+                }
                 return this;
             },
             // NON incremental data - for remove data in a static graphs
@@ -1287,8 +1306,12 @@
                     }
                 }
                 this.element.innerHTML = '';
-                this._generate()
-                    ._attach(hover.fn, hover.offset);
+                if (hover) {
+                    this._generate()
+                        ._attach(hover.fn, hover.offset);
+                } else {
+                    this._generate();
+                }
                 return this;
             },
             //to support increment data for 3 scenarios
@@ -1327,6 +1350,7 @@
             },
             //appends new data to old data / zeros data if one of the chart is missing data
             _appendZeroAndData: function (oldData, newData) {
+
                 //cast them into an array if they are not in array yet
                 if (typeof oldData === Object) oldData = [oldData];
                 if (typeof newData === Object) newData = [newData];
@@ -1339,7 +1363,8 @@
                 this.attributes.oldData = JSON.parse(JSON.stringify(oldData));
 
                 var oldLen = oldData[0].length,
-                    newLen = 0;
+                    newLen = 0,
+                    zeros;
 
                 //check if the corresponding label exist for the data;
                 for (var i in newData) {
@@ -1374,14 +1399,14 @@
                     var updated = false;
                     for(var j in newData) {
                         if (oldData[i].label == newData[j].label) {
-                            var zeros = this._zeroGenerator(newLen - newData[j].data.length);
+                            zeros = this._zeroGenerator(newLen - newData[j].data.length);
                             oldData[i].data=(oldData[i].data.concat(newData[j].data.concat(zeros)));
                             updated = true;
                             break;
                         }
                     }
                     if(!updated) {
-                        var zeros = this._zeroGenerator(newLen);
+                        zeros = this._zeroGenerator(newLen);
                         oldData[i].data = oldData[i].data.concat(zeros);
                     }
                 }

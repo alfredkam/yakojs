@@ -5,9 +5,11 @@ var should = chai.should();
 
 var dataSet = [];
 var dataSet2 = [];
+var dataSet3 = [];
 for (var i=0;i<10;i++) {
     dataSet.push(Math.floor((Math.random() * 500) + 10));
     dataSet2.push(Math.floor((Math.random() * 500) + 10));
+    dataSet3.push(Math.floor((Math.random() * 500) + 10));
 }
 var set2 = [
     {
@@ -24,7 +26,7 @@ var set2 = [
     }
 ];
 
-var graph;
+var graph, multiGraph;
 
 describe('linear graph tests', function () {
     describe('graph test', function () {
@@ -97,6 +99,46 @@ describe('linear graph tests', function () {
             result = {};
             yako.extend(result, json);
             expect(result).to.deep.equal(json);
+        });
+    });
+
+    describe('yako multi graph', function () {
+        before(function () {
+            set2.push({
+                label: 'Auto Generated 2',
+                data: dataSet3,
+                color: '#FF7F00'
+            });
+            multiGraph = yako('#graph8').set({
+                chart : {
+                    type: 'line',
+                    width: 700,
+                    height: 300,
+                    'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+                },
+                title : 'just a test',
+                xAxis: {
+                     multi: true,
+                     format : 'dateTime',
+                     minUTC: Date.UTC(2013,08,07),
+                     dateTimeLabelFormat: 'YYYY/MM/DD hhh',
+                     interval: '2h'
+                },
+                data: JSON.parse(JSON.stringify(set2))
+            }).hoverable(function (data) {
+                var res = '<div>'+data[0].x+'</div>';
+                for(var i in data) {
+                    res+='<div><label style="color:'+data[i].color+'">'+data[i].label+':</label>&nbsp;<label>'+data[i].y+'</label></div>';
+                }
+                res+= '</div>';
+                return res;
+                //the css configs, need to define them
+            });
+        });
+
+        it('the graph should have 3 sets of y-axis', function () {
+            var axis = document.getElementById('graph8').getElementsByClassName('yaxis');
+            expect(axis.length).to.be.equal(3);
         });
     });
 });
