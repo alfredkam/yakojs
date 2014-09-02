@@ -757,33 +757,38 @@
                 var format = opts.xAxis.dateTimeLabelFormat,
                     dateObj = new Date(time),
                     str = format,
-                    flag = false;
+                    flag = false,
+                    months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-                if (/YYYY/.test(str))
-                    str = str.replace('YYYY',dateObj.getFullYear());
-                else if (/YY/.test(str))
-                    str = str.replace('YY',(dateObj.getFullYear().toString()).replace(/^\d{1,2}/,''));
-
-                if (/mm/.test(str) && /ss/.test(str) || /hh/.test(str) && /mm/.test(str)) {
-                    str = str.replace(/mm/,(dateObj.getMinutes().toString().length == 1 ? '0'+dateObj.getMinutes(): dateObj.getMinutes()))
-                    .replace(/ss/,(dateObj.getSeconds().toString().length == 1 ? '0'+dateObj.getSeconds(): dateObj.getSeconds()));
+                if (str == 'MM') {
+                    str = months[dateObj.getMonth()];
                 } else {
-                    str = str.replace(/mm/,dateObj.getMinutes())
-                    .replace(/ss/,dateObj.getSeconds());
-                } 
+                    if (/YYYY/.test(str))
+                        str = str.replace('YYYY',dateObj.getFullYear());
+                    else if (/YY/.test(str))
+                        str = str.replace('YY',(dateObj.getFullYear().toString()).replace(/^\d{1,2}/,''));
 
-                if (/hh/.test(str) && /ap/.test(str)) {
-                  if ((dateObj.getHours())  > 11)
-                    str = str.replace(/hh/, (dateObj.getHours() - 12 === 0 ? 12 : dateObj.getHours() - 12))
-                            .replace(/ap/, 'pm');
-                  else
-                    str = str.replace(/hh/, (dateObj.getHours() === 0? 12 :  dateObj.getHours()))
-                            .replace(/ap/,'am');
-                } else
-                  str = str.replace(/hh/, (dateObj.getHours() === 0? 12 :  dateObj.getHours()));
+                    if (/mm/.test(str) && /ss/.test(str) || /hh/.test(str) && /mm/.test(str)) {
+                        str = str.replace(/mm/,(dateObj.getMinutes().toString().length == 1 ? '0'+dateObj.getMinutes(): dateObj.getMinutes()))
+                        .replace(/ss/,(dateObj.getSeconds().toString().length == 1 ? '0'+dateObj.getSeconds(): dateObj.getSeconds()));
+                    } else {
+                        str = str.replace(/mm/,dateObj.getMinutes())
+                        .replace(/ss/,dateObj.getSeconds());
+                    }
 
-                str = str.replace(/MM/,dateObj.getMonth()+1)
-                    .replace(/DD/, dateObj.getDate());
+                    if (/hh/.test(str) && /ap/.test(str)) {
+                      if ((dateObj.getHours())  > 11)
+                        str = str.replace(/hh/, (dateObj.getHours() - 12 === 0 ? 12 : dateObj.getHours() - 12))
+                                .replace(/ap/, 'pm');
+                      else
+                        str = str.replace(/hh/, (dateObj.getHours() === 0? 12 :  dateObj.getHours()))
+                                .replace(/ap/,'am');
+                    } else
+                      str = str.replace(/hh/, (dateObj.getHours() === 0? 12 :  dateObj.getHours()));
+
+                    str = str.replace(/MM/,dateObj.getMonth()+1)
+                        .replace(/DD/, dateObj.getDate());
+                }
 
                 return str;
             },
