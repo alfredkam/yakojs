@@ -4,44 +4,43 @@ var express = require('express');
 var app = express();
 
 var dataPoints = 30;
-var amount = 50;
-
-
-var dataSet = [];
-var dataSet2 = [];
-var dataSet3 = [];
-var dataSet4 = [];
-for (var i=0;i<dataPoints;i++) {
-  dataSet.push(Math.floor((Math.random() * 500) + 10));
-  dataSet2.push(Math.floor((Math.random() * 500) + 10));
-  dataSet3.push(Math.floor((Math.random() * 500) + 10));
-  dataSet4.push(Math.floor((Math.random() * 500) + 10));
-}
-
-var set = [
-    {
-        label: 'Auto Generated',
-        data: dataSet,
-        //color controls the line
-        color: '#1E90FF'
-        //nodeColor controls the pointer color
-    },
-    {
-        label: 'Auto Generated 2',
-        data: dataSet2,
-        color: '#FF7F00'
-    },
-    {
-        label: 'Auto Generated 3',
-        data: dataSet3,
-        color: '#FF00FF'
-    }
-];
+var nOfGraphs = 100;
+var amount = nOfGraphs;
 
 var now = Date.now();
 var nodes = '';
 
-for (var i = 0;i < amount;i++) {
+while (amount--) {
+  var dataSet = [];
+  var dataSet2 = [];
+  var dataSet3 = [];
+  var dataSet4 = [];
+  for (var i=0;i<dataPoints;i++) {
+    dataSet.push(Math.floor((Math.random() * 500) + 10));
+    dataSet2.push(Math.floor((Math.random() * 500) + 10));
+    dataSet3.push(Math.floor((Math.random() * 500) + 10));
+    dataSet4.push(Math.floor((Math.random() * 500) + 10));
+  }
+
+  var set = [
+      {
+          label: 'Auto Generated',
+          data: dataSet,
+          //color controls the line
+          color: '#1E90FF'
+          //nodeColor controls the pointer color
+      },
+      {
+          label: 'Auto Generated 2',
+          data: dataSet2,
+          color: '#FF7F00'
+      },
+      {
+          label: 'Auto Generated 3',
+          data: dataSet3,
+          color: '#FF00FF'
+      }
+  ];
   nodes += spark('.graph').set({
     chart : {
       type: 'line',
@@ -54,11 +53,13 @@ for (var i = 0;i < amount;i++) {
     title : 'just a test',
     data: set
   });
+
 }
+
 var diff = (Date.now() - now);
 
-console.log('Took ' + diff + 'ms to generate ' + amount + ' with '+ dataPoints + ' data points per each graph');
-nodes = '<div>' + 'Took ' + diff + 'ms to generate ' + amount + ' with '+ dataPoints + ' data points per each graph' + '</div>' + nodes;
+console.log('Took ' + diff + 'ms to generate ' + nOfGraphs + ' graphs with '+ dataPoints + ' different data points each avg of ' + (diff/nOfGraphs) + 'ms');
+nodes = '<div>' + 'Took ' + diff + 'ms to generate ' + nOfGraphs + ' graphs with '+ dataPoints + ' different data points avg of ' + (diff/nOfGraphs) + 'ms' + '</div>' + nodes;
 
 var str = '<html><head>'+
 "<link href='http://fonts.googleapis.com/css?family=Open+Sans:300,600' rel='stylesheet' type='text/css'>"+
