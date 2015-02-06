@@ -52,8 +52,10 @@ for (var i = 0;i < amount;i++) {
     data: set
   });
 }
+var diff = (Date.now() - now);
 
-console.log('Time took ' + (Date.now() - now) + 'ms to generate ' + amount);
+console.log('Took ' + diff + 'ms to generate ' + amount);
+nodes = '<div>' + 'Took ' + diff + 'ms to generate ' + amount + '</div>' + nodes;
 
 var str = '<html><head>'+
 "<link href='http://fonts.googleapis.com/css?family=Open+Sans:300,600' rel='stylesheet' type='text/css'>"+
