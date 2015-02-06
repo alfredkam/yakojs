@@ -3,11 +3,15 @@ var http = require('http');
 var express = require('express');
 var app = express();
 
+var dataPoints = 30;
+var amount = 50;
+
+
 var dataSet = [];
 var dataSet2 = [];
 var dataSet3 = [];
 var dataSet4 = [];
-for (var i=0;i<10;i++) {
+for (var i=0;i<dataPoints;i++) {
   dataSet.push(Math.floor((Math.random() * 500) + 10));
   dataSet2.push(Math.floor((Math.random() * 500) + 10));
   dataSet3.push(Math.floor((Math.random() * 500) + 10));
@@ -34,7 +38,6 @@ var set = [
     }
 ];
 
-var amount = 30;
 var now = Date.now();
 var nodes = '';
 
@@ -42,7 +45,7 @@ for (var i = 0;i < amount;i++) {
   nodes += spark('.graph').set({
     chart : {
       type: 'line',
-      width: 200,
+      width: 280,
       height: 100,
       'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       showPointer: false,
@@ -54,8 +57,8 @@ for (var i = 0;i < amount;i++) {
 }
 var diff = (Date.now() - now);
 
-console.log('Took ' + diff + 'ms to generate ' + amount);
-nodes = '<div>' + 'Took ' + diff + 'ms to generate ' + amount + '</div>' + nodes;
+console.log('Took ' + diff + 'ms to generate ' + amount + ' with '+ dataPoints + ' data points per each graph');
+nodes = '<div>' + 'Took ' + diff + 'ms to generate ' + amount + ' with '+ dataPoints + ' data points per each graph' + '</div>' + nodes;
 
 var str = '<html><head>'+
 "<link href='http://fonts.googleapis.com/css?family=Open+Sans:300,600' rel='stylesheet' type='text/css'>"+
