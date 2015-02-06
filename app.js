@@ -4,7 +4,7 @@ var express = require('express');
 var app = express();
 
 var dataPoints = 30;
-var nOfGraphs = 100;
+var nOfGraphs = 30;
 var amount = nOfGraphs;
 
 var now = Date.now();
@@ -29,17 +29,17 @@ while (amount--) {
           //color controls the line
           color: '#1E90FF'
           //nodeColor controls the pointer color
-      },
-      {
-          label: 'Auto Generated 2',
-          data: dataSet2,
-          color: '#FF7F00'
-      },
-      {
-          label: 'Auto Generated 3',
-          data: dataSet3,
-          color: '#FF00FF'
-      }
+      }//,
+      // {
+      //     label: 'Auto Generated 2',
+      //     data: dataSet2,
+      //     color: '#FF7F00'
+      // },
+      // {
+      //     label: 'Auto Generated 3',
+      //     data: dataSet3,
+      //     color: '#FF00FF'
+      // }
   ];
   nodes += spark('.graph').set({
     chart : {
@@ -48,7 +48,7 @@ while (amount--) {
       height: 100,
       'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       showPointer: false,
-      fillArea: true
+      fill: '#F0FFF0'
     },
     title : 'just a test',
     data: set
