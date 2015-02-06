@@ -5,10 +5,15 @@ module.exports = {
     './sparkLine',
   ],
   output : {
-    path: __dirname+'/lib',
-    filename: 'bundle.js'
+    path: __dirname,
+    filename: 'yako.js'
   },
   plugins: [
     new webpack.NoErrorsPlugin()
-  ]
+  ],
+  module : {
+    loaders: [
+      { test: require.resolve("index"), loader: "expose?Yako" }
+    ]
+  }
 };
