@@ -1,4 +1,8 @@
 var spark = require('./index').spark;
+var http = require('http');
+var express = require('express');
+var app = express();
+
 var dataSet = [];
 var dataSet2 = [];
 var dataSet3 = [];
@@ -30,17 +34,19 @@ var set = [
     }
 ];
 
-var amount = 10000;
+var amount = 30;
 var now = Date.now();
+var nodes = '';
 
 for (var i = 0;i < amount;i++) {
-  var string = spark('#graph').set({
+  nodes += spark('.graph').set({
     chart : {
       type: 'line',
-      width: 700,
-      height: 300,
+      width: 200,
+      height: 100,
       'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
-      showPointer: false
+      showPointer: false,
+      fillArea: true
     },
     title : 'just a test',
     data: set
@@ -48,3 +54,18 @@ for (var i = 0;i < amount;i++) {
 }
 
 console.log('Time took ' + (Date.now() - now) + 'ms to generate ' + amount);
+
+var str = '<html><head>'+
+"<link href='http://fonts.googleapis.com/css?family=Open+Sans:300,600' rel='stylesheet' type='text/css'>"+
+'<link rel="stylesheet" href="style.css" type="text/css"></head><body>' + nodes + '</body></html>';
+
+var proxy = http.createServer(function (req, res) {
+  res.writeHead(200, {'Content-Type': 'text/plain'});
+});
+
+app.use(express.static(__dirname + '/demo'));
+app.get('/', function (req, res) {
+  res.send(str);
+});
+
+app.listen(3000);
