@@ -2,7 +2,6 @@ node_modules/
 coverage/
 *.sublime-*
 .DS_Store
-app.js
 .tmp
 .build
 npm_debug.log
