@@ -59,7 +59,9 @@ while (amount--) {
     chart: {
       width: 200,
       height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif'
+      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+      //strokes: [],
+      //fills: []
     },
     title: 'just a test',
     data: dataSet4
