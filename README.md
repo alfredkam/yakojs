@@ -1,6 +1,13 @@
-yako.js
-======
+Minimal graphing library for light weight and faster server side render build w/ common js.  This graph is intend to generate super light weight SVG graphs, compare to highcharts / flot / c3
 
-Minimal graphing lib. Lets make <b>beautiful graphs</b> and have it <b>lighter</b> then highcharts / flot graph, and independent from third party library.
+For demo ```node app.js``` and go to ```http://localhost:3000```
 
-Goal is sub 10kb gzipped and can pre-render the graph on the node server.
+###Graphs Supported
+ - Spark Line
+ - Pie Charts
+
+###ToDos
+ - Support labels
+ - Support FE Rendering
+ - Support Bar Graphs
+ - Support Donut Graphs
