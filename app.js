@@ -1,5 +1,6 @@
 var spark = require('./index').spark;
 var pie = require('./index').pie;
+var donut = require('./index').donut;
 var http = require('http');
 var express = require('express');
 var app = express();
@@ -60,8 +61,21 @@ while (amount--) {
       width: 200,
       height: 100,
       'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
-      //strokes: [],
-      //fills: []
+      // additional options
+      // strokes: [],
+      // fills: []
+    },
+    title: 'just a test',
+    data: dataSet4
+  });
+
+  nodes += donut('.graph').set({
+    chart: {
+      width: 200,
+      height: 100,
+      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+      // strokes: [],
+      // fills: []
     },
     title: 'just a test',
     data: dataSet4
