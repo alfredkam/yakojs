@@ -1,10 +1,11 @@
 var spark = require('./index').spark;
+var pie = require('./index').pie;
 var http = require('http');
 var express = require('express');
 var app = express();
 
 var dataPoints = 30;
-var nOfGraphs = 30;
+var nOfGraphs = 10;
 var amount = nOfGraphs;
 
 var now = Date.now();
@@ -19,7 +20,7 @@ while (amount--) {
     dataSet.push(Math.floor((Math.random() * 500) + 10));
     dataSet2.push(Math.floor((Math.random() * 500) + 10));
     dataSet3.push(Math.floor((Math.random() * 500) + 10));
-    dataSet4.push(Math.floor((Math.random() * 500) + 10));
+    dataSet4.push(Math.floor((Math.random() * 300) + 10));
   }
 
   var set = [
@@ -50,10 +51,19 @@ while (amount--) {
       showPointer: false,
       fill: '#F0FFF0'
     },
-    title : 'just a test',
+    title: 'just a test',
     data: set
   });
 
+  nodes += pie('.graph').set({
+    chart: {
+      width: 200,
+      height: 100,
+      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif'
+    },
+    title: 'just a test',
+    data: dataSet4
+  });
 }
 
 var diff = (Date.now() - now);
