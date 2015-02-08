@@ -6,12 +6,12 @@ For demo ```node app.js``` and go to ```http://localhost:3000```
  - Spark Line
  - Pie Charts
  - Donut Charts
+ - Bubble Chart Time Flow (represents actions across a period of time)
 
 ###Road Map
  - Support labels
  - Support FE Rendering w/ Event Bindings
  - Support Bar Graphs
- - Time flow using circles
 
 ###Latest Release
 Please refer to the release branch - https://github.com/alfredkam/yakojs/tree/release
