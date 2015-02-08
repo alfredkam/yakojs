@@ -5,9 +5,10 @@ For demo ```node app.js``` and go to ```http://localhost:3000```
 ###Graphs Supported
  - Spark Line
  - Pie Charts
+ - Donut Charts
 
 ###ToDos
  - Support labels
  - Support FE Rendering w/ Event Bindings
  - Support Bar Graphs
- - Support Donut Graphs
+ - Time flow using circles
