@@ -7,7 +7,6 @@ var bubble = yako.bubble;
 var http = require('http');
 var express = require('express');
 var app = express();
-var fs = require('fs');
 
 var dataPoints = 30;
 var nOfGraphs = 10;
@@ -62,7 +61,7 @@ while (amount--) {
 
   nodes += pie('.graph').set({
     chart: {
-      width: 200,
+      width: 300,
       height: 100,
       'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       // additional options
@@ -75,7 +74,7 @@ while (amount--) {
 
   nodes += donut('.graph').set({
     chart: {
-      width: 200,
+      width: 300,
       height: 100,
       'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       // strokes: [],
@@ -87,7 +86,7 @@ while (amount--) {
 
   nodes += bubble('.graph').set({
     chart: {
-      width: 200,
+      width: 300,
       height: 100,
       'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       // strokes: [],
@@ -110,8 +109,6 @@ var str = '<html><head>'+
 var proxy = http.createServer(function (req, res) {
   res.writeHead(200, {'Content-Type': 'text/plain'});
 });
-
-fs.writeFileSync(__dirname + '/demo/index.html', str);
 
 app.use(express.static(__dirname + '/demo'));
 app.get('/', function (req, res) {
