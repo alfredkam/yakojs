@@ -8,7 +8,7 @@ var http = require('http');
 var express = require('express');
 var app = express();
 
-var dataPoints = 30;
+var dataPoints = 10;
 var nOfGraphs = 10;
 var amount = nOfGraphs;
 
