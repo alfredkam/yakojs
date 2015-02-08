@@ -1,5 +1,7 @@
 Minimal graphing library for light weight and fast server side rending & build w/ common js format.  This graph is intend to generate light weight SVG graphs, and its more performable compare to highcharts / flot / c3
 
+This library also works great with webpack & react combo
+
 For demo ```node app.js``` and go to ```http://localhost:3000```
 
 ###Supported Graphs
