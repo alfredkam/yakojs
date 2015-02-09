@@ -9,11 +9,11 @@ For demo ```node app.js``` and go to ```http://localhost:3000```
  - Pie Charts
  - Donut Charts
  - Bubble Chart Time Flow (represents actions across a period of time)
+ - Support Bar Graphs
 
 ###Road Map
  - Support labels
  - Support FE Rendering w/ Event Bindings
- - Support Bar Graphs
 
 ###Latest Release
 Please refer to the release branch - https://github.com/alfredkam/yakojs/tree/release

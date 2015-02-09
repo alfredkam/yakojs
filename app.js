@@ -3,16 +3,17 @@ var spark = yako.spark;
 var pie = yako.pie;
 var donut = yako.donut;
 var bubble = yako.bubble;
-require('./lib/extendDecimal');
+var bar = yako.bar;
 
 var http = require('http');
 var express = require('express');
 var app = express();
+var fs = require('fs');
 
 // TODO:: fix edge case of 1 data Point
 var dataPoints = 30;
 var nOfGraphs = 10;
-var kind = 4;
+var kind = 6;
 var amount = nOfGraphs;
 
 var now = Date.now();
@@ -100,6 +101,31 @@ while (amount--) {
     title: 'just a test',
     data: dataSet4
   });
+
+  nodes += bar('.graph').set({
+    chart : {
+      stack: true,
+      width: 300,
+      height: 100,
+      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+      showPointer: false,
+      fill: []
+    },
+    title: 'just a test',
+    data: set
+  });
+
+  nodes += bar('.graph').set({
+    chart : {
+      width: 300,
+      height: 100,
+      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+      showPointer: false,
+      fill: []
+    },
+    title: 'just a test',
+    data: set
+  });
 }
 
 var diff = (Date.now() - now);
@@ -119,6 +145,8 @@ var str = '<html><head>'+
 var proxy = http.createServer(function (req, res) {
   res.writeHead(200, {'Content-Type': 'text/plain'});
 });
+
+// fs.writeFileSync(__dirname + '/demo/demo.html', str);
 
 app.use(express.static(__dirname + '/demo'));
 app.get('/', function (req, res) {
