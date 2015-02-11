@@ -1,6 +1,6 @@
 <b>Note this version is a draft and has not been published to NPM yet!</b>
 
-## usage
+##Usage
 
 To use any of graphs you could access them through
 ``` javascript
@@ -11,7 +11,7 @@ var donut = yako.donut; // donut chart
 var bar = yako.bar; // bar graph
 ```
 
-####calling
+####Calling
 <i>graph</i>().set(<i>attributes</i>) <br>
 &nbsp;&nbsp; => returns a string content with ```<svg>...</svg>``` <br>
 <i>graph</i>("#graph").set(<i>attributes</i>) <br> 
@@ -143,7 +143,7 @@ bar('.graph').set({
 });
 ```
 
-## extending or modify the library
+##Extending or modify the library
 say you wanted to create your own or modify the library to do something extra. you require the library and extend from it.  Since this is build using common js and inheritance, one could easily extend specific graphs.<br>
 
 For example you think its smarter to compile the svg objects into dom object, during the mid process you would
