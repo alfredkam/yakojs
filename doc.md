@@ -150,7 +150,7 @@ For example you think its smarter to compile the svg objects into dom object, du
 ```javascript
 var defaultSpark = require('./lib/spark');
 var mySparkGraph = defaultSpark.extend({
-  // this will have mygraph's internal call to default to this function
+  // this will have mySparkGraph's internal call to default to this function
   _make: function (tag, props, data) {
     var node = doc.createElementNS('http://www.w3.org/2000/svg',tag);
     this.assign(node, props);
