@@ -6,8 +6,8 @@ To use any of graphs you could access them through
 ``` javascript
 var yako = require('yako');
 var spark = yako.spark; // spark graph
-var pie = yako.pie; // pie charts
-var donut = yako.donut; // donut charts
+var pie = yako.pie; // pie chart
+var donut = yako.donut; // donut chart
 var bar = yako.bar; // bar graph
 ```
 
