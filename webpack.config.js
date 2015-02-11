@@ -1,19 +1,14 @@
 var webpack = require('webpack');
 module.exports = {
-  context : __dirname+'/lib',
+  context : __dirname+'/demo',
   entry : [
-    './sparkLine',
+    './demo-webpack',
   ],
   output : {
-    path: __dirname,
-    filename: 'yako.js'
+    path: __dirname + '/demo',
+    filename: 'bundle.js'
   },
   plugins: [
     new webpack.NoErrorsPlugin()
-  ],
-  module : {
-    loaders: [
-      { test: require.resolve("index"), loader: "expose?Yako" }
-    ]
-  }
+  ]
 };
