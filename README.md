@@ -4,6 +4,8 @@ This library also works great with webpack & react combo
 
 For demo ```node app.js``` and go to ```http://localhost:3000```
 
+Documentation could be found under https://github.com/alfredkam/yakojs/blob/master/doc.md
+
 ###Supported Graphs
  - Spark Line
  - Pie Charts
