@@ -43,14 +43,14 @@ var set = [
 // spark accepts multiple data sets
 spark('.graph').set({
   chart : {
-      // width & height controls the svg view box
-      width: 300, // default 200
-      height: 100,  // default 100
-      // optional parameters
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
-      line: false // it will disable the line drawing
-    },
-    data: set //accepts an array or json obj
+    // width & height controls the svg view box
+    width: 300, // default 200
+    height: 100,  // default 100
+    // optional parameters
+    'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+    line: false // it will disable the line drawing
+  },
+  data: set //accepts an array or json obj
 });
 ```
 
@@ -58,61 +58,59 @@ spark('.graph').set({
 ```javascript
 var set = []; // an array of numbers
 pie('.graph').set({
+  chart: {
     // width & height controls the svg view box
-    chart: {
-      // width & height controls the svg view box
-      width: 300,
-      height: 100,
-      // optional parameters
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
-      strokeColor: '#000',  // sets default stroke color
-      strokeColors: [],  // this will override the default stroke color and matches with the adjacent data set
-      fills: [] // this will by matching with the adjacent data set
-      // Note: if strokeColor / strokeColors / fills are not provided - it will randomly generate a color
-    },
-    data: set
-  });
+    width: 300,
+    height: 100,
+    // optional parameters
+    'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+    strokeColor: '#000',  // sets default stroke color
+    strokeColors: [],  // this will override the default stroke color and matches with the adjacent data set
+    fills: [] // this will by matching with the adjacent data set
+    // Note: if strokeColor / strokeColors / fills are not provided - it will randomly generate a color
+  },
+  data: set
+});
 ```
 
 ####Donut Chart Attributes
 ```javascript
 var set = []; // an array of numbers
 donut('.graph').set({
+  chart: {
     // width & height controls the svg view box
-    chart: {
-      // width & height controls the svg view box
-      width: 300,
-      height: 100,
-      // optional parameters
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
-      strokeColor: '#000',  // sets default stroke color
-      strokeColors: [],  // this will override the default stroke color and matches with the adjacent data set
-      fills: [] // this will by matching with the adjacent data set
-      // Note: if strokeColor / strokeColors / fills are not provided - it will randomly generate a color
-    },
-    data: set
-  });
+    width: 300,
+    height: 100,
+    // optional parameters
+    'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+    strokeColor: '#000',  // sets default stroke color
+    strokeColors: [],  // this will override the default stroke color and matches with the adjacent data set
+    fills: [] // this will by matching with the adjacent data set
+    // Note: if strokeColor / strokeColors / fills are not provided - it will randomly generate a color
+  },
+  data: set
+});
 ```
 
 ####Bubble Graph Attributes <i>(for a horizontal line time series representation)</i>
 ```javascript
 var set = []; // an array of numbers
 bubble('.graph').set({
+  // width & height controls the svg view box
+  chart: {
     // width & height controls the svg view box
-    chart: {
-      // width & height controls the svg view box
-      width: 300,
-      height: 100,
-      // optional parameters
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
-      strokeColor: '#000',  // sets default stroke color
-      strokeColors: [],  // this will override the default stroke color and matches with the adjacent data set
-      fill: '#333', // sets default fill color
-      fills: [] // this will override the fill color and matches with the adjacent data set
-      // Note: if strokeColor / strokeColors / fill / fills are not provided - it will randomly generate a color
-    },
-    data: set
-  });
+    width: 300,
+    height: 100,
+    // optional parameters
+    'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+    strokeColor: '#000',  // sets default stroke color
+    strokeColors: [],  // this will override the default stroke color and matches with the adjacent data set
+    fill: '#333', // sets default fill color
+    fills: [] // this will override the fill color and matches with the adjacent data set
+    // Note: if strokeColor / strokeColors / fill / fills are not provided - it will randomly generate a color
+  },
+  data: set
+});
 ```
 
 ###Bar Graph Attributes
@@ -134,15 +132,15 @@ var set = [
   }
 ];
 bar('.graph').set({
-    chart : {
-      width: 300,
-      height: 100,
-      // optional parameters
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
-      stack: true // this will enable stack graph
-    },
-    data: set
-  });
+  chart : {
+    width: 300,
+    height: 100,
+    // optional parameters
+    'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+    stack: true // this will enable stack graph
+  },
+  data: set
+});
 ```
 
 ## extending or modify the library
@@ -154,10 +152,10 @@ var defaultSpark = require('./lib/spark');
 var mySparkGraph = defaultSpark.extend({
   // this will have mygraph's internal call to default to this function
   _make: function (tag, props, data) {
-      var node = doc.createElementNS('http://www.w3.org/2000/svg',tag);
-      this.assign(node, props);
-      this._extend(node.dataset, data);
-      return node;
+    var node = doc.createElementNS('http://www.w3.org/2000/svg',tag);
+    this.assign(node, props);
+    this._extend(node.dataset, data);
+    return node;
   },
 });
 
