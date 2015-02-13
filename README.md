@@ -1,4 +1,4 @@
-Minimal graphing library for light weight and fast server side rending & build w/ common js format.  This graph is intend to generate light weight SVG graphs, and its more performable compare to highcharts / flot / c3 when you do not need any complex graphs
+Minimal & light weight graph library for fast front end and server side rending + build in CommonJs format.  This graph is intend to generate light weight SVG graphs, and its more performable compare to highcharts / flot / c3 when you do not need any complex graphs
 
 This library also works great with webpack & react combo
 
@@ -15,7 +15,11 @@ Documentation could be found under https://github.com/alfredkam/yakojs/blob/mast
 
 ###Road Map
  - Support labels
- - Support FE Rendering w/ Event Bindings
+ - Expose math functions
+ - Event Bindings
+ - Real time graphs
+
+ Note:: Real time & labels was supported under <a href='https://github.com/alfredkam/yakojs/tree/v0.0.16-re20140902'>previous versions</a>
 
 ###Latest Release
 Please refer to the release branch - https://github.com/alfredkam/yakojs/tree/release
