@@ -12,13 +12,13 @@ var bar = yako.bar; // bar graph
 ```
 
 ####Calling
-<i>graph</i>().set(<i>attributes</i>) <br>
+<i>graph</i>().attr(<i>attributes</i>) <br>
 &nbsp;&nbsp; => returns a string content with ```<svg>...</svg>``` <br>
-<i>graph</i>("#graph").set(<i>attributes</i>) <br> 
+<i>graph</i>("#graph").attr(<i>attributes</i>) <br> 
 &nbsp;&nbsp; => returns a string content with ```<div id='graph'><svg>...</svg></div>```<br>
-<i>graph</i>(".graph").set(<i>attributes</i>) <br>
+<i>graph</i>(".graph").attr(<i>attributes</i>) <br>
 &nbsp;&nbsp; => returns a string content with ```<div class='graph'><svg>...</svg></div>```<br>
-<i>graph</i>(<i>domObj</i>).set(<i>attributes</i>)<br> 
+<i>graph</i>(<i>domObj</i>).attr(<i>attributes</i>)<br> 
 &nbsp;&nbsp; => returns this, and automatically does <i>domObj</i>.innerHTML = ```<svg>...</svg>```<br>
 
 
@@ -28,15 +28,15 @@ var set = [
   {
     data: [],// an array with numbers
     // optional parameters
-    color: // controls the stroke color. if its not provided, it will randomly generate a color
-    width: // controls the stroke width
+    strokeColor: // controls the stroke color. if its not provided, it will randomly generate a color
+    strokeWidth: // controls the stroke width
     fill: '#F0FFF0' // controls the fill color. if its not provided, it will not fill
   },
   {
     data: [], // an array with numbers
     // optional parameters
-    color: // controls the stroke color. if its not provided, it will randomly generate a color
-    width: // controls the stroke width.
+    strokeColor: // controls the stroke color. if its not provided, it will randomly generate a color
+    strokeWidth: // controls the stroke width.
     fill: '#F0FFF0' // controls the fill color. if its not provided, it will not fill
   }
 ];
@@ -48,7 +48,7 @@ spark('.graph').set({
     height: 100,  // default 100
     // optional parameters
     'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
-    line: false // it will disable the line drawing
+    stroke: false // it will disable the stroke from drawn
   },
   data: set //accepts an array or json obj
 });
@@ -57,7 +57,7 @@ spark('.graph').set({
 ####Pie Chart Attributes
 ```javascript
 var set = []; // an array of numbers
-pie('.graph').set({
+pie('.graph').attr({
   chart: {
     // width & height controls the svg view box
     width: 300,
@@ -76,7 +76,7 @@ pie('.graph').set({
 ####Donut Chart Attributes
 ```javascript
 var set = []; // an array of numbers
-donut('.graph').set({
+donut('.graph').attr({
   chart: {
     // width & height controls the svg view box
     width: 300,
@@ -95,7 +95,7 @@ donut('.graph').set({
 ####Bubble Graph Attributes <i>(for a horizontal line time series representation)</i>
 ```javascript
 var set = []; // an array of numbers
-bubble('.graph').set({
+bubble('.graph').attr({
   // width & height controls the svg view box
   chart: {
     // width & height controls the svg view box
@@ -131,7 +131,7 @@ var set = [
     // if color / fill is not provided, it will randomly generate one
   }
 ];
-bar('.graph').set({
+bar('.graph').attr({
   chart : {
     width: 300,
     height: 100,
