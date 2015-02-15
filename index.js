@@ -3,6 +3,7 @@ var pie = require('./lib/pie');
 var donut = require('./lib/donut');
 var bar = require('./lib/bar');
 var bubble = require('./lib/bubble');
+var svg = require('./lib/svg/svg');
 module.exports = {
   name: 'yakojs',
   VERSION: '0.1.0',
@@ -20,5 +21,6 @@ module.exports = {
   },
   bar: function (opts) {
     return new bar(opts);
-  }
+  },
+  svg: svg
 };
