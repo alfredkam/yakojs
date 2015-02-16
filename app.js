@@ -33,14 +33,12 @@ while (amount--) {
 
   var set = [
       {
-          label: 'Auto Generated',
           data: dataSet,
           //color controls the line
           color: '#1E90FF'
           //nodeColor controls the pointer color
       },
       {
-          label: 'Auto Generated 2',
           data: dataSet2,
           color: '#FF7F00'
       },
