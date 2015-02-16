@@ -1,10 +1,8 @@
-<b>Note this version is a draft and has not been published to NPM yet!</b>
-
 ##Usage
 
 To use any of graphs you could access them through
 ``` javascript
-var yako = require('yako');
+var yako = require('yako'); // or window.yako if FE
 var spark = yako.spark; // spark graph
 var pie = yako.pie; // pie chart
 var donut = yako.donut; // donut chart
@@ -12,31 +10,30 @@ var bar = yako.bar; // bar graph
 ```
 
 ####Calling
-<i>graph</i>().set(<i>attributes</i>) <br>
+<i>graph</i>().attr(<i>attributes</i>) <br>
 &nbsp;&nbsp; => returns a string content with ```<svg>...</svg>``` <br>
-<i>graph</i>("#graph").set(<i>attributes</i>) <br> 
+<i>graph</i>("#graph").attr(<i>attributes</i>) <br> 
 &nbsp;&nbsp; => returns a string content with ```<div id='graph'><svg>...</svg></div>```<br>
-<i>graph</i>(".graph").set(<i>attributes</i>) <br>
+<i>graph</i>(".graph").attr(<i>attributes</i>) <br>
 &nbsp;&nbsp; => returns a string content with ```<div class='graph'><svg>...</svg></div>```<br>
-<i>graph</i>(<i>domObj</i>).set(<i>attributes</i>)<br> 
+<i>graph</i>(<i>domObj</i>).attr(<i>attributes</i>)<br> 
 &nbsp;&nbsp; => returns this, and automatically does <i>domObj</i>.innerHTML = ```<svg>...</svg>```<br>
-
 
 ####Spark Graph Attributes
 ```javascript
 var set = [
   {
-    data: [],// an array with numbers
+    data: [214,3423],// an array with numbers
     // optional parameters
-    color: // controls the stroke color. if its not provided, it will randomly generate a color
-    width: // controls the stroke width
+    strokeColor: "rgb(200,94,54)",// controls the stroke color. if its not provided, it will randomly generate a color
+    strokeWidth: 2, // controls the stroke width
     fill: '#F0FFF0' // controls the fill color. if its not provided, it will not fill
   },
   {
-    data: [], // an array with numbers
+    data: [13414,243243], // an array with numbers
     // optional parameters
-    color: // controls the stroke color. if its not provided, it will randomly generate a color
-    width: // controls the stroke width.
+    strokeColor: "#333",// controls the stroke color. if its not provided, it will randomly generate a color
+    strokeWidth: 2, // controls the stroke width.
     fill: '#F0FFF0' // controls the fill color. if its not provided, it will not fill
   }
 ];
@@ -48,7 +45,7 @@ spark('.graph').set({
     height: 100,  // default 100
     // optional parameters
     'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
-    line: false // it will disable the line drawing
+    stroke: false // it will disable the stroke from drawn
   },
   data: set //accepts an array or json obj
 });
@@ -56,8 +53,8 @@ spark('.graph').set({
 
 ####Pie Chart Attributes
 ```javascript
-var set = []; // an array of numbers
-pie('.graph').set({
+var set = [123,1233,1231,123]; // an array of numbers
+pie('.graph').attr({
   chart: {
     // width & height controls the svg view box
     width: 300,
@@ -65,8 +62,8 @@ pie('.graph').set({
     // optional parameters
     'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
     strokeColor: '#000',  // sets default stroke color
-    strokeColors: [],  // this will override the default stroke color and matches with the adjacent data set
-    fills: [] // this will by matching with the adjacent data set
+    strokeColors: ["#333","#444"],  // this will override the default stroke color and matches with the adjacent data set
+    fills: ['#123',"#555"] // this will by matching with the adjacent data set
     // Note: if strokeColor / strokeColors / fills are not provided - it will randomly generate a color
   },
   data: set
@@ -76,7 +73,7 @@ pie('.graph').set({
 ####Donut Chart Attributes
 ```javascript
 var set = []; // an array of numbers
-donut('.graph').set({
+donut('.graph').attr({
   chart: {
     // width & height controls the svg view box
     width: 300,
@@ -84,8 +81,8 @@ donut('.graph').set({
     // optional parameters
     'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
     strokeColor: '#000',  // sets default stroke color
-    strokeColors: [],  // this will override the default stroke color and matches with the adjacent data set
-    fills: [] // this will by matching with the adjacent data set
+    strokeColors: ["#f0f","#000",...],  // this will override the default stroke color and matches with the adjacent data set
+    fills: ["#f0f","#000",...] // this will by matching with the adjacent data set
     // Note: if strokeColor / strokeColors / fills are not provided - it will randomly generate a color
   },
   data: set
@@ -95,7 +92,7 @@ donut('.graph').set({
 ####Bubble Graph Attributes <i>(for a horizontal line time series representation)</i>
 ```javascript
 var set = []; // an array of numbers
-bubble('.graph').set({
+bubble('.graph').attr({
   // width & height controls the svg view box
   chart: {
     // width & height controls the svg view box
@@ -103,10 +100,11 @@ bubble('.graph').set({
     height: 100,
     // optional parameters
     'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+    // options for the straight line
     strokeColor: '#000',  // sets default stroke color
-    strokeColors: [],  // this will override the default stroke color and matches with the adjacent data set
+    // options for the circle
     fill: '#333', // sets default fill color
-    fills: [] // this will override the fill color and matches with the adjacent data set
+    fills: ['#333','#334'] // this will override the fill color and matches with the adjacent data set
     // Note: if strokeColor / strokeColors / fill / fills are not provided - it will randomly generate a color
   },
   data: set
@@ -117,21 +115,15 @@ bubble('.graph').set({
 ```javascript
 var set = [
   {
-    data: [], // an array of numbers
-    // optional parameters
-    color: '#1E90FF', // controls the stroke color
-    fill: // controls the fill color
-    // if color / fill is not provided, it will randomly generate one
+    data: [23424,2445],// an array with numbers
+    fill: '#F0FFF0' // controls the fill color
   },
   {
-    data: [], // an array of numbers
-    // optional parameters
-    color: '#FF7F00', // controls the stroke color
-    fill: // controls the fill color
-    // if color / fill is not provided, it will randomly generate one
+    data: [23423,34234], // an array with numbers
+    fill: '#F0FFF0' // controls the fill color
   }
 ];
-bar('.graph').set({
+bar('.graph').attr({
   chart : {
     width: 300,
     height: 100,
@@ -142,6 +134,21 @@ bar('.graph').set({
   data: set
 });
 ```
+
+##Accessing the SVG builder (Proposal)
+```javascript
+var svg = require('yako').svg;
+var scale = svg.getScale('data'); // finds min max and any additional info
+// means
+scale = {
+  min: <i>Number</i>,
+  max:
+}
+
+var path = svg.path(scale, dataSet);
+var arc = 
+```
+
 
 ##Extending or modify the library
 say you wanted to create your own or modify the library to do something extra. you require the library and extend from it.  Since this is build using common js and inheritance, one could easily extend specific graphs.<br>
