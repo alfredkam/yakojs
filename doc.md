@@ -144,7 +144,7 @@ var svg = require('yako').svg;
 ```
 
 #####.Path.getScale(attr)
-returns the scale for the path and returns min, height, interval, heightRatio in json object.  Expects attr to contain
+returns the scale for the path and returns min, height, interval, heightRatio, height, width in json object.  Expects attr to contain
 ```javascript
 attr = {
   data: [
