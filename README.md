@@ -14,6 +14,7 @@ Documentation could be found under https://github.com/alfredkam/yakojs/blob/mast
  - Bar Graphs (stack & non stack)
 
 ###Road Map
+ - Unit Test
  - Support labels
  - Expose math functions
  - Event Bindings

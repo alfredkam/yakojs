@@ -25,7 +25,8 @@ var set = [
   {
     data: [214,3423],// an array with numbers
     // optional parameters
-    strokeColor: "rgb(200,94,54)",// controls the stroke color. if its not provided, it will randomly generate a color
+    strokeColor: "rgb(200,94,54)",// controls the stroke color. 
+                                  // if its not provided, it will randomly generate a color
     strokeWidth: 2, // controls the stroke width
     fill: '#F0FFF0' // controls the fill color. if its not provided, it will not fill
   },
@@ -62,7 +63,8 @@ pie('.graph').attr({
     // optional parameters
     'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
     strokeColor: '#000',  // sets default stroke color
-    strokeColors: ["#333","#444"],  // this will override the default stroke color and matches with the adjacent data set
+    strokeColors: ["#333","#444"],  // this will override the default 
+                                    //stroke color and matches with the adjacent data set
     fills: ['#123',"#555"] // this will by matching with the adjacent data set
     // Note: if strokeColor / strokeColors / fills are not provided - it will randomly generate a color
   },
@@ -81,7 +83,8 @@ donut('.graph').attr({
     // optional parameters
     'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
     strokeColor: '#000',  // sets default stroke color
-    strokeColors: ["#f0f","#000",...],  // this will override the default stroke color and matches with the adjacent data set
+    strokeColors: ["#f0f","#000",...],  // this will override the default 
+                                        // stroke color and matches with the adjacent data set
     fills: ["#f0f","#000",...] // this will by matching with the adjacent data set
     // Note: if strokeColor / strokeColors / fills are not provided - it will randomly generate a color
   },
@@ -135,9 +138,36 @@ bar('.graph').attr({
 });
 ```
 
-##Accessing the SVG builder (Draft)
+##Accessing the SVG builder
 ```javascript
 var svg = require('yako').svg;
+```
+
+#####.Path.getScale(attr)
+returns the scale for the path and returns min, height, interval, heightRatio, height, width in json object.  Expects attr to contain
+```javascript
+attr = {
+  data: [
+          [1,2,3,4],
+          [34,6,6,7]
+        ], // an N * M array or a single N * 1 array, eg [1,23,4,5]
+  height: 300,  // in px
+  width: 200    // in px
+}
+```
+
+#####.Path.getOpenPath(scale, numberArray)
+returns attribute D of ```<path>``` that describes the open path
+```javascript
+scale = svg.Path.getScale(attr);
+numberArray = [1,2,3,4,5,6];  // an N * 1 Number array
+```
+
+#####.Path.getClosedPath(scale, numberArray)
+returns attribute D of ```<path>``` that describes the closed path
+```javascript
+scale = svg.Path.getScale(attr);
+numberArray = [1,2,3,4,5,6];  // an N * 1 Number array
 ```
 
 
