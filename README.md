@@ -1,3 +1,9 @@
+[![NPM Version](https://img.shields.io/npm/v/yako.svg)](https://npmjs.org/package/yako)
+[![Downloads](https://img.shields.io/npm/dm/yako.svg)](https://npmjs.org/package/yako)
+[![Dependencies](https://david-dm.org/alfredkam/yakojs.svg)](https://david-dm.org/alfredkam/yakojs)
+[![Build Status](https://img.shields.io/travis/alfredkam/yakojs.svg)](https://travis-ci.org/alfredkam/yakojs)
+[![Coverage Status](https://coveralls.io/repos/alfredkam/yakojs/badge.svg)](https://coveralls.io/r/alfredkam/yakojs)
+
 Minimal & light weight graph library for fast front end and server side rending + build in CommonJs format.  This graph is intend to generate light weight SVG graphs, and its more performable compare to highcharts / flot / c3 when you do not need any complex graphs
 
 This library also works great with webpack & react
