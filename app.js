@@ -13,7 +13,7 @@ var fs = require('fs');
 // TODO:: fix edge case of 1 data Point
 var dataPoints = 30;
 var nOfGraphs = 10;
-var kind = 6;
+var kind = 7;
 var amount = nOfGraphs;
 
 var now = Date.now();
@@ -44,12 +44,16 @@ while (amount--) {
           strokeColor: yako.spark()._randomColor(),
           fill: yako.spark()._randomColor()
       }
-      // {
-      //     label: 'Auto Generated 3',
-      //     data: dataSet3,
-      //     color: '#FF00FF'
-      // }
   ];
+  var singleSet = [
+    {
+        label: 'Auto Generated 3',
+        data: dataSet3,
+        strokeColor: yako.spark()._randomColor(),
+        fill: yako.spark()._randomColor()
+    }
+  ];
+  
   nodes += spark('.graph').attr({
     chart : {
       type: 'line',
@@ -60,6 +64,18 @@ while (amount--) {
     },
     title: 'just a test',
     data: set
+  });
+
+  nodes += spark('.graph').attr({
+    chart : {
+      type: 'line',
+      width: 300,
+      height: 100,
+      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+      showPointer: false,
+    },
+    title: 'just a test',
+    data: singleSet
   });
 
   nodes += pie('.graph').attr({
