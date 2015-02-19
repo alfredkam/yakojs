@@ -154,7 +154,7 @@ bar('.graph').attr({
 var svg = require('yako').svg;
 ```
 
-#####.Path.getScale(attr)
+#####.path.getScale(attr)
 returns the scale for the path and returns min, height, interval, heightRatio, height, width in json object.  Expects attr to contain
 ```javascript
 attr = {
@@ -167,19 +167,28 @@ attr = {
 }
 ```
 
-#####.Path.getOpenPath(scale, numberArray)
+#####.path.getOpenPath(scale, numberArray)
 returns attribute D of ```<path>``` that describes the open path
 ```javascript
 scale = svg.Path.getScale(attr);
 numberArray = [1,2,3,4,5,6];  // an N * 1 Number array
 ```
 
-#####.Path.getClosedPath(scale, numberArray)
+#####.path.getClosedPath(scale, numberArray)
 returns attribute D of ```<path>``` that describes the closed path
 ```javascript
 scale = svg.Path.getScale(attr);
 numberArray = [1,2,3,4,5,6];  // an N * 1 Number array
 ```
+
+#####.arc.polarToCartesian(centerX, centerY, radius, angleInDegress)
+returns the polar to cartesian coordinate in ```javascript {x:Number, y:Number} ```
+
+#####.arc.describeArc(centerX, centerY, radius, startAngle, endAngle)
+returns attribute D of ```<path>``` that descibes an arc
+
+#####.arc.describePie(centerX, centerY, radius, startAngle, endAngle)
+returns attribute D of ```<path>``` that decribes an arc w/ the path closed ~ equivalent to a piece of pie 
 
 
 ##Extending or modify the library
