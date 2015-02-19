@@ -109,6 +109,7 @@ while (amount--) {
       width: 300,
       height: 100,
       'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+      maxRadius: '8' 
       // additional options
       // strokes: [],
       // fills: []

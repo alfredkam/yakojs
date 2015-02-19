@@ -82,6 +82,8 @@ donut('.graph').attr({
     height: 100,
     // optional parameters
     'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+    outerRadius: 100, // overrides default & sets the outerRadius of the donut
+    innerRadius: 25, // overrides the default & controls the innerRadius of the donut
     strokeColor: '#000',  // sets default stroke color
     strokeColors: ["#f0f","#000",...],  // this will override the default 
                                         // stroke color and matches with the adjacent data set
@@ -90,6 +92,11 @@ donut('.graph').attr({
   },
   data: set
 });
+
+// default outerRadius & innerRadius base on chart attributes
+var circumference = chart.height < chart.width ? chart.height : chart.width;
+var outerRadius = chart.outerRadius || (circumference / 2);
+var innerRadius = chart.innerRadius || (outerRadius / 2);
 ```
 
 ####Bubble Graph Attributes <i>(for a horizontal line time series representation)</i>
@@ -105,6 +112,7 @@ bubble('.graph').attr({
     'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
     // options for the straight line
     strokeColor: '#000',  // sets default stroke color
+    maxRadius: 100, // overrides default & sets a cap for a max radius for the bubble
     // options for the circle
     fill: '#333', // sets default fill color
     fills: ['#333','#334'] // this will override the fill color and matches with the adjacent data set
@@ -112,6 +120,9 @@ bubble('.graph').attr({
   },
   data: set
 });
+
+// default maxRadius base on chart attributes
+var maxRadius =  chart.maxRadius || (chart.height < chart.width ? chart.height : chart.width) / 2;
 ```
 
 ###Bar Graph Attributes
