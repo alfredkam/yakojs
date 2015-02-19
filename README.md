@@ -26,10 +26,11 @@ Documentation could be found under https://github.com/alfredkam/yakojs/blob/mast
  - Event Bindings
  - Real time graphs
 
+Note:: Real time & labels for line graphs were supported under <a href='https://github.com/alfredkam/yakojs/tree/v0.0.16-re20140902'>0.0.15</a>
+
+
 ### How to run unit test
 ```npm test```
  
-Note:: Real time & labels for line graphs were supported under <a href='https://github.com/alfredkam/yakojs/tree/v0.0.16-re20140902'>0.0.15</a>
-
 ### Latest Release
 Please refer to the release branch - https://github.com/alfredkam/yakojs/tree/release
