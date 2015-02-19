@@ -45,6 +45,7 @@ while (amount--) {
           fill: yako.spark()._randomColor()
       }
   ];
+
   var singleSet = [
     {
         label: 'Auto Generated 3',

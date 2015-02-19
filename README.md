@@ -25,6 +25,9 @@ Documentation could be found under https://github.com/alfredkam/yakojs/blob/mast
  - Expose math functions
  - Event Bindings
  - Real time graphs
+
+### How to run unit test
+```npm test```
  
 Note:: Real time & labels for line graphs were supported under <a href='https://github.com/alfredkam/yakojs/tree/v0.0.16-re20140902'>0.0.15</a>
 
