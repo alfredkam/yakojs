@@ -45,6 +45,7 @@ while (amount--) {
           fill: yako.spark()._randomColor()
       }
   ];
+
   var singleSet = [
     {
         label: 'Auto Generated 3',
@@ -96,6 +97,8 @@ while (amount--) {
       width: 300,
       height: 100,
       'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+      innerRadius: 40,
+      outerRadius: 50
       // addtional options
       // strokes: [],
       // fills: []
@@ -109,7 +112,7 @@ while (amount--) {
       width: 300,
       height: 100,
       'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
-      maxRadius: '8' 
+      maxRadius: '10'
       // additional options
       // strokes: [],
       // fills: []
