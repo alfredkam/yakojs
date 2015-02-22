@@ -31,18 +31,32 @@ while (amount--) {
     dataSet4.push(Math.floor((Math.random() * 500) + 1));
   }
 
+  var strokColorFirst = yako.spark()._randomColor();
+  var strokeColorSecond = yako.spark()._randomColor();
   var set = [
       {
           data: dataSet,
           //color controls the line
-          strokeColor: yako.spark()._randomColor(),
-          fill: yako.spark()._randomColor()
+          strokeColor: strokColorFirst,
+          fill: yako.spark()._randomColor(),
+          scattered : {
+            strokeColor: strokColorFirst,
+            fill: 'white',
+            strokeWidth: 3,
+            radius: 5
+          }
           //nodeColor controls the pointer color
       },
       {
           data: dataSet2,
-          strokeColor: yako.spark()._randomColor(),
-          fill: yako.spark()._randomColor()
+          strokeColor: strokeColorSecond,
+          fill: yako.spark()._randomColor(),
+          scattered : {
+            strokeColor: strokeColorSecond,
+            fill: 'white',
+            strokeWidth: 3,
+            radius: 5
+          }
       }
   ];
 
@@ -57,11 +71,9 @@ while (amount--) {
   
   nodes += spark('.graph').attr({
     chart : {
-      type: 'line',
       width: 300,
       height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
-      showPointer: false,
+      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif'
     },
     title: 'just a test',
     data: set
@@ -69,14 +81,35 @@ while (amount--) {
 
   nodes += spark('.graph').attr({
     chart : {
-      type: 'line',
       width: 300,
       height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
-      showPointer: false,
+      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif'
     },
     title: 'just a test',
     data: singleSet
+  });
+
+  nodes += spark('.graph').attr({
+    chart : {
+      width: 300,
+      height: 100,
+      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+      scattered: true,
+    },
+    title: 'just a test',
+    data: set
+  });
+
+  nodes += spark('.graph').attr({
+    chart : {
+      width: 300,
+      height: 100,
+      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+      scattered: true,
+      line: false
+    },
+    title: 'just a test',
+    data: set
   });
 
   nodes += pie('.graph').attr({

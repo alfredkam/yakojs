@@ -1,3 +1,4 @@
+## Yako
 [![NPM Version](https://img.shields.io/npm/v/yako.svg)](https://npmjs.org/package/yako)
 [![Downloads](https://img.shields.io/npm/dm/yako.svg)](https://npmjs.org/package/yako)
 [![Dependencies](https://david-dm.org/alfredkam/yakojs.svg)](https://david-dm.org/alfredkam/yakojs)
@@ -16,7 +17,7 @@ Documentation could be found under https://github.com/alfredkam/yakojs/blob/mast
 ```npm install yako```
 
 ### Supported Graphs
- - Spark Line
+ - Spark / Scattered / Line / Area
  - Pie Charts
  - Donut Charts
  - Bubble Chart Time Flow (represents actions across a period of time)

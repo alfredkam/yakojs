@@ -29,6 +29,13 @@ var set = [
                                   // if its not provided, it will randomly generate a color
     strokeWidth: 2, // controls the stroke width
     fill: '#F0FFF0' // controls the fill color. if its not provided, it will not fill
+    // options for scattered if enabled in chart options
+    scattered : {
+      strokeColor: "rgb(200,94,54)",
+      fill: 'white', // default white
+      strokeWidth: 3, // default 3,
+      radius: 5 // default 5
+    }
   },
   {
     data: [13414,243243], // an array with numbers
@@ -36,6 +43,13 @@ var set = [
     strokeColor: "#333",// controls the stroke color. if its not provided, it will randomly generate a color
     strokeWidth: 2, // controls the stroke width.
     fill: '#F0FFF0' // controls the fill color. if its not provided, it will not fill
+    // options for scattered if enabled in chart options
+    scattered : {
+      strokeColor: "rgb(200,94,54)",
+      fill: 'white', // default white
+      strokeWidth: 3, // default 3,
+      radius: 5 // default 5
+    }
   }
 ];
 // spark accepts multiple data sets
@@ -47,6 +61,8 @@ spark('.graph').set({
     // optional parameters
     'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
     stroke: false // it will disable the stroke from drawn
+    line: true, // override to disable the line to be drawn
+    scattered: false // override to enable scattered
   },
   data: set //accepts an array or json obj
 });
@@ -112,8 +128,9 @@ bubble('.graph').attr({
     'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
     // options for the straight line
     strokeColor: '#000',  // sets default stroke color
-    maxRadius: 100, // overrides default & sets a cap for a max radius for the bubble
+    paddingX: 10, // default 10 & overrides the paddingX to better suit the adjusted maxRadius.
     // options for the circle
+    maxRadius: 100, // overrides default & sets a cap for a max radius for the bubble
     fill: '#333', // sets default fill color
     fills: ['#333','#334'] // this will override the fill color and matches with the adjacent data set
     // Note: if strokeColor / strokeColors / fill / fills are not provided - it will randomly generate a color
