@@ -10,9 +10,9 @@ Minimal & light weight graph library for fast front end and server side rending 
 
 This library also works great with webpack & react
 
-For demo checkout the demo folder or ```node app.js``` and vist ```http://localhost:3000```
-
 Documentation could be found under https://github.com/alfredkam/yakojs/blob/master/doc.md
+
+Demo @ http://alfredkam.com/yakojs or ```node app.js``` and vist ```http://localhost:3000```
 
 ### Install
 ```npm install yako```
