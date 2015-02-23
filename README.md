@@ -5,6 +5,7 @@
 [![Build Status](https://img.shields.io/travis/alfredkam/yakojs.svg)](https://travis-ci.org/alfredkam/yakojs)
 [![Coverage Status](https://coveralls.io/repos/alfredkam/yakojs/badge.svg?branch=master)](https://coveralls.io/r/alfredkam/yakojs?branch=master)
 
+
 Minimal & light weight graph library for fast front end and server side rending + build in CommonJs format.  This graph is intend to generate light weight SVG graphs, and its more performable compare to highcharts / flot / c3 when you do not need any complex graphs
 
 This library also works great with webpack & react
@@ -38,3 +39,6 @@ Note:: Real time & labels for line graphs were supported under <a href='https://
  
 ### Latest Release
 Please refer to the release branch - https://github.com/alfredkam/yakojs/tree/release
+
+[![Analytics](https://ga-beacon.appspot.com/UA-25416273-3/yakojs/readme)](https://github.com/igrigorik/ga-beacon)
+[![wercker status](https://app.wercker.com/status/a74eda189271b3b148197e07ad6fa9f1/s "wercker status")](https://app.wercker.com/project/bykey/a74eda189271b3b148197e07ad6fa9f1)
