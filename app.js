@@ -13,7 +13,7 @@ var fs = require('fs');
 // TODO:: fix edge case of 1 data Point
 var dataPoints = 30;
 var nOfGraphs = 10;
-var kind = 7;
+var kind = 9;
 var amount = nOfGraphs;
 
 var now = Date.now();
