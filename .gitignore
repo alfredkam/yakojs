@@ -1,5 +1,6 @@
 node_modules/
 coverage/
+.coveralls.yml
 *.sublime-*
 .DS_Store
 app.js

@@ -15,14 +15,15 @@ describe('lib/sparkLine', function () {
     it('_describePath should return a path string', function () {
         var path = spark._describePath(
             {
-                data: [0,1,2,3,4],
+                data: [ 0, 1, 2, 3, 4],
             },
             5,
             5,
             {
                 chart: {
                     height: 300,
-                    width: 100
+                    width: 100,
+                    line: true
                 },
                 heightRatio: 290 / 4,
                 gap: spark._sigFigs((100 / 4),8)
@@ -35,71 +36,37 @@ describe('lib/sparkLine', function () {
             });
     });
 
-    it('calling attr should render an svg string', function () {
+    it('calling attr should render w/ default properties should render 1 series', function () {
+          var set = { data:
+           [ 100, 45, 500, 264, 380, 126, 186, 291, 69 ],
+          strokeColor: '#2b26a0',
+          fill: '#6bd775' };
+
+        var svg = spark.attr({
+            chart : {
+              type: 'line',
+              width: 300,
+              height: 100,
+              'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+            },
+            title: 'just a test',
+            data: set
+        });
+
+        expect(svg)
+            .that.is.a('string').
+            to.satisfy(function (result) {
+                return /<path\s.*>/i.test(result) && !/<circle\s.*>/i.test(result);
+            });
+    });
+
+    it('calling attr should render w/ default properties should render 2 series', function () {
           var set = [ { data:
-           [ 100,
-             45,
-             500,
-             195,
-             371,
-             121,
-             274,
-             275,
-             153,
-             447,
-             378,
-             323,
-             325,
-             95,
-             52,
-             182,
-             73,
-             449,
-             440,
-             135,
-             269,
-             264,
-             380,
-             126,
-             186,
-             291,
-             69,
-             287,
-             193,
-             488 ],
+           [ 100, 45, 500, 264, 380, 126, 186, 291, 69 ],
           strokeColor: '#2b26a0',
           fill: '#6bd775' },
         { data:
-           [ 271,
-             335,
-             216,
-             195,
-             423,
-             15,
-             351,
-             311,
-             415,
-             114,
-             343,
-             331,
-             306,
-             198,
-             85,
-             209,
-             38,
-             444,
-             336,
-             399,
-             250,
-             220,
-             48,
-             59,
-             49,
-             403,
-             332,
-             413,
-             171,
-             241 ],
+           [ 271, 335, 216, 195, 423, 332, 413, 171, 241 ],
           strokeColor: '#1dbc53',
           fill: '#befb6f' } ];
 
@@ -109,16 +76,162 @@ describe('lib/sparkLine', function () {
               width: 300,
               height: 100,
               'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
-              showPointer: false,
             },
             title: 'just a test',
             data: set
         });
 
-        var expected = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100" height="100" width="300"><g data-label=""><path fill="none" class="_yakoTransitions-" stroke-linecap="round" stroke-linejoin="round" stroke-width="5" stroke="#2b26a0" d="M 0 77 L 10.344828 86.9 L 20.689656 5 L 31.034484 59.900000000000006 L 41.379312 28.22 L 51.72414 73.22 L 62.068968 45.68 L 72.41379599999999 45.5 L 82.758624 67.46000000000001 L 93.103452 14.540000000000006 L 103.44828 26.960000000000008 L 113.79310799999999 36.86 L 124.137936 36.5 L 134.482764 77.9 L 144.82759199999998 85.64 L 155.17242 62.24000000000001 L 165.517248 81.86 L 175.862076 14.180000000000007 L 186.206904 15.799999999999997 L 196.551732 70.7 L 206.89656 46.58 L 217.241388 47.480000000000004 L 227.58621599999998 26.60000000000001 L 237.93104399999999 72.32 L 248.275872 61.52000000000001 L 258.6207 42.620000000000005 L 268.965528 82.58 L 279.310356 43.34 L 289.65518399999996 60.25999999999999 L 300.00001199999997 7.159999999999997"></path><path fill="#6bd775" class="_yakoTransitions-" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="none" d="M 0 77 L 10.344828 86.9 L 20.689656 5 L 31.034484 59.900000000000006 L 41.379312 28.22 L 51.72414 73.22 L 62.068968 45.68 L 72.41379599999999 45.5 L 82.758624 67.46000000000001 L 93.103452 14.540000000000006 L 103.44828 26.960000000000008 L 113.79310799999999 36.86 L 124.137936 36.5 L 134.482764 77.9 L 144.82759199999998 85.64 L 155.17242 62.24000000000001 L 165.517248 81.86 L 175.862076 14.180000000000007 L 186.206904 15.799999999999997 L 196.551732 70.7 L 206.89656 46.58 L 217.241388 47.480000000000004 L 227.58621599999998 26.60000000000001 L 237.93104399999999 72.32 L 248.275872 61.52000000000001 L 258.6207 42.620000000000005 L 268.965528 82.58 L 279.310356 43.34 L 289.65518399999996 60.25999999999999 L 300.00001199999997 7.159999999999997V 95 H 0 L 0 77"></path></g><g data-label=""><path fill="none" class="_yakoTransitions-" stroke-linecap="round" stroke-linejoin="round" stroke-width="5" stroke="#1dbc53" d="M 0 46.22 L 10.344828 34.7 L 20.689656 56.120000000000005 L 31.034484 59.900000000000006 L 41.379312 18.86 L 51.72414 92.3 L 62.068968 31.82 L 72.41379599999999 39.02 L 82.758624 20.299999999999997 L 93.103452 74.48 L 103.44828 33.260000000000005 L 113.79310799999999 35.42 L 124.137936 39.92 L 134.482764 59.36 L 144.82759199999998 79.7 L 155.17242 57.38 L 165.517248 88.16 L 175.862076 15.079999999999998 L 186.206904 34.52 L 196.551732 23.180000000000007 L 206.89656 50 L 217.241388 55.4 L 227.58621599999998 86.36 L 237.93104399999999 84.38 L 248.275872 86.18 L 258.6207 22.460000000000008 L 268.965528 35.24 L 279.310356 20.659999999999997 L 289.65518399999996 64.22 L 300.00001199999997 51.620000000000005"></path><path fill="#befb6f" class="_yakoTransitions-" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="none" d="M 0 46.22 L 10.344828 34.7 L 20.689656 56.120000000000005 L 31.034484 59.900000000000006 L 41.379312 18.86 L 51.72414 92.3 L 62.068968 31.82 L 72.41379599999999 39.02 L 82.758624 20.299999999999997 L 93.103452 74.48 L 103.44828 33.260000000000005 L 113.79310799999999 35.42 L 124.137936 39.92 L 134.482764 59.36 L 144.82759199999998 79.7 L 155.17242 57.38 L 165.517248 88.16 L 175.862076 15.079999999999998 L 186.206904 34.52 L 196.551732 23.180000000000007 L 206.89656 50 L 217.241388 55.4 L 227.58621599999998 86.36 L 237.93104399999999 84.38 L 248.275872 86.18 L 258.6207 22.460000000000008 L 268.965528 35.24 L 279.310356 20.659999999999997 L 289.65518399999996 64.22 L 300.00001199999997 51.620000000000005V 95 H 0 L 0 46.22"></path></g></svg>';
+        expect(svg)
+            .that.is.a('string').
+            to.satisfy(function (result) {
+                return /<path\s.*>/i.test(result);
+            });
+    });
+
+    it('calling attr should render w/ line false should not render path', function () {
+          var set = [ { data:
+           [ 100, 45, 500, 264, 380, 126, 186, 291, 69 ],
+          strokeColor: '#2b26a0',
+          fill: '#6bd775' },
+        { data:
+           [ 271, 335, 216, 195, 423, 332, 413, 171, 241 ],
+          strokeColor: '#1dbc53',
+          fill: '#befb6f' } ];
+
+        var svg = spark.attr({
+            chart : {
+              type: 'line',
+              width: 300,
+              height: 100,
+              'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+              line: false
+            },
+            title: 'just a test',
+            data: set
+        });
 
         expect(svg)
-            .that.is.a('string')
-            .to.be.equal(expected);
+            .that.is.a('string').
+            to.satisfy(function (result) {
+                return !/<path\s.*>/i.test(result);
+            });
+    });
+
+    it('calling attr should render w/ line false and scattered true should render a scattered graph', function () {
+          var set = [ { data:
+           [ 100, 45, 500, 264, 380, 126, 186, 291, 69 ],
+          strokeColor: '#2b26a0',
+          fill: '#6bd775' },
+        { data:
+           [ 271, 335, 216, 195, 423, 332, 413, 171, 241 ],
+          strokeColor: '#1dbc53',
+          fill: '#befb6f' } ];
+
+        var svg = spark.attr({
+            chart : {
+              type: 'line',
+              width: 300,
+              height: 100,
+              'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+              line: false,
+              scattered: true
+            },
+            title: 'just a test',
+            data: set
+        });
+
+        expect(svg)
+            .that.is.a('string').
+            to.satisfy(function (result) {
+                return !/<path\s.*>/i.test(result) && /<circle\s.*>/i.test(result);
+            });
+    });
+
+    it('calling attr should render w/ line false and scattered true should render a scattered graph', function () {
+          var set = [ { data:
+           [ 100, 45, 500, 264, 380, 126, 186, 291, 69 ],
+          strokeColor: '#2b26a0',
+          fill: '#6bd775' },
+        { data:
+           [ 271, 335, 216, 195, 423, 332, 413, 171, 241 ],
+          strokeColor: '#1dbc53',
+          fill: '#befb6f' } ];
+
+        var svg = spark.attr({
+            chart : {
+              type: 'line',
+              width: 300,
+              height: 100,
+              'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+              line: false,
+              scattered: true
+            },
+            title: 'just a test',
+            data: set
+        });
+
+        expect(svg)
+            .that.is.a('string').
+            to.satisfy(function (result) {
+                return !/<path\s.*>/i.test(result) && /<circle\s.*>/i.test(result);
+            });
+    });
+
+    it('calling attr should render w/ scattered true should render a scattered graph w/ area filled ', function () {
+          var set = [ { data:
+           [ 100, 45, 500, 264, 380, 126, 186, 291, 69 ],
+          strokeColor: '#2b26a0',
+          fill: '#6bd775' },
+        { data:
+           [ 271, 335, 216, 195, 423, 332, 413, 171, 241 ],
+          strokeColor: '#1dbc53',
+          fill: '#befb6f' } ];
+
+        var svg = spark.attr({
+            chart : {
+              type: 'line',
+              width: 300,
+              height: 100,
+              'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+              scattered: true
+            },
+            title: 'just a test',
+            data: set
+        });
+
+        expect(svg)
+            .that.is.a('string').
+            to.satisfy(function (result) {
+                return /<path\s.*>/i.test(result) && /<circle\s.*>/i.test(result);
+            });
+    });
+
+    it('calling attr should render w/ scattered true should render a scattered graph w/ line & no area filled', function () {
+          var set = [ { data:
+           [ 100, 45, 500, 264, 380, 126, 186, 291, 69 ],
+          strokeColor: '#2b26a0'},
+        { data:
+           [ 271, 335, 216, 195, 423, 332, 413, 171, 241 ],
+          strokeColor: '#1dbc53'} ];
+
+        var svg = spark.attr({
+            chart : {
+              type: 'line',
+              width: 300,
+              height: 100,
+              'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+              scattered: true
+            },
+            title: 'just a test',
+            data: set
+        });
+
+        expect(svg)
+            .that.is.a('string').
+            to.satisfy(function (result) {
+                return  /<path\s.*>/i.test(result) &&
+                        /<circle\s.*>/i.test(result) &&
+                        !/V\s.*H\s.*L\s.*>/i.test(result);  // for closing graph
+            });
     });
 });

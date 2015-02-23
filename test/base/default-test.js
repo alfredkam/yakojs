@@ -1,8 +1,8 @@
 var chai = require('chai');
 var expect = chai.expect;
-var Base = require('../lib/base');
+var Base = require('../../lib/base/default');
 
-describe('lib/base', function () {
+describe('lib/base/default', function () {
     var base;
     after(function () {
         base = '';
