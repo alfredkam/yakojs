@@ -1,6 +1,6 @@
 [General Usage](#Usage) <br>
-[Api] (#api-propose) <br>
-[SVG Api] (#svg-api) <br>
+[API] (#api-propose) <br>
+[SVG API] (#svg-api) <br>
   
 ##Usage
 
@@ -190,7 +190,7 @@ var result = instance.attr({
 ###mixin
 Sometimes common components / functions may share some common functionality with other graph components.  Mixin allows you to enable the magic to happen here.
 ```javascript
-<i>graph</i>({
+spark({
   mixin: {
     render: function () {
 
@@ -198,6 +198,9 @@ Sometimes common components / functions may share some common functionality with
   }
 });
 ```
+
+###render
+
 
 ##SVG API
 ```javascript
