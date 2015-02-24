@@ -1,7 +1,7 @@
 box: wercker/default
 deploy:
-  steps:
-    - lukevivier/gh-pages@0.2.1:
-        token: $GIT_TOKEN
-        domain: alfredkam.com/yakojs
-        basedir: demo
+    steps:
+        - lukevivier/gh-pages@0.2.1:
+            token: $GIT_TOKEN
+            domain: alfredkam.com/yakojs
+            basedir: demo
