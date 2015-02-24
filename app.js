@@ -1,4 +1,4 @@
-  var yako = require('./index');
+var yako = require('./index');
 var spark = yako.spark;
 var pie = yako.pie;
 var donut = yako.donut;
@@ -68,8 +68,10 @@ while (amount--) {
         fill: yako.spark()._randomColor()
     }
   ];
-  
-  nodes += spark('.graph').attr({
+
+  var sparkInstance = spark('.graph');
+
+  nodes += sparkInstance.attr({
     chart : {
       width: 300,
       height: 100,
@@ -79,7 +81,7 @@ while (amount--) {
     data: set
   });
 
-  nodes += spark('.graph').attr({
+  nodes += sparkInstance.attr({
     chart : {
       width: 300,
       height: 100,
@@ -192,15 +194,12 @@ nodes = nodes.replace(/([0-9]+\.[0-9]+)/g, function (match, p1) {
 
 var str = '<html><head>'+
 "<link href='http://fonts.googleapis.com/css?family=Open+Sans:300,600' rel='stylesheet' type='text/css'>"+
-'<link rel="stylesheet" href="style.css" type="text/css"></head><body>' + nodes + '</body></html>';
+'<link rel="stylesheet" href="style.css" type="text/css"></head><body>' + nodes + '</body><style>.graph {display:inline-block;</style></html>';
 
 var proxy = http.createServer(function (req, res) {
   res.writeHead(200, {'Content-Type': 'text/plain'});
 });
 
-// fs.writeFileSync(__dirname + '/demo/demo.html', str);
-
-app.use(express.static(__dirname + '/demo'));
 app.get('/', function (req, res) {
   res.send(str);
 });

@@ -1,6 +1,6 @@
 ##Usage
 
-To use any of graphs you could access them through
+To use any of the graphs you could access them through these entry points.
 ``` javascript
 var yako = require('yako'); // or window.yako if FE
 var spark = yako.spark; // spark graph
@@ -16,8 +16,6 @@ var bar = yako.bar; // bar graph
 &nbsp;&nbsp; => returns a string content with ```<div id='graph'><svg>...</svg></div>```<br>
 <i>graph</i>(".graph").attr(<i>attributes</i>) <br>
 &nbsp;&nbsp; => returns a string content with ```<div class='graph'><svg>...</svg></div>```<br>
-<i>graph</i>(<i>domObj</i>).attr(<i>attributes</i>)<br> 
-&nbsp;&nbsp; => returns this, and automatically does <i>domObj</i>.innerHTML = ```<svg>...</svg>```<br>
 
 ####Spark Graph Attributes
 ```javascript
@@ -166,7 +164,38 @@ bar('.graph').attr({
 });
 ```
 
-##Accessing the SVG builder
+
+##API <i>[PROPOSE]</i>
+Instances of the graph component are created internally, and each component could be re-used subsequently.  Once you've picked your entry point, you could access the component api. Within each component, you could access your component with ```javascript this```
+```javascript
+// Example
+var yako = require('yako'); // or window.yako if FE
+var spark = yako.spark;
+var instance = spark({
+  render: function (svg) {
+      return "<div>"+svg+"</div>";
+  }
+});
+
+var result = instance.attr({
+  chart: { ... },
+  data: [ ... ]
+})
+```
+
+###mixin
+Sometimes common components / functions may share some common functionality with other graph components.  Mixin allows you to enable the magic to happen here.
+```javascript
+<i>graph</i>({
+  mixin: {
+    render: function () {
+
+    }
+  }
+});
+```
+
+##SVG API
 ```javascript
 var svg = require('yako').svg;
 ```
