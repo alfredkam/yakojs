@@ -1,3 +1,7 @@
+[General Usage](#Usage) <br>
+[Api] (#api-propose) <br>
+[SVG Api] (#svg-api) <br>
+  
 ##Usage
 
 To use any of the graphs you could access them through these entry points.
