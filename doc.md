@@ -192,14 +192,12 @@ Sometimes common components / functions may share some common functionality with
 ```javascript
 spark({
   mixin: {
-    render: function () {
-
-    }
   }
 });
 ```
 
-###render
+###make
+###compile
 
 
 ##SVG API
@@ -252,7 +250,7 @@ For example you think its smarter to compile the svg objects into dom object, du
 var defaultSpark = require('./lib/spark');
 var mySparkGraph = defaultSpark.extend({
   // this will have mySparkGraph's internal call to default to this function
-  _make: function (tag, props, data) {
+  make: function (tag, props, data) {
     var node = doc.createElementNS('http://www.w3.org/2000/svg',tag);
     this.assign(node, props);
     this._extend(node.dataset, data);
