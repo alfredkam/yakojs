@@ -96,7 +96,7 @@
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(11);
+	var Base = __webpack_require__(10);
 	var spark = module.exports = Base.extend({
 	  // the graph data & options setter
 	  attr: function (opts) {
@@ -268,7 +268,7 @@
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arcBase = __webpack_require__(10);
+	var arcBase = __webpack_require__(11);
 	var pie = module.exports = arcBase.extend({
 	    /**
 	     * [_describePath genereates the paths for each pie segment]
@@ -305,7 +305,7 @@
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arcBase = __webpack_require__(10);
+	var arcBase = __webpack_require__(11);
 	var pie = module.exports = arcBase.extend({
 	    /**
 	     * [_describePath genereates the paths for each pie segment]
@@ -373,7 +373,7 @@
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(11);
+	var Base = __webpack_require__(10);
 	var bar = module.exports = Base.extend({
 	    // include missing values
 	    _prepare: function () {
@@ -472,7 +472,7 @@
 /* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(10);
+	var Base = __webpack_require__(11);
 	var bubble = module.exports = Base.extend({
 	    _generate: function () {
 
@@ -545,7 +545,41 @@
 /* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(11);
+	var Common = __webpack_require__(15);
+	var base = module.exports = Common.extend({
+	    init: function (node) {
+	      var self = this;
+	      // adding width 100% will allow us to have responsive graphs (in re-sizing)
+	      if (typeof node === 'string') {
+	        if (node[0] === '#') {
+	          this.element = this.make('div',{
+	            id: node.replace(/^#/,''),
+	            width: '100%'
+	          });
+	        } else {
+	          this.element = this.make('div',{
+	            "class": node.replace(/^\./,''),
+	            width: '100%'
+	          });
+	        }
+	      } else if(typeof node === 'object'){
+	        // type of object?
+	        this.element = node;
+	        this.element.style.width = '100%';
+	      } else {
+	        this.element = '';
+	      }
+	      this.token = self.makeToken();
+	      this.attributes = {};
+	      return this;
+	    }
+	});
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Base = __webpack_require__(10);
 	var arc = __webpack_require__(13);
 	module.exports = Base.extend({
 	    // include missing values
@@ -604,40 +638,6 @@
 	     */
 	    _describePath: function () {
 	        return '';
-	    }
-	});
-
-/***/ },
-/* 11 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Common = __webpack_require__(15);
-	var base = module.exports = Common.extend({
-	    init: function (node) {
-	      var self = this;
-	      // adding width 100% will allow us to have responsive graphs (in re-sizing)
-	      if (typeof node === 'string') {
-	        if (node[0] === '#') {
-	          this.element = this.make('div',{
-	            id: node.replace(/^#/,''),
-	            width: '100%'
-	          });
-	        } else {
-	          this.element = this.make('div',{
-	            "class": node.replace(/^\./,''),
-	            width: '100%'
-	          });
-	        }
-	      } else if(typeof node === 'object'){
-	        // type of object?
-	        this.element = node;
-	        this.element.style.width = '100%';
-	      } else {
-	        this.element = '';
-	      }
-	      this.token = self.makeToken();
-	      this.attributes = {};
-	      return this;
 	    }
 	});
 
@@ -748,10 +748,17 @@
 	  init: function () {
 	    return this;
 	  },
+
+	  // to allow public functions to be overwritten
+	  mixin: function (fnToExtend) {
+	    var self = this;
+	    self._extend(self, fnToExtend);
+	    return self;
+	  },
 	  // appends the elements
 	  // for now lets assume there is only one child
 	  // TODO:: accept multiple arguments, and accept them in order
-	  _compile : function (node, child) {
+	  compile: function (node, child) {
 	    if (typeof node === 'object') {
 	      node.innerHTML = child;
 	      return this;

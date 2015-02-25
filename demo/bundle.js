@@ -1,1 +1,1195 @@
-!function(t){function e(i){if(r[i])return r[i].exports;var a=r[i]={exports:{},id:i,loaded:!1};return t[i].call(a.exports,a,a.exports,e),a.loaded=!0,a.exports}var r={};return e.m=t,e.c=r,e.p="",e(0)}([function(t,e,r){t.exports=r(5)},function(t,e,r){var i=r(2),a=r(4);t.exports=i.extend({_prepare:function(){var t={chart:{type:"chart",width:"100",height:"100","font-family":'"Open Sans", sans-serif'}};return this._extend(t,this.attributes.opts),this.attributes.opts=t,this},attr:function(t){return t=t||0,this.attributes.data=t.data||[],this.attributes.opts=t,this._prepare()._generate()},_generate:function(){var t=this.attributes.opts.chart,e=this.attributes.data,r=this.make("svg",{width:t.width,height:t.height,viewBox:"0 0 "+t.width+" "+t.height}),i=t.height<t.width?t.height:t.width,a=this._dataSetRelativeToTotal(e),n=this.compile(this.element,this.compile(r,this._describePath(i,a,t)));return"string"==typeof n?n:this},_polarToCartesian:a.polarToCartesian,_describeArc:a.describeArc,_describePie:a.describePie,_describePath:function(){return""}})},function(t,e,r){{var i=r(9);t.exports=i.extend({init:function(t){var e=this;return"string"==typeof t?this.element="#"===t[0]?this.make("div",{id:t.replace(/^#/,""),width:"100%"}):this.make("div",{"class":t.replace(/^\./,""),width:"100%"}):"object"==typeof t?(this.element=t,this.element.style.width="100%"):this.element="",this.token=e.makeToken(),this.attributes={},this}})}},function(t,e,r){{var i=r(2);t.exports=i.extend({attr:function(t){t=t||{},!t||t.data&&0!==t.data.length||(t.data=void 0),this.attributes.data=t.data||0,this.attributes.opts=t;for(var e in t.data)t.data[e].label=(t.data[e].label||"").replace(/\s/g,"-");return this._prepare()._generate()},_prepare:function(){var t={chart:{width:"100",height:"200","font-family":'"Open Sans", sans-serif',line:!0,scattered:!1},showNodes:!1,xAxis:{},yAxis:{},data:[]};return this._extend(t,this.attributes.opts),this.attributes.opts=t,this},_generate:function(){var t=this.attributes.data,e=this.attributes.opts,r=e.chart,i=this.make("svg",{width:e.chart.width,height:e.chart.height,viewBox:"0 0 "+e.chart.width+" "+e.chart.height}),a=this,n=0,o=5;"[object Array]"!==Object.prototype.toString.call(t)&&(t=[t]);var s=a._findMinMax(t);a._extend(e._scale,s),e.heightRatio=(r.height-2*o)/s.max,e.gap=a._sigFigs(r.width/(s.len-1),8);for(var h=0;h<t.length;h++){var d=a.make("g",{},{label:t[h].label});i=a.compile(i,a.compile(d,a._describePath(t[h],n,o,e)))}var c=a.compile(a.element,i);return"string"==typeof c?c:a},_describeAttributeD:function(t,e,r,i){for(var a=i.chart.height,n=i.heightRatio,o=i.gap,s="",h=0;h<t.length;h++)s+=0===h?"M "+e+" "+(a-t[h]*n-r):" L "+(o*h+e)+" "+(a-t[h]*n-r);return""===s&&(s="M 0 0"),s},_describeCloseAttributeD:function(t,e,r,i){var a=i.chart.height,n=i.heightRatio;return["V",a-r,"H",e,"L",e,a-t[0]*n-r].join(" ")},_describeScatteredGraph:function(t,e,r,i,a){for(var n=a.chart.height,o=a.heightRatio,s=this,h=a.gap,d=t.scattered||0,c=d.strokeWidth||3,u=d.strokeColor||s._randomColor(),l=d.radius||5,f=(d.fill||"white",""),p=0;p<e.length;p++)f+=s.make("circle",{cx:h*p+r-l/2+c/2,cy:n-e[p]*o-i-l/2+c/2,r:l-c/2,stroke:u,"stroke-width":c,fill:"white"});return f},_describePath:function(t,e,r,i){var a=i.chart,n=this,o=n._describeAttributeD(t.data,e,r,i),s=n.make("path",{d:o,stroke:t.strokeColor||n._randomColor(),"stroke-width":t.strokeWidth||"5","stroke-linejoin":"round","stroke-linecap":"round","class":"_yakoTransitions-"+t.label,fill:"none"});return(a.line?s+(t.fill?n.make("path",{d:o+n._describeCloseAttributeD(t.data,e,r,i),stroke:"none","stroke-width":"2","stroke-linejoin":"round","stroke-linecap":"round","class":"_yakoTransitions-"+t.label,fill:t.fill}):""):"")+(a.scattered?n._describeScatteredGraph(t,t.data,e,r,i):"")}})}},function(t){var e=t.exports={polarToCartesian:function(t,e,r,i){var a=(i-90)*Math.PI/180;return{x:t+r*Math.cos(a),y:e+r*Math.sin(a)}},describeArc:function(t,r,i,a,n){var o=e.polarToCartesian(t,r,i,n),s=e.polarToCartesian(t,r,i,a),h=180>=n-a?"0":"1",d=["M",o.x,o.y,"A",i,i,0,h,0,s.x,s.y].join(" ");return d},describePie:function(t,r,i,a,n){return e.describeArc(t,r,i,a,n)+" L"+t+" "+r}}},function(t,e,r){for(var i=r(6),a=i.spark,n=i.pie,o=i.donut,s=i.bubble,h=i.bar,d=30,c=10,u=9,l=c,f=Date.now(),p="";l--;){for(var g=[],_=[],m=[],v=[],b=0;d>b;b++)g.push(Math.floor(500*Math.random()+10)),_.push(Math.floor(500*Math.random()+10)),m.push(Math.floor(500*Math.random()+10)),v.push(Math.floor(500*Math.random()+1));var k=i.spark()._randomColor(),w=i.spark()._randomColor(),x=[{data:g,strokeColor:k,fill:i.spark()._randomColor(),scattered:{strokeColor:k,fill:"white",strokeWidth:3,radius:5}},{data:_,strokeColor:w,fill:i.spark()._randomColor(),scattered:{strokeColor:w,fill:"white",strokeWidth:3,radius:5}}],y=[{label:"Auto Generated 3",data:m,strokeColor:i.spark()._randomColor(),fill:i.spark()._randomColor()}];p+=a(".graph").attr({chart:{width:300,height:100,"font-family":'"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif'},title:"just a test",data:x}),p+=a(".graph").attr({chart:{width:300,height:100,"font-family":'"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif'},title:"just a test",data:y}),p+=a(".graph").attr({chart:{width:300,height:100,"font-family":'"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',scattered:!0},title:"just a test",data:x}),p+=a(".graph").attr({chart:{width:300,height:100,"font-family":'"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',scattered:!0,line:!1},title:"just a test",data:x}),p+=n(".graph").attr({chart:{width:300,height:100,"font-family":'"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif'},title:"just a test",data:v}),p+=o(".graph").attr({chart:{width:300,height:100,"font-family":'"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',innerRadius:40,outerRadius:50},title:"just a test",data:v}),p+=s(".graph").attr({chart:{width:300,height:100,"font-family":'"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',maxRadius:"10"},title:"just a test",data:v}),p+=h(".graph").attr({chart:{stack:!0,width:300,height:100,"font-family":'"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',showPointer:!1,fill:[]},title:"just a test",data:x}),p+=h(".graph").attr({chart:{width:300,height:100,"font-family":'"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',showPointer:!1,fill:[]},title:"just a test",data:x})}var M=Date.now()-f;console.log("Took "+M+"ms to generate "+c*u+" graphs with "+d+" different data points each avg of "+M/c/u+"ms"),p="<div>Took "+M+"ms to generate "+c*u+" graphs with "+d+" different data points avg of "+M/c/u+"ms</div>"+p;var C=document.getElementsByTagName("body")[0];C.innerHTML=p},function(t,e,r){var i=r(3),a=r(12),n=r(11),o=r(7),s=r(10),h=r(15);t.exports={name:"yakojs",VERSION:"0.1.0",spark:function(t){return new i(t)},pie:function(t){return new a(t)},donut:function(t){return new n(t)},bubble:function(t){return new s(t)},bar:function(t){return new o(t)},svg:h}},function(t,e,r){{var i=r(2);t.exports=i.extend({_prepare:function(){var t={chart:{type:"chart",width:"100",height:"100","font-family":'"Open Sans", sans-serif'}};return this._extend(t,this.attributes.opts),this.attributes.opts=t,this},attr:function(t){return t=t||0,this.attributes.data=t.data||[],this.attributes.opts=t,this._prepare()._generate()},_generate:function(){var t=this.attributes.data,e=this.attributes.opts.chart,r=this.make("svg",{width:e.width,height:e.height,viewBox:"0 0 "+e.width+" "+e.height}),i=this.compile(this.element,this.compile(r,this._describeBar(t,e)));return"string"==typeof i?i:this},_describeBar:function(t,e){if(!t.length)return"";t="object"==typeof t[0]?t:[t];var r=e.height,i=5;r-=i;for(var a=e.width,n=t[0].data.length,o=t.length,s=a/n,h=this._findMinMax(t,e),d="",c=0;n>c;c++)if(e.stack)for(var u=(r-i)*h.maxSet[c]/h.max,l=r-u,f=0;o>f;f++)d+=this.make("rect",{x:s*c+s/4,y:l,width:s/o,height:t[f].data[c]/h.maxSet[c]*u,fill:t[f].fill||this._randomColor()}),l+=t[f].data[c]/h.maxSet[c]*u;else for(var f=0;o>f;f++){var l=(r-i)*t[f].data[c]/h.max;d+=this.make("rect",{x:s*(c+1)-s/(f+1),y:r-l,width:s/(o+1),height:l,fill:t[f].fill||this._randomColor()})}return d}})}},function(t){function e(t){return"function"==typeof t}function r(t){return/\b_super\b/.test(t)}var i=t.exports=function(){};i.extend=function(t){function i(){this.init&&this.init.apply(this,arguments)}var a=this.prototype,n=this.prototype.init;this.prototype.init=null;var o=new this;this.prototype.init=n;for(var s in t){var h=t[s];o[s]=e(h)&&e(a[s])&&r(h)?function(t,e){return function(){var r=this._super;this._super=a[t];var i=e.apply(this,arguments);return this._super=r,i}}(s,h):h}return i.prototype=o,i.prototype.constructor=i,i.extend=arguments.callee,i}},function(t,e,r){r(16);var i,a=r(8);t.exports=i=a.extend({init:function(){return this},compile:function(t,e){return"object"==typeof t?(t.innerHTML=e,this):""===t?e:t.replace(/(.*)(<\/.*>$)/g,function(t,r,i){return r+e+i})},_dataSetRelativeToTotal:function(t){var e=t.reduce(function(t,e){return t+e});return t.map(function(t){return t/e})},_randomColor:function(){return"#"+Math.floor(16777215*Math.random()).toString(16)},make:function(t,e,r){var i="<"+t;return"svg"===t&&(i+=' version="1.1" xmlns="http://www.w3.org/2000/svg"'),i+=this._makePairs(e),i+=this._makePairs("data",r),i+="></"+t+">"},_makePairs:function(t,e){if(arguments.length<2?(e=t,t=""):t+="-",!e)return"";for(var r=Object.keys(e),i=r.length,a="";i--;)a+=" "+t+r[i]+'="'+e[r[i]]+'"';return a},_extend:function(t,e){var r=this;if(e&&t){for(var i=Object.keys(e),a=i.length;a--;)"object"!=typeof e[i[a]]||"[object Array]"===Object.prototype.toString.call(e[i[a]])?t[i[a]]=e[i[a]]:(t[i[a]]||(t[i[a]]={}),r._extend(t[i[a]],e[i[a]]));return this}},_makeNode:function(t,e,r){var i=doc.createElementNS("http://www.w3.org/2000/svg",t);return this.assign(i,e),this._extend(i.dataset,r),i},isFn:function(t){return!!(t&&t.constructor&&t.call&&t.apply)},makeToken:function(){return Math.random().toString(36).substr(2)},_sigFigs:function(t,e){var r=Math.pow(10,e-Math.floor(Math.log(t)/Math.LN10)-1);return Math.round(t*r)/r},_findMinMax:function(t,e){e=e||0,t="object"==typeof t[0]?t:[t];var r=0,i=Number.MAX_VALUE,a=[];if(t[0].data){for(var n=[],o=0;o<t.length;o++)n.push(t[o].data);t=n}for(var s=t.length,h=t[0].length,d=0;h>d;d++)if(e.stack){for(var c=0,u=0;s>u;u++)c+=t[u][d];a.push(c),r=c>r?c:r,i=i>c?c:i}else for(var l=0;s>l;l++)i=i>t[l][d]?t[l][d]:i,r=r<t[l][d]?t[l][d]:r;return{min:i,max:r,maxSet:a,len:h}}})},function(t,e,r){{var i=r(1);t.exports=i.extend({_generate:function(){var t=this.attributes.opts.chart,e=this.attributes.data,r=this.make("svg",{width:t.width,height:t.height,viewBox:"0 0 "+t.width+" "+t.height}),i=10,a=this._describeHorizontalPath(t.height,t.width,i,t);a+=this._describeBubble(e,t.height,t.width,i,t);var n=this.compile(this.element,this.compile(r,a));return n},_describeHorizontalPath:function(t,e,r,i){var a=t/2;return this.make("path",{"stroke-linecap":"round","stroke-linejoin":"round",stroke:i.strokColor||this._randomColor(),d:"M"+r+" "+a+" H"+(e-r)})},_describeBubble:function(t,e,r,i,a){if(!t)return"";for(var n=this._getMaxOfArray(t),o=t.length,s=(r-2*i)/(o-1),h="",d=a.fills||0,c=a.maxRadius||(a.height<a.width?a.height:a.width)/2,u=e/2,l=0;l<t.length;l++)h+=this.make("circle",{cx:s*l+i,cy:u,r:c*(t[l]/n),fill:d[0]||a.fill||this._randomColor()});return h},_getMaxOfArray:function(t){return Math.max.apply(null,t)}})}},function(t,e,r){{var i=r(1);t.exports=i.extend({_describePath:function(t,e,r){if(!e)return"";for(var i="",a=r.outerRadius||t/2,n=r.innerRadius||a/2,o=0,s=r.fills||0,h=r.strokeColors||0,d=r.height/2,c=r.width/2,u=0;u<e.length;u++){var l=o+360*e[u];i+=this.make("path",{"stroke-linecap":"round","stroke-linejoin":"round",stroke:h[u]||r.strokeColor||this._randomColor(),fill:s[u]||this._randomColor(),d:this._describeDonut(c,d,a,n,o,l)}),o=l}return i},_describeDonut:function(t,e,r,i,a,n){var o={start:this._polarToCartesian(t,e,r,n),end:this._polarToCartesian(t,e,r,a)},s={start:this._polarToCartesian(t,e,i,n),end:this._polarToCartesian(t,e,i,a)},h=180>=n-a?"0":"1";return["M",o.start.x,o.start.y,"A",r,r,0,h,0,o.end.x,o.end.y,"L",s.end.x,s.end.y,"A",i,i,0,h,1,s.start.x,s.start.y,"L",o.start.x,o.start.y,"Z"].join(" ")}})}},function(t,e,r){{var i=r(1);t.exports=i.extend({_describePath:function(t,e,r){if(!e)return"";for(var i="",a=t/2,n=0,o=r.fills||0,s=r.strokeColors||0,h=r.width/2,d=r.height/2,c=0;c<e.length;c++){var u=n+360*e[c];i+=this.make("path",{"stroke-linecap":"round","stroke-linejoin":"round",stroke:s[c]||r.strokeColor||this._randomColor(),d:this._describePie(h,d,a,n,u),fill:o[c]||this._randomColor()}),n=u}return i}})}},function(t,e,r){var i=r(3);i=new i,t.exports={getScale:function(t){var e=t.data||0,r=i._findMinMax(e);return r.paddingY=t.paddingY||5,r.gap=i._sigFigs(t.width/(r.len-1),8),r.heightRatio=(t.height-2*r.paddingY)/r.max,r.chart=r.chart||{},r.chart.height=t.height,r.chart.width=t.width,r},getOpenPath:function(t,e){return i._describeAttributeD(e,0,t.paddingY,t)},getClosedPath:function(t,e){return i._describeAttributeD(e,0,t.paddingY,t)+i._describeCloseAttributeD(e,0,t.paddingY,t)}}},function(){},function(t,e,r){t.exports={path:r(13),arc:r(4),react:r(14)}},function(){function t(t,e,r){return"undefined"==typeof r||0===+r?Math[t](e):(e=+e,r=+r,isNaN(e)||"number"!=typeof r||r%1!==0?0/0:(e=e.toString().split("e"),e=Math[t](+(e[0]+"e"+(e[1]?+e[1]-r:-r))),e=e.toString().split("e"),+(e[0]+"e"+(e[1]?+e[1]+r:r))))}Math.round10||(Math.round10=function(e,r){return t("round",e,r)}),Math.floor10||(Math.floor10=function(e,r){return t("floor",e,r)}),Math.ceil10||(Math.ceil10=function(e,r){return t("ceil",e,r)})}]);
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId])
+/******/ 			return installedModules[moduleId].exports;
+/******/
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			exports: {},
+/******/ 			id: moduleId,
+/******/ 			loaded: false
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.loaded = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(0);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(1);
+
+
+/***/ },
+/* 1 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var yako = __webpack_require__(2);
+	var spark = yako.spark;
+	var pie = yako.pie;
+	var donut = yako.donut;
+	var bubble = yako.bubble;
+	var bar = yako.bar;
+
+	// TODO:: fix edge case of 1 data Point
+	var dataPoints = 30;
+	var nOfGraphs = 10;
+	var kind = 9;
+	var amount = nOfGraphs;
+	var now = Date.now();
+	var nodes = '';
+
+	while (amount--) {
+	  var dataSet = [];
+	  var dataSet2 = [];
+	  var dataSet3 = [];
+	  var dataSet4 = [];
+	  for (var i=0;i<dataPoints;i++) {
+	    dataSet.push(Math.floor((Math.random() * 500) + 10));
+	    dataSet2.push(Math.floor((Math.random() * 500) + 10));
+	    dataSet3.push(Math.floor((Math.random() * 500) + 10));
+	    dataSet4.push(Math.floor((Math.random() * 500) + 1));
+	  }
+
+	  var strokColorFirst = yako.spark()._randomColor();
+	  var strokeColorSecond = yako.spark()._randomColor();
+	  var set = [
+	      {
+	          data: dataSet,
+	          //color controls the line
+	          strokeColor: strokColorFirst,
+	          fill: yako.spark()._randomColor(),
+	          scattered : {
+	            strokeColor: strokColorFirst,
+	            fill: 'white',
+	            strokeWidth: 3,
+	            radius: 5
+	          }
+	          //nodeColor controls the pointer color
+	      },
+	      {
+	          data: dataSet2,
+	          strokeColor: strokeColorSecond,
+	          fill: yako.spark()._randomColor(),
+	          scattered : {
+	            strokeColor: strokeColorSecond,
+	            fill: 'white',
+	            strokeWidth: 3,
+	            radius: 5
+	          }
+	      }
+	  ];
+
+	  var singleSet = [
+	    {
+	        label: 'Auto Generated 3',
+	        data: dataSet3,
+	        strokeColor: yako.spark()._randomColor(),
+	        fill: yako.spark()._randomColor()
+	    }
+	  ];
+	  
+	  nodes += spark('.graph').attr({
+	    chart : {
+	      width: 300,
+	      height: 100,
+	      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif'
+	    },
+	    title: 'just a test',
+	    data: set
+	  });
+
+	  nodes += spark('.graph').attr({
+	    chart : {
+	      width: 300,
+	      height: 100,
+	      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif'
+	    },
+	    title: 'just a test',
+	    data: singleSet
+	  });
+
+	  nodes += spark('.graph').attr({
+	    chart : {
+	      width: 300,
+	      height: 100,
+	      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+	      scattered: true,
+	    },
+	    title: 'just a test',
+	    data: set
+	  });
+
+	  nodes += spark('.graph').attr({
+	    chart : {
+	      width: 300,
+	      height: 100,
+	      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+	      scattered: true,
+	      line: false
+	    },
+	    title: 'just a test',
+	    data: set
+	  });
+
+	  nodes += pie('.graph').attr({
+	    chart: {
+	      width: 300,
+	      height: 100,
+	      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+	      // additional options
+	      // strokes: [],
+	      // fills: []
+	    },
+	    title: 'just a test',
+	    data: dataSet4
+	  });
+
+	  nodes += donut('.graph').attr({
+	    chart: {
+	      width: 300,
+	      height: 100,
+	      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+	      innerRadius: 40,
+	      outerRadius: 50
+	      // addtional options
+	      // strokes: [],
+	      // fills: []
+	    },
+	    title: 'just a test',
+	    data: dataSet4
+	  });
+
+	  nodes += bubble('.graph').attr({
+	    chart: {
+	      width: 300,
+	      height: 100,
+	      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+	      maxRadius: '10'
+	      // additional options
+	      // strokes: [],
+	      // fills: []
+	    },
+	    title: 'just a test',
+	    data: dataSet4
+	  });
+
+	  nodes += bar('.graph').attr({
+	    chart : {
+	      stack: true,
+	      width: 300,
+	      height: 100,
+	      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+	      showPointer: false,
+	      fill: []
+	    },
+	    title: 'just a test',
+	    data: set
+	  });
+
+	  nodes += bar('.graph').attr({
+	    chart : {
+	      width: 300,
+	      height: 100,
+	      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+	      showPointer: false,
+	      fill: []
+	    },
+	    title: 'just a test',
+	    data: set
+	  });
+	}
+
+	var diff = (Date.now() - now);
+
+	console.log('Took ' + diff + 'ms to generate ' + (nOfGraphs * kind) + ' graphs with '+ dataPoints + ' different data points each avg of ' + (diff/nOfGraphs/kind) + 'ms');
+	nodes = '<div>' + 'Took ' + diff + 'ms to generate ' + (nOfGraphs * kind) + ' graphs with '+ dataPoints + ' different data points avg of ' + (diff/nOfGraphs/kind) + 'ms' + '</div>' + nodes;
+
+	var body = document.getElementsByTagName('body')[0];
+	body.innerHTML = nodes;
+
+/***/ },
+/* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var sparkLine = __webpack_require__(3);
+	var pie = __webpack_require__(4);
+	var donut = __webpack_require__(5);
+	var bar = __webpack_require__(6);
+	var bubble = __webpack_require__(7);
+	var svg = __webpack_require__(8);
+	module.exports = {
+	  name: 'yakojs',
+	  VERSION: '0.1.0',
+	  spark: function (opts) {
+	    return new sparkLine(opts);
+	  },
+	  pie: function (opts) {
+	    return new pie(opts);
+	  },
+	  donut: function (opts) {
+	    return new donut(opts);
+	  },
+	  bubble: function (opts) {
+	    return new bubble(opts);
+	  },
+	  bar: function (opts) {
+	    return new bar(opts);
+	  },
+	  svg: svg
+	};
+
+/***/ },
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Base = __webpack_require__(9);
+	var spark = module.exports = Base.extend({
+	  // the graph data & options setter
+	  attr: function (opts) {
+	    opts = opts || {};
+	    // to deal with no data fed in
+	    if (opts && (!opts.data || opts.data.length === 0)) {
+	        opts.data = undefined;
+	    }
+	    // make sure the data will not cause memory reference error, if some sets of data a shared among other graphs
+	    this.attributes.data = opts.data || 0;
+	    this.attributes.opts = opts;
+
+	    for(var i in opts.data) {
+	        opts.data[i].label = (opts.data[i].label || '').replace(/\s/g,'-');
+	    }
+
+	    return this._prepare()
+	    ._generate();
+	  },
+	  // set default value if they are missing
+	  _prepare: function () {
+	    var defaults = {
+	      chart: {
+	          width: '100',
+	          height: '200',
+	          'font-family' : '"Open Sans", sans-serif',
+	          line: true,
+	          scattered: false
+	      },
+	      // 
+	      showNodes: false,
+	      // reservered for labels
+	      xAxis: {},
+	      yAxis: {},
+	      data : []
+	    };
+	    this._extend(defaults, this.attributes.opts);
+	    this.attributes.opts = defaults;
+	    return this;
+	  },
+	  /**
+	   * the parent generator that manages the svg generation
+	   * @return {object} global function object 
+	   */
+	  _generate: function () {
+	    var data = this.attributes.data,
+	        opts = this.attributes.opts,
+	        chart = opts.chart,
+	        svg = this.make('svg',{
+	            width: opts.chart.width,
+	            height: opts.chart.height,
+	            viewBox: '0 0 '+opts.chart.width + ' '+opts.chart.height,
+	        }),
+	        self = this;
+	    // reserved for padding
+	    var paddingX = 0;
+	    var paddingY = 5;
+
+	    if (Object.prototype.toString.call(data) !== '[object Array]') {
+	        data = [data];
+	    }
+
+	    var scale = self._findMinMax(data);
+	    self._extend(opts._scale, scale);
+	    opts.heightRatio = (chart.height - (paddingY * 2)) / scale.max;
+	    // need to account for paddingX, when paddingX is included the math is off
+	    opts.gap = self._sigFigs((chart.width / (scale.len - 1)),8);
+	    
+	    // adding each path & circle
+	    for (var x = 0; x < data.length; x++) {
+	        var g = self.make('g',{},{
+	            label: data[x].label
+	        });
+	        svg = self.compile(svg,
+	          self.compile(g, self._describePath(data[x], paddingX, paddingY, opts))
+	          );
+	    }
+	    // add to element;
+	    var result = self.compile(self.element, svg);
+	    return (typeof result == 'string') ? result : self;
+	  },
+	  // describes an open path
+	  _describeAttributeD: function (numArr, paddingX, paddingY, opts) {
+	    var height = opts.chart.height;
+	    var heightRatio = opts.heightRatio;
+	    var gap = opts.gap;
+	    var pathToken = '';
+	    //path generator
+	    for (var i = 0; i < numArr.length; i++) {
+	        if (i === 0) {
+	          // X Y
+	            pathToken += 'M ' + paddingX + ' '+ (height - (numArr[i] * heightRatio) - paddingY);
+	        } else {
+	            pathToken += ' L '+ ((gap * i) + paddingX) + ' ' + (height - (numArr[i] * heightRatio) - paddingY);
+	        }
+	    }
+	    // eliminates the error calls when attributiting this to the svg path
+	    if (pathToken === '') {
+	      pathToken = 'M 0 0';
+	    }
+	    return pathToken;
+	  },
+	  // describes the path to close the open path
+	  _describeCloseAttributeD: function (numArr, paddingX, paddingY, opts) {
+	    var height = opts.chart.height;
+	    var heightRatio = opts.heightRatio;
+	    return [
+	            'V',(height - paddingY),
+	            'H', paddingX,
+	            'L', paddingX, (height - (numArr[0] * heightRatio) - paddingY)
+	          ].join(" ");
+	  },
+	  // describes scattered graph
+	  _describeScatteredGraph: function(data, numArr, paddingX, paddingY, opts) {
+	    var height = opts.chart.height;
+	    var heightRatio = opts.heightRatio;
+	    var self = this;
+	    var gap = opts.gap;
+	    var scattered = data.scattered || 0;
+	    var strokeWidth = scattered.strokeWidth || 3;
+	    var strokeColor = scattered.strokeColor || self._randomColor();
+	    var radius = scattered.radius || 5;
+	    var fill = scattered.fill || 'white';
+	    var paths = '';
+
+	    for (var i = 0; i < numArr.length; i++) {
+	      paths += self.make('circle', {
+	        cx: ((gap * i) + paddingX) - (radius / 2) + (strokeWidth / 2),
+	        cy: (height - (numArr[i] * heightRatio) - paddingY - (radius / 2) + (strokeWidth / 2)),
+	        r: radius - strokeWidth / 2,
+	        stroke: strokeColor,
+	        'stroke-width': strokeWidth,
+	        fill: 'white'
+	      });
+	    }
+	    return paths;
+	  },
+	  //svg path builder
+	  _describePath : function (data, paddingX, paddingY, opts) {
+	    var chart = opts.chart;
+	    var self = this;
+	    var pathToken = self._describeAttributeD(data.data, paddingX, paddingY, opts);
+	    var pathNode = self.make('path',{
+	        d: pathToken,
+	        stroke: data.strokeColor || self._randomColor(),
+	        'stroke-width': data.strokeWidth || '5',
+	        'stroke-linejoin': 'round',
+	        'stroke-linecap': 'round',
+	        'class': '_yakoTransitions-' + data.label,
+	        fill: 'none'
+	    });
+
+	    return (chart.line ? pathNode + (data.fill ? self.make('path', {
+	      d: pathToken + self._describeCloseAttributeD(data.data, paddingX, paddingY, opts),
+	      stroke: 'none',
+	      'stroke-width': '2',
+	      'stroke-linejoin': 'round',
+	      'stroke-linecap': 'round',
+	      'class': '_yakoTransitions-' + data.label,
+	      fill: data.fill
+	    }) : '') : '') +
+	    (chart.scattered ?
+	      self._describeScatteredGraph(data, data.data, paddingX, paddingY, opts) :
+	      '');
+	  }
+	});
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var arcBase = __webpack_require__(10);
+	var pie = module.exports = arcBase.extend({
+	    /**
+	     * [_describePath genereates the paths for each pie segment]
+	     * @param  {[int]} circumference [circumfrance]
+	     * @param  {[array]} data      [data set]
+	     * @param  {[json]} chart     [user specified chart options]
+	     * @return {[string]}           [the html string for the pie]
+	     */
+	    _describePath: function (circumference, data, chart) {
+	        if (!data) return '';
+	        var path = '';
+	        var radius = circumference / 2;
+	        var startAngle = 0;
+	        var fills = chart.fills || 0;
+	        var strokes = chart.strokeColors || 0;
+	        var centerX = chart.width / 2;
+	        var centerY = chart.height / 2;
+	        for (var i = 0; i < data.length; i++) {
+	            var endAngle = startAngle + 360 * data[i];
+	            path += this.make('path',{
+	                "stroke-linecap": "round",
+	                "stroke-linejoin": "round",
+	                stroke: strokes[i] || (chart.strokeColor || this._randomColor()),
+	                d: this._describePie(centerX, centerY, radius, startAngle, endAngle),
+	                fill: fills[i] || this._randomColor()
+	            });
+	            startAngle = endAngle;
+	        }
+	        return path;
+	    }
+	});
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var arcBase = __webpack_require__(10);
+	var pie = module.exports = arcBase.extend({
+	    /**
+	     * [_describePath genereates the paths for each pie segment]
+	     * @param  {[int]} circumference [circumfrance]
+	     * @param  {[array]} data      [data set]
+	     * @param  {[json]} chart     [user specified chart options]
+	     * @return {[string]}           [the html string for the pie]
+	     */
+	    _describePath: function (circumference, data, chart) {
+	        if (!data) return '';
+	        var path = '';
+	        var outerRadius = chart.outerRadius || (circumference / 2);
+	        var innerRadius = chart.innerRadius || (outerRadius / 2);
+	        var startAngle = 0;
+	        var fills = chart.fills || 0;
+	        var strokes = chart.strokeColors || 0;
+	        var centerY = chart.height / 2;
+	        var centerX = chart.width / 2;
+	        for (var i = 0; i < data.length; i++) {
+	            var endAngle = startAngle +  360 * data[i];
+	            path += this.make('path', {
+	                "stroke-linecap": "round",
+	                "stroke-linejoin": "round",
+	                stroke: strokes[i] || (chart.strokeColor||this._randomColor()),
+	                fill: fills[i] || this._randomColor(),
+	                d: this._describeDonut(centerX, centerY, outerRadius, innerRadius, startAngle, endAngle)
+	            });
+	            startAngle = endAngle;
+	        }
+	        return path;
+	    },
+	    /**
+	     * [_describeDonut describes donut path]
+	     * @param  {Number} x           [x cordinates]
+	     * @param  {Number} y           [y cordinates]
+	     * @param  {Number} outerRadius [description]
+	     * @param  {Number} innerRadius [description]
+	     * @param  {Number} startAngle  [description]
+	     * @param  {Number} endAngle    [description]
+	     * @return {String}             [return path attribute 'd' for donut shape]
+	     */
+	    _describeDonut: function (x, y, outerRadius, innerRadius, startAngle, endAngle) {
+	        var outerArc = {
+	            start: this._polarToCartesian(x, y, outerRadius, endAngle),
+	            end : this._polarToCartesian(x, y, outerRadius, startAngle)
+	        };
+	        var innerArc = {
+	            start: this._polarToCartesian(x, y, innerRadius, endAngle),
+	            end : this._polarToCartesian(x, y, innerRadius, startAngle)
+	        };
+	        var arcSweep = endAngle - startAngle <= 180 ? "0": "1";
+
+	        return [
+	            'M', outerArc.start.x, outerArc.start.y,
+	            'A', outerRadius, outerRadius, 0, arcSweep, 0, outerArc.end.x, outerArc.end.y,
+	            'L', innerArc.end.x, innerArc.end.y,
+	            'A', innerRadius, innerRadius, 0, arcSweep, 1, innerArc.start.x, innerArc.start.y,
+	            'L', outerArc.start.x, outerArc.start.y,
+	            'Z'
+	        ].join(" ");
+	    }
+	});
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Base = __webpack_require__(9);
+	var bar = module.exports = Base.extend({
+	    // include missing values
+	    _prepare: function () {
+	        var defaults = {
+	            chart: {
+	                type: 'chart',
+	                width: '100',
+	                height: '100',
+	                'font-family' : '"Open Sans", sans-serif'
+	            }
+	        };
+	        this._extend(defaults, this.attributes.opts);
+	        this.attributes.opts = defaults;
+	        return this;
+	    },
+	    // public function for user to set & define the graph attributes
+	    attr: function (opts) {
+	        opts = opts || 0;
+	        // width: 200,
+	        // height: 100
+	        this.attributes.data = opts.data || [];
+	        this.attributes.opts = opts;
+
+	        return this._prepare()
+	            ._generate();
+	    },
+	    _generate: function () {
+	        var data = this.attributes.data;
+	        var chart = this.attributes.opts.chart;
+	        var svg = this.make('svg',{
+	            width: chart.width,
+	            height: chart.height,
+	            viewBox: '0 0 ' + chart.width + ' ' + chart.height,
+	        });
+	        var result = this.compile(this.element,
+	                this.compile(
+	                    svg,
+	                    this._describeBar(data, chart)
+	                    )
+	                );
+	        return (typeof result == 'string') ? result : this;
+	    },
+	    // describes the svg that builds out the bar
+	    _describeBar: function (data, chart) {
+	        if (!data.length) return '';
+	        // TODO:: need to account paddings for labels
+	        // wrap in array for consistency
+	        data = typeof data[0] === 'object' ? data : [data];
+	        var height = chart.height;
+	        var paddingY = 5;
+	        height = height - paddingY;
+	        var width = chart.width;
+	        var len = data[0].data.length;
+	        var rows = data.length;
+	        var gap = width / len;
+	        var properties = this._findMinMax(data, chart);
+	        var path  = '';
+
+	        // TODO:: feels expensive, need to optimize
+	        for (var i = 0; i < len; i++) {
+	            // stack chart
+	            if (chart.stack) {
+	                // the top padding has been taken care off, now account for the bottom padding
+	                var relativeMax = (height - paddingY) * properties.maxSet[i] / properties.max;
+	                var yAxis = height - relativeMax;
+	                var total = 0;
+	                for (var j = 0; j < rows; j++) {
+	                    path += this.make('rect',{
+	                        x: gap * i + (gap/4),
+	                        y: yAxis,
+	                        width: gap / rows,
+	                        height: (data[j].data[i]/properties.maxSet[i] * relativeMax),
+	                        fill: data[j].fill || this._randomColor()
+	                    });
+	                    yAxis += (data[j].data[i]/properties.maxSet[i] * relativeMax);
+	                }
+	            } else {
+	                // side by side
+	                for (var j = 0; j < rows; j++) {
+	                    var yAxis = (height - paddingY) * data[j].data[i] / properties.max;
+	                    path += this.make('rect',{
+	                        x: (gap * (i+1)) - (gap/(j + 1)),
+	                        y: height - yAxis,
+	                        width: gap / (rows+1),
+	                        height: yAxis,
+	                        fill: data[j].fill || this._randomColor()
+	                    });
+	                }
+	            }
+	        }
+	        return path;
+	    },
+	});
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Base = __webpack_require__(10);
+	var bubble = module.exports = Base.extend({
+	    _generate: function () {
+
+	        var chart = this.attributes.opts.chart;
+	        var data = this.attributes.data;
+	        var svg = this.make('svg',{
+	            width: chart.width,
+	            height: chart.height,
+	            viewBox: '0 0 ' + chart.width + ' ' + chart.height,
+	        });
+
+	        var widthOffset = 10 || chart.paddingX;
+	        var path = this._describeHorizontalPath(chart.height, chart.width, widthOffset, chart);
+	        path += this._describeBubble(data, chart.height, chart.width, widthOffset, chart);
+	        var result = this.compile(this.element,
+	                this.compile(
+	                    svg,
+	                        path
+	                    )
+	                );
+	        return result;
+	    },
+	    _describeHorizontalPath: function (height, width, widthOffset, chart) {
+	        // TODO:: need to account for stroke width 
+	        var centerY = height / 2;
+	        return this.make('path', {
+	            "stroke-linecap": "round",
+	            "stroke-linejoin": "round",
+	            stroke: chart.strokColor || this._randomColor(),
+	            d: 'M' + widthOffset + ' ' + centerY + ' H' + (width - widthOffset)
+	        });
+	    },
+	    _describeBubble: function (data, height, width, widthOffset, chart) {
+	        if (!data) return '';
+	        var maxValue = this._getMaxOfArray(data);
+	        var dataPoints = data.length;
+	        var gap = (width - (widthOffset * 2)) / (dataPoints - 1);
+	        var path = '';
+	        var fills = chart.fills || 0;
+	        var maxRadius =  chart.maxRadius || (chart.height < chart.width ? chart.height : chart.width) / 2;
+	        var centerY = height / 2;
+	        for (var i = 0; i < data.length; i++) {
+	            path += this.make('circle', {
+	                cx: (gap * i) + widthOffset,
+	                cy: centerY,
+	                r: maxRadius * (data[i] / maxValue),
+	                fill: fills[0] || (chart.fill || this._randomColor())
+	            });
+	        }
+
+	        return path;
+	    },
+	    _getMaxOfArray: function (arr) {
+	        return Math.max.apply(null, arr);
+	    }
+	});
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	module.exports = {
+	    path: __webpack_require__(11),
+	    arc: __webpack_require__(12),
+	    react: __webpack_require__(13)
+	};
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Common = __webpack_require__(14);
+	var base = module.exports = Common.extend({
+	    init: function (node) {
+	      var self = this;
+	      // adding width 100% will allow us to have responsive graphs (in re-sizing)
+	      if (typeof node === 'string') {
+	        if (node[0] === '#') {
+	          this.element = this.make('div',{
+	            id: node.replace(/^#/,''),
+	            width: '100%'
+	          });
+	        } else {
+	          this.element = this.make('div',{
+	            "class": node.replace(/^\./,''),
+	            width: '100%'
+	          });
+	        }
+	      } else if(typeof node === 'object'){
+	        // type of object?
+	        this.element = node;
+	        this.element.style.width = '100%';
+	      } else {
+	        this.element = '';
+	      }
+	      this.token = self.makeToken();
+	      this.attributes = {};
+	      return this;
+	    }
+	});
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Base = __webpack_require__(9);
+	var arc = __webpack_require__(12);
+	module.exports = Base.extend({
+	    // include missing values
+	    _prepare: function () {
+	        var defaults = {
+	            chart: {
+	                type: 'chart',
+	                width: '100',
+	                height: '100',
+	                'font-family' : '"Open Sans", sans-serif'
+	            }
+	        };
+	        this._extend(defaults, this.attributes.opts);
+	        this.attributes.opts = defaults;
+	        return this;
+	    },
+	    // public function for user to set & define the graph attributes
+	    attr: function (opts) {
+	        opts = opts || 0;
+	        // width: 200,
+	        // height: 100
+	        this.attributes.data = opts.data || [];
+	        this.attributes.opts = opts;
+
+	        return this._prepare()
+	            ._generate();
+	    },
+	    // parent generator that manages the svg
+	    _generate: function (){
+	        var chart = this.attributes.opts.chart;
+	        var data = this.attributes.data;
+	        var svg = this.make('svg',{
+	            width: chart.width,
+	            height: chart.height,
+	            viewBox: '0 0 ' + chart.width + ' ' + chart.height,
+	        });
+	        // find the max width & height
+	        var circumference = chart.height < chart.width ? chart.height : chart.width;
+	        // converts nums to relative => total sum equals 1
+	        var relativeDataSet = this._dataSetRelativeToTotal(data);
+	        var result = this.compile(this.element,
+	                this.compile(
+	                    svg,
+	                    this._describePath(circumference, relativeDataSet, chart)
+	                    )
+	                );
+	        return (typeof result == 'string') ? result : this;
+	    },
+	    _polarToCartesian: arc.polarToCartesian,
+	    _describeArc: arc.describeArc,
+	    _describePie: arc.describePie,
+	    /* end of snippet */
+	    /**
+	     * [_describePath super class]
+	     * @return {[type]} [empty string]
+	     */
+	    _describePath: function () {
+	        return '';
+	    }
+	});
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var spark = __webpack_require__(3);
+	spark = new spark();
+	// TODO:: shrink the arguments!
+	module.exports = {
+	    /**
+	     * scale describe the min max
+	     * @param  attr: {
+	     *                  data : an N * M array,
+	     *                  height: chart height,
+	     *                  width: chart width   
+	     *             }
+	     * @return obj              min / max
+	     */
+	    getScale: function (attr) {
+	        var data = attr.data || 0;
+	        var scale = spark._findMinMax(data);
+	        scale.paddingY = attr.paddingY || 5;
+	        scale.gap = spark._sigFigs((attr.width / (scale.len - 1)),8);
+	        scale.heightRatio = (attr.height - (scale.paddingY * 2)) / scale.max;
+	        scale.chart = scale.chart || {};
+	        scale.chart.height = attr.height;
+	        scale.chart.width = attr.width;
+	        return scale;
+	    },
+	    /**
+	     * getOpenPath describes the open path with the given set
+	     * @param  {[obj]} scale         contains min, max, interval, heightRatio, height, width
+	     * @param  {[array]} numberArray an array of numbers
+	     * @return {[string]}            string that descibes attributeD
+	     */
+	    getOpenPath: function (scale, numberArray) {
+	        return spark._describeAttributeD(numberArray, 0, scale.paddingY, scale);
+	    },
+	    /**
+	     * getClosedPath describes the closed path with the given set
+	     * @param  {[obj]} scale         contains min, max, interval, heightRatio, height, width
+	     * @param  {[array]} numberArray an array of numbers
+	     * @return {[string]}            string that descibes attributeD
+	     */
+	    getClosedPath: function(scale, numberArray) {
+	        return spark._describeAttributeD(numberArray, 0, scale.paddingY, scale) +
+	        spark._describeCloseAttributeD(numberArray, 0, scale.paddingY, scale);
+	    }
+	};
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	var arc = module.exports = {
+	    // snippet from http://stackoverflow.com/questions/5736398/how-to-calculate-the-svg-path-for-an-arc-of-a-circle
+	    // calculates the polar to cartesian coordinates
+	    polarToCartesian: function (centerX, centerY, radius, angleInDegrees) {
+	      var angleInRadians = (angleInDegrees-90) * Math.PI / 180.0;
+
+	      return {
+	        x: centerX + (radius * Math.cos(angleInRadians)),
+	        y: centerY + (radius * Math.sin(angleInRadians))
+	      };
+	    },
+	    // describes an arc
+	    describeArc: function (centerX, centerY, radius, startAngle, endAngle){
+	        var start = arc.polarToCartesian(centerX, centerY, radius, endAngle);
+	        var end = arc.polarToCartesian(centerX, centerY, radius, startAngle);
+	        var arcSweep = endAngle - startAngle <= 180 ? "0" : "1";
+
+	        var d = [
+	            "M", start.x, start.y,
+	            "A", radius, radius, 0, arcSweep, 0, end.x, end.y
+	        ].join(" ");
+
+	        return d;
+	    },
+	    describePie: function (centerX, centerY, radius, startAngle, endAngle) {
+	        return arc.describeArc(centerX, centerY, radius, startAngle, endAngle) + ' L' + centerX + ' ' + centerY;
+	    }
+	};
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(15);
+	var utils;
+	var Class = __webpack_require__(16);
+	/**
+	 * deep extend object or json properties
+	 * @param  {object} object to extend
+	 * @param  {object} object
+	 * @return {object} global function object 
+	 */
+	module.exports = utils = Class.extend({
+	  // default
+	  init: function () {
+	    return this;
+	  },
+
+	  // to allow public functions to be overwritten
+	  mixin: function (fnToExtend) {
+	    var self = this;
+	    self._extend(self, fnToExtend);
+	    return self;
+	  },
+	  // appends the elements
+	  // for now lets assume there is only one child
+	  // TODO:: accept multiple arguments, and accept them in order
+	  compile: function (node, child) {
+	    if (typeof node === 'object') {
+	      node.innerHTML = child;
+	      return this;
+	    }
+	    if (node === '') return child;
+	    return node.replace(/(.*)(<\/.*>$)/g, function (match, p1, p2) {
+	      return p1 + child + p2;
+	    });
+	  },
+	  // accepts a N * 1 array
+	  // finds total sum then creates a relative measure base on total sum
+	  _dataSetRelativeToTotal: function (data) {
+	    var total = data.reduce(function (a, b) {
+	      return a + b;
+	    });
+	    return data.map(function (num) {
+	      return num / total;
+	    });
+	  },
+	  // random color generator
+	  _randomColor: function () {
+	    return '#'+Math.floor(Math.random()*16777215).toString(16);
+	  },
+	  // alternate to one level deep
+	  make: function (tag, props, data) {
+	    var el = '<' + tag;
+
+	    if (tag === 'svg') {
+	        el += ' version="1.1" xmlns="http://www.w3.org/2000/svg"';
+	    }
+
+	    el += this._makePairs(props);
+	    el += this._makePairs('data', data);
+
+	    return el += '></'+tag+'>';
+	  },
+	  // only supports 1 level deep
+	  _makePairs: function (header, json) {
+	    if (arguments.length < 2) {
+	      json = header;
+	      header = '';
+	    } else {
+	      header += '-';
+	    }
+
+	    if (!json) return '';
+
+	    var keys = Object.keys(json), len = keys.length;
+	    var str = '';
+	    while (len--) {
+	      str += ' ' + header + keys[len] + '="' + json[keys[len]] + '"';
+	    }
+	    return str;
+	  },
+	  // deep extend
+	  _extend: function (attr, json) {
+	    var self = this;
+	    if (!json || !attr) return;
+
+	    var k = Object.keys(json), len = k.length;
+	    while(len--) {
+	        if (typeof json[k[len]] !== 'object' || Object.prototype.toString.call(json[k[len]]) === '[object Array]') {
+	            attr[k[len]] = json[k[len]];
+	        } else {    //it has child objects, copy them too.
+	            if (!attr[k[len]]) {
+	                attr[k[len]] = {};
+	            }
+	            self._extend(attr[k[len]], json[k[len]]);
+	        }
+	    }
+	    return this;
+	  },
+	  //building svg elements
+	  _makeNode: function (tag, props, data) {
+	      var node = doc.createElementNS('http://www.w3.org/2000/svg',tag);
+	      this.assign(node,props);
+	      // this._extendDataSet(node, data);
+	      this._extend(node.dataset, data);
+	      return node;
+	  },
+	  isFn: function (object) {
+	    return !!(object && object.constructor && object.call && object.apply);
+	  },
+	  makeToken: function () {
+	    return Math.random().toString(36).substr(2);
+	  },
+	    //sig fig rounding
+	  _sigFigs: function (n, sig) {
+	      var mult = Math.pow(10,
+	          sig - Math.floor(Math.log(n) / Math.LN10) - 1);
+	      return Math.round(n * mult) / mult;
+	  },
+	  // find min max between multiple rows of data sets
+	  _findMinMax: function (data, opts) {
+	      opts = opts || 0;
+	      data = typeof data[0] === 'object' ? data : [data];
+	      var max = 0;
+	      var min = Number.MAX_VALUE;
+	      var maxSet = [];
+
+	      // change up the structure
+	      if (data[0].data) {
+	        var temp = [];
+	        for (var x = 0; x < data.length; x++) {
+	          temp.push(data[x].data);
+	        }
+	        data = temp;
+	      }
+
+	      var rows = data.length;
+	      var len = data[0].length;
+
+	      // TODO:: implement a faster array search
+	      for (var i = 0; i < len; i++) {
+	          if (opts.stack) {
+	              var rowTotal  = 0;
+	              for (var j = 0; j < rows; j++) {
+	                  rowTotal += data[j][i];
+	              }
+	              maxSet.push(rowTotal);
+	              max = max < rowTotal ? rowTotal : max;
+	              min = min > rowTotal ? rowTotal : min;
+	          } else {
+	              for (var k = 0; k < rows; k++) {
+	                  min = min > data[k][i] ? data[k][i] : min;
+	                  max = max < data[k][i] ? data[k][i] : max;
+	              }
+	          }
+	      }
+
+	      return {
+	          min : min,
+	          max : max,
+	          maxSet: maxSet,
+	          len: len
+	      };
+	  }
+	});
+
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Code from MDN
+	 * Decimal adjustment of a number.
+	 *
+	 * @param   {String}    type    The type of adjustment.
+	 * @param   {Number}    value   The number.
+	 * @param   {Integer}   exp     The exponent (the 10 logarithm of the adjustment base).
+	 * @returns {Number}            The adjusted value.
+	 */
+	function decimalAdjust(type, value, exp) {
+	    // If the exp is undefined or zero...
+	    if (typeof exp === 'undefined' || +exp === 0) {
+	        return Math[type](value);
+	    }
+	    value = +value;
+	    exp = +exp;
+	    // If the value is not a number or the exp is not an integer...
+	    if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+	        return NaN;
+	    }
+	    // Shift
+	    value = value.toString().split('e');
+	    value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+	    // Shift back
+	    value = value.toString().split('e');
+	    return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
+	}
+	// Decimal round
+	if (!Math.round10) {
+	    Math.round10 = function(value, exp) {
+	        return decimalAdjust('round', value, exp);
+	    };
+	}
+	// Decimal floor
+	if (!Math.floor10) {
+	    Math.floor10 = function(value, exp) {
+	        return decimalAdjust('floor', value, exp);
+	    };
+	}
+	// Decimal ceil
+	if (!Math.ceil10) {
+	    Math.ceil10 = function(value, exp) {
+	        return decimalAdjust('ceil', value, exp);
+	    };
+	}
+
+
+/***/ },
+/* 16 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Class provides simple JavaScript inheritance.
+	 * by John Resig
+	 * MIT Licensed
+	 */
+	function isFunction(object) {
+	  return typeof object == 'function';
+	}
+
+	function hasSuper(name) {
+	  return /\b_super\b/.test(name);
+	}
+
+	var Class = module.exports = function doNothing() {};
+
+	Class.extend = function extend(properties) {
+	  var _super = this.prototype;
+
+	  // Instantiate a base class without running the init constructor.
+	  var init = this.prototype.init;
+	  this.prototype.init = null;
+	  var prototype = new this();
+	  this.prototype.init = init;
+
+	  // Copy the properties over onto the new prototype.
+	  for (var name in properties) {
+	    // Check if we're overwriting an existing function.
+	    var property = properties[name];
+	    prototype[name] = isFunction(property) && isFunction(_super[name]) && hasSuper(property) ?
+	      (function createMethod(name, fn) {
+	        return function method() {
+	          var tmp = this._super;
+
+	          // Add a new ._super() method that is the same method but on the super-class.
+	          this._super = _super[name];
+
+	          // The method only needs to be bound temporarily, so remove it when we're done executing.
+	          var ret = fn.apply(this, arguments);
+	          this._super = tmp;
+
+	          return ret;
+	        };
+	      })(name, property) : property;
+	  }
+
+	  // The dummy class constructor.
+	  function Class() {
+	    if (this.init) {
+	      this.init.apply(this, arguments);
+	    }
+	  }
+
+	  // Populate our constructed prototype object.
+	  Class.prototype = prototype;
+
+	  // Enforce the constructor to be what we expect.
+	  Class.prototype.constructor = Class;
+
+	  // And make this class extendable.
+	  Class.extend = arguments.callee;
+
+	  return Class;
+	};
+
+/***/ }
+/******/ ])
