@@ -26,15 +26,16 @@ describe('lib/base/default', function () {
             .to.be.equal('');
     });
 
-    it('should return this', function () {
-        var obj = {
-            style: {
-                width: '100%'
-            },
-            innerHTML: ''
-        };
-        base = new Base(obj);
-        expect(base.element)
-            .to.deep.equal(obj);
-    });
+    // depreciated test
+    // it('should return this', function () {
+    //     var obj = {
+    //         style: {
+    //             width: '100%'
+    //         },
+    //         innerHTML: ''
+    //     };
+    //     base = new Base(obj);
+    //     expect(base.element)
+    //         .to.deep.equal(obj);
+    // });
 });

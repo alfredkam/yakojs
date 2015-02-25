@@ -196,8 +196,11 @@ spark({
 });
 ```
 
-###make
-###compile
+###make(tagName, attribute, dataAttribute)
+make is called everytime to compile a svg, and expects a string to be returned. 
+
+###compile(parent, child)
+compile is called everytime to append the child into the parent node
 
 
 ##SVG API
