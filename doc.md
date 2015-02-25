@@ -201,6 +201,9 @@ make is called everytime to combine a svg element with its attributes, and expec
 #####compile(parent, childs)
 compile is called everytime to append the childs into the parent node. Childs is an array of results by the ```make``` function. Expects the result of parent to be return [Overrides the base function](https://github.com/alfredkam/yakojs/blob/master/lib/base/common.js#L42-L50)
 
+#####render(result)
+render provides the result of the component, you could intercept the result before it passes back up to the chain
+
 ##SVG API
 ```javascript
 var svg = require('yako').svg;
