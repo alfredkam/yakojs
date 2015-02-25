@@ -13,21 +13,21 @@ describe('lib/base/common', function () {
             .to.be.an.instanceof(Common);
     });
 
-    it('_compile as string', function () {
+    it('compile as string', function () {
         var child = '<g>123</g>';
-        var node = '<svg></svg>';
+        var parent = '<svg></svg>';
         var expected = '<svg><g>123</g></svg>';
-        expect(common.compile(node, child))
+        expect(common.compile(parent, child))
             .to.equal(expected);
     });
 
-    it('_compile as object', function () {
-        var child = '<g>123</g>';
-        var node = {
-            innerHTML: ''
-        };
-        expect(common.compile(node, child))
-            .to.be.an.instanceof(Common);
+    it('compile as [string array]', function () {
+        var childs = ['<g>123</g>','<g>123</g>'];
+        var parent = '<svg></svg>';
+        var expected = '<svg><g>123</g><g>123</g></svg>';
+        var result = common.compile(parent, childs);
+        expect(result)
+            .to.equal(expected);
     });
 
     it('_dataSetRelativeToTotal should combine and create a relative measure base on total', function () {
@@ -56,7 +56,7 @@ describe('lib/base/common', function () {
             });
     });
 
-    it('_make (svg) should generate a string depending on the provided attributes', function () {
+    it('make (svg) should generate a string depending on the provided attributes', function () {
         expect(common.make('svg',{
             height: 100,
             width: 100
@@ -67,7 +67,7 @@ describe('lib/base/common', function () {
         .to.equal('<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="100" height="100" data-label="test"></svg>');
     });
 
-    it('_make (other elements other then svg) should generate a string depending on the provided attributes', function () {
+    it('make (other elements other then svg) should generate a string depending on the provided attributes', function () {
         expect(common.make('g',{
             height: 100,
             width: 100

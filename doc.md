@@ -176,8 +176,13 @@ Instances of the graph component are created internally, and each component coul
 var yako = require('yako'); // or window.yako if FE
 var spark = yako.spark;
 var instance = spark({
-  render: function (svg) {
-      return "<div>"+svg+"</div>";
+  mixin: {
+    make: function(tagName, attribute, dataAttributes) {
+      ...
+    }
+  },
+  compile: function(parent, child) {
+    ...
   }
 });
 
@@ -187,18 +192,17 @@ var result = instance.attr({
 })
 ```
 
-###mixin
+#####mixin({ ... })
 Sometimes common components / functions may share some common functionality with other graph components.  Mixin allows you to enable the magic to happen here.
-```javascript
-spark({
-  mixin: {
-  }
-});
-```
 
-###make
-###compile
+#####make(tagName, attribute, dataAttribute)
+make is called everytime to combine a svg element with its attributes, and expects to return a string or object that ```compile``` function can consume. [Overrides the base function](https://github.com/alfredkam/yakojs/blob/master/lib/base/common.js#L52-L63)
 
+#####compile(parent, childs)
+compile is called everytime to append the childs into the parent node. Childs is an array of results by the ```make``` function. Expects the result of parent to be return [Overrides the base function](https://github.com/alfredkam/yakojs/blob/master/lib/base/common.js#L42-L50)
+
+#####render(result)
+render provides the result of the component, you could intercept the result before it passes back up to the chain
 
 ##SVG API
 ```javascript
