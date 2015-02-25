@@ -145,7 +145,7 @@
 	    var data = this.attributes.data,
 	        opts = this.attributes.opts,
 	        chart = opts.chart,
-	        svg = this._make('svg',{
+	        svg = this.make('svg',{
 	            width: opts.chart.width,
 	            height: opts.chart.height,
 	            viewBox: '0 0 '+opts.chart.width + ' '+opts.chart.height,
@@ -167,15 +167,15 @@
 	    
 	    // adding each path & circle
 	    for (var x = 0; x < data.length; x++) {
-	        var g = self._make('g',{},{
+	        var g = self.make('g',{},{
 	            label: data[x].label
 	        });
-	        svg = self._compile(svg,
-	          self._compile(g, self._describePath(data[x], paddingX, paddingY, opts))
+	        svg = self.compile(svg,
+	          self.compile(g, self._describePath(data[x], paddingX, paddingY, opts))
 	          );
 	    }
 	    // add to element;
-	    var result = self._compile(self.element, svg);
+	    var result = self.compile(self.element, svg);
 	    return (typeof result == 'string') ? result : self;
 	  },
 	  // describes an open path
@@ -223,7 +223,7 @@
 	    var paths = '';
 
 	    for (var i = 0; i < numArr.length; i++) {
-	      paths += self._make('circle', {
+	      paths += self.make('circle', {
 	        cx: ((gap * i) + paddingX) - (radius / 2) + (strokeWidth / 2),
 	        cy: (height - (numArr[i] * heightRatio) - paddingY - (radius / 2) + (strokeWidth / 2)),
 	        r: radius - strokeWidth / 2,
@@ -239,7 +239,7 @@
 	    var chart = opts.chart;
 	    var self = this;
 	    var pathToken = self._describeAttributeD(data.data, paddingX, paddingY, opts);
-	    var pathNode = self._make('path',{
+	    var pathNode = self.make('path',{
 	        d: pathToken,
 	        stroke: data.strokeColor || self._randomColor(),
 	        'stroke-width': data.strokeWidth || '5',
@@ -249,7 +249,7 @@
 	        fill: 'none'
 	    });
 
-	    return (chart.line ? pathNode + (data.fill ? self._make('path', {
+	    return (chart.line ? pathNode + (data.fill ? self.make('path', {
 	      d: pathToken + self._describeCloseAttributeD(data.data, paddingX, paddingY, opts),
 	      stroke: 'none',
 	      'stroke-width': '2',
@@ -288,7 +288,7 @@
 	        var centerY = chart.height / 2;
 	        for (var i = 0; i < data.length; i++) {
 	            var endAngle = startAngle + 360 * data[i];
-	            path += this._make('path',{
+	            path += this.make('path',{
 	                "stroke-linecap": "round",
 	                "stroke-linejoin": "round",
 	                stroke: strokes[i] || (chart.strokeColor || this._randomColor()),
@@ -326,7 +326,7 @@
 	        var centerX = chart.width / 2;
 	        for (var i = 0; i < data.length; i++) {
 	            var endAngle = startAngle +  360 * data[i];
-	            path += this._make('path', {
+	            path += this.make('path', {
 	                "stroke-linecap": "round",
 	                "stroke-linejoin": "round",
 	                stroke: strokes[i] || (chart.strokeColor||this._randomColor()),
@@ -403,13 +403,13 @@
 	    _generate: function () {
 	        var data = this.attributes.data;
 	        var chart = this.attributes.opts.chart;
-	        var svg = this._make('svg',{
+	        var svg = this.make('svg',{
 	            width: chart.width,
 	            height: chart.height,
 	            viewBox: '0 0 ' + chart.width + ' ' + chart.height,
 	        });
-	        var result = this._compile(this.element,
-	                this._compile(
+	        var result = this.compile(this.element,
+	                this.compile(
 	                    svg,
 	                    this._describeBar(data, chart)
 	                    )
@@ -441,7 +441,7 @@
 	                var yAxis = height - relativeMax;
 	                var total = 0;
 	                for (var j = 0; j < rows; j++) {
-	                    path += this._make('rect',{
+	                    path += this.make('rect',{
 	                        x: gap * i + (gap/4),
 	                        y: yAxis,
 	                        width: gap / rows,
@@ -454,7 +454,7 @@
 	                // side by side
 	                for (var j = 0; j < rows; j++) {
 	                    var yAxis = (height - paddingY) * data[j].data[i] / properties.max;
-	                    path += this._make('rect',{
+	                    path += this.make('rect',{
 	                        x: (gap * (i+1)) - (gap/(j + 1)),
 	                        y: height - yAxis,
 	                        width: gap / (rows+1),
@@ -478,7 +478,7 @@
 
 	        var chart = this.attributes.opts.chart;
 	        var data = this.attributes.data;
-	        var svg = this._make('svg',{
+	        var svg = this.make('svg',{
 	            width: chart.width,
 	            height: chart.height,
 	            viewBox: '0 0 ' + chart.width + ' ' + chart.height,
@@ -487,8 +487,8 @@
 	        var widthOffset = 10 || chart.paddingX;
 	        var path = this._describeHorizontalPath(chart.height, chart.width, widthOffset, chart);
 	        path += this._describeBubble(data, chart.height, chart.width, widthOffset, chart);
-	        var result = this._compile(this.element,
-	                this._compile(
+	        var result = this.compile(this.element,
+	                this.compile(
 	                    svg,
 	                        path
 	                    )
@@ -498,7 +498,7 @@
 	    _describeHorizontalPath: function (height, width, widthOffset, chart) {
 	        // TODO:: need to account for stroke width 
 	        var centerY = height / 2;
-	        return this._make('path', {
+	        return this.make('path', {
 	            "stroke-linecap": "round",
 	            "stroke-linejoin": "round",
 	            stroke: chart.strokColor || this._randomColor(),
@@ -515,7 +515,7 @@
 	        var maxRadius =  chart.maxRadius || (chart.height < chart.width ? chart.height : chart.width) / 2;
 	        var centerY = height / 2;
 	        for (var i = 0; i < data.length; i++) {
-	            path += this._make('circle', {
+	            path += this.make('circle', {
 	                cx: (gap * i) + widthOffset,
 	                cy: centerY,
 	                r: maxRadius * (data[i] / maxValue),
@@ -577,7 +577,7 @@
 	    _generate: function (){
 	        var chart = this.attributes.opts.chart;
 	        var data = this.attributes.data;
-	        var svg = this._make('svg',{
+	        var svg = this.make('svg',{
 	            width: chart.width,
 	            height: chart.height,
 	            viewBox: '0 0 ' + chart.width + ' ' + chart.height,
@@ -586,8 +586,8 @@
 	        var circumference = chart.height < chart.width ? chart.height : chart.width;
 	        // converts nums to relative => total sum equals 1
 	        var relativeDataSet = this._dataSetRelativeToTotal(data);
-	        var result = this._compile(this.element,
-	                this._compile(
+	        var result = this.compile(this.element,
+	                this.compile(
 	                    svg,
 	                    this._describePath(circumference, relativeDataSet, chart)
 	                    )
@@ -618,12 +618,12 @@
 	      // adding width 100% will allow us to have responsive graphs (in re-sizing)
 	      if (typeof node === 'string') {
 	        if (node[0] === '#') {
-	          this.element = this._make('div',{
+	          this.element = this.make('div',{
 	            id: node.replace(/^#/,''),
 	            width: '100%'
 	          });
 	        } else {
-	          this.element = this._make('div',{
+	          this.element = this.make('div',{
 	            "class": node.replace(/^\./,''),
 	            width: '100%'
 	          });
@@ -776,7 +776,7 @@
 	    return '#'+Math.floor(Math.random()*16777215).toString(16);
 	  },
 	  // alternate to one level deep
-	  _make: function (tag, props, data) {
+	  make: function (tag, props, data) {
 	    var el = '<' + tag;
 
 	    if (tag === 'svg') {

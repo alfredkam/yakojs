@@ -17,7 +17,7 @@ describe('lib/base/common', function () {
         var child = '<g>123</g>';
         var node = '<svg></svg>';
         var expected = '<svg><g>123</g></svg>';
-        expect(common._compile(node, child))
+        expect(common.compile(node, child))
             .to.equal(expected);
     });
 
@@ -26,7 +26,7 @@ describe('lib/base/common', function () {
         var node = {
             innerHTML: ''
         };
-        expect(common._compile(node, child))
+        expect(common.compile(node, child))
             .to.be.an.instanceof(Common);
     });
 
@@ -57,7 +57,7 @@ describe('lib/base/common', function () {
     });
 
     it('_make (svg) should generate a string depending on the provided attributes', function () {
-        expect(common._make('svg',{
+        expect(common.make('svg',{
             height: 100,
             width: 100
         },{
@@ -68,7 +68,7 @@ describe('lib/base/common', function () {
     });
 
     it('_make (other elements other then svg) should generate a string depending on the provided attributes', function () {
-        expect(common._make('g',{
+        expect(common.make('g',{
             height: 100,
             width: 100
         }))
