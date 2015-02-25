@@ -187,14 +187,8 @@ var result = instance.attr({
 })
 ```
 
-###mixin
+###mixin({ ... })
 Sometimes common components / functions may share some common functionality with other graph components.  Mixin allows you to enable the magic to happen here.
-```javascript
-spark({
-  mixin: {
-  }
-});
-```
 
 ###make(tagName, attribute, dataAttribute)
 make is called everytime to compile a svg, and expects a string to be returned. [Overrides the base function](https://github.com/alfredkam/yakojs/blob/master/lib/base/common.js#L42-L51)
