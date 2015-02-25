@@ -196,10 +196,10 @@ var result = instance.attr({
 Sometimes common components / functions may share some common functionality with other graph components.  Mixin allows you to enable the magic to happen here.
 
 ####make(tagName, attribute, dataAttribute)
-make is called everytime to compile a svg element, and expects to return a string or object that ```compile``` function can consume. [Overrides the base function](https://github.com/alfredkam/yakojs/blob/master/lib/base/common.js#L42-L51)
+make is called everytime to compile a svg element, and expects to return a string or object that ```compile``` function can consume. [Overrides the base function](https://github.com/alfredkam/yakojs/blob/master/lib/base/common.js#L42-L53)
 
 ####compile(parent, child)
-compile is called everytime to append the child into the parent node. [Overrides the base function](https://github.com/alfredkam/yakojs/blob/master/lib/base/common.js#L53-L63)
+compile is called everytime to append the child into the parent node. [Overrides the base function](https://github.com/alfredkam/yakojs/blob/master/lib/base/common.js#L55-L66)
 
 
 ##SVG API
