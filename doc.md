@@ -193,16 +193,20 @@ var result = instance.attr({
 ```
 
 #####mixin({ ... })
-Sometimes common components / functions may share some common functionality with other graph components.  Mixin allows you to enable the magic to happen here.
+Sometimes common components / functions may share some common functionality with other graph components.  Mixin allows you to enable the magic to happen.
 
 #####make(tagName, attribute, dataAttribute)
-make is called everytime to combine a svg element with its attributes, and expects to return a string or object that ```compile``` function can consume. [Overrides the base function](https://github.com/alfredkam/yakojs/blob/master/lib/base/common.js#L52-L63)
+```make``` is called everytime to create a svg element with the provided attributes and data attributes, and expects to return a string or object that ```compile``` function can consume.
+
+The super class of ```make``` is referenced [here]
 
 #####compile(parent, childs)
-compile is called everytime to append the childs into the parent node. Childs is an array of results by the ```make``` function. Expects the result of parent to be return [Overrides the base function](https://github.com/alfredkam/yakojs/blob/master/lib/base/common.js#L42-L50)
+```compile``` is called everytime to append the childs into the parent element. ```childs``` is the result of an array of ```make``` and ```parent``` is either empty or a result of a ```make``` function call to create the parent element.  It expects to return a string or object.
+
+The super class of ```compile``` is referenced [here]
 
 #####render(result)
-render provides the result of the component, you could intercept the result before it passes back up to the chain
+```render``` provides the result of the component, you could intercept the result before it passes back up to the chain
 
 ##SVG API
 ```javascript
