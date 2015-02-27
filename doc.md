@@ -198,12 +198,12 @@ Sometimes common components / functions may share some common functionality with
 #####make(tagName, attribute, dataAttribute)
 ```make``` is called everytime to create a svg element with the provided attributes and data attributes, and expects to return a string or object that ```compile``` function can consume.
 
-The super class of ```make``` is referenced [here]
+The super class of ```make``` is referenced [here](https://github.com/alfredkam/yakojs/blob/dded417c1b86a6bf91ad368c5d76e36e67145316/lib/base/common.js#L42-L56)
 
 #####compile(parent, childs)
 ```compile``` is called everytime to append the childs into the parent element. ```childs``` is the result of an array of ```make``` and ```parent``` is either empty or a result of a ```make``` function call to create the parent element.  It expects to return a string or object.
 
-The super class of ```compile``` is referenced [here]
+The super class of ```compile``` is referenced [here](https://github.com/alfredkam/yakojs/blob/dded417c1b86a6bf91ad368c5d76e36e67145316/lib/base/common.js#L32-L40)
 
 #####render(result)
 ```render``` provides the result of the component, you could intercept the result before it passes back up to the chain
