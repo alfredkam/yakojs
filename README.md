@@ -17,18 +17,21 @@ Demo @ http://alfredkam.com/yakojs or ```node app.js``` and vist ```http://local
 ### Install
 ```npm install yako```
 
-### Supported Graphs
- - Spark / Scattered / Line / Area
+### API Ready
+ - Spark / Scattered / Line / Area Graphs
  - Pie Charts
  - Donut Charts
  - Bubble Chart Time Flow (represents actions across a period of time)
  - Bar Graphs (stack & non stack)
+ - MixIn / Inheritance
 
 ### Road Map
  - Unit Test
  - Support labels
  - Expose math functions
- - Event Bindings
+ - Programmatic point of access
+ - Events & Emitters
+ - Bring svg to live
  - Real time graphs
 
 Note:: Real time & labels for line graphs were supported under <a href='https://github.com/alfredkam/yakojs/tree/v0.0.16-re20140902'>0.0.15</a>
