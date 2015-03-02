@@ -78,7 +78,10 @@ while (amount--) {
       'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif'
     },
     title: 'just a test',
-    data: set
+    data: set,
+    yAxis: {
+      mutli: true
+    }
   });
 
   nodes += sparkInstance.attr({

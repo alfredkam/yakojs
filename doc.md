@@ -181,7 +181,7 @@ var instance = spark({
       ...
     }
   },
-  compile: function(parent, child) {
+  append: function(parent, child) {
     ...
   }
 });
@@ -196,14 +196,14 @@ var result = instance.attr({
 Sometimes common components / functions may share some common functionality with other graph components.  Mixin allows you to enable the magic to happen.
 
 #####make(tagName, attribute, dataAttribute)
-```make``` is called everytime to create a svg element with the provided attributes and data attributes, and expects to return a string or object that ```compile``` function can consume.
+```make``` is called everytime to create a svg element with the provided attributes and data attributes, and expects to return a string or object that ```append``` function can consume.
 
 The super class of ```make``` is referenced [here](https://github.com/alfredkam/yakojs/blob/d5ef0c5072d8b952e66929c5bc9a5f40171b6e1b/lib/base/common.js#L41-L52)
 
-#####compile(parent, childs)
-```compile``` is called everytime to append the childs into the parent element. ```childs``` is the result of an array of ```make``` and ```parent``` is either empty or a result of a ```make``` function call to create the parent element.  It expects to return a string or object.
+#####append(parent, childs)
+```append``` is called everytime to append the childs into the parent element. ```childs``` is the result of an array of ```make``` and ```parent``` is either empty or a result of a ```make``` function call to create the parent element.  It expects to return a string or object.
 
-The super class of ```compile``` is referenced [here](https://github.com/alfredkam/yakojs/blob/d5ef0c5072d8b952e66929c5bc9a5f40171b6e1b/lib/base/common.js#L31-L39)
+The super class of ```append``` is referenced [here](https://github.com/alfredkam/yakojs/blob/d5ef0c5072d8b952e66929c5bc9a5f40171b6e1b/lib/base/common.js#L31-L39)
 
 #####render(result)
 ```render``` provides the result of the component, you could intercept the result before it passes back up to the chain
@@ -253,7 +253,7 @@ returns attribute D of ```<path>``` that decribes an arc w/ the path closed ~ eq
 ##Extending or modify the library
 say you wanted to create your own or modify the library to do something extra. you require the library and extend from it.  Since this is build using common js and inheritance, one could easily extend specific graphs.<br>
 
-For example you think its smarter to compile the svg objects into dom object, during the mid process you would
+For example you think its smarter to append the svg objects into dom object, during the mid process you would
 ```javascript
 var defaultSpark = require('./lib/spark');
 var mySparkGraph = defaultSpark.extend({
