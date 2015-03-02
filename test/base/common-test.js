@@ -13,19 +13,19 @@ describe('lib/base/common', function () {
             .to.be.an.instanceof(Common);
     });
 
-    it('compile as string', function () {
+    it('append as string', function () {
         var child = '<g>123</g>';
         var parent = '<svg></svg>';
         var expected = '<svg><g>123</g></svg>';
-        expect(common.compile(parent, child))
+        expect(common.append(parent, child))
             .to.equal(expected);
     });
 
-    it('compile as [string array]', function () {
+    it('append as [string array]', function () {
         var childs = ['<g>123</g>','<g>123</g>'];
         var parent = '<svg></svg>';
         var expected = '<svg><g>123</g><g>123</g></svg>';
-        var result = common.compile(parent, childs);
+        var result = common.append(parent, childs);
         expect(result)
             .to.equal(expected);
     });
@@ -126,26 +126,26 @@ describe('lib/base/common', function () {
             .that.is.a('number');
     });
 
-    it('_findMinMax (multiple array) should return the min and max of set', function () {
+    it('_scale (multiple array) should return the min and max of set', function () {
         var set = [
             [0,1,2,3,4],
             [5,6,7,8,9]
         ];
 
-        expect(common._findMinMax(set))
+        expect(common._scale(set))
             .to.deep.equal({ min: 0, max: 9, maxSet: [], len: 5 });
     });
 
-    it('_findMinMax (single array) should return the min and max of set', function () {
+    it('_scale (single array) should return the min and max of set', function () {
         var set = [
             [0,1,2,3,4]
         ];
 
-        expect(common._findMinMax(set))
+        expect(common._scale(set))
             .to.deep.equal({ min: 0, max: 4, maxSet: [], len: 5 });
     });
 
-    it('_findMinMax (obj with data) should return the min and max of set', function () {
+    it('_scale (obj with data) should return the min and max of set', function () {
         var set = [
             {
                 data: [0,1,2,3,4]
@@ -154,31 +154,31 @@ describe('lib/base/common', function () {
                 data: [5,6,7,8,9]
             }
         ];
-        expect(common._findMinMax(set))
+        expect(common._scale(set))
             .to.deep.equal({ min: 0, max: 9, maxSet: [], len: 5 });
     });
 
 
-    it('_findMinMax (stack = true, multiple array) should return the min and max of set', function () {
+    it('_scale (stack = true, multiple array) should return the min and max of set', function () {
         var set = [
             [0,1,2,3,4],
             [5,6,7,8,9]
         ];
 
-        expect(common._findMinMax(set, { stack: true }))
+        expect(common._scale(set, { stack: true }))
             .to.deep.equal({ min: 5, max: 13, maxSet: [5,7,9,11,13], len: 5 });
     });
 
-    it('_findMinMax (stack = true, single array) should return the min and max of set', function () {
+    it('_scale (stack = true, single array) should return the min and max of set', function () {
         var set = [
             [0,1,2,3,4]
         ];
 
-        expect(common._findMinMax(set, { stack: true}))
+        expect(common._scale(set, { stack: true}))
             .to.deep.equal({ min: 0, max: 4, maxSet: [0,1,2,3,4], len: 5 });
     });
 
-    it('_findMinMax (stack = true, obj with data) should return the min and max of set', function () {
+    it('_scale (stack = true, obj with data) should return the min and max of set', function () {
         var set = [
             {
                 data: [0,1,2,3,4]
@@ -187,7 +187,7 @@ describe('lib/base/common', function () {
                 data: [5,6,7,8,9]
             }
         ];
-        expect(common._findMinMax(set, { stack: true }))
+        expect(common._scale(set, { stack: true }))
             .to.deep.equal({ min: 5, max: 13, maxSet: [5,7,9,11,13], len: 5 });
     });
 });
