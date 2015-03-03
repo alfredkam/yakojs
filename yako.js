@@ -71,23 +71,32 @@
 	var bar = __webpack_require__(7);
 	var bubble = __webpack_require__(8);
 	var svg = __webpack_require__(9);
+	var mixin = __webpack_require__(10);
+
+	var initialize = function (component, obj) {
+	  if (typeof obj === 'object') {
+	    return new (obj.mixin ? mixin(mixin(component, obj.mixin), obj) : mixin(component, obj))();
+	  }
+	  return new component(obj);
+	};
+
 	module.exports = {
 	  name: 'yakojs',
 	  VERSION: '0.1.0',
 	  spark: function (opts) {
-	    return new sparkLine(opts);
+	    return initialize(sparkLine, opts);
 	  },
 	  pie: function (opts) {
-	    return new pie(opts);
+	    return initialize(pie, opts);
 	  },
 	  donut: function (opts) {
-	    return new donut(opts);
+	    return initialize(donut, opts);
 	  },
 	  bubble: function (opts) {
-	    return new bubble(opts);
+	    return initialize(bubble, opts);
 	  },
 	  bar: function (opts) {
-	    return new bar(opts);
+	    return initialize(bar, opts);
 	  },
 	  svg: svg
 	};
@@ -96,7 +105,9 @@
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(10);
+	var Base = __webpack_require__(11);
+	var Label = __webpack_require__(12);
+	var label = new Label();
 	var spark = module.exports = Base.extend({
 	  // the graph data & options setter
 	  attr: function (opts) {
@@ -113,8 +124,8 @@
 	        opts.data[i].label = (opts.data[i].label || '').replace(/\s/g,'-');
 	    }
 
-	    return this._prepare()
-	    ._generate();
+	    return this.render(this._prepare()
+	    ._generate());
 	  },
 	  // set default value if they are missing
 	  _prepare: function () {
@@ -129,8 +140,6 @@
 	      // 
 	      showNodes: false,
 	      // reservered for labels
-	      xAxis: {},
-	      yAxis: {},
 	      data : []
 	    };
 	    this._extend(defaults, this.attributes.opts);
@@ -159,30 +168,49 @@
 	        data = [data];
 	    }
 
-	    var scale = self._findMinMax(data);
-	    self._extend(opts._scale, scale);
-	    opts.heightRatio = (chart.height - (paddingY * 2)) / scale.max;
-	    // need to account for paddingX, when paddingX is included the math is off
-	    opts.gap = self._sigFigs((chart.width / (scale.len - 1)),8);
+	    var scale = self._scale(data, opts);
+	    self._extend(scale, chart);
+	 
+	    // simple hnadOff
+	    // TODO:: fix the paddingX & Y dependecies
+	    if (opts.yAxis) {
+	      paddingX = 30;
+	      paddingY = 20;
+	      scale.pHeight = (chart.height - (paddingY * 2));
+	      scale.paddingY = paddingY;
+	      scale.paddingX = paddingX;
+	      svg = self.append(svg, label.describeYAxis(scale, opts.yAxis));
+	      // TODO:: this needs to be adjusted
+	      paddingX += 5;
+	    }
+
+	    scale.heightRatio = (chart.height - (paddingY * 2)) / scale.max;
+	    scale.gap = self._sigFigs(((chart.width - paddingX*2) / (scale.len - 1)),8);
+
+	    if (opts.xAxis) {
+	      svg = self.append(svg, label.describeXAxis(scale, opts.xAxis));
+	    }
 	    
 	    // adding each path & circle
-	    for (var x = 0; x < data.length; x++) {
+	    for (var x = 0; x < scale.rows; x++) {
+	      if (opts.yAxis && opts.yAxis.multi) {
+	        scale.heightRatio = (chart.height - (paddingY * 2)) / scale.max[x];
+	      }
 	        var g = self.make('g',{},{
 	            label: data[x].label
 	        });
-	        svg = self.compile(svg,
-	          self.compile(g, self._describePath(data[x], paddingX, paddingY, opts))
+	        svg = self.append(svg,
+	          self.append(g, self._describePath(data[x], paddingX, paddingY, scale))
 	          );
 	    }
 	    // add to element;
-	    var result = self.compile(self.element, svg);
-	    return (typeof result == 'string') ? result : self;
+	    return self.append(self.element, svg);
 	  },
 	  // describes an open path
-	  _describeAttributeD: function (numArr, paddingX, paddingY, opts) {
-	    var height = opts.chart.height;
-	    var heightRatio = opts.heightRatio;
-	    var gap = opts.gap;
+	  _describeAttributeD: function (numArr, paddingX, paddingY, scale) {
+	    var height = scale.height;
+	    var heightRatio = scale.heightRatio;
+	    var gap = scale.gap;
 	    var pathToken = '';
 	    //path generator
 	    for (var i = 0; i < numArr.length; i++) {
@@ -200,9 +228,9 @@
 	    return pathToken;
 	  },
 	  // describes the path to close the open path
-	  _describeCloseAttributeD: function (numArr, paddingX, paddingY, opts) {
-	    var height = opts.chart.height;
-	    var heightRatio = opts.heightRatio;
+	  _describeCloseAttributeD: function (numArr, paddingX, paddingY, scale) {
+	    var height = scale.height;
+	    var heightRatio = scale.heightRatio;
 	    return [
 	            'V',(height - paddingY),
 	            'H', paddingX,
@@ -210,11 +238,11 @@
 	          ].join(" ");
 	  },
 	  // describes scattered graph
-	  _describeScatteredGraph: function(data, numArr, paddingX, paddingY, opts) {
-	    var height = opts.chart.height;
-	    var heightRatio = opts.heightRatio;
+	  _describeScatteredGraph: function(data, numArr, paddingX, paddingY, scale) {
+	    var height = scale.height;
+	    var heightRatio = scale.heightRatio;
 	    var self = this;
-	    var gap = opts.gap;
+	    var gap = scale.gap;
 	    var scattered = data.scattered || 0;
 	    var strokeWidth = scattered.strokeWidth || 3;
 	    var strokeColor = scattered.strokeColor || self._randomColor();
@@ -235,22 +263,21 @@
 	    return paths;
 	  },
 	  //svg path builder
-	  _describePath : function (data, paddingX, paddingY, opts) {
-	    var chart = opts.chart;
+	  _describePath : function (data, paddingX, paddingY, scale) {
 	    var self = this;
-	    var pathToken = self._describeAttributeD(data.data, paddingX, paddingY, opts);
+	    var pathToken = self._describeAttributeD(data.data, paddingX, paddingY, scale);
 	    var pathNode = self.make('path',{
 	        d: pathToken,
 	        stroke: data.strokeColor || self._randomColor(),
-	        'stroke-width': data.strokeWidth || '5',
+	        'stroke-width': data.strokeWidth || '3',
 	        'stroke-linejoin': 'round',
 	        'stroke-linecap': 'round',
 	        'class': '_yakoTransitions-' + data.label,
 	        fill: 'none'
 	    });
 
-	    return (chart.line ? pathNode + (data.fill ? self.make('path', {
-	      d: pathToken + self._describeCloseAttributeD(data.data, paddingX, paddingY, opts),
+	    return (scale.line ? pathNode + (data.fill ? self.make('path', {
+	      d: pathToken + self._describeCloseAttributeD(data.data, paddingX, paddingY, scale),
 	      stroke: 'none',
 	      'stroke-width': '2',
 	      'stroke-linejoin': 'round',
@@ -258,8 +285,8 @@
 	      'class': '_yakoTransitions-' + data.label,
 	      fill: data.fill
 	    }) : '') : '') +
-	    (chart.scattered ?
-	      self._describeScatteredGraph(data, data.data, paddingX, paddingY, opts) :
+	    (scale.scattered ?
+	      self._describeScatteredGraph(data, data.data, paddingX, paddingY, scale) :
 	      '');
 	  }
 	});
@@ -268,7 +295,7 @@
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arcBase = __webpack_require__(11);
+	var arcBase = __webpack_require__(13);
 	var pie = module.exports = arcBase.extend({
 	    /**
 	     * [_describePath genereates the paths for each pie segment]
@@ -279,7 +306,7 @@
 	     */
 	    _describePath: function (circumference, data, chart) {
 	        if (!data) return '';
-	        var path = '';
+	        var paths = [];
 	        var radius = circumference / 2;
 	        var startAngle = 0;
 	        var fills = chart.fills || 0;
@@ -288,16 +315,16 @@
 	        var centerY = chart.height / 2;
 	        for (var i = 0; i < data.length; i++) {
 	            var endAngle = startAngle + 360 * data[i];
-	            path += this.make('path',{
+	            paths.push(this.make('path',{
 	                "stroke-linecap": "round",
 	                "stroke-linejoin": "round",
 	                stroke: strokes[i] || (chart.strokeColor || this._randomColor()),
 	                d: this._describePie(centerX, centerY, radius, startAngle, endAngle),
 	                fill: fills[i] || this._randomColor()
-	            });
+	            }));
 	            startAngle = endAngle;
 	        }
-	        return path;
+	        return paths;
 	    }
 	});
 
@@ -305,7 +332,7 @@
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arcBase = __webpack_require__(11);
+	var arcBase = __webpack_require__(13);
 	var pie = module.exports = arcBase.extend({
 	    /**
 	     * [_describePath genereates the paths for each pie segment]
@@ -316,7 +343,7 @@
 	     */
 	    _describePath: function (circumference, data, chart) {
 	        if (!data) return '';
-	        var path = '';
+	        var paths = [];
 	        var outerRadius = chart.outerRadius || (circumference / 2);
 	        var innerRadius = chart.innerRadius || (outerRadius / 2);
 	        var startAngle = 0;
@@ -326,16 +353,16 @@
 	        var centerX = chart.width / 2;
 	        for (var i = 0; i < data.length; i++) {
 	            var endAngle = startAngle +  360 * data[i];
-	            path += this.make('path', {
+	            paths.push(this.make('path', {
 	                "stroke-linecap": "round",
 	                "stroke-linejoin": "round",
 	                stroke: strokes[i] || (chart.strokeColor||this._randomColor()),
 	                fill: fills[i] || this._randomColor(),
 	                d: this._describeDonut(centerX, centerY, outerRadius, innerRadius, startAngle, endAngle)
-	            });
+	            }));
 	            startAngle = endAngle;
 	        }
-	        return path;
+	        return paths;
 	    },
 	    /**
 	     * [_describeDonut describes donut path]
@@ -373,7 +400,7 @@
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(10);
+	var Base = __webpack_require__(11);
 	var bar = module.exports = Base.extend({
 	    // include missing values
 	    _prepare: function () {
@@ -397,8 +424,8 @@
 	        this.attributes.data = opts.data || [];
 	        this.attributes.opts = opts;
 
-	        return this._prepare()
-	            ._generate();
+	        return this.render(this._prepare()
+	            ._generate());
 	    },
 	    _generate: function () {
 	        var data = this.attributes.data;
@@ -408,13 +435,12 @@
 	            height: chart.height,
 	            viewBox: '0 0 ' + chart.width + ' ' + chart.height,
 	        });
-	        var result = this.compile(this.element,
-	                this.compile(
+	        return this.append(this.element,
+	                this.append(
 	                    svg,
 	                    this._describeBar(data, chart)
 	                    )
 	                );
-	        return (typeof result == 'string') ? result : this;
 	    },
 	    // describes the svg that builds out the bar
 	    _describeBar: function (data, chart) {
@@ -429,8 +455,8 @@
 	        var len = data[0].data.length;
 	        var rows = data.length;
 	        var gap = width / len;
-	        var properties = this._findMinMax(data, chart);
-	        var path  = '';
+	        var properties = this._scale(data, chart);
+	        var paths = [];
 
 	        // TODO:: feels expensive, need to optimize
 	        for (var i = 0; i < len; i++) {
@@ -441,30 +467,30 @@
 	                var yAxis = height - relativeMax;
 	                var total = 0;
 	                for (var j = 0; j < rows; j++) {
-	                    path += this.make('rect',{
+	                    paths.push(this.make('rect',{
 	                        x: gap * i + (gap/4),
 	                        y: yAxis,
 	                        width: gap / rows,
 	                        height: (data[j].data[i]/properties.maxSet[i] * relativeMax),
 	                        fill: data[j].fill || this._randomColor()
-	                    });
+	                    }));
 	                    yAxis += (data[j].data[i]/properties.maxSet[i] * relativeMax);
 	                }
 	            } else {
 	                // side by side
 	                for (var j = 0; j < rows; j++) {
 	                    var yAxis = (height - paddingY) * data[j].data[i] / properties.max;
-	                    path += this.make('rect',{
+	                    paths.push(this.make('rect',{
 	                        x: (gap * (i+1)) - (gap/(j + 1)),
 	                        y: height - yAxis,
 	                        width: gap / (rows+1),
 	                        height: yAxis,
 	                        fill: data[j].fill || this._randomColor()
-	                    });
+	                    }));
 	                }
 	            }
 	        }
-	        return path;
+	        return paths;
 	    },
 	});
 
@@ -472,7 +498,7 @@
 /* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(11);
+	var Base = __webpack_require__(13);
 	var bubble = module.exports = Base.extend({
 	    _generate: function () {
 
@@ -485,15 +511,14 @@
 	        });
 
 	        var widthOffset = 10 || chart.paddingX;
-	        var path = this._describeHorizontalPath(chart.height, chart.width, widthOffset, chart);
-	        path += this._describeBubble(data, chart.height, chart.width, widthOffset, chart);
-	        var result = this.compile(this.element,
-	                this.compile(
+	        var paths = this._describeBubble(data, chart.height, chart.width, widthOffset, chart);
+	        paths.unshift(this._describeHorizontalPath(chart.height, chart.width, widthOffset, chart));
+	        return this.render(this.append(this.element,
+	                this.append(
 	                    svg,
-	                        path
+	                        paths
 	                    )
-	                );
-	        return result;
+	                ));
 	    },
 	    _describeHorizontalPath: function (height, width, widthOffset, chart) {
 	        // TODO:: need to account for stroke width 
@@ -510,20 +535,20 @@
 	        var maxValue = this._getMaxOfArray(data);
 	        var dataPoints = data.length;
 	        var gap = (width - (widthOffset * 2)) / (dataPoints - 1);
-	        var path = '';
+	        var paths = [];
 	        var fills = chart.fills || 0;
 	        var maxRadius =  chart.maxRadius || (chart.height < chart.width ? chart.height : chart.width) / 2;
 	        var centerY = height / 2;
 	        for (var i = 0; i < data.length; i++) {
-	            path += this.make('circle', {
+	            paths.push(this.make('circle', {
 	                cx: (gap * i) + widthOffset,
 	                cy: centerY,
 	                r: maxRadius * (data[i] / maxValue),
 	                fill: fills[0] || (chart.fill || this._randomColor())
-	            });
+	            }));
 	        }
 
-	        return path;
+	        return paths;
 	    },
 	    _getMaxOfArray: function (arr) {
 	        return Math.max.apply(null, arr);
@@ -536,16 +561,25 @@
 
 	
 	module.exports = {
-	    path: __webpack_require__(12),
-	    arc: __webpack_require__(13),
-	    react: __webpack_require__(14)
+	    path: __webpack_require__(14),
+	    arc: __webpack_require__(15),
+	    react: __webpack_require__(16)
 	};
 
 /***/ },
 /* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Common = __webpack_require__(15);
+	
+	var mixin = module.exports = function (component, obj) {
+	    return component.extend(obj);
+	};
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Common = __webpack_require__(17);
 	var base = module.exports = Common.extend({
 	    init: function (node) {
 	      var self = this;
@@ -562,10 +596,6 @@
 	            width: '100%'
 	          });
 	        }
-	      } else if(typeof node === 'object'){
-	        // type of object?
-	        this.element = node;
-	        this.element.style.width = '100%';
 	      } else {
 	        this.element = '';
 	      }
@@ -576,11 +606,178 @@
 	});
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(10);
-	var arc = __webpack_require__(13);
+	var Common = __webpack_require__(17);
+
+	var label = module.exports = Common.extend({
+	    // expect the boundaries
+	    describe: function (minMax, chart) {
+
+	    },
+	    describeBorder: function () {
+
+	    },
+	    describeLabel: function () {
+
+	    },
+	    describeYAxis: function (scale, opts) {
+	        var self = this;
+	        var axis = [];
+	        var labels = [];
+	        var y = scale.rows;
+	        if (!opts.multi) {
+	            y = 1;
+	            scale.ySecs = [scale.ySecs];
+	            scale.max = [scale.max];
+	        }
+	        var partialHeight = scale.pHeight;
+	        var paddingY = scale.paddingY;
+	        var paddingX = scale.paddingX;
+
+	        // goes through the number of yaxis need
+	        while (y--) {
+	            var g = self.make('g');
+	            var splits = fSplits = parseInt(scale.ySecs[y]);
+	            var heightFactor = partialHeight / splits;
+	            var xCord = (y % 2 === 0 ? scale.width - (y + 1) * paddingX : y * paddingX);
+
+	            labels = [];
+	            splits += 1;
+	            while(splits--) {
+	                labels.push(self.make('text',{
+	                    y: paddingY + (heightFactor * splits),
+	                    x: xCord,
+	                    'font-size': 12,
+	                    'text-anchor': y % 2 === 0 ? 'start' : 'end',
+	                    fill: opts.color || '#333',
+	                }, null, scale.max[y] / fSplits * (fSplits - splits)));
+	            }
+	            // building the border
+	            // TODO:: this needs to dynamic!
+	            xCord = (y % 2 === 0) ? xCord - 5 : xCord + 5;
+	            labels.push(self.make('path',{
+	              'd' : 'M' + xCord + ' 0L' + xCord + ' ' + (partialHeight + paddingY),
+	              'stroke-width': '1',
+	              'stroke': '#c0c0c0',
+	              'fill': 'none',
+	              'opacity': '1',
+	              'stroke-linecap': 'round'
+	            }));
+	            axis.push(self.append(g, labels));
+	        }
+	        return axis;
+	    },
+	    // TODO::  support custom format
+	    // for simplicity lets only consider dateTime format atm
+	    describeXAxis: function (scale, opts) {
+	        var self = this;
+	        var g = self.make('g', {
+	          'class': 'xaxis'
+	        });
+	        var labels = [];
+	        var partialHeight = scale.pHeight;
+	        var gap = scale.gap;
+	        var paddingX = scale.paddingX;
+	        var paddingY = scale.paddingY * 2  - 8;
+	        var yAxis = partialHeight + paddingY;
+	     
+	        if (opts.format === 'dateTime') {
+	            //to get the UTC time stamp multiplexer
+	            var tick = opts.interval;
+	            var utc = self._utcMultiplier(opts.interval);
+	            var tickInterval =  (/\d+/.test(tick) ? tick.match(/\d+/)[0] : 1);
+	            var format = opts.dateTimeLabelFormat;
+	            var base = opts.minUTC;
+	        }
+
+	        for (var i = 1; i < scale.len - 1; i++) {
+	            labels.push(self.make('text',{
+	                y: yAxis,
+	                x: (gap * i) + paddingX,
+	                'font-size': 12,
+	                'text-anchor': 'start',
+	                fill: opts.color || '#333',
+	            }, null, self._formatTimeStamp(format, base + (utc * i))));
+	        }
+
+	        labels.push(self.make('path',{
+	          'd' : 'M' + (paddingX  * 2) + ' ' + (yAxis - 12) + ' L' + (scale.width - paddingX*2) + ' ' + (yAxis - 12),
+	          'stroke-width': '1',
+	          'stroke': '#c0c0c0',
+	          'fill': 'none',
+	          'opacity': '1',
+	          'stroke-linecap': 'round'
+	        }));
+
+	        return [self.append(g, labels)];
+	    },
+	    _utcMultiplier: function(tick) {
+	        var mili = 1e3,
+	            s = 60,
+	            m = 60,
+	            h = 24,
+	            D = 30,
+	            M = 12,
+	            Y = 1,
+	            multiplier = 0;
+	        if (/s$/.test(tick))
+	            multiplier = mili;
+	        else if (/m$/.test(tick))
+	            multiplier = s * mili;
+	        else if (/h$/.test(tick))
+	            multiplier = s * m * mili;
+	        else if (/D$/.test(tick))
+	            multiplier = s * m * h * mili;
+	        else if (/M$/.test(tick))
+	            multiplier = s * m * h * D * mili;
+	        else if (/Y$/.test(tick))
+	            multiplier = s * m * h * D * M * mili;
+
+	        return multiplier;
+	    },
+	    //formats the time stamp
+	    _formatTimeStamp: function (format, time) {
+	        var dateObj = new Date(time),
+	            str = format,
+	            flag = false;
+
+	        if (/YYYY/.test(str))
+	            str = str.replace('YYYY',dateObj.getFullYear());
+	        else if (/YY/.test(str))
+	            str = str.replace('YY',(dateObj.getFullYear()).replace(/^\d{1,2}/,''));
+
+	        if (/hh/.test(str) && /ap/.test(str)) {
+	          if ((dateObj.getHours())  > 11)
+	            str = str.replace(/hh/, (dateObj.getHours() - 12 === 0 ? 12 : dateObj.getHours() - 12))
+	                    .replace(/ap/, 'pm');
+	          else
+	            str = str.replace(/hh/, (dateObj.getHours() == 0? 12 :  dateObj.getHours()))
+	                    .replace(/ap/,'am');
+	        } else
+	          str = str.replace(/hh/, (dateObj.getHours() == 0? 12 :  dateObj.getHours()))
+
+	        str = str.replace(/MM/,dateObj.getMonth()+1)
+	            .replace(/DD/, dateObj.getDate());
+
+	        if (/mm/.test(str) && /ss/.test(str)) {
+	            str = str.replace(/mm/,(dateObj.getMinutes().toString().length == 1 ? '0'+dateObj.getMinutes(): dateObj.getMinutes()))
+	            .replace(/ss/,(dateObj.getSeconds().toString().length == 1 ? '0'+dateObj.getSeconds(): dateObj.getSeconds()));
+	        } else {
+	            str = str.replace(/mm/,dateObj.getMinutes())
+	            .replace(/ss/,dateObj.getSeconds());
+	        } 
+	        return str;
+	    }
+	});
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Base = __webpack_require__(11);
+	var arc = __webpack_require__(15);
 	module.exports = Base.extend({
 	    // include missing values
 	    _prepare: function () {
@@ -604,8 +801,8 @@
 	        this.attributes.data = opts.data || [];
 	        this.attributes.opts = opts;
 
-	        return this._prepare()
-	            ._generate();
+	        return this.render(this._prepare()
+	            ._generate());
 	    },
 	    // parent generator that manages the svg
 	    _generate: function (){
@@ -620,13 +817,12 @@
 	        var circumference = chart.height < chart.width ? chart.height : chart.width;
 	        // converts nums to relative => total sum equals 1
 	        var relativeDataSet = this._dataSetRelativeToTotal(data);
-	        var result = this.compile(this.element,
-	                this.compile(
+	        return this.append(this.element,
+	                this.append(
 	                    svg,
 	                    this._describePath(circumference, relativeDataSet, chart)
 	                    )
 	                );
-	        return (typeof result == 'string') ? result : this;
 	    },
 	    _polarToCartesian: arc.polarToCartesian,
 	    _describeArc: arc.describeArc,
@@ -642,7 +838,7 @@
 	});
 
 /***/ },
-/* 12 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var spark = __webpack_require__(4);
@@ -660,7 +856,7 @@
 	     */
 	    getScale: function (attr) {
 	        var data = attr.data || 0;
-	        var scale = spark._findMinMax(data);
+	        var scale = spark._scale(data);
 	        scale.paddingY = attr.paddingY || 5;
 	        scale.gap = spark._sigFigs((attr.width / (scale.len - 1)),8);
 	        scale.heightRatio = (attr.height - (scale.paddingY * 2)) / scale.max;
@@ -691,7 +887,7 @@
 	};
 
 /***/ },
-/* 13 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -725,18 +921,18 @@
 	};
 
 /***/ },
-/* 14 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 
 
 /***/ },
-/* 15 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(16);
+	__webpack_require__(18);
 	var utils;
-	var Class = __webpack_require__(17);
+	var Class = __webpack_require__(19);
 	/**
 	 * deep extend object or json properties
 	 * @param  {object} object to extend
@@ -747,26 +943,6 @@
 	  // default
 	  init: function () {
 	    return this;
-	  },
-
-	  // to allow public functions to be overwritten
-	  mixin: function (fnToExtend) {
-	    var self = this;
-	    self._extend(self, fnToExtend);
-	    return self;
-	  },
-	  // appends the elements
-	  // for now lets assume there is only one child
-	  // TODO:: accept multiple arguments, and accept them in order
-	  compile: function (node, child) {
-	    if (typeof node === 'object') {
-	      node.innerHTML = child;
-	      return this;
-	    }
-	    if (node === '') return child;
-	    return node.replace(/(.*)(<\/.*>$)/g, function (match, p1, p2) {
-	      return p1 + child + p2;
-	    });
 	  },
 	  // accepts a N * 1 array
 	  // finds total sum then creates a relative measure base on total sum
@@ -782,26 +958,38 @@
 	  _randomColor: function () {
 	    return '#'+Math.floor(Math.random()*16777215).toString(16);
 	  },
+	  // appends the elements
+	  // accepts multiple child
+	  append: function (parent, childs) {
+	    if (parent === '') return childs;
+	    if (Object.prototype.toString.call(childs) != '[object Array]') {
+	      childs = [childs];
+	    }
+	    return parent.replace(/(.*)(<\/.*>$)/g, function (match, p1, p2) {
+	        return p1 + childs.join("") + p2;
+	    });
+	  },
 	  // alternate to one level deep
-	  make: function (tag, props, data) {
-	    var el = '<' + tag;
+	  make: function (tagName, attribute, dataAttribute, content) {
+	    var el = '<' + tagName;
 
-	    if (tag === 'svg') {
+	    if (tagName === 'svg') {
 	        el += ' version="1.1" xmlns="http://www.w3.org/2000/svg"';
 	    }
-
-	    el += this._makePairs(props);
-	    el += this._makePairs('data', data);
-
-	    return el += '></'+tag+'>';
+	    el += this._makePairs(attribute);
+	    el += this._makePairs('data', dataAttribute);
+	    return el += '>' + (content || content === 0 ? content : '') + '</'+tagName+'>';
+	  },
+	  render: function (result) {
+	    return result;
 	  },
 	  // only supports 1 level deep
-	  _makePairs: function (header, json) {
+	  _makePairs: function (prefix, json) {
 	    if (arguments.length < 2) {
-	      json = header;
-	      header = '';
+	      json = prefix;
+	      prefix = '';
 	    } else {
-	      header += '-';
+	      prefix += '-';
 	    }
 
 	    if (!json) return '';
@@ -809,7 +997,7 @@
 	    var keys = Object.keys(json), len = keys.length;
 	    var str = '';
 	    while (len--) {
-	      str += ' ' + header + keys[len] + '="' + json[keys[len]] + '"';
+	      str += ' ' + prefix + keys[len] + '="' + json[keys[len]] + '"';
 	    }
 	    return str;
 	  },
@@ -851,55 +1039,137 @@
 	          sig - Math.floor(Math.log(n) / Math.LN10) - 1);
 	      return Math.round(n * mult) / mult;
 	  },
+	  _getSplits: function (max) {
+	      var set = {};
+	      //find label and #borders best fit
+	      if (!isNaN(max) && !max == 0) {
+	          var ceil = Math.ceil10(max, max.toString().length - 1);
+	          if (max.toString().length > 1 && ceil !== 10) {
+	              var leftInt = parseInt(ceil.toString().substr(0,2));
+	              set.l = leftInt.toString()[0];
+	              
+	              if (set.l > 4) {
+	                  if (set.l === 9) {
+	                      set.l = 10;
+	                      set.f = 5;
+	                  //even
+	                  } else if (set.l % 2 == 0) {
+	                      set.f = set.l/2;
+	                  //odd
+	                  } else {
+	                      set.f = set.l;
+	                  }
+	                  max = parseInt(set.l + Math.ceil10(max,max.toString().length - 1).toString().substr(1,Math.ceil10(max,max.toString().length - 1).toString().length - 1))
+	              } else {
+	                  var secondaryCeil = Math.ceil(max, max.toString().length-2),
+	                  secondaryLeftInt = parseInt(secondaryCeil.toString().substr(0,2));
+	                  if (secondaryLeftInt.toString()[1] > 4) {
+	                      set.l = leftInt;
+	                  } else {
+	                      set.l = leftInt - 5;
+	                  }
+	                  set.f = set.l / 5;
+	                  max = parseInt(set.l + Math.ceil10(max,max.toString().length - 1).toString().substr(1,Math.ceil10(max,max.toString().length - 1).toString().length - 2))
+	              }
+	          //single digit
+	          } else {
+	              if (ceil % 2 == 0) {
+	                  max = ceil;
+	                  set.f = ceil / 2;
+	              } else if (ceil === 9) {
+	                  max = 10;
+	                  set.f = 5;
+	              //odd
+	              } else {
+	                  max = ceil;
+	                  set.f = ceil;
+	              }
+	          }
+	      }
+	      return {
+	          max: (isNaN(max) ^ max == 0? 2 : max),
+	          splits: (isNaN(max) ^ max == 0? 2 : set.f), //the number of line splits
+	      }
+	  },
 	  // find min max between multiple rows of data sets
-	  _findMinMax: function (data, opts) {
+	  // also handles the scale needed to work with multi axis
+	  _scale: function (data, opts) {
 	      opts = opts || 0;
 	      data = typeof data[0] === 'object' ? data : [data];
 	      var max = 0;
+	      var yAxis = [];
 	      var min = Number.MAX_VALUE;
 	      var maxSet = [];
+	      var temp;
+	      var ans;
+	      var ySecs;
+	      var self = this;
 
-	      // change up the structure
+	      // change up the structure if the data set is an object
 	      if (data[0].data) {
-	        var temp = [];
+	        temp = [];
 	        for (var x = 0; x < data.length; x++) {
 	          temp.push(data[x].data);
 	        }
 	        data = temp;
 	      }
 
+	      var asc = function (a,b) { return a - b; };
 	      var rows = data.length;
 	      var len = data[0].length;
 
-	      // TODO:: implement a faster array search
-	      for (var i = 0; i < len; i++) {
-	          if (opts.stack) {
-	              var rowTotal  = 0;
-	              for (var j = 0; j < rows; j++) {
-	                  rowTotal += data[j][i];
-	              }
-	              maxSet.push(rowTotal);
-	              max = max < rowTotal ? rowTotal : max;
-	              min = min > rowTotal ? rowTotal : min;
-	          } else {
-	              for (var k = 0; k < rows; k++) {
-	                  min = min > data[k][i] ? data[k][i] : min;
-	                  max = max < data[k][i] ? data[k][i] : max;
-	              }
+	      if (opts.yAxis && opts.yAxis.multi) {
+	        // across multi set
+	        min = {};
+	        max = {};
+	        ySecs = {};
+	        for (var i = 0; i < rows; i++) {
+	          temp = data[i].slice(0).sort(asc);
+	          min[i] = temp[0];
+	          ans = self._getSplits(temp[len - 1]);
+	          max[i] = ans.max;
+	          ySecs[i] = ans.splits;
+	          delete temp;
+	        }
+	      } else if (opts.stack) {
+	        for (var i = 0; i < len; i++) {
+	          var rowTotal = 0;
+	          for (var j = 0; j < rows; j++) {
+	              rowTotal += data[j][i];
 	          }
-	      }
+	          maxSet.push(rowTotal);
+	          max = max < rowTotal ? rowTotal : max;
+	          min = min > rowTotal ? rowTotal : min;
+	        }
+	      } else {
+	        // find max in a set
+	        for (var i = 0; i < rows; i++) {
+	          temp = data[i].slice(0).sort(asc);
+	          min = min > temp[0] ? temp[0] : min;
+	          max = max < temp[len - 1] ? temp[len - 1] : max;
+	          delete temp;
+	        }
 
+	        if (opts.yAxis) {
+	          ans = self._getSplits(max);
+	          max = ans.max;
+	          ySecs = ans.splits;
+	        }
+	      }
+	      
 	      return {
 	          min : min,
 	          max : max,
 	          maxSet: maxSet,
-	          len: len
+	          len: len,
+	          rows: rows,
+	          ySecs: ySecs
 	      };
 	  }
 	});
 
 /***/ },
-/* 16 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -950,7 +1220,7 @@
 
 
 /***/ },
-/* 17 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
