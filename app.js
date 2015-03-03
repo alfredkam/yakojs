@@ -80,7 +80,7 @@ while (amount--) {
     title: 'just a test',
     data: set,
     yAxis: {
-      mutli: true
+      multi: true
     }
   });
 
