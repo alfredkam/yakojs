@@ -96,8 +96,8 @@ describe('lib/utils/label', function () {
 
     it('_formatTimeStamp should return the desired time format', function () {
         var base = 1378512000000;
-        expect(label._formatTimeStamp('YY/MM/DD', base + 3600000))
-            .to.equal('13/9/6');
+        expect(label._formatTimeStamp('YY/MM', base + 3600000))
+            .to.equal('13/9');
         expect(label._formatTimeStamp('YYYY', base + 3600000))
             .to.equal('2013');
         expect(label._formatTimeStamp('mm.ss', base + 3600000))
