@@ -103,4 +103,5 @@ describe('lib/utils/label', function () {
         expect(label._formatTimeStamp('mm.ss', base + 3600000))
             .to.equal('00.00');
     });
+    
 });
