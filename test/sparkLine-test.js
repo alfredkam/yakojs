@@ -20,19 +20,18 @@ describe('lib/sparkLine', function () {
             5,
             5,
             {
-                chart: {
-                    height: 300,
-                    width: 100,
-                    line: true
-                },
+                height: 300,
+                width: 100,
+                line: true,
                 heightRatio: 290 / 4,
                 gap: spark._sigFigs((100 / 4),8)
             }
         );
+        
         expect(path)
-            .to.be.a('string')
-            .to.satisfy(function (str) {
-                return /M 5 295 L 30 222.5 L 55 150 L 80 77.5 L 105 5/i.test(str);
+            .to.be.a('array')
+            .to.satisfy(function (arr) {
+                return /M 5 295 L 30 222.5 L 55 150 L 80 77.5 L 105 5/i.test(arr[0]);
             });
     });
 

@@ -132,8 +132,14 @@ describe('lib/base/common', function () {
             [5,6,7,8,9]
         ];
 
-        expect(common._scale(set))
-            .to.deep.equal({ min: 0, max: 9, maxSet: [], len: 5 });
+        var result = common._scale(set);
+
+        expect(result.min)
+            .to.equal(0);
+        expect(result.max)
+            .to.equal(9);
+        expect(result.len)
+            .to.equal(5);
     });
 
     it('_scale (single array) should return the min and max of set', function () {
@@ -141,8 +147,15 @@ describe('lib/base/common', function () {
             [0,1,2,3,4]
         ];
 
-        expect(common._scale(set))
-            .to.deep.equal({ min: 0, max: 4, maxSet: [], len: 5 });
+        var result = common._scale(set);
+
+        expect(result.min)
+            .to.equal(0);
+        expect(result.max)
+            .to.equal(4);
+        expect(result.len)
+            .to.equal(5);
+
     });
 
     it('_scale (obj with data) should return the min and max of set', function () {
@@ -154,8 +167,15 @@ describe('lib/base/common', function () {
                 data: [5,6,7,8,9]
             }
         ];
-        expect(common._scale(set))
-            .to.deep.equal({ min: 0, max: 9, maxSet: [], len: 5 });
+
+        var result = common._scale(set);
+
+        expect(result.min)
+           .to.equal(0);
+        expect(result.max)
+           .to.equal(9);
+        expect(result.len)
+           .to.equal(5);
     });
 
 
@@ -165,8 +185,17 @@ describe('lib/base/common', function () {
             [5,6,7,8,9]
         ];
 
-        expect(common._scale(set, { stack: true }))
-            .to.deep.equal({ min: 5, max: 13, maxSet: [5,7,9,11,13], len: 5 });
+        var result = common._scale(set, {stack: true});
+
+        expect(result.min)
+           .to.equal(5);
+        expect(result.max)
+           .to.equal(13);
+        expect(result.len)
+           .to.equal(5);
+        expect(result.maxSet)
+            .to.deep.equal([5,7,9,11,13]);
+
     });
 
     it('_scale (stack = true, single array) should return the min and max of set', function () {
@@ -174,8 +203,17 @@ describe('lib/base/common', function () {
             [0,1,2,3,4]
         ];
 
-        expect(common._scale(set, { stack: true}))
-            .to.deep.equal({ min: 0, max: 4, maxSet: [0,1,2,3,4], len: 5 });
+        var result = common._scale(set, {stack: true});
+
+        expect(result.min)
+           .to.equal(0);
+        expect(result.max)
+           .to.equal(4);
+        expect(result.len)
+           .to.equal(5);
+        expect(result.maxSet)
+            .to.deep.equal([0,1,2,3,4]);
+
     });
 
     it('_scale (stack = true, obj with data) should return the min and max of set', function () {
@@ -187,7 +225,137 @@ describe('lib/base/common', function () {
                 data: [5,6,7,8,9]
             }
         ];
-        expect(common._scale(set, { stack: true }))
-            .to.deep.equal({ min: 5, max: 13, maxSet: [5,7,9,11,13], len: 5 });
+
+        var result = common._scale(set, {stack: true});
+
+        expect(result.min)
+           .to.equal(5);
+        expect(result.max)
+           .to.equal(13);
+        expect(result.len)
+           .to.equal(5);
+        expect(result.maxSet)
+            .to.deep.equal([5,7,9,11,13]);
+    });
+
+    it('_scale (yAxis = true, obj with data) should return the min and max of set and ySecs', function () {
+        var set = [
+            {
+                data: [0,1,2,3,4]
+            },
+            {
+                data: [5,6,7,8,9]
+            }
+        ];
+
+        var result = common._scale(set, {yAxis: true});
+
+        expect(result.min)
+           .to.equal(0);
+        expect(result.max)
+           .to.equal(9);
+        expect(result.len)
+           .to.equal(5);
+        expect(result.ySecs)
+            .to.equal(3);
+    });
+
+    it('_scale (yAxis : multi = true, obj with data) should return the min and max of set and ySecs', function () {
+        var set = [
+            {
+                data: [0,1,2,3,4]
+            },
+            {
+                data: [5,6,7,8,9]
+            }
+        ];
+
+        var result = common._scale(set, {yAxis: { multi : true}});
+
+        expect(result.min)
+            .to.deep.equal({
+                0: 0,
+                1: 5
+            });
+        expect(result.max)
+            .to.deep.equal({
+                0: 4,
+                1: 9
+            });
+        expect(result.len)
+            .to.equal(5);
+        expect(result.rows)
+            .to.equal(2);
+        expect(result.ySecs)
+            .to.deep.equal({ '0': 2, '1': 3 });
+
+    });
+
+    it('_getSplits should return splits, checks number length from 3+ positions to 1 position', function () {
+        expect(common._getSplits(1000))
+            .to.deep.equal({ max: 1000, splits: 2});
+        expect(common._getSplits(853))
+            .to.deep.equal({ max: 900, splits: 3 });
+        expect(common._getSplits(800))
+            .to.deep.equal({ max: 800, splits: 2 });
+        expect(common._getSplits(700))
+            .to.deep.equal({ max: 800, splits: 2 });
+        expect(common._getSplits(600))
+            .to.deep.equal({ max: 600, splits: 3 });
+        expect(common._getSplits(500))
+            .to.deep.equal({ max: 500, splits: 5 });
+        expect(common._getSplits(400))
+            .to.deep.equal({ max: 400, splits: 2 });
+        expect(common._getSplits(350))
+            .to.deep.equal({ max: 400, splits: 2 });
+        expect(common._getSplits(300))
+            .to.deep.equal({ max: 300, splits: 3 });
+        expect(common._getSplits(180))
+            .to.deep.equal({ max: 200, splits: 2 });
+        expect(common._getSplits(100))
+            .to.deep.equal({ max: 100, splits: 2 });
+
+        expect(common._getSplits(95))
+            .to.deep.equal({ max: 100, splits: 2 });
+        expect(common._getSplits(80))
+            .to.deep.equal({ max: 80, splits: 2 });
+        expect(common._getSplits(70))
+            .to.deep.equal({ max: 75, splits: 3 });
+        expect(common._getSplits(75))
+            .to.deep.equal({ max: 75, splits: 3 });
+        expect(common._getSplits(65))
+            .to.deep.equal({ max: 75, splits: 3 });
+        expect(common._getSplits(50))
+            .to.deep.equal({ max: 50, splits: 2 });
+        expect(common._getSplits(30))
+            .to.deep.equal({ max: 30, splits: 3 });
+        expect(common._getSplits(25))
+            .to.deep.equal({ max: 25, splits: 5 });
+        expect(common._getSplits(20))
+            .to.deep.equal({ max: 20, splits: 2});
+        expect(common._getSplits(15))
+            .to.deep.equal({ max: 15, splits: 3 });
+        expect(common._getSplits(10))
+            .to.deep.equal({ max: 10, splits: 2 });
+
+        expect(common._getSplits(9))
+            .to.deep.equal({ max: 9, splits: 3});
+        expect(common._getSplits(8))
+            .to.deep.equal({ max: 8, splits: 2});
+        expect(common._getSplits(7))
+            .to.deep.equal({ max: 8, splits: 2});
+        expect(common._getSplits(6))
+            .to.deep.equal({ max: 6, splits: 3});
+        expect(common._getSplits(5))
+            .to.deep.equal({ max: 5, splits: 1});
+        expect(common._getSplits(4))
+            .to.deep.equal({ max: 4, splits: 2});
+        expect(common._getSplits(3))
+            .to.deep.equal({ max: 3, splits: 1});
+        expect(common._getSplits(2))
+            .to.deep.equal({ max: 2, splits: 1});
+        expect(common._getSplits(2))
+            .to.deep.equal({ max: 2, splits: 1});
+
     });
 });

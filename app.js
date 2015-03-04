@@ -78,10 +78,7 @@ while (amount--) {
       'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif'
     },
     title: 'just a test',
-    data: set,
-    yAxis: {
-      multi: true
-    }
+    data: set
   });
 
   nodes += sparkInstance.attr({
@@ -233,18 +230,49 @@ nodes = sparkInstance.attr({
       multi: true
     },
     xAxis : {
-      //including format will show the xAxis Label
+      // including format will show the xAxis Label
       format : 'dateTime',
-      //interval indicates the data interval, the number of the interval indicates the label tick interval
-      //s - seconds
-      //m - minutes
-      //h - hours
-      //D - days
-      //M - months
-      //Y - years
+      // interval indicates the data interval, the number of the interval indicates the label tick interval
+      // same representation is also used for `dateTimeLabelFormat`
+      // s - seconds
+      // m - minutes
+      // h - hours
+      // D - days
+      // M - months
+      // Y - years
       interval: '4h',  //[1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
-      //min start date
-      //do not need end date, expecting there would be zeros to fill the gaps
+      // uses the min start date and increment the label by the set interval.  interval will be converted to miliseconds
+      minUTC: Date.UTC(2013,08,07),
+      //this controls the dateTime label format
+      //depending on the format, it will affect the label, try :: dateTimeLabelFormat: 'hhh'
+      dateTimeLabelFormat: 'MM/DD hh ap'
+      // or if wanted custom label
+      // format: 'label',
+      // label: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
+  }
+}) + sparkInstance.attr({
+    chart : {
+      width: 1200,
+      height: 500,
+      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+      // scattered: true
+    },
+    title: 'just a test',
+    data: set,
+    yAxis: true,
+    xAxis : {
+      // including format will show the xAxis Label
+      format : 'dateTime',
+      // interval indicates the data interval, the number of the interval indicates the label tick interval
+      // same representation is also used for `dateTimeLabelFormat`
+      // s - seconds
+      // m - minutes
+      // h - hours
+      // D - days
+      // M - months
+      // Y - years
+      interval: '4h',  //[1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
+      // uses the min start date and increment the label by the set interval.  interval will be converted to miliseconds
       minUTC: Date.UTC(2013,08,07),
       //this controls the dateTime label format
       //depending on the format, it will affect the label, try :: dateTimeLabelFormat: 'hhh'
@@ -254,6 +282,7 @@ nodes = sparkInstance.attr({
       // label: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
   }
 }) + nodes;
+
 
 var diff = (Date.now() - now);
 
