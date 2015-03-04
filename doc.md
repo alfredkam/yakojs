@@ -1,5 +1,5 @@
 [General Usage](#Usage) <br>
-[API] (#api-propose) <br>
+[API] (#api) <br>
 [SVG API] (#svg-api) <br>
   
 ##Usage
@@ -195,7 +195,7 @@ bar('.graph').attr({
 ```
 
 
-##API <i>[PROPOSE]</i>
+##API
 Instances of the graph component are created internally, and each component could be re-used subsequently.  Once you've picked your entry point, you could access the component api. Within each component, you could access your component with ```javascript this```
 ```javascript
 // Example

@@ -24,7 +24,7 @@ Demo @ http://alfredkam.com/yakojs or ```node app.js``` and vist ```http://local
  - Bubble Chart Time Flow (represents actions across a period of time)
  - Bar Graphs (stack & non stack)
  - MixIn / Inheritance
- - multi axis & labels for spark graphs
+ - Multi axis & labels for spark graphs
 
 ### Road Map
  - Bubble Graph
@@ -34,7 +34,7 @@ Demo @ http://alfredkam.com/yakojs or ```node app.js``` and vist ```http://local
  - Expose math functions
  - Bring svg to live
  - Real time graphs
- 
+
 
 ### How to run unit test
 ```npm test```
