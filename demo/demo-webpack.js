@@ -237,7 +237,7 @@ nodes = sparkInstance.attr({
       interval: '4h',  //[1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
       //min start date
       //do not need end date, expecting there would be zeros to fill the gaps
-      minUTC: 1378512000000, // ~ Date.UTC(2013,08,07);
+      minUTC: Date.UTC(2013,8,7),
       //this controls the dateTime label format
       //depending on the format, it will affect the label, try :: dateTimeLabelFormat: 'hhh'
       dateTimeLabelFormat: 'MM/DD hh ap'

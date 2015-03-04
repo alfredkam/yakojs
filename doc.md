@@ -82,7 +82,7 @@ spark('.graph').set({
       // Y - years
       interval: '4h',  //[1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
       // uses the min start date and increment the label by the set interval.  interval will be converted to miliseconds
-      minUTC: Date.UTC(2013,08,07),
+      minUTC: Date.UTC(2013,8,7),
       // this controls the dateTime label format
       // depending on the format, it will affect the label, try :: dateTimeLabelFormat: 'hhh'
       // for 12hr time use `ap`, it then will use am/pm
