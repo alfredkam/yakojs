@@ -1,3 +1,6 @@
+/*
+  Copyright 2015 Alfred Kam
+*/
 var sparkLine = require('./lib/sparkLine');
 var pie = require('./lib/pie');
 var donut = require('./lib/donut');
