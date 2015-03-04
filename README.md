@@ -34,6 +34,7 @@ Demo @ http://alfredkam.com/yakojs or ```node app.js``` and vist ```http://local
  - Expose math functions
  - Bring svg to live
  - Real time graphs
+ 
 
 ### How to run unit test
 ```npm test```
