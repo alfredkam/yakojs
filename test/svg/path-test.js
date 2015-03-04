@@ -20,7 +20,11 @@ describe('lib/svg/path', function () {
                         paddingY: 5,
                         gap: 10.344828,
                         heightRatio: 0.17681728880157171,
-                        chart: { height: 100, width: 300 }
+                        height: 100,
+                        width: 300,
+                        color: [],
+                        rows: 1,
+                        ySecs: 0
                     };
         expect(scale).to.deep.equal(result);
     });

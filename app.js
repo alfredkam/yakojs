@@ -248,7 +248,7 @@ nodes = sparkInstance.attr({
       dateTimeLabelFormat: 'MM/DD hh ap'
       // or if wanted custom label
       // format: 'label',
-      // label: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
+      // labels: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
   }
 }) + sparkInstance.attr({
     chart : {
