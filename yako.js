@@ -65,6 +65,9 @@
 /* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/*
+	  Copyright 2015 Alfred Kam
+	*/
 	var sparkLine = __webpack_require__(4);
 	var pie = __webpack_require__(5);
 	var donut = __webpack_require__(6);
@@ -105,8 +108,8 @@
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(11);
-	var Label = __webpack_require__(12);
+	var Base = __webpack_require__(12);
+	var Label = __webpack_require__(13);
 	var label = new Label();
 	var spark = module.exports = Base.extend({
 	  // the graph data & options setter
@@ -117,14 +120,15 @@
 	        opts.data = undefined;
 	    }
 	    // make sure the data will not cause memory reference error, if some sets of data a shared among other graphs
-	    this.attributes.data = opts.data || 0;
-	    this.attributes.opts = opts;
+	    var self = this;
+	    self.attributes.data = opts.data || 0;
+	    self.attributes.opts = opts;
 
 	    for(var i in opts.data) {
 	        opts.data[i].label = (opts.data[i].label || '').replace(/\s/g,'-');
 	    }
 
-	    return this.render(this._prepare()
+	    return self.render(self._prepare()
 	    ._generate());
 	  },
 	  // set default value if they are missing
@@ -151,18 +155,21 @@
 	   * @return {object} global function object 
 	   */
 	  _generate: function () {
-	    var data = this.attributes.data,
-	        opts = this.attributes.opts,
-	        chart = opts.chart,
-	        svg = this.make('svg',{
-	            width: opts.chart.width,
-	            height: opts.chart.height,
-	            viewBox: '0 0 '+opts.chart.width + ' '+opts.chart.height,
-	        }),
-	        self = this;
-	    // reserved for padding
+	    var self = this;
+	    var data = self.attributes.data;
+	    var opts = self.attributes.opts;
+	    var chart = opts.chart;
+	    var svg = self.make('svg',{
+	            width: chart.width,
+	            height: chart.height,
+	            viewBox: '0 0 ' + chart.width + ' ' + chart.height
+	        });
+	    // For paddings
 	    var paddingX = 0;
 	    var paddingY = 5;
+	    var xAxis = opts.xAxis;
+	    var yAxis = opts.yAxis;
+	    var append = self.append;
 
 	    if (Object.prototype.toString.call(data) !== '[object Array]') {
 	        data = [data];
@@ -173,38 +180,42 @@
 	 
 	    // simple hnadOff
 	    // TODO:: fix the paddingX & Y dependecies
-	    if (opts.yAxis) {
-	      paddingX = 30;
+	    if (yAxis || xAxis) {
+	      paddingX = !opts.yAxis ? 0 : 30;
 	      paddingY = 20;
 	      scale.pHeight = (chart.height - (paddingY * 2));
 	      scale.paddingY = paddingY;
 	      scale.paddingX = paddingX;
-	      svg = self.append(svg, label.describeYAxis(scale, opts.yAxis));
+	    }
+
+	    if (yAxis) {
+	      svg = append(svg, label.describeYAxis(scale, yAxis));
 	      // TODO:: this needs to be adjusted
 	      paddingX += 5;
 	    }
 
 	    scale.heightRatio = (chart.height - (paddingY * 2)) / scale.max;
-	    scale.gap = self._sigFigs(((chart.width - paddingX*2) / (scale.len - 1)),8);
-
-	    if (opts.xAxis) {
-	      svg = self.append(svg, label.describeXAxis(scale, opts.xAxis));
+	    scale.gap = self._sigFigs(((chart.width - paddingX * 2) / (scale.len - 1)),8);
+	    // xAxis depends on scale.gap
+	    if (xAxis) {
+	      svg = append(svg, label.describeXAxis(scale, xAxis));
 	    }
 	    
 	    // adding each path & circle
 	    for (var x = 0; x < scale.rows; x++) {
-	      if (opts.yAxis && opts.yAxis.multi) {
+	      if (yAxis && yAxis.multi) {
 	        scale.heightRatio = (chart.height - (paddingY * 2)) / scale.max[x];
 	      }
 	        var g = self.make('g',{},{
 	            label: data[x].label
 	        });
-	        svg = self.append(svg,
-	          self.append(g, self._describePath(data[x], paddingX, paddingY, scale))
-	          );
+	        svg = append(
+	          svg,
+	          append(g, self._describePath(data[x], paddingX, paddingY, scale))
+	        );
 	    }
 	    // add to element;
-	    return self.append(self.element, svg);
+	    return append(self.element, svg);
 	  },
 	  // describes an open path
 	  _describeAttributeD: function (numArr, paddingX, paddingY, scale) {
@@ -276,18 +287,21 @@
 	        fill: 'none'
 	    });
 
-	    return (scale.line ? pathNode + (data.fill ? self.make('path', {
-	      d: pathToken + self._describeCloseAttributeD(data.data, paddingX, paddingY, scale),
-	      stroke: 'none',
-	      'stroke-width': '2',
-	      'stroke-linejoin': 'round',
-	      'stroke-linecap': 'round',
-	      'class': '_yakoTransitions-' + data.label,
-	      fill: data.fill
-	    }) : '') : '') +
-	    (scale.scattered ?
-	      self._describeScatteredGraph(data, data.data, paddingX, paddingY, scale) :
-	      '');
+	    return [
+	      scale.line ? pathNode : '',
+	      scale.line && data.fill ? self.make('path', {
+	        d: pathToken + self._describeCloseAttributeD(data.data, paddingX, paddingY, scale),
+	        stroke: 'none',
+	        'stroke-width': '2',
+	        'stroke-linejoin': 'round',
+	        'stroke-linecap': 'round',
+	        'class': '_yakoTransitions-' + data.label,
+	        fill: data.fill
+	      }) : '',
+	      scale.scattered ?
+	        self._describeScatteredGraph(data, data.data, paddingX, paddingY, scale) :
+	        ''
+	    ];
 	  }
 	});
 
@@ -295,7 +309,7 @@
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arcBase = __webpack_require__(13);
+	var arcBase = __webpack_require__(11);
 	var pie = module.exports = arcBase.extend({
 	    /**
 	     * [_describePath genereates the paths for each pie segment]
@@ -332,7 +346,7 @@
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arcBase = __webpack_require__(13);
+	var arcBase = __webpack_require__(11);
 	var pie = module.exports = arcBase.extend({
 	    /**
 	     * [_describePath genereates the paths for each pie segment]
@@ -400,7 +414,7 @@
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(11);
+	var Base = __webpack_require__(12);
 	var bar = module.exports = Base.extend({
 	    // include missing values
 	    _prepare: function () {
@@ -498,7 +512,7 @@
 /* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(13);
+	var Base = __webpack_require__(11);
 	var bubble = module.exports = Base.extend({
 	    _generate: function () {
 
@@ -579,204 +593,7 @@
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Common = __webpack_require__(17);
-	var base = module.exports = Common.extend({
-	    init: function (node) {
-	      var self = this;
-	      // adding width 100% will allow us to have responsive graphs (in re-sizing)
-	      if (typeof node === 'string') {
-	        if (node[0] === '#') {
-	          this.element = this.make('div',{
-	            id: node.replace(/^#/,''),
-	            width: '100%'
-	          });
-	        } else {
-	          this.element = this.make('div',{
-	            "class": node.replace(/^\./,''),
-	            width: '100%'
-	          });
-	        }
-	      } else {
-	        this.element = '';
-	      }
-	      this.token = self.makeToken();
-	      this.attributes = {};
-	      return this;
-	    }
-	});
-
-/***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Common = __webpack_require__(17);
-
-	var label = module.exports = Common.extend({
-	    // expect the boundaries
-	    describe: function (minMax, chart) {
-
-	    },
-	    describeBorder: function () {
-
-	    },
-	    describeLabel: function () {
-
-	    },
-	    describeYAxis: function (scale, opts) {
-	        var self = this;
-	        var axis = [];
-	        var labels = [];
-	        var y = scale.rows;
-	        if (!opts.multi) {
-	            y = 1;
-	            scale.ySecs = [scale.ySecs];
-	            scale.max = [scale.max];
-	        }
-	        var partialHeight = scale.pHeight;
-	        var paddingY = scale.paddingY;
-	        var paddingX = scale.paddingX;
-
-	        // goes through the number of yaxis need
-	        while (y--) {
-	            var g = self.make('g');
-	            var splits = fSplits = parseInt(scale.ySecs[y]);
-	            var heightFactor = partialHeight / splits;
-	            var xCord = (y % 2 === 0 ? scale.width - (y + 1) * paddingX : y * paddingX);
-
-	            labels = [];
-	            splits += 1;
-	            while(splits--) {
-	                labels.push(self.make('text',{
-	                    y: paddingY + (heightFactor * splits),
-	                    x: xCord,
-	                    'font-size': 12,
-	                    'text-anchor': y % 2 === 0 ? 'start' : 'end',
-	                    fill: opts.color || '#333',
-	                }, null, scale.max[y] / fSplits * (fSplits - splits)));
-	            }
-	            // building the border
-	            // TODO:: this needs to dynamic!
-	            xCord = (y % 2 === 0) ? xCord - 5 : xCord + 5;
-	            labels.push(self.make('path',{
-	              'd' : 'M' + xCord + ' 0L' + xCord + ' ' + (partialHeight + paddingY),
-	              'stroke-width': '1',
-	              'stroke': '#c0c0c0',
-	              'fill': 'none',
-	              'opacity': '1',
-	              'stroke-linecap': 'round'
-	            }));
-	            axis.push(self.append(g, labels));
-	        }
-	        return axis;
-	    },
-	    // TODO::  support custom format
-	    // for simplicity lets only consider dateTime format atm
-	    describeXAxis: function (scale, opts) {
-	        var self = this;
-	        var g = self.make('g', {
-	          'class': 'xaxis'
-	        });
-	        var labels = [];
-	        var partialHeight = scale.pHeight;
-	        var gap = scale.gap;
-	        var paddingX = scale.paddingX;
-	        var paddingY = scale.paddingY * 2  - 8;
-	        var yAxis = partialHeight + paddingY;
-	     
-	        if (opts.format === 'dateTime') {
-	            //to get the UTC time stamp multiplexer
-	            var tick = opts.interval;
-	            var utc = self._utcMultiplier(opts.interval);
-	            var tickInterval =  (/\d+/.test(tick) ? tick.match(/\d+/)[0] : 1);
-	            var format = opts.dateTimeLabelFormat;
-	            var base = opts.minUTC;
-	        }
-
-	        for (var i = 1; i < scale.len - 1; i++) {
-	            labels.push(self.make('text',{
-	                y: yAxis,
-	                x: (gap * i) + paddingX,
-	                'font-size': 12,
-	                'text-anchor': 'start',
-	                fill: opts.color || '#333',
-	            }, null, self._formatTimeStamp(format, base + (utc * i))));
-	        }
-
-	        labels.push(self.make('path',{
-	          'd' : 'M' + (paddingX  * 2) + ' ' + (yAxis - 12) + ' L' + (scale.width - paddingX*2) + ' ' + (yAxis - 12),
-	          'stroke-width': '1',
-	          'stroke': '#c0c0c0',
-	          'fill': 'none',
-	          'opacity': '1',
-	          'stroke-linecap': 'round'
-	        }));
-
-	        return [self.append(g, labels)];
-	    },
-	    _utcMultiplier: function(tick) {
-	        var mili = 1e3,
-	            s = 60,
-	            m = 60,
-	            h = 24,
-	            D = 30,
-	            M = 12,
-	            Y = 1,
-	            multiplier = 0;
-	        if (/s$/.test(tick))
-	            multiplier = mili;
-	        else if (/m$/.test(tick))
-	            multiplier = s * mili;
-	        else if (/h$/.test(tick))
-	            multiplier = s * m * mili;
-	        else if (/D$/.test(tick))
-	            multiplier = s * m * h * mili;
-	        else if (/M$/.test(tick))
-	            multiplier = s * m * h * D * mili;
-	        else if (/Y$/.test(tick))
-	            multiplier = s * m * h * D * M * mili;
-
-	        return multiplier;
-	    },
-	    //formats the time stamp
-	    _formatTimeStamp: function (format, time) {
-	        var dateObj = new Date(time),
-	            str = format,
-	            flag = false;
-
-	        if (/YYYY/.test(str))
-	            str = str.replace('YYYY',dateObj.getFullYear());
-	        else if (/YY/.test(str))
-	            str = str.replace('YY',(dateObj.getFullYear()).replace(/^\d{1,2}/,''));
-
-	        if (/hh/.test(str) && /ap/.test(str)) {
-	          if ((dateObj.getHours())  > 11)
-	            str = str.replace(/hh/, (dateObj.getHours() - 12 === 0 ? 12 : dateObj.getHours() - 12))
-	                    .replace(/ap/, 'pm');
-	          else
-	            str = str.replace(/hh/, (dateObj.getHours() == 0? 12 :  dateObj.getHours()))
-	                    .replace(/ap/,'am');
-	        } else
-	          str = str.replace(/hh/, (dateObj.getHours() == 0? 12 :  dateObj.getHours()))
-
-	        str = str.replace(/MM/,dateObj.getMonth()+1)
-	            .replace(/DD/, dateObj.getDate());
-
-	        if (/mm/.test(str) && /ss/.test(str)) {
-	            str = str.replace(/mm/,(dateObj.getMinutes().toString().length == 1 ? '0'+dateObj.getMinutes(): dateObj.getMinutes()))
-	            .replace(/ss/,(dateObj.getSeconds().toString().length == 1 ? '0'+dateObj.getSeconds(): dateObj.getSeconds()));
-	        } else {
-	            str = str.replace(/mm/,dateObj.getMinutes())
-	            .replace(/ss/,dateObj.getSeconds());
-	        } 
-	        return str;
-	    }
-	});
-
-/***/ },
-/* 13 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Base = __webpack_require__(11);
+	var Base = __webpack_require__(12);
 	var arc = __webpack_require__(15);
 	module.exports = Base.extend({
 	    // include missing values
@@ -838,6 +655,201 @@
 	});
 
 /***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Common = __webpack_require__(17);
+	var base = module.exports = Common.extend({
+	    init: function (node) {
+	      var self = this;
+	      // adding width 100% will allow us to have responsive graphs (in re-sizing)
+	      if (typeof node === 'string') {
+	        if (node[0] === '#') {
+	          this.element = this.make('div',{
+	            id: node.replace(/^#/,''),
+	            width: '100%'
+	          });
+	        } else {
+	          this.element = this.make('div',{
+	            "class": node.replace(/^\./,''),
+	            width: '100%'
+	          });
+	        }
+	      } else {
+	        this.element = '';
+	      }
+	      this.token = self.makeToken();
+	      this.attributes = {};
+	      return this;
+	    }
+	});
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Common = __webpack_require__(17);
+
+	var label = module.exports = Common.extend({
+	    // expect the boundaries
+	    describe: function (minMax, chart) {
+
+	    },
+	    describeBorder: function () {
+
+	    },
+	    describeYAxis: function (scale, opts) {
+	        var self = this;
+	        var axis = [];
+	        var labels = [];
+	        var y = rows = scale.rows;
+	        if (!opts.multi) {
+	            y = rows = 1;
+	            scale.ySecs = [scale.ySecs];
+	            scale.max = [scale.max];
+	        }
+	        var partialHeight = scale.pHeight;
+	        var paddingY = scale.paddingY;
+	        var paddingX = scale.paddingX;
+
+	        // goes through the number of yaxis need
+	        while (y--) {
+	            var g = self.make('g');
+	            var splits = fSplits = scale.ySecs[y];
+	            var heightFactor = partialHeight / splits;
+	            var xCord = ((y + 1) % 2 === 0 ? scale.width - y * paddingX : (y+1) * paddingX);
+
+	            labels = [];
+	            splits += 1;
+	            while(splits--) {
+	                labels.push(self.make('text',{
+	                    y: paddingY + (heightFactor * splits),
+	                    x: xCord,
+	                    'font-size': 12,
+	                    'text-anchor': (y + 1) % 2 === 0 ? 'start' : 'end',
+	                    fill: opts.color || '#333',
+	                }, null, scale.max[y] / fSplits * (fSplits - splits)));
+	            }
+	            // building the border
+	            // TODO:: this needs to be more dynamic!
+	            xCord = ( (y + 1) % 2 === 0) ? xCord - 5 : xCord + 5;
+	            labels.push(self.make('path',{
+	              'd' : 'M' + xCord + ' 0L' + xCord + ' ' + (partialHeight + paddingY),
+	              'stroke-width': '1',
+	              'stroke': opts.multi ? scale.color[y] : '#c0c0c0',
+	              'fill': 'none',
+	              'opacity': '1',
+	              'stroke-linecap': 'round'
+	            }));
+	            axis.push(self.append(g, labels));
+	        }
+	        return axis;
+	    },
+	    // TODO:: support custom format
+	    // for simplicity lets only consider dateTime format atm
+	    describeXAxis: function (scale, opts) {
+	        var self = this;
+	        var g = self.make('g', {
+	          'class': 'xaxis'
+	        });
+	        var labels = [];
+	        var partialHeight = scale.pHeight;
+	        var gap = scale.gap;
+	        var paddingX = scale.paddingX;
+	        var paddingY = scale.paddingY * 2  - 8;
+	        var yAxis = partialHeight + paddingY;
+	        var form = opts.format == 'dateTime' ? true : false;
+	     
+	        if (form) {
+	            //to get the UTC time stamp multiplexer
+	            var tick = opts.interval;
+	            var utc = self._utcMultiplier(opts.interval);
+	            var tickInterval =  (/\d+/.test(tick) ? tick.match(/\d+/)[0] : 1);
+	            var format = opts.dateTimeLabelFormat;
+	            var base = opts.minUTC;
+	        }
+
+	        for (var i = 1; i < scale.len - 1; i++) {
+	            labels.push(self.make('text',{
+	                y: yAxis,
+	                x: (gap * i) + paddingX,
+	                'font-size': 12,
+	                'text-anchor': 'start',
+	                fill: opts.color || '#333',
+	            }, null, (form ? self._formatTimeStamp(format, base + (utc * i)) : opts.labels[i] || 0)));
+	        }
+
+	        labels.push(self.make('path',{
+	          'd' : 'M' + (paddingX  * 2) + ' ' + (yAxis - 12) + ' L' + (scale.width - paddingX*2) + ' ' + (yAxis - 12),
+	          'stroke-width': '1',
+	          'stroke': '#c0c0c0',
+	          'fill': 'none',
+	          'opacity': '1',
+	          'stroke-linecap': 'round'
+	        }));
+
+	        return [self.append(g, labels)];
+	    },
+	    _utcMultiplier: function(tick) {
+	        var mili = 1e3,
+	            s = 60,
+	            m = 60,
+	            h = 24,
+	            D = 30,
+	            M = 12,
+	            Y = 1,
+	            multiplier = 0;
+	        if (/s$/.test(tick))
+	            multiplier = mili;
+	        else if (/m$/.test(tick))
+	            multiplier = s * mili;
+	        else if (/h$/.test(tick))
+	            multiplier = s * m * mili;
+	        else if (/D$/.test(tick))
+	            multiplier = s * m * h * mili;
+	        else if (/M$/.test(tick))
+	            multiplier = s * m * h * D * mili;
+	        else if (/Y$/.test(tick))
+	            multiplier = s * m * h * D * M * mili;
+
+	        return multiplier;
+	    },
+	    //formats the time stamp
+	    _formatTimeStamp: function (str, time) {
+	        var dateObj = new Date(time),
+	            flag = false;
+
+	        if (/YYYY/.test(str))
+	            str = str.replace('YYYY',dateObj.getFullYear());
+	        else if (/YY/.test(str))
+	            str = str.replace('YY',(dateObj.getFullYear()).toString().replace(/^\d{1,2}/,''));
+
+	        if (/hh/.test(str) && /ap/.test(str)) {
+	          if ((dateObj.getHours())  > 11)
+	            str = str.replace(/hh/, (dateObj.getHours() - 12 === 0 ? 12 : dateObj.getHours() - 12))
+	                    .replace(/ap/, 'pm');
+	          else
+	            str = str.replace(/hh/, (dateObj.getHours() == 0? 12 :  dateObj.getHours()))
+	                    .replace(/ap/,'am');
+	        } else
+	          str = str.replace(/hh/, (dateObj.getHours() == 0? 12 :  dateObj.getHours()))
+
+	        str = str.replace(/MM/,dateObj.getMonth()+1)
+	            .replace(/DD/, dateObj.getDate());
+
+	        if (/mm/.test(str) && /ss/.test(str)) {
+	            str = str.replace(/mm/,(dateObj.getMinutes().toString().length == 1 ? '0'+dateObj.getMinutes(): dateObj.getMinutes()))
+	            .replace(/ss/,(dateObj.getSeconds().toString().length == 1 ? '0'+dateObj.getSeconds(): dateObj.getSeconds()));
+	        } else {
+	            str = str.replace(/mm/,dateObj.getMinutes())
+	            .replace(/ss/,dateObj.getSeconds());
+	        } 
+	        return str;
+	    }
+	});
+
+
+/***/ },
 /* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -860,9 +872,8 @@
 	        scale.paddingY = attr.paddingY || 5;
 	        scale.gap = spark._sigFigs((attr.width / (scale.len - 1)),8);
 	        scale.heightRatio = (attr.height - (scale.paddingY * 2)) / scale.max;
-	        scale.chart = scale.chart || {};
-	        scale.chart.height = attr.height;
-	        scale.chart.width = attr.width;
+	        scale.height = attr.height;
+	        scale.width = attr.width;
 	        return scale;
 	    },
 	    /**
@@ -1039,57 +1050,64 @@
 	          sig - Math.floor(Math.log(n) / Math.LN10) - 1);
 	      return Math.round(n * mult) / mult;
 	  },
-	  _getSplits: function (max) {
+	  _getSplits: function (value) {
 	      var set = {};
-	      //find label and #borders best fit
-	      if (!isNaN(max) && !max == 0) {
-	          var ceil = Math.ceil10(max, max.toString().length - 1);
-	          if (max.toString().length > 1 && ceil !== 10) {
-	              var leftInt = parseInt(ceil.toString().substr(0,2));
-	              set.l = leftInt.toString()[0];
-	              
-	              if (set.l > 4) {
-	                  if (set.l === 9) {
-	                      set.l = 10;
-	                      set.f = 5;
-	                  //even
-	                  } else if (set.l % 2 == 0) {
-	                      set.f = set.l/2;
-	                  //odd
-	                  } else {
-	                      set.f = set.l;
-	                  }
-	                  max = parseInt(set.l + Math.ceil10(max,max.toString().length - 1).toString().substr(1,Math.ceil10(max,max.toString().length - 1).toString().length - 1))
-	              } else {
-	                  var secondaryCeil = Math.ceil(max, max.toString().length-2),
-	                  secondaryLeftInt = parseInt(secondaryCeil.toString().substr(0,2));
-	                  if (secondaryLeftInt.toString()[1] > 4) {
-	                      set.l = leftInt;
-	                  } else {
-	                      set.l = leftInt - 5;
-	                  }
-	                  set.f = set.l / 5;
-	                  max = parseInt(set.l + Math.ceil10(max,max.toString().length - 1).toString().substr(1,Math.ceil10(max,max.toString().length - 1).toString().length - 2))
-	              }
-	          //single digit
-	          } else {
-	              if (ceil % 2 == 0) {
-	                  max = ceil;
-	                  set.f = ceil / 2;
-	              } else if (ceil === 9) {
-	                  max = 10;
-	                  set.f = 5;
-	              //odd
-	              } else {
-	                  max = ceil;
-	                  set.f = ceil;
-	              }
-	          }
+	      value = Math.ceil(value, 0); // make sure its a whole number
+	      if (value === 0) return { max : 2, splits: 2};
+
+	      var supportedBorders = [3,2,5];
+	      var digitLen = value.toString().length;
+	      var ceil = splits = 0;
+
+	      // now search for the best for number of borders
+	      var checkIfSatisfy = function (v) {
+	        for (var i = 0; i < 3; i++) {
+	          if (v % supportedBorders[i] === 0)
+	            return supportedBorders[i];
+	        }
+	        return 0;
+	      };
+
+	      var auditSplits = function (v) {
+	        var leftInt = parseInt(v.toString()[0]);
+	        if (leftInt == 1) return 2;
+	        return checkIfSatisfy(leftInt);
+	      };
+
+	      if (digitLen > 2) {
+	        ceil = Math.ceil10(value, digitLen - 1);
+	        splits = auditSplits(ceil);
+	        if (!splits) {
+	          ceil += Math.pow(10, digitLen - 1);
+	          splits = auditSplits(ceil);
+	        }
+	      } else if (digitLen == 2) {
+	        // double digit
+	        ceil = value.toString();
+	        if (ceil[1] <= 5 && (ceil[0] == 1 || ceil[0] == 2 || ceil[0] == 5 || ceil[0] == 7) && ceil[1] != 0) {
+	          ceil = parseInt(ceil[0] + "5");
+	        } else {
+	          ceil = Math.ceil10(value, 1);
+	          ceil = ceil == 70 ? 75 : ceil;
+	        }
+	        splits = checkIfSatisfy(ceil);
+	      } else {
+	        // single digit
+	        ceil = value;
+	        splits = checkIfSatisfy(ceil);
+	        if (ceil == 5 || ceil == 3 || ceil == 2) {
+	          splits = 1;
+	        }
+	        if (!splits) {
+	          ceil += 1;
+	          splits = auditSplits(ceil);
+	        }
 	      }
+
 	      return {
-	          max: (isNaN(max) ^ max == 0? 2 : max),
-	          splits: (isNaN(max) ^ max == 0? 2 : set.f), //the number of line splits
-	      }
+	        max: ceil,
+	        splits: splits
+	      };
 	  },
 	  // find min max between multiple rows of data sets
 	  // also handles the scale needed to work with multi axis
@@ -1097,19 +1115,21 @@
 	      opts = opts || 0;
 	      data = typeof data[0] === 'object' ? data : [data];
 	      var max = 0;
-	      var yAxis = [];
+	      var yAxis = opts.yAxis;
 	      var min = Number.MAX_VALUE;
 	      var maxSet = [];
 	      var temp;
 	      var ans;
-	      var ySecs;
-	      var self = this;
+	      var ySecs = 0;
+	      var getSplits = this._getSplits;
+	      var color = [];
 
 	      // change up the structure if the data set is an object
 	      if (data[0].data) {
 	        temp = [];
 	        for (var x = 0; x < data.length; x++) {
 	          temp.push(data[x].data);
+	          color.push(data[x].strokeColor);
 	        }
 	        data = temp;
 	      }
@@ -1118,7 +1138,7 @@
 	      var rows = data.length;
 	      var len = data[0].length;
 
-	      if (opts.yAxis && opts.yAxis.multi) {
+	      if (yAxis && yAxis.multi) {
 	        // across multi set
 	        min = {};
 	        max = {};
@@ -1126,7 +1146,7 @@
 	        for (var i = 0; i < rows; i++) {
 	          temp = data[i].slice(0).sort(asc);
 	          min[i] = temp[0];
-	          ans = self._getSplits(temp[len - 1]);
+	          ans = getSplits(temp[len - 1]);
 	          max[i] = ans.max;
 	          ySecs[i] = ans.splits;
 	          delete temp;
@@ -1150,8 +1170,8 @@
 	          delete temp;
 	        }
 
-	        if (opts.yAxis) {
-	          ans = self._getSplits(max);
+	        if (yAxis) {
+	          ans = getSplits(max);
 	          max = ans.max;
 	          ySecs = ans.splits;
 	        }
@@ -1163,7 +1183,8 @@
 	          maxSet: maxSet,
 	          len: len,
 	          rows: rows,
-	          ySecs: ySecs
+	          ySecs: ySecs,
+	          color: color
 	      };
 	  }
 	});

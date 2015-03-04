@@ -24,18 +24,16 @@ Demo @ http://alfredkam.com/yakojs or ```node app.js``` and vist ```http://local
  - Bubble Chart Time Flow (represents actions across a period of time)
  - Bar Graphs (stack & non stack)
  - MixIn / Inheritance
+ - multi axis & labels for spark graphs
 
 ### Road Map
- - Unit Test
- - Support labels
- - Expose math functions
+ - Bubble Graph
+ - Support labels for bar graph && bubble graph
  - Programmatic point of access
  - Events & Emitters
+ - Expose math functions
  - Bring svg to live
  - Real time graphs
-
-Note:: Real time & labels for line graphs were supported under <a href='https://github.com/alfredkam/yakojs/tree/v0.0.16-re20140902'>0.0.15</a>
-
 
 ### How to run unit test
 ```npm test```

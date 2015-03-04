@@ -249,7 +249,7 @@ nodes = sparkInstance.attr({
 var diff = (Date.now() - now);
 
 // console.log('Took ' + diff + 'ms to generate ' + (nOfGraphs * kind) + ' graphs with '+ dataPoints + ' different data points each avg of ' + (diff/nOfGraphs/kind) + 'ms');
-nodes = '<div>' + 'Took ' + diff + 'ms to generate ' + (nOfGraphs * kind) + ' graphs with '+ dataPoints + ' different data points avg of ' + (diff/nOfGraphs/kind) + 'ms' + '</div>' + nodes;
+nodes = '<div>' + 'Took ' + diff + 'ms to generate ' + ((nOfGraphs * kind) + 1) + ' graphs with '+ dataPoints + ' different data points avg of ' + (diff/((nOfGraphs*kind)+1)) + 'ms' + '</div>' + nodes;
 
 var body = document.getElementsByTagName('body')[0];
 body.innerHTML = nodes;
