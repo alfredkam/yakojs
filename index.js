@@ -1,5 +1,7 @@
 /*
-  Copyright 2015 Alfred Kam
+  Copyright 2015 
+  MIT LICENSE
+  Alfred Kam (@alfredkam)
 */
 var sparkLine = require('./lib/sparkLine');
 var pie = require('./lib/pie');
