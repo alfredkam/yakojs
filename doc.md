@@ -1,6 +1,7 @@
 [General Usage](#Usage) <br>
 [API] (#api) <br>
 [SVG API] (#svg-api) <br>
+[Extend or Modify Library] (#extending-or-modify-library)
   
 ##Usage
 
@@ -306,7 +307,7 @@ returns attribute D of ```<path>``` that descibes an arc
 returns attribute D of ```<path>``` that decribes an arc w/ the path closed ~ equivalent to a piece of pie 
 
 
-##Extending or modify the library
+##Extending or Modify library
 say you wanted to create your own or modify the library to do something extra. you require the library and extend from it.  Since this is build using common js and inheritance, one could easily extend specific graphs.<br>
 
 For example you think its smarter to append the svg objects into dom object, during the mid process you would
