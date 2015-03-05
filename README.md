@@ -21,13 +21,13 @@ Demo @ http://alfredkam.com/yakojs or ```node app.js``` and vist ```http://local
  - Spark / Scattered / Line / Area Graphs
  - Pie Charts
  - Donut Charts
- - Bubble Chart Time Flow (represents actions across a period of time)
+ - Bubble Point Chart for Time Flow Representation (represents actions across a period of time)
+ - Bubble Graph 
  - Bar Graphs (stack & non stack)
  - MixIn / Inheritance
  - Multi axis & labels for spark graphs
 
 ### Road Map
- - Bubble Graph
  - Support labels for bar graph && bubble graph
  - Programmatic point of access
  - Events & Emitters

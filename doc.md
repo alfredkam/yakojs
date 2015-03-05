@@ -143,7 +143,7 @@ var outerRadius = chart.outerRadius || (circumference / 2);
 var innerRadius = chart.innerRadius || (outerRadius / 2);
 ```
 
-####Bubble Graph Attributes <i>(for a horizontal line time series representation)</i>
+####Bubble Point Graph Attributes <i>(for a horizontal line time series representation)</i>
 ```javascript
 var set = []; // an array of numbers
 bubble('.graph').attr({
@@ -158,10 +158,40 @@ bubble('.graph').attr({
     strokeColor: '#000',  // sets default stroke color
     paddingX: 10, // default 10 & overrides the paddingX to better suit the adjusted maxRadius.
     // options for the circle
-    maxRadius: 100, // overrides default & sets a cap for a max radius for the bubble
+    maxRadius: 10, // overrides default & sets a cap for a max radius for the bubble
     fill: '#333', // sets default fill color
     fills: ['#333','#334'] // this will override the fill color and matches with the adjacent data set
     // Note: if strokeColor / strokeColors / fill / fills are not provided - it will randomly generate a color
+  },
+  data: set
+});
+
+// default maxRadius base on chart attributes
+var maxRadius =  chart.maxRadius || (chart.height < chart.width ? chart.height : chart.width) / 2;
+```
+####Bubble Graph Attributes <i>( for representing a cohort)</i>
+```javascript
+var set = [{
+  data: [
+          [0,1,2],  // x (xAxis), y (yAxis), z (sample size) 
+          [2,3,4]
+  ],
+  fill: '#000' // default fill
+}]; // an array of a set of numbers
+bubble('.graph').attr({
+  // width & height controls the svg view box
+  chart: {
+    type: 'scattered', // <= this is needed for bubble graph
+    // width & height controls the svg view box
+    width: 300,
+    height: 100,
+    // optional parameters
+    'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+    // options for the straight line
+    // options for the circle
+    maxRadius: 10, // overrides default & sets a cap for a max radius for the bubble
+    // fills: ['#333','#334'] // this will override the fill color and matches with the adjacent data set
+    // Note: if fill / fills are not provided - it will randomly generate a color
   },
   data: set
 });

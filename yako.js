@@ -108,8 +108,8 @@
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(12);
-	var Label = __webpack_require__(13);
+	var Base = __webpack_require__(11);
+	var Label = __webpack_require__(12);
 	var label = new Label();
 	var spark = module.exports = Base.extend({
 	  // the graph data & options setter
@@ -257,19 +257,19 @@
 	    var scattered = data.scattered || 0;
 	    var strokeWidth = scattered.strokeWidth || 3;
 	    var strokeColor = scattered.strokeColor || self._randomColor();
-	    var radius = scattered.radius || 5;
+	    var radius = scattered.radius || 2;
 	    var fill = scattered.fill || 'white';
-	    var paths = '';
+	    var paths = [];
 
 	    for (var i = 0; i < numArr.length; i++) {
-	      paths += self.make('circle', {
-	        cx: ((gap * i) + paddingX) - (radius / 2) + (strokeWidth / 2),
-	        cy: (height - (numArr[i] * heightRatio) - paddingY - (radius / 2) + (strokeWidth / 2)),
-	        r: radius - strokeWidth / 2,
+	      paths.push(self.make('circle', {
+	        cx: ((gap * i) + paddingX),
+	        cy: (height - (numArr[i] * heightRatio) - paddingY),
+	        r: radius,
 	        stroke: strokeColor,
 	        'stroke-width': strokeWidth,
 	        fill: 'white'
-	      });
+	      }));
 	    }
 	    return paths;
 	  },
@@ -297,11 +297,10 @@
 	        'stroke-linecap': 'round',
 	        'class': '_yakoTransitions-' + data.label,
 	        fill: data.fill
-	      }) : '',
-	      scale.scattered ?
+	      }) : ''
+	    ].concat(scale.scattered ?
 	        self._describeScatteredGraph(data, data.data, paddingX, paddingY, scale) :
-	        ''
-	    ];
+	        []);
 	  }
 	});
 
@@ -309,7 +308,7 @@
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arcBase = __webpack_require__(11);
+	var arcBase = __webpack_require__(13);
 	var pie = module.exports = arcBase.extend({
 	    /**
 	     * [_describePath genereates the paths for each pie segment]
@@ -346,7 +345,7 @@
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arcBase = __webpack_require__(11);
+	var arcBase = __webpack_require__(13);
 	var pie = module.exports = arcBase.extend({
 	    /**
 	     * [_describePath genereates the paths for each pie segment]
@@ -414,7 +413,7 @@
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(12);
+	var Base = __webpack_require__(11);
 	var bar = module.exports = Base.extend({
 	    // include missing values
 	    _prepare: function () {
@@ -512,27 +511,73 @@
 /* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(11);
+	var Base = __webpack_require__(13);
 	var bubble = module.exports = Base.extend({
 	    _generate: function () {
-
-	        var chart = this.attributes.opts.chart;
-	        var data = this.attributes.data;
-	        var svg = this.make('svg',{
+	        var self = this;
+	        var chart = self.attributes.opts.chart;
+	        var data = self.attributes.data;
+	        var svg = self.make('svg',{
 	            width: chart.width,
 	            height: chart.height,
 	            viewBox: '0 0 ' + chart.width + ' ' + chart.height,
 	        });
+	        var append = self.append;
+	        var render = self.render;
+	        var paths = '';
 
-	        var widthOffset = 10 || chart.paddingX;
-	        var paths = this._describeBubble(data, chart.height, chart.width, widthOffset, chart);
-	        paths.unshift(this._describeHorizontalPath(chart.height, chart.width, widthOffset, chart));
-	        return this.render(this.append(this.element,
-	                this.append(
-	                    svg,
-	                        paths
+	        var paddingX = 10 || chart.paddingX;
+	        if (chart.type == 'scattered') {
+	            var scale = self._scale(data, {bubble: true});
+	            paddingX = 30;
+	            var paddingY = 20;
+	            scale.heightRatio = (chart.height - (paddingY * 2)) / scale.max[1];
+	            scale.widthRatio = (chart.width - (paddingX * 2)) / scale.max[0];
+	            scale.paddingY = paddingY;
+	            scale.paddingX = paddingX;
+	            self._extend(scale, chart);
+	            paths = self._describeBubbleChart(data, scale);
+	            return render(append(self.element,append(svg, paths)));
+
+	        } else {
+	            paths = self._describeBubble(data, chart.height, chart.width, paddingX, chart);
+	            paths.unshift(self._describeHorizontalPath(chart.height, chart.width, paddingX, chart));
+	            return render(
+	                    append(self.element, 
+	                        append(svg, paths)
 	                    )
-	                ));
+	                );
+	        }
+	    },
+	    // bubble graph
+	    _describeBubbleChart: function(data, scale) {
+	        var height = scale.height;
+	        var width = scale.width;
+	        var heightRatio = scale.heightRatio;
+	        var widthRatio = scale.widthRatio;
+	        var paddingX = scale.paddingX;
+	        var paddingY = scale.paddingY;
+	        var self = this;
+	        var len = scale.len;
+	        var maxRadius =  scale.maxRadius || (height < width ? height : width) / 2;
+	        var max = scale.max;
+	        var fill = scale.fill || 0;
+	        var fills = scale.fills || 0;
+	        var paths = [];
+
+	        for (var r = 0; r < scale.rows; r++) {
+	            for (var i = 0; i < len; i++) {
+	                var point = data[r].data[i];
+
+	                paths.push(self.make('circle', {
+	                    cx: width - (point[0] * widthRatio) - paddingX,
+	                    cy: height - (point[1] * heightRatio) - paddingY,
+	                    r: maxRadius * (point[2]/max[2]),
+	                    fill: data[r].fill || (fills[i] || fill || self._randomColor())
+	                }));
+	            }
+	        }
+	        return paths;
 	    },
 	    _describeHorizontalPath: function (height, width, widthOffset, chart) {
 	        // TODO:: need to account for stroke width 
@@ -544,6 +589,7 @@
 	            d: 'M' + widthOffset + ' ' + centerY + ' H' + (width - widthOffset)
 	        });
 	    },
+	    // bubble point
 	    _describeBubble: function (data, height, width, widthOffset, chart) {
 	        if (!data) return '';
 	        var maxValue = this._getMaxOfArray(data);
@@ -558,7 +604,7 @@
 	                cx: (gap * i) + widthOffset,
 	                cy: centerY,
 	                r: maxRadius * (data[i] / maxValue),
-	                fill: fills[0] || (chart.fill || this._randomColor())
+	                fill: fills[i] || (chart.fill || this._randomColor())
 	            }));
 	        }
 
@@ -593,71 +639,6 @@
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(12);
-	var arc = __webpack_require__(15);
-	module.exports = Base.extend({
-	    // include missing values
-	    _prepare: function () {
-	        var defaults = {
-	            chart: {
-	                type: 'chart',
-	                width: '100',
-	                height: '100',
-	                'font-family' : '"Open Sans", sans-serif'
-	            }
-	        };
-	        this._extend(defaults, this.attributes.opts);
-	        this.attributes.opts = defaults;
-	        return this;
-	    },
-	    // public function for user to set & define the graph attributes
-	    attr: function (opts) {
-	        opts = opts || 0;
-	        // width: 200,
-	        // height: 100
-	        this.attributes.data = opts.data || [];
-	        this.attributes.opts = opts;
-
-	        return this.render(this._prepare()
-	            ._generate());
-	    },
-	    // parent generator that manages the svg
-	    _generate: function (){
-	        var chart = this.attributes.opts.chart;
-	        var data = this.attributes.data;
-	        var svg = this.make('svg',{
-	            width: chart.width,
-	            height: chart.height,
-	            viewBox: '0 0 ' + chart.width + ' ' + chart.height,
-	        });
-	        // find the max width & height
-	        var circumference = chart.height < chart.width ? chart.height : chart.width;
-	        // converts nums to relative => total sum equals 1
-	        var relativeDataSet = this._dataSetRelativeToTotal(data);
-	        return this.append(this.element,
-	                this.append(
-	                    svg,
-	                    this._describePath(circumference, relativeDataSet, chart)
-	                    )
-	                );
-	    },
-	    _polarToCartesian: arc.polarToCartesian,
-	    _describeArc: arc.describeArc,
-	    _describePie: arc.describePie,
-	    /* end of snippet */
-	    /**
-	     * [_describePath super class]
-	     * @return {[type]} [empty string]
-	     */
-	    _describePath: function () {
-	        return '';
-	    }
-	});
-
-/***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
 	var Common = __webpack_require__(17);
 	var base = module.exports = Common.extend({
 	    init: function (node) {
@@ -685,7 +666,7 @@
 	});
 
 /***/ },
-/* 13 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Common = __webpack_require__(17);
@@ -767,7 +748,7 @@
 	            var tickInterval =  (/\d+/.test(tick) ? tick.match(/\d+/)[0] : 1);
 	            var format = opts.dateTimeLabelFormat;
 	            var base = opts.minUTC;
-	        }
+	        } 
 
 	        for (var i = 1; i < scale.len - 1; i++) {
 	            labels.push(self.make('text',{
@@ -848,6 +829,71 @@
 	    }
 	});
 
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Base = __webpack_require__(11);
+	var arc = __webpack_require__(15);
+	module.exports = Base.extend({
+	    // include missing values
+	    _prepare: function () {
+	        var defaults = {
+	            chart: {
+	                type: 'chart',
+	                width: '100',
+	                height: '100',
+	                'font-family' : '"Open Sans", sans-serif'
+	            }
+	        };
+	        this._extend(defaults, this.attributes.opts);
+	        this.attributes.opts = defaults;
+	        return this;
+	    },
+	    // public function for user to set & define the graph attributes
+	    attr: function (opts) {
+	        opts = opts || 0;
+	        // width: 200,
+	        // height: 100
+	        this.attributes.data = opts.data || [];
+	        this.attributes.opts = opts;
+
+	        return this.render(this._prepare()
+	            ._generate());
+	    },
+	    // parent generator that manages the svg
+	    _generate: function (){
+	        var chart = this.attributes.opts.chart;
+	        var data = this.attributes.data;
+	        var svg = this.make('svg',{
+	            width: chart.width,
+	            height: chart.height,
+	            viewBox: '0 0 ' + chart.width + ' ' + chart.height,
+	        });
+	        // find the max width & height
+	        var circumference = chart.height < chart.width ? chart.height : chart.width;
+	        // converts nums to relative => total sum equals 1
+	        var relativeDataSet = this._dataSetRelativeToTotal(data);
+	        return this.append(this.element,
+	                this.append(
+	                    svg,
+	                    this._describePath(circumference, relativeDataSet, chart)
+	                    )
+	                );
+	    },
+	    _polarToCartesian: arc.polarToCartesian,
+	    _describeArc: arc.describeArc,
+	    _describePie: arc.describePie,
+	    /* end of snippet */
+	    /**
+	     * [_describePath super class]
+	     * @return {[type]} [empty string]
+	     */
+	    _describePath: function () {
+	        return '';
+	    }
+	});
 
 /***/ },
 /* 14 */
@@ -1030,14 +1076,6 @@
 	    }
 	    return this;
 	  },
-	  //building svg elements
-	  _makeNode: function (tag, props, data) {
-	      var node = doc.createElementNS('http://www.w3.org/2000/svg',tag);
-	      this.assign(node,props);
-	      // this._extendDataSet(node, data);
-	      this._extend(node.dataset, data);
-	      return node;
-	  },
 	  isFn: function (object) {
 	    return !!(object && object.constructor && object.call && object.apply);
 	  },
@@ -1050,6 +1088,7 @@
 	          sig - Math.floor(Math.log(n) / Math.LN10) - 1);
 	      return Math.round(n * mult) / mult;
 	  },
+	  // calculates the number of yAxis sections base on the maxium value
 	  _getSplits: function (value) {
 	      var set = {};
 	      value = Math.ceil(value, 0); // make sure its a whole number
@@ -1140,6 +1179,7 @@
 
 	      if (yAxis && yAxis.multi) {
 	        // across multi set
+	        // each set of data needs ot have thier own individual min / max
 	        min = {};
 	        max = {};
 	        ySecs = {};
@@ -1152,6 +1192,7 @@
 	          delete temp;
 	        }
 	      } else if (opts.stack) {
+	        // data reduced base by column to find a new combined min / max
 	        for (var i = 0; i < len; i++) {
 	          var rowTotal = 0;
 	          for (var j = 0; j < rows; j++) {
@@ -1161,8 +1202,26 @@
 	          max = max < rowTotal ? rowTotal : max;
 	          min = min > rowTotal ? rowTotal : min;
 	        }
+	      } else if (opts.bubble) {
+	        // for bubble and need to find min / max across the x, y , z axis
+	        min = {};
+	        max = {};
+	        for (var x = 0; x < 3; x++) {
+	          min[x] = Number.MAX_VALUE;
+	          max[x] = 0;
+	        }
+
+	        for (var i = 0; i < len; i++) {
+	          for (var j = 0; j < rows; j++) {
+	            for (var c = 0; c < 3; c++) {
+	              max[c] = max[c] < data[j][i][c] ? data[j][i][c] : max[c];
+	              min[c] = min[c] > data[j][i][c] ? data[j][i][c] : min[c];
+	            }
+	          }
+	        }
+
 	      } else {
-	        // find max in a set
+	        // find min / max across the entire data set
 	        for (var i = 0; i < rows; i++) {
 	          temp = data[i].slice(0).sort(asc);
 	          min = min > temp[0] ? temp[0] : min;

@@ -13,7 +13,8 @@ var fs = require('fs');
 // TODO:: fix edge case of 1 data Point
 var dataPoints = 30;
 var nOfGraphs = 10;
-var kind = 9;
+var kind = 10;
+var oddKinds = 2;
 var amount = nOfGraphs;
 
 var now = Date.now();
@@ -24,11 +25,24 @@ while (amount--) {
   var dataSet2 = [];
   var dataSet3 = [];
   var dataSet4 = [];
-  for (var i=0;i<dataPoints;i++) {
+  var dataSet5 = [];
+  var dataSet6 = [];
+  for (var i=0;i < dataPoints;i++) {
     dataSet.push(Math.floor((Math.random() * 500) + 10));
     dataSet2.push(Math.floor((Math.random() * 500) + 10));
     dataSet3.push(Math.floor((Math.random() * 500) + 10));
     dataSet4.push(Math.floor((Math.random() * 500) + 1));
+  }
+
+  for (var i = 0; i < dataPoints; i++) {
+    var temp = [];
+    var temp2 = [];
+    for (var j = 0; j < 3; j++) {
+      temp.push(Math.floor((Math.random() * 500) + 10));
+      temp2.push(Math.floor((Math.random() * 500) + 10));
+    }
+    dataSet5.push(temp);
+    dataSet6.push(temp2);
   }
 
   var strokColorFirst = yako.spark()._randomColor();
@@ -43,9 +57,8 @@ while (amount--) {
             strokeColor: strokColorFirst,
             fill: 'white',
             strokeWidth: 2,
-            radius: 5
+            radius: 3
           }
-          //nodeColor controls the pointer color
       },
       {
           data: dataSet2,
@@ -55,7 +68,7 @@ while (amount--) {
             strokeColor: strokeColorSecond,
             fill: 'white',
             strokeWidth: 2,
-            radius: 5
+            radius: 3
           }
       }
   ];
@@ -66,6 +79,17 @@ while (amount--) {
         data: dataSet3,
         strokeColor: yako.spark()._randomColor(),
         fill: yako.spark()._randomColor()
+    }
+  ];
+
+  var bubbleSet = [
+    {
+      data: dataSet5,
+      fill: yako.spark()._randomColor()
+    },
+    {
+      data: dataSet6,
+      fill: yako.spark()._randomColor()
     }
   ];
 
@@ -155,6 +179,20 @@ while (amount--) {
     title: 'just a test',
     data: dataSet4
   });
+  // scattered graph
+  nodes += bubble('.graph').attr({
+    chart: {
+      width: 300,
+      height: 100,
+      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+      maxRadius: '10',
+      type: 'scattered'
+      // additional options
+      // strokes: [],
+    },
+    title: 'just a test',
+    data: bubbleSet
+  });
 
   nodes += bar('.graph').attr({
     chart : {
@@ -242,7 +280,7 @@ nodes = sparkInstance.attr({
       // Y - years
       interval: '4h',  //[1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
       // uses the min start date and increment the label by the set interval.  interval will be converted to miliseconds
-      minUTC: Date.UTC(2013,08,07),
+      minUTC: Date.UTC(2013,8,7),
       //this controls the dateTime label format
       //depending on the format, it will affect the label, try :: dateTimeLabelFormat: 'hhh'
       dateTimeLabelFormat: 'MM/DD hh ap'
@@ -255,7 +293,7 @@ nodes = sparkInstance.attr({
       width: 1200,
       height: 500,
       'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
-      // scattered: true
+      scattered: true
     },
     title: 'just a test',
     data: set,
@@ -286,8 +324,8 @@ nodes = sparkInstance.attr({
 
 var diff = (Date.now() - now);
 
-console.log('Took ' + diff + 'ms to generate ' + (nOfGraphs * kind) + ' graphs with '+ dataPoints + ' different data points each avg of ' + (diff/nOfGraphs/kind) + 'ms');
-nodes = '<div>' + 'Took ' + diff + 'ms to generate ' + (nOfGraphs * kind) + ' graphs with '+ dataPoints + ' different data points avg of ' + (diff/nOfGraphs/kind) + 'ms' + '</div>' + nodes;
+console.log('Took ' + diff + 'ms to generate ' + (nOfGraphs * kind + oddKinds) + ' graphs with '+ dataPoints + ' different data points each avg of ' + (diff/((nOfGraphs*kind)+oddKinds)) + 'ms');
+nodes = '<div>' + 'Took ' + diff + 'ms to generate ' + (nOfGraphs * kind + oddKinds) + ' graphs with '+ dataPoints + ' different data points avg of ' + (diff/((nOfGraphs*kind)+oddKinds)) + 'ms' + '</div>' + nodes;
 
 // test optimization => round all numbers to 1 decimal place
 nodes = nodes.replace(/([0-9]+\.[0-9]+)/g, function (match, p1) {

@@ -8,8 +8,10 @@ var bar = yako.bar;
 // TODO:: fix edge case of 1 data Point
 var dataPoints = 30;
 var nOfGraphs = 10;
-var kind = 9;
+var kind = 10;
+var oddKinds = 2;
 var amount = nOfGraphs;
+
 var now = Date.now();
 var nodes = '';
 
@@ -18,11 +20,24 @@ while (amount--) {
   var dataSet2 = [];
   var dataSet3 = [];
   var dataSet4 = [];
-  for (var i=0;i<dataPoints;i++) {
+  var dataSet5 = [];
+  var dataSet6 = [];
+  for (var i=0;i < dataPoints;i++) {
     dataSet.push(Math.floor((Math.random() * 500) + 10));
     dataSet2.push(Math.floor((Math.random() * 500) + 10));
     dataSet3.push(Math.floor((Math.random() * 500) + 10));
     dataSet4.push(Math.floor((Math.random() * 500) + 1));
+  }
+
+  for (var i = 0; i < dataPoints; i++) {
+    var temp = [];
+    var temp2 = [];
+    for (var j = 0; j < 3; j++) {
+      temp.push(Math.floor((Math.random() * 500) + 10));
+      temp2.push(Math.floor((Math.random() * 500) + 10));
+    }
+    dataSet5.push(temp);
+    dataSet6.push(temp2);
   }
 
   var strokColorFirst = yako.spark()._randomColor();
@@ -36,10 +51,9 @@ while (amount--) {
           scattered : {
             strokeColor: strokColorFirst,
             fill: 'white',
-            strokeWidth: 3,
-            radius: 5
+            strokeWidth: 2,
+            radius: 3
           }
-          //nodeColor controls the pointer color
       },
       {
           data: dataSet2,
@@ -48,8 +62,8 @@ while (amount--) {
           scattered : {
             strokeColor: strokeColorSecond,
             fill: 'white',
-            strokeWidth: 3,
-            radius: 5
+            strokeWidth: 2,
+            radius: 3
           }
       }
   ];
@@ -62,7 +76,18 @@ while (amount--) {
         fill: yako.spark()._randomColor()
     }
   ];
-  
+
+  var bubbleSet = [
+    {
+      data: dataSet5,
+      fill: yako.spark()._randomColor()
+    },
+    {
+      data: dataSet6,
+      fill: yako.spark()._randomColor()
+    }
+  ];
+
   var sparkInstance = spark('.graph');
 
   nodes += sparkInstance.attr({
@@ -85,7 +110,7 @@ while (amount--) {
     data: singleSet
   });
 
-  nodes += sparkInstance.attr({
+  nodes += spark('.graph').attr({
     chart : {
       width: 300,
       height: 100,
@@ -96,7 +121,7 @@ while (amount--) {
     data: set
   });
 
-  nodes += sparkInstance.attr({
+  nodes += spark('.graph').attr({
     chart : {
       width: 300,
       height: 100,
@@ -148,6 +173,20 @@ while (amount--) {
     },
     title: 'just a test',
     data: dataSet4
+  });
+  // scattered graph
+  nodes += bubble('.graph').attr({
+    chart: {
+      width: 300,
+      height: 100,
+      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+      maxRadius: '10',
+      type: 'scattered'
+      // additional options
+      // strokes: [],
+    },
+    title: 'just a test',
+    data: bubbleSet
   });
 
   nodes += bar('.graph').attr({
@@ -211,7 +250,6 @@ var set = [
         }
     }
 ];
-
 nodes = sparkInstance.attr({
     chart : {
       width: 1200,
@@ -225,18 +263,49 @@ nodes = sparkInstance.attr({
       multi: true
     },
     xAxis : {
-      //including format will show the xAxis Label
+      // including format will show the xAxis Label
       format : 'dateTime',
-      //interval indicates the data interval, the number of the interval indicates the label tick interval
-      //s - seconds
-      //m - minutes
-      //h - hours
-      //D - days
-      //M - months
-      //Y - years
+      // interval indicates the data interval, the number of the interval indicates the label tick interval
+      // same representation is also used for `dateTimeLabelFormat`
+      // s - seconds
+      // m - minutes
+      // h - hours
+      // D - days
+      // M - months
+      // Y - years
       interval: '4h',  //[1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
-      //min start date
-      //do not need end date, expecting there would be zeros to fill the gaps
+      // uses the min start date and increment the label by the set interval.  interval will be converted to miliseconds
+      minUTC: Date.UTC(2013,8,7),
+      //this controls the dateTime label format
+      //depending on the format, it will affect the label, try :: dateTimeLabelFormat: 'hhh'
+      dateTimeLabelFormat: 'MM/DD hh ap'
+      // or if wanted custom label
+      // format: 'label',
+      // labels: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
+  }
+}) + sparkInstance.attr({
+    chart : {
+      width: 1200,
+      height: 500,
+      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+      scattered: true
+    },
+    title: 'just a test',
+    data: set,
+    yAxis: true,
+    xAxis : {
+      // including format will show the xAxis Label
+      format : 'dateTime',
+      // interval indicates the data interval, the number of the interval indicates the label tick interval
+      // same representation is also used for `dateTimeLabelFormat`
+      // s - seconds
+      // m - minutes
+      // h - hours
+      // D - days
+      // M - months
+      // Y - years
+      interval: '1D',  //[1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
+      // uses the min start date and increment the label by the set interval.  interval will be converted to miliseconds
       minUTC: Date.UTC(2013,8,7),
       //this controls the dateTime label format
       //depending on the format, it will affect the label, try :: dateTimeLabelFormat: 'hhh'
@@ -246,10 +315,11 @@ nodes = sparkInstance.attr({
       // label: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
   }
 }) + nodes;
+
+
 var diff = (Date.now() - now);
 
-// console.log('Took ' + diff + 'ms to generate ' + (nOfGraphs * kind) + ' graphs with '+ dataPoints + ' different data points each avg of ' + (diff/nOfGraphs/kind) + 'ms');
-nodes = '<div>' + 'Took ' + diff + 'ms to generate ' + ((nOfGraphs * kind) + 1) + ' graphs with '+ dataPoints + ' different data points avg of ' + (diff/((nOfGraphs*kind)+1)) + 'ms' + '</div>' + nodes;
+nodes = '<div>' + 'Took ' + diff + 'ms to generate ' + (nOfGraphs * kind + oddKinds) + ' graphs with '+ dataPoints + ' different data points avg of ' + (diff/((nOfGraphs*kind)+oddKinds)) + 'ms' + '</div>' + nodes;
 
 var body = document.getElementsByTagName('body')[0];
 body.innerHTML = nodes;
