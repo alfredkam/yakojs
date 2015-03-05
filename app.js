@@ -255,6 +255,7 @@ var set = [
         }
     }
 ];
+
 nodes = sparkInstance.attr({
     chart : {
       width: 1200,
