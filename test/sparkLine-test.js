@@ -87,7 +87,7 @@ describe('lib/sparkLine', function () {
             });
     });
 
-    it('calling attr should render w/ line false should not render path', function () {
+    it('calling attr should render w/ fill default to true should render a closed path', function () {
           var set = [ { data:
            [ 100, 45, 500, 264, 380, 126, 186, 291, 69 ],
           strokeColor: '#2b26a0',
@@ -112,11 +112,11 @@ describe('lib/sparkLine', function () {
         expect(svg)
             .that.is.a('string').
             to.satisfy(function (result) {
-                return !/<path\s.*>/i.test(result);
+                return /<path\s.*(H)>/i.test(result);
             });
     });
 
-    it('calling attr should render w/ line false and scattered true should render a scattered graph', function () {
+    it('calling attr should render w/ line false & fill false and scattered true should render a scattered graph', function () {
           var set = [ { data:
            [ 100, 45, 500, 264, 380, 126, 186, 291, 69 ],
           strokeColor: '#2b26a0',
@@ -133,36 +133,7 @@ describe('lib/sparkLine', function () {
               height: 100,
               'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
               line: false,
-              scattered: true
-            },
-            title: 'just a test',
-            data: set
-        });
-
-        expect(svg)
-            .that.is.a('string').
-            to.satisfy(function (result) {
-                return !/<path\s.*>/i.test(result) && /<circle\s.*>/i.test(result);
-            });
-    });
-
-    it('calling attr should render w/ line false and scattered true should render a scattered graph', function () {
-          var set = [ { data:
-           [ 100, 45, 500, 264, 380, 126, 186, 291, 69 ],
-          strokeColor: '#2b26a0',
-          fill: '#6bd775' },
-        { data:
-           [ 271, 335, 216, 195, 423, 332, 413, 171, 241 ],
-          strokeColor: '#1dbc53',
-          fill: '#befb6f' } ];
-
-        var svg = spark.attr({
-            chart : {
-              type: 'line',
-              width: 300,
-              height: 100,
-              'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
-              line: false,
+              fill: false,
               scattered: true
             },
             title: 'just a test',
