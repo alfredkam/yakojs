@@ -1,6 +1,8 @@
 
 /* base */
 body {
+    background: #fff;
+    font-family: Helvetica, Arial, sans-serif;
     margin: 0;
     padding: 0;
 }
