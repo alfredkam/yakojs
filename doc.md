@@ -1,8 +1,10 @@
 [General Usage](#Usage) <br>
 [API] (#api) <br>
 [SVG API] (#svg-api) <br>
-[Extend or Modify Library] (#extending-or-modify-library)
-  
+[Extend or Modify Library] (#extending-or-modify-library) <br>
+
+[External Link: Visual Examples](http://alfredkam.com/yakojs/example.html) <br>
+
 ##Usage
 
 To use any of the graphs you could access them through these entry points.
@@ -65,6 +67,8 @@ spark('.graph').set({
     'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
     stroke: false // it will disable the stroke from drawn
     line: true, // override to disable the line to be drawn
+    fill: true, // defaults is true, override to disable fill
+    // say if you want to only have scattered graph, you will set line & fill properties to false
     scattered: false // override to enable scattered
     // labels
     // for the graph to have labels, these properties must be included
