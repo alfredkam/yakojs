@@ -4,6 +4,7 @@ var pie = yako.pie;
 var donut = yako.donut;
 var bubble = yako.bubble;
 var bar = yako.bar;
+var label = yako.label;
 
 var http = require('http');
 var express = require('express');
@@ -321,6 +322,48 @@ nodes = sparkInstance.attr({
       // label: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
   }
 }) + nodes;
+
+
+
+// *** preRender Test *** //
+var label = new label();
+nodes = "<div class='.graph'>"+ bubble({
+  preRender: function (immutableScale) {
+    var self = this;
+    var scale = self._deepCopy(immutableScale);
+    var max = scale.max;
+    scale.pHeight = (scale.height - (scale.paddingTop + scale.paddingBottom));
+    // with bubble
+    // max[0] = width
+    // max[1] = height
+    // say if you want to compute the number of y sections
+    var copy = self._deepCopy(scale);
+    var splitProperty = self._getSplits(scale.max[1]);
+    copy.paddingLeft = 20;
+    copy.max = splitProperty.max;
+    copy.ySecs = splitProperty.splits;
+    var axis = label.describeYAxis(copy);
+
+    return {
+      prepend: axis,
+      scale: {
+        paddingLeft: 35
+      }
+    };
+  }
+}).attr({
+    chart: {
+      width: 300,
+      height: 100,
+      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+      maxRadius: '10',
+      type: 'scattered'
+      // additional options
+      // strokes: [],
+    },
+    title: 'just a test',
+    data: bubbleSet
+  })+ "</div>" + nodes;
 
 
 var diff = (Date.now() - now);

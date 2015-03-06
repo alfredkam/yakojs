@@ -14,6 +14,8 @@ Documentation could be found under https://github.com/alfredkam/yakojs/blob/mast
 
 Demo @ http://alfredkam.com/yakojs or ```node app.js``` and vist ```http://localhost:3000```
 
+Supports Chrome, Firefox, Safari, and IE 9+;
+
 ### Install
 ```npm install yako```
 
