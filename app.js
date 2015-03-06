@@ -344,6 +344,8 @@ nodes = "<div class='.graph'>"+ bubble({
     copy.ySecs = splitProperty.splits;
     var axis = label.describeYAxis(copy);
 
+    // paddingLeft: 
+
     return {
       prepend: axis,
       scale: {
@@ -389,4 +391,4 @@ app.get('/', function (req, res) {
   res.send(str);
 });
 
-app.listen(3000);
+app.listen(5000);
