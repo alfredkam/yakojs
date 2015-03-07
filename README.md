@@ -10,9 +10,9 @@ Minimal & light weight graph library for fast front end and server side rending 
 
 This library also works great with webpack & react
 
-Documentation could be found under https://github.com/alfredkam/yakojs/blob/master/doc.md
+Documentation [https://github.com/alfredkam/yakojs/blob/master/doc.md](https://github.com/alfredkam/yakojs/blob/master/doc.md)
 
-Demo @ http://alfredkam.com/yakojs or ```node app.js``` and vist ```http://localhost:3000```
+Demo [http://alfredkam.com/yakojs](http://alfredkam.com/yakojs) or ```node app.js``` and vist ```http://localhost:3000```
 
 Supports Chrome, Firefox, Safari, and IE 9+;
 
@@ -23,8 +23,8 @@ Supports Chrome, Firefox, Safari, and IE 9+;
  - Spark / Scattered / Line / Area Graphs
  - Pie Charts
  - Donut Charts
- - Bubble Point Chart for Time Flow Representation (represents actions across a period of time)
- - Bubble Graph 
+ - Bubble Point Chart for Time Flow Representation (Represents actions across a period of time)
+ - Bubble Graph  (Represents a cohort / segment activty)
  - Bar Graphs (stack & non stack)
  - MixIn / Inheritance
  - Multi axis & labels for spark graphs
@@ -42,7 +42,7 @@ Supports Chrome, Firefox, Safari, and IE 9+;
 ```npm test```
  
 ### Latest Release
-Please refer to the release branch - https://github.com/alfredkam/yakojs/tree/release
+Please refer to the release branch - (https://github.com/alfredkam/yakojs/tree/release)[https://github.com/alfredkam/yakojs/tree/release]
 
 [![Analytics](https://ga-beacon.appspot.com/UA-25416273-3/yakojs/readme)](https://github.com/igrigorik/ga-beacon)
 [![wercker status](https://app.wercker.com/status/a74eda189271b3b148197e07ad6fa9f1/s "wercker status")](https://app.wercker.com/project/bykey/a74eda189271b3b148197e07ad6fa9f1)
