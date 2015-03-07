@@ -24,7 +24,7 @@ describe('lib/sparkLine', function () {
                 width: 100,
                 line: true,
                 heightRatio: 290 / 4,
-                gap: spark._sigFigs((100 / 4),8)
+                tickSize: spark._sigFigs((100 / 4),8)
             }
         );
         

@@ -63,7 +63,7 @@ describe('lib/utils/label', function () {
           paddingY: 20,
           paddingX: 30,
           heightRatio: NaN,
-          gap: 125.55556 };
+          tickSize: 125.55556 };
 
         var opts = { dateTimeLabelFormat: 'MM/DD hh ap',
           minUTC: 1378512000000,

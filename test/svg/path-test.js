@@ -18,7 +18,7 @@ describe('lib/svg/path', function () {
                         maxSet: [],
                         len: 30,
                         paddingY: 5,
-                        gap: 10.344828,
+                        tickSize: 10.344828,
                         heightRatio: 0.17681728880157171,
                         height: 100,
                         width: 300,
