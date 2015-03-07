@@ -31,7 +31,7 @@ describe('lib/sparkLine', function () {
         expect(path)
             .to.be.a('array')
             .to.satisfy(function (arr) {
-                return /M 5 295 L 30 222.5 L 55 150 L 80 77.5 L 105 5/i.test(arr[0]);
+                return /M 5 295 L 30 222.5 L 55 150 L 80 77.5 L 105 5/i.test(arr.join(''));
             });
     });
 

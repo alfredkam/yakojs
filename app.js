@@ -347,25 +347,21 @@ nodes = "<div class='.graph'>"+ bubble({
     // paddingLeft: 
 
     return {
-      prepend: axis,
-      scale: {
-        paddingLeft: 35
-      }
+      prepend: axis
     };
   }
 }).attr({
-    chart: {
-      width: 300,
-      height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
-      maxRadius: '10',
-      type: 'scattered'
-      // additional options
-      // strokes: [],
-    },
-    title: 'just a test',
-    data: bubbleSet
-  })+ "</div>" + nodes;
+  chart: {
+    width: 300,
+    height: 100,
+    'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+    maxRadius: '10',
+    type: 'scattered',
+    paddingLeft: 35
+  },
+  title: 'just a test',
+  data: bubbleSet
+})+ "</div>" + nodes;
 
 
 var diff = (Date.now() - now);

@@ -264,6 +264,25 @@ The super class of ```make``` is referenced [here](https://github.com/alfredkam/
 #####append(parent, childs)
 ```append``` is called everytime to append the childs into the parent element. ```childs``` is the result of an array of ```make``` and ```parent``` is either empty or a result of a ```make``` function call to create the parent element.  It expects to return a string or object.
 
+#####preRender(immutableScale) [Draft]
+expects an array of svg elements in string format, unless the ```make``` and ```append``` format is changed up by you.
+```javascript
+return {
+  prepend: []  // prepend svg elements in string format
+  append: [] // append svg element in string format
+}
+```
+
+example
+```javascript
+return {
+  prepend: [
+    '<g><text text-anchor="start" x="60" y="40">A</text></g>',
+    '<g><text text-anchor="start" x="60" y="50">B</text></g>'
+  ]
+}
+```
+
 The super class of ```append``` is referenced [here](https://github.com/alfredkam/yakojs/blob/d5ef0c5072d8b952e66929c5bc9a5f40171b6e1b/lib/base/common.js#L31-L39)
 
 #####render(result)
