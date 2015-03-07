@@ -122,6 +122,7 @@ while (amount--) {
       height: 100,
       'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       scattered: true,
+      fill: false
     },
     title: 'just a test',
     data: set
@@ -133,7 +134,8 @@ while (amount--) {
       height: 100,
       'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       scattered: true,
-      line: false
+      line: false,
+      fill: false
     },
     title: 'just a test',
     data: set
@@ -260,7 +262,7 @@ var set = [
 nodes = sparkInstance.attr({
     chart : {
       width: 1200,
-      height: 500,
+      height: 150,
       'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       // scattered: true
     },
@@ -293,7 +295,7 @@ nodes = sparkInstance.attr({
 }) + sparkInstance.attr({
     chart : {
       width: 1200,
-      height: 500,
+      height: 150,
       'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       scattered: true
     },
