@@ -341,13 +341,11 @@ nodes = "<div class='.graph'>"+ bubble({
     // say if you want to compute the number of y sections
     var copy = self._deepCopy(scale);
     var splitProperty = self._getSplits(scale.max[1]);
-    copy.paddingLeft = 20;
+    copy.paddingLeft = 30;
     copy.max = splitProperty.max;
     copy.ySecs = splitProperty.splits;
     var axis = label.describeYAxis(copy);
-
-    // paddingLeft: 
-
+    
     return {
       prepend: axis
     };
