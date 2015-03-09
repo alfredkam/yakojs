@@ -259,7 +259,14 @@ var set = [
     }
 ];
 
-nodes = sparkInstance.attr({
+var sparkInstance = spark({
+  preRender: function (immutableScale) {
+    // console.log(immutableScale);
+    return {};
+  }
+});
+
+nodes = '<div class=".graph">' + sparkInstance.attr({
     chart : {
       width: 1200,
       height: 150,
@@ -292,7 +299,7 @@ nodes = sparkInstance.attr({
       // format: 'label',
       // labels: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
   }
-}) + sparkInstance.attr({
+}) + '</div><div class=".graph">'  + sparkInstance.attr({
     chart : {
       width: 1200,
       height: 150,
@@ -323,7 +330,7 @@ nodes = sparkInstance.attr({
       // format: 'label',
       // label: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
   }
-}) + nodes;
+}) + '</div>' + nodes;
 
 
 
@@ -331,6 +338,7 @@ nodes = sparkInstance.attr({
 var label = new label();
 nodes = "<div class='.graph'>"+ bubble({
   preRender: function (immutableScale) {
+    // console.log(immutableScale);
     var self = this;
     var scale = self._deepCopy(immutableScale);
     var max = scale.max;
