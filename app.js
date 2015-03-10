@@ -94,6 +94,7 @@ while (amount--) {
     }
   ];
 
+
   var sparkInstance = spark('.graph');
 
   nodes += sparkInstance.attr({
@@ -182,6 +183,7 @@ while (amount--) {
     title: 'just a test',
     data: dataSet4
   });
+
   // scattered graph
   nodes += bubble('.graph').attr({
     chart: {

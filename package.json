@@ -37,6 +37,7 @@
     "istanbul": "^0.3.5",
     "jymin": "^0.4.1",
     "mocha": "^2.1.0",
-    "mocha-lcov-reporter": "0.0.1"
+    "mocha-lcov-reporter": "0.0.1",
+    "react": "^0.12.2"
   }
 }

@@ -329,6 +329,36 @@ returns attribute D of ```<path>``` that descibes an arc
 #####.arc.describePie(centerX, centerY, radius, startAngle, endAngle)
 returns attribute D of ```<path>``` that decribes an arc w/ the path closed ~ equivalent to a piece of pie 
 
+##Addons
+###RenderWithReact
+a react plugin to generate ```react``` code
+```javascript
+// example usage
+var RenderWithReact = require('yako/addons/RenderWithReact');
+var spark = require('yako').spark;
+
+spark({
+  mixin: RenderWithReact,
+  renderWithProps: function () { 
+    return {
+      // element name
+      type: "div",
+      // element properties
+      props: {
+        className: 'className'
+      }
+    }
+  }
+}).attr({
+  chart: {
+    ...
+  },
+  data: {
+    ...
+  }
+})
+
+```
 
 ##Extending or Modify library
 say you wanted to create your own or modify the library to do something extra. you require the library and extend from it.  Since this is build using common js and inheritance, one could easily extend specific graphs.<br>
