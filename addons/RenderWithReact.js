@@ -3,11 +3,12 @@ var React = require('react');
  * An addon to render with ReactJs
  */
 var RenderWithReact = module.exports = {
-  // Overrides default make
+  // Extends default make
   make: function (tagName, attribute, dataAttribute, content) {
-    return React.createElement(tagName, RenderWithReact.filter(attribute), content);
+    return React.createElement(tagName, RenderWithReact.renameProps(attribute), content);
   },
-  filter: function (props) {
+  // Rename props to be react compatible
+  renameProps: function (props) {
     var keys = Object.keys(props);
     var newProps = {};
 
@@ -25,7 +26,7 @@ var RenderWithReact = module.exports = {
     }
     return newProps;
   },
-  // Overrides default append
+  // Extends default append
   append: function (parent, childs) {
     if (parent === '') {
       return childs;
@@ -37,9 +38,9 @@ var RenderWithReact = module.exports = {
 
     childs.unshift(parent._store.props);
     childs.unshift(parent.type);
-    return React.createElement.apply(self, childs);
+    return React.createElement.apply(null, childs);
   },
-  // Overrides default postRender
+  // Extends default postRender
   postRender: function (content) {
     if (!this.renderWithProps) {
       return content;
