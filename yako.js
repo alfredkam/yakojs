@@ -66,7 +66,9 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
-	  Copyright 2015 Alfred Kam
+	  Copyright 2015 
+	  MIT LICENSE
+	  Alfred Kam (@alfredkam)
 	*/
 	var sparkLine = __webpack_require__(4);
 	var pie = __webpack_require__(5);
@@ -75,6 +77,7 @@
 	var bubble = __webpack_require__(8);
 	var svg = __webpack_require__(9);
 	var mixin = __webpack_require__(10);
+	var label = __webpack_require__(11);
 
 	var initialize = function (component, obj) {
 	  if (typeof obj === 'object') {
@@ -101,15 +104,16 @@
 	  bar: function (opts) {
 	    return initialize(bar, opts);
 	  },
-	  svg: svg
+	  svg: svg,
+	  label: label
 	};
 
 /***/ },
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(11);
-	var Label = __webpack_require__(12);
+	var Base = __webpack_require__(13);
+	var Label = __webpack_require__(11);
 	var label = new Label();
 	var spark = module.exports = Base.extend({
 	  // the graph data & options setter
@@ -128,8 +132,8 @@
 	        opts.data[i].label = (opts.data[i].label || '').replace(/\s/g,'-');
 	    }
 
-	    return self.render(self._prepare()
-	    ._generate());
+	    return self.postRender(self._prepare()
+	    ._startCycle());
 	  },
 	  // set default value if they are missing
 	  _prepare: function () {
@@ -139,7 +143,12 @@
 	          height: '200',
 	          'font-family' : '"Open Sans", sans-serif',
 	          line: true,
-	          scattered: false
+	          fill: true,
+	          scattered: false,
+	          paddingLeft: 0,
+	          paddingRight: 0,
+	          paddingTop: 0,
+	          paddingBottom: 0
 	      },
 	      // 
 	      showNodes: false,
@@ -150,11 +159,15 @@
 	    this.attributes.opts = defaults;
 	    return this;
 	  },
+	  _getLabelConfig: function (scale, yaxis, xaxis) {
+	    scale.paddingLeft = scale.paddingRight = 30;
+	    scale.paddingTop = scale.paddingBottom = 20;
+	  },
 	  /**
 	   * the parent generator that manages the svg generation
 	   * @return {object} global function object 
 	   */
-	  _generate: function () {
+	  _startCycle: function () {
 	    var self = this;
 	    var data = self.attributes.data;
 	    var opts = self.attributes.opts;
@@ -164,72 +177,67 @@
 	            height: chart.height,
 	            viewBox: '0 0 ' + chart.width + ' ' + chart.height
 	        });
-	    // For paddings
-	    var paddingX = 0;
-	    var paddingY = 5;
 	    var xAxis = opts.xAxis;
 	    var yAxis = opts.yAxis;
 	    var append = self.append;
+	    var paths = [];
 
-	    if (Object.prototype.toString.call(data) !== '[object Array]') {
-	        data = [data];
+	    if (!self._isArray(data)) {
+	      data = [data];
 	    }
 
 	    var scale = self._scale(data, opts);
 	    self._extend(scale, chart);
-	 
+	    
 	    // simple hnadOff
 	    // TODO:: fix the paddingX & Y dependecies
 	    if (yAxis || xAxis) {
-	      paddingX = !opts.yAxis ? 0 : 30;
-	      paddingY = 20;
-	      scale.pHeight = (chart.height - (paddingY * 2));
-	      scale.paddingY = paddingY;
-	      scale.paddingX = paddingX;
+	      self._getLabelConfig(scale, yAxis, xAxis);
 	    }
+
+	    scale.pHeight = chart.height - scale.paddingTop - scale.paddingBottom;
+	    scale.pWidth = chart.width - scale.paddingLeft - scale.paddingRight;
 
 	    if (yAxis) {
-	      svg = append(svg, label.describeYAxis(scale, yAxis));
-	      // TODO:: this needs to be adjusted
-	      paddingX += 5;
+	      paths.push(label.describeYAxis(scale, yAxis));
 	    }
 
-	    scale.heightRatio = (chart.height - (paddingY * 2)) / scale.max;
-	    scale.gap = self._sigFigs(((chart.width - paddingX * 2) / (scale.len - 1)),8);
-	    // xAxis depends on scale.gap
+	    scale.heightRatio = scale.pHeight / scale.max;
+	    scale.tickSize = self._sigFigs((scale.pWidth / (scale.len - 1)),8);
+	    // xAxis depends on scale.tickSize
 	    if (xAxis) {
-	      svg = append(svg, label.describeXAxis(scale, xAxis));
+	      paths.push(label.describeXAxis(scale, xAxis));
 	    }
-	    
-	    // adding each path & circle
-	    for (var x = 0; x < scale.rows; x++) {
-	      if (yAxis && yAxis.multi) {
-	        scale.heightRatio = (chart.height - (paddingY * 2)) / scale.max[x];
-	      }
-	        var g = self.make('g',{},{
-	            label: data[x].label
-	        });
-	        svg = append(
-	          svg,
-	          append(g, self._describePath(data[x], paddingX, paddingY, scale))
-	        );
-	    }
-	    // add to element;
-	    return append(self.element, svg);
+
+	    self._lifeCycleManager(scale, function (newScale) {
+	        for (var x = 0; x < scale.rows; x++) {
+	            if (yAxis && yAxis.multi) {
+	              scale.heightRatio = scale.pHeight / scale.max[x];
+	            }
+	            var g = self.make('g',{},{
+	                label: data[x].label
+	            });
+	            paths.push(
+	              append(g, self._describePath(data[x], scale.paddingLeft, scale.paddingTop, scale))
+	            );
+	        }
+	        return paths;
+	    });
+	    return append(self.element,append(svg, paths));
 	  },
 	  // describes an open path
-	  _describeAttributeD: function (numArr, paddingX, paddingY, scale) {
+	  _describeAttributeD: function (numArr, paddingLeft, paddingTop, scale) {
 	    var height = scale.height;
 	    var heightRatio = scale.heightRatio;
-	    var gap = scale.gap;
+	    var tickSize = scale.tickSize;
 	    var pathToken = '';
 	    //path generator
 	    for (var i = 0; i < numArr.length; i++) {
 	        if (i === 0) {
 	          // X Y
-	            pathToken += 'M ' + paddingX + ' '+ (height - (numArr[i] * heightRatio) - paddingY);
+	            pathToken += 'M ' + paddingLeft + ' '+ (height - (numArr[i] * heightRatio) - paddingTop);
 	        } else {
-	            pathToken += ' L '+ ((gap * i) + paddingX) + ' ' + (height - (numArr[i] * heightRatio) - paddingY);
+	            pathToken += ' L '+ ((tickSize * i) + paddingLeft) + ' ' + (height - (numArr[i] * heightRatio) - paddingTop);
 	        }
 	    }
 	    // eliminates the error calls when attributiting this to the svg path
@@ -239,21 +247,22 @@
 	    return pathToken;
 	  },
 	  // describes the path to close the open path
-	  _describeCloseAttributeD: function (numArr, paddingX, paddingY, scale) {
+	  _describeCloseAttributeD: function (numArr, paddingLeft, paddingTop, scale) {
 	    var height = scale.height;
 	    var heightRatio = scale.heightRatio;
 	    return [
-	            'V',(height - paddingY),
-	            'H', paddingX,
-	            'L', paddingX, (height - (numArr[0] * heightRatio) - paddingY)
+	            'V',(height - paddingTop),
+	            'H', paddingLeft,
+	            'L', paddingLeft,
+	            (height - (numArr[0] * heightRatio) - paddingTop)
 	          ].join(" ");
 	  },
 	  // describes scattered graph
-	  _describeScatteredGraph: function(data, numArr, paddingX, paddingY, scale) {
+	  _describeScatteredGraph: function(data, numArr, paddingLeft, paddingTop, scale) {
 	    var height = scale.height;
 	    var heightRatio = scale.heightRatio;
 	    var self = this;
-	    var gap = scale.gap;
+	    var tickSize = scale.tickSize;
 	    var scattered = data.scattered || 0;
 	    var strokeWidth = scattered.strokeWidth || 3;
 	    var strokeColor = scattered.strokeColor || self._randomColor();
@@ -263,8 +272,8 @@
 
 	    for (var i = 0; i < numArr.length; i++) {
 	      paths.push(self.make('circle', {
-	        cx: ((gap * i) + paddingX),
-	        cy: (height - (numArr[i] * heightRatio) - paddingY),
+	        cx: ((tickSize * i) + paddingLeft),
+	        cy: (height - (numArr[i] * heightRatio) - paddingTop),
 	        r: radius,
 	        stroke: strokeColor,
 	        'stroke-width': strokeWidth,
@@ -274,9 +283,9 @@
 	    return paths;
 	  },
 	  //svg path builder
-	  _describePath : function (data, paddingX, paddingY, scale) {
+	  _describePath : function (data, paddingLeft, paddingTop, scale) {
 	    var self = this;
-	    var pathToken = self._describeAttributeD(data.data, paddingX, paddingY, scale);
+	    var pathToken = self._describeAttributeD(data.data, paddingLeft, paddingTop, scale);
 	    var pathNode = self.make('path',{
 	        d: pathToken,
 	        stroke: data.strokeColor || self._randomColor(),
@@ -288,18 +297,18 @@
 	    });
 
 	    return [
-	      scale.line ? pathNode : '',
-	      scale.line && data.fill ? self.make('path', {
-	        d: pathToken + self._describeCloseAttributeD(data.data, paddingX, paddingY, scale),
+	      data.fill && scale.fill ? self.make('path', {
+	        d: pathToken + self._describeCloseAttributeD(data.data, paddingLeft, paddingTop, scale),
 	        stroke: 'none',
 	        'stroke-width': '2',
 	        'stroke-linejoin': 'round',
 	        'stroke-linecap': 'round',
 	        'class': '_yakoTransitions-' + data.label,
 	        fill: data.fill
-	      }) : ''
+	      }) : '',
+	      scale.line ? pathNode : ''
 	    ].concat(scale.scattered ?
-	        self._describeScatteredGraph(data, data.data, paddingX, paddingY, scale) :
+	        self._describeScatteredGraph(data, data.data, paddingLeft, paddingTop, scale) :
 	        []);
 	  }
 	});
@@ -308,19 +317,18 @@
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arcBase = __webpack_require__(13);
+	var arcBase = __webpack_require__(12);
 	var pie = module.exports = arcBase.extend({
 	    /**
 	     * [_describePath genereates the paths for each pie segment]
-	     * @param  {[int]} circumference [circumfrance]
+	     * @param  {[int]} radius [circumfrance]
 	     * @param  {[array]} data      [data set]
 	     * @param  {[json]} chart     [user specified chart options]
 	     * @return {[string]}           [the html string for the pie]
 	     */
-	    _describePath: function (circumference, data, chart) {
+	    _describePath: function (radius, data, chart) {
 	        if (!data) return '';
 	        var paths = [];
-	        var radius = circumference / 2;
 	        var startAngle = 0;
 	        var fills = chart.fills || 0;
 	        var strokes = chart.strokeColors || 0;
@@ -345,19 +353,19 @@
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arcBase = __webpack_require__(13);
+	var arcBase = __webpack_require__(12);
 	var pie = module.exports = arcBase.extend({
 	    /**
 	     * [_describePath genereates the paths for each pie segment]
-	     * @param  {[int]} circumference [circumfrance]
+	     * @param  {[int]} radius [circumfrance]
 	     * @param  {[array]} data      [data set]
 	     * @param  {[json]} chart     [user specified chart options]
 	     * @return {[string]}           [the html string for the pie]
 	     */
-	    _describePath: function (circumference, data, chart) {
+	    _describePath: function (radius, data, chart) {
 	        if (!data) return '';
 	        var paths = [];
-	        var outerRadius = chart.outerRadius || (circumference / 2);
+	        var outerRadius = chart.outerRadius || radius;
 	        var innerRadius = chart.innerRadius || (outerRadius / 2);
 	        var startAngle = 0;
 	        var fills = chart.fills || 0;
@@ -413,7 +421,7 @@
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(11);
+	var Base = __webpack_require__(13);
 	var bar = module.exports = Base.extend({
 	    // include missing values
 	    _prepare: function () {
@@ -422,7 +430,11 @@
 	                type: 'chart',
 	                width: '100',
 	                height: '100',
-	                'font-family' : '"Open Sans", sans-serif'
+	                'font-family' : '"Open Sans", sans-serif',
+	                paddingLeft: 0,
+	                paddingRight: 0,
+	                paddingTop: 0,
+	                paddingBottom: 0
 	            }
 	        };
 	        this._extend(defaults, this.attributes.opts);
@@ -437,67 +449,66 @@
 	        this.attributes.data = opts.data || [];
 	        this.attributes.opts = opts;
 
-	        return this.render(this._prepare()
-	            ._generate());
+	        return this.postRender(this._prepare()
+	            ._startCycle());
 	    },
-	    _generate: function () {
+	    _startCycle: function () {
 	        var data = this.attributes.data;
+	        var self = this;
 	        var chart = this.attributes.opts.chart;
+	        var append = self.append;
 	        var svg = this.make('svg',{
 	            width: chart.width,
 	            height: chart.height,
 	            viewBox: '0 0 ' + chart.width + ' ' + chart.height,
 	        });
-	        return this.append(this.element,
-	                this.append(
-	                    svg,
-	                    this._describeBar(data, chart)
-	                    )
-	                );
+
+	        var scale = self._defineBaseScaleProperties(data, chart);
+	        paths = self._lifeCycleManager(scale, function (newScale) {
+	            return self._describeBar(data, scale);
+	        });
+	        return append(self.element,append(svg, paths));
 	    },
 	    // describes the svg that builds out the bar
-	    _describeBar: function (data, chart) {
+	    _describeBar: function (data, scale) {
 	        if (!data.length) return '';
 	        // TODO:: need to account paddings for labels
 	        // wrap in array for consistency
 	        data = typeof data[0] === 'object' ? data : [data];
-	        var height = chart.height;
+	        var height = scale.height - scale.paddingTop - scale.paddingBottom;
 	        var paddingY = 5;
-	        height = height - paddingY;
-	        var width = chart.width;
+	        var width = scale.width - scale.paddingLeft - scale.paddingRight;
 	        var len = data[0].data.length;
 	        var rows = data.length;
-	        var gap = width / len;
-	        var properties = this._scale(data, chart);
+	        var tickSize = width / len;
 	        var paths = [];
 
-	        // TODO:: feels expensive, need to optimize
 	        for (var i = 0; i < len; i++) {
 	            // stack chart
-	            if (chart.stack) {
+	            if (scale.stack) {
 	                // the top padding has been taken care off, now account for the bottom padding
-	                var relativeMax = (height - paddingY) * properties.maxSet[i] / properties.max;
-	                var yAxis = height - relativeMax;
+	                var relativeMax = height * scale.maxSet[i] / scale.max;
+	                var yAxis = height - relativeMax + scale.paddingTop;
 	                var total = 0;
 	                for (var j = 0; j < rows; j++) {
 	                    paths.push(this.make('rect',{
-	                        x: gap * i + (gap/4),
+	                        x: tickSize * i + (tickSize/4) + scale.paddingLeft,
 	                        y: yAxis,
-	                        width: gap / rows,
-	                        height: (data[j].data[i]/properties.maxSet[i] * relativeMax),
+	                        width: tickSize / rows,
+	                        height: (data[j].data[i] / scale.maxSet[i] * relativeMax),
 	                        fill: data[j].fill || this._randomColor()
 	                    }));
-	                    yAxis += (data[j].data[i]/properties.maxSet[i] * relativeMax);
+	                    yAxis += (data[j].data[i] / scale.maxSet[i] * relativeMax);
 	                }
 	            } else {
 	                // side by side
 	                for (var j = 0; j < rows; j++) {
-	                    var yAxis = (height - paddingY) * data[j].data[i] / properties.max;
+	                    var relativeMax = height * data[j].data[i] / scale.max;
 	                    paths.push(this.make('rect',{
-	                        x: (gap * (i+1)) - (gap/(j + 1)),
-	                        y: height - yAxis,
-	                        width: gap / (rows+1),
-	                        height: yAxis,
+	                        x: (tickSize * (i + 1)) - (tickSize/(j + 1)) + scale.paddingLeft,
+	                        y: height - relativeMax + scale.paddingTop,
+	                        width: tickSize / (rows + 0.5),
+	                        height: relativeMax,
 	                        fill: data[j].fill || this._randomColor()
 	                    }));
 	                }
@@ -511,9 +522,9 @@
 /* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(13);
+	var Base = __webpack_require__(12);
 	var bubble = module.exports = Base.extend({
-	    _generate: function () {
+	    _startCycle: function () {
 	        var self = this;
 	        var chart = self.attributes.opts.chart;
 	        var data = self.attributes.data;
@@ -523,31 +534,35 @@
 	            viewBox: '0 0 ' + chart.width + ' ' + chart.height,
 	        });
 	        var append = self.append;
-	        var render = self.render;
+	        var render = self.postRender;
 	        var paths = '';
+	        var scale;
 
-	        var paddingX = 10 || chart.paddingX;
 	        if (chart.type == 'scattered') {
-	            var scale = self._scale(data, {bubble: true});
-	            paddingX = 30;
-	            var paddingY = 20;
-	            scale.heightRatio = (chart.height - (paddingY * 2)) / scale.max[1];
-	            scale.widthRatio = (chart.width - (paddingX * 2)) / scale.max[0];
-	            scale.paddingY = paddingY;
-	            scale.paddingX = paddingX;
-	            self._extend(scale, chart);
-	            paths = self._describeBubbleChart(data, scale);
-	            return render(append(self.element,append(svg, paths)));
-
+	            chart.bubble = true;
+	            scale = self._defineBaseScaleProperties(data, chart);
+	            paths = self._lifeCycleManager(scale, function (newScale) {
+	                return self._describeBubbleChart(data, newScale);
+	            });
+	            return append(self.element,append(svg, paths));
 	        } else {
-	            paths = self._describeBubble(data, chart.height, chart.width, paddingX, chart);
-	            paths.unshift(self._describeHorizontalPath(chart.height, chart.width, paddingX, chart));
-	            return render(
-	                    append(self.element, 
-	                        append(svg, paths)
-	                    )
-	                );
+	            scale = self._defineBaseScaleProperties(data, chart);
+	            paths = self._lifeCycleManager(scale, function (newScale) {
+	                paths = self._describeBubble(data, chart.height, chart.width, newScale);
+	                paths.unshift(self._describeHorizontalPath(chart.height, chart.width, newScale));
+	                return paths;
+	            });
+	            return append(self.element, append(svg, paths));
 	        }
+	    },
+	    _getRatio: function (scale) {
+	        if (scale.type && scale.type == 'scattered') {
+	            scale.widthRatio = (scale.width - scale.paddingLeft - scale.paddingRight) / scale.max[0];
+	            scale.heightRatio = (scale.height - scale.paddingTop - scale.paddingBottom) / scale.max[1];
+	        } else {
+	            scale.tickSize = (scale.width - scale.paddingLeft - scale.paddingRight) / (scale.len - 1);
+	        }
+	        scale.maxRadius = scale.maxRadius || (height < width ? height : width) / 2;
 	    },
 	    // bubble graph
 	    _describeBubbleChart: function(data, scale) {
@@ -555,63 +570,51 @@
 	        var width = scale.width;
 	        var heightRatio = scale.heightRatio;
 	        var widthRatio = scale.widthRatio;
-	        var paddingX = scale.paddingX;
-	        var paddingY = scale.paddingY;
 	        var self = this;
 	        var len = scale.len;
-	        var maxRadius =  scale.maxRadius || (height < width ? height : width) / 2;
 	        var max = scale.max;
-	        var fill = scale.fill || 0;
 	        var fills = scale.fills || 0;
 	        var paths = [];
 
 	        for (var r = 0; r < scale.rows; r++) {
 	            for (var i = 0; i < len; i++) {
 	                var point = data[r].data[i];
-
 	                paths.push(self.make('circle', {
-	                    cx: width - (point[0] * widthRatio) - paddingX,
-	                    cy: height - (point[1] * heightRatio) - paddingY,
-	                    r: maxRadius * (point[2]/max[2]),
-	                    fill: data[r].fill || (fills[i] || fill || self._randomColor())
+	                    cx: width - (point[0] * widthRatio) - scale.paddingRight,
+	                    cy: height - (point[1] * heightRatio) - scale.paddingBottom,
+	                    r: scale.maxRadius * (point[2]/max[2]),
+	                    fill: data[r].fill || (fills[i] || self._randomColor())
 	                }));
 	            }
 	        }
 	        return paths;
 	    },
-	    _describeHorizontalPath: function (height, width, widthOffset, chart) {
-	        // TODO:: need to account for stroke width 
+	    _describeHorizontalPath: function (height, width, chart) {
 	        var centerY = height / 2;
 	        return this.make('path', {
 	            "stroke-linecap": "round",
 	            "stroke-linejoin": "round",
+	            'stroke-width': chart.strokeWidth || 2,
 	            stroke: chart.strokColor || this._randomColor(),
-	            d: 'M' + widthOffset + ' ' + centerY + ' H' + (width - widthOffset)
+	            d: 'M' + chart.paddingLeft + ' ' + centerY + ' H' + (width - chart.paddingLeft - chart.paddingRight)
 	        });
 	    },
 	    // bubble point
-	    _describeBubble: function (data, height, width, widthOffset, chart) {
+	    _describeBubble: function (data, height, width, scale) {
 	        if (!data) return '';
-	        var maxValue = this._getMaxOfArray(data);
 	        var dataPoints = data.length;
-	        var gap = (width - (widthOffset * 2)) / (dataPoints - 1);
 	        var paths = [];
-	        var fills = chart.fills || 0;
-	        var maxRadius =  chart.maxRadius || (chart.height < chart.width ? chart.height : chart.width) / 2;
+	        var fills = scale.fills || 0;
 	        var centerY = height / 2;
 	        for (var i = 0; i < data.length; i++) {
 	            paths.push(this.make('circle', {
-	                cx: (gap * i) + widthOffset,
+	                cx: (scale.tickSize * i) + scale.paddingLeft,
 	                cy: centerY,
-	                r: maxRadius * (data[i] / maxValue),
-	                fill: fills[i] || (chart.fill || this._randomColor())
+	                r: scale.maxRadius * (data[i] / scale.max),
+	                fill: fills[i] || (scale.fill || this._randomColor())
 	            }));
 	        }
-
 	        return paths;
-	    },
-	    _getMaxOfArray: function (arr) {
-	        return Math.max.apply(null, arr);
 	    }
 	});
 
@@ -640,36 +643,6 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var Common = __webpack_require__(17);
-	var base = module.exports = Common.extend({
-	    init: function (node) {
-	      var self = this;
-	      // adding width 100% will allow us to have responsive graphs (in re-sizing)
-	      if (typeof node === 'string') {
-	        if (node[0] === '#') {
-	          this.element = this.make('div',{
-	            id: node.replace(/^#/,''),
-	            width: '100%'
-	          });
-	        } else {
-	          this.element = this.make('div',{
-	            "class": node.replace(/^\./,''),
-	            width: '100%'
-	          });
-	        }
-	      } else {
-	        this.element = '';
-	      }
-	      this.token = self.makeToken();
-	      this.attributes = {};
-	      return this;
-	    }
-	});
-
-/***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Common = __webpack_require__(17);
 
 	var label = module.exports = Common.extend({
 	    // expect the boundaries
@@ -684,14 +657,16 @@
 	        var axis = [];
 	        var labels = [];
 	        var y = rows = scale.rows;
+	        opts = opts || {};
 	        if (!opts.multi) {
 	            y = rows = 1;
 	            scale.ySecs = [scale.ySecs];
 	            scale.max = [scale.max];
 	        }
+
 	        var partialHeight = scale.pHeight;
-	        var paddingY = scale.paddingY;
-	        var paddingX = scale.paddingX;
+	        var paddingY = scale.paddingY || scale.paddingTop;
+	        var paddingX = scale.paddingX || scale.paddingLeft - 5;
 
 	        // goes through the number of yaxis need
 	        while (y--) {
@@ -735,9 +710,9 @@
 	        });
 	        var labels = [];
 	        var partialHeight = scale.pHeight;
-	        var gap = scale.gap;
-	        var paddingX = scale.paddingX;
-	        var paddingY = scale.paddingY * 2  - 8;
+	        var tickSize = scale.tickSize;
+	        var paddingX = scale.paddingX || scale.paddingLeft;
+	        var paddingY = scale.paddingY ? scale.paddingY * 2 - 8 : (scale.paddingTop + scale.paddingBottom) - 8;
 	        var yAxis = partialHeight + paddingY;
 	        var form = opts.format == 'dateTime' ? true : false;
 	     
@@ -748,12 +723,12 @@
 	            var tickInterval =  (/\d+/.test(tick) ? tick.match(/\d+/)[0] : 1);
 	            var format = opts.dateTimeLabelFormat;
 	            var base = opts.minUTC;
-	        } 
+	        }
 
 	        for (var i = 1; i < scale.len - 1; i++) {
 	            labels.push(self.make('text',{
 	                y: yAxis,
-	                x: (gap * i) + paddingX,
+	                x: (tickSize * i) + paddingX,
 	                'font-size': 12,
 	                'text-anchor': 'start',
 	                fill: opts.color || '#333',
@@ -831,10 +806,10 @@
 
 
 /***/ },
-/* 13 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(11);
+	var Base = __webpack_require__(13);
 	var arc = __webpack_require__(15);
 	module.exports = Base.extend({
 	    // include missing values
@@ -844,7 +819,11 @@
 	                type: 'chart',
 	                width: '100',
 	                height: '100',
-	                'font-family' : '"Open Sans", sans-serif'
+	                'font-family' : '"Open Sans", sans-serif',
+	                paddingLeft: 10,
+	                paddingRight: 10,
+	                paddingTop: 10,
+	                paddingBottom: 10
 	            }
 	        };
 	        this._extend(defaults, this.attributes.opts);
@@ -859,28 +838,36 @@
 	        this.attributes.data = opts.data || [];
 	        this.attributes.opts = opts;
 
-	        return this.render(this._prepare()
-	            ._generate());
+	        return this.postRender(this._prepare()
+	            ._startCycle());
 	    },
 	    // parent generator that manages the svg
-	    _generate: function (){
-	        var chart = this.attributes.opts.chart;
-	        var data = this.attributes.data;
-	        var svg = this.make('svg',{
+	    _startCycle: function (){
+	        var self = this;
+	        var chart = self.attributes.opts.chart;
+	        var data = self.attributes.data;
+	        var svg = self.make('svg',{
 	            width: chart.width,
 	            height: chart.height,
 	            viewBox: '0 0 ' + chart.width + ' ' + chart.height,
 	        });
+
+	        var append = this.append;
 	        // find the max width & height
-	        var circumference = chart.height < chart.width ? chart.height : chart.width;
+	        var outerRadius = chart.outerRadius || (chart.height < chart.width ? chart.height : chart.width) / 2;
 	        // converts nums to relative => total sum equals 1
 	        var relativeDataSet = this._dataSetRelativeToTotal(data);
+	        var scale = {
+	            relativeDataSet: relativeDataSet,
+	            outerRadius: outerRadius
+	        };
+	        self._extend(scale, chart);
+	        paths = self._lifeCycleManager(scale, function (newScale) {
+	            return self._describePath(outerRadius, relativeDataSet, scale);
+	        });
+
 	        return this.append(this.element,
-	                this.append(
-	                    svg,
-	                    this._describePath(circumference, relativeDataSet, chart)
-	                    )
-	                );
+	                    this.append(svg, paths));
 	    },
 	    _polarToCartesian: arc.polarToCartesian,
 	    _describeArc: arc.describeArc,
@@ -892,6 +879,36 @@
 	     */
 	    _describePath: function () {
 	        return '';
+	    }
+	});
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Common = __webpack_require__(17);
+	var base = module.exports = Common.extend({
+	    init: function (node) {
+	      var self = this;
+	      // adding width 100% will allow us to have responsive graphs (in re-sizing)
+	      if (typeof node === 'string') {
+	        if (node[0] === '#') {
+	          this.element = this.make('div',{
+	            id: node.replace(/^#/,''),
+	            width: '100%'
+	          });
+	        } else {
+	          this.element = this.make('div',{
+	            "class": node.replace(/^\./,''),
+	            width: '100%'
+	          });
+	        }
+	      } else {
+	        this.element = '';
+	      }
+	      this.token = self.makeToken();
+	      this.attributes = {};
+	      return this;
 	    }
 	});
 
@@ -916,7 +933,7 @@
 	        var data = attr.data || 0;
 	        var scale = spark._scale(data);
 	        scale.paddingY = attr.paddingY || 5;
-	        scale.gap = spark._sigFigs((attr.width / (scale.len - 1)),8);
+	        scale.tickSize = spark._sigFigs((attr.width / (scale.len - 1)),8);
 	        scale.heightRatio = (attr.height - (scale.paddingY * 2)) / scale.max;
 	        scale.height = attr.height;
 	        scale.width = attr.width;
@@ -1037,8 +1054,48 @@
 	    el += this._makePairs('data', dataAttribute);
 	    return el += '>' + (content || content === 0 ? content : '') + '</'+tagName+'>';
 	  },
-	  render: function (result) {
+	  _deepCopy: function (objToCopy) {
+	    return JSON.parse(JSON.stringify(objToCopy));
+	  },
+	 postRender: function (result) {
+	    // super class
 	    return result;
+	  },
+	  /**
+	   * [_isArray check if variable is an array]
+	   * @param  any type
+	   * @return {Boolean}   true if its an array
+	   */
+	  _isArray: function (o) {
+	    return Object.prototype.toString.call(o) === '[object Array]';
+	  },
+	  _getRatio: function (scale) {
+	    scale.heightRatio = scale.height - (scale.paddingTop + scale.paddingBottom) / scale.max;
+	  },
+	  /**
+	   * base on the feedback and mange the render of the life cycle 
+	   * it passes a immutable obj to preRender and audits the user feedback
+	   */
+	  _defineBaseScaleProperties: function (data, chart) {
+	    var self = this;
+	    var scale = self._scale(data, chart);
+	    self._extend(scale, chart);
+	    self._getRatio(scale);
+	    return scale;
+	  },
+	  _lifeCycleManager: function (scale, describe) {
+	    var self = this;
+	    // make the obj's shallow properties immutable
+	    // we can know if we want to skip the entire process to speed up the computation
+	    var properties = (this.preRender ? this.preRender(Object.freeze(self._deepCopy(scale))) : 0);
+	    // properties will except
+	    // append
+	    // prepend
+	    var paths = properties.prepend ? properties.prepend : [];
+	    paths = paths.concat(describe(scale));
+	    paths = paths.concat(properties.append ? properties.append : []);
+	    return paths;
+	    // return summary
 	  },
 	  // only supports 1 level deep
 	  _makePairs: function (prefix, json) {

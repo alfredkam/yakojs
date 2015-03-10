@@ -1,6 +1,7 @@
 [General Usage](#Usage) <br>
 [API] (#api) <br>
 [SVG API] (#svg-api) <br>
+[Addons] (#addons) <br>
 [Extend or Modify Library] (#extending-or-modify-library) <br>
 
 [External Link: Visual Examples](http://alfredkam.com/yakojs/example.html) <br>
@@ -58,7 +59,7 @@ var set = [
   }
 ];
 // spark accepts multiple data sets
-spark('.graph').set({
+spark('.graph').attr({
   chart : {
     // width & height controls the svg view box
     width: 300, // default 200
@@ -152,7 +153,6 @@ var innerRadius = chart.innerRadius || (outerRadius / 2);
 ```javascript
 var set = []; // an array of numbers
 bubble('.graph').attr({
-  // width & height controls the svg view box
   chart: {
     // width & height controls the svg view box
     width: 300,
@@ -184,7 +184,6 @@ var set = [{
   fill: '#000' // default fill
 }]; // an array of a set of numbers
 bubble('.graph').attr({
-  // width & height controls the svg view box
   chart: {
     type: 'scattered', // <= this is needed for bubble graph
     // width & height controls the svg view box
@@ -264,7 +263,7 @@ The super class of ```make``` is referenced [here](https://github.com/alfredkam/
 #####append(parent, childs)
 ```append``` is called everytime to append the childs into the parent element. ```childs``` is the result of an array of ```make``` and ```parent``` is either empty or a result of a ```make``` function call to create the parent element.  It expects to return a string or object.
 
-#####preRender(immutableScale) [Draft]
+#####preRender(immutableScale) [Beta]
 expects an array of svg elements in string format, unless the ```make``` and ```append``` format is changed up by you.
 ```javascript
 return {
@@ -285,7 +284,7 @@ return {
 
 The super class of ```append``` is referenced [here](https://github.com/alfredkam/yakojs/blob/d5ef0c5072d8b952e66929c5bc9a5f40171b6e1b/lib/base/common.js#L31-L39)
 
-#####render(result)
+#####postRender(result)
 ```render``` provides the result of the component, you could intercept the result before it passes back up to the chain
 
 ##SVG API
@@ -336,25 +335,28 @@ a react plugin to generate ```react``` code
 // example usage
 var RenderWithReact = require('yako/addons/RenderWithReact');
 var spark = require('yako').spark;
-
-spark({
-  mixin: RenderWithReact,
-  renderWithProps: function () { 
-    return {
-      // element name
-      type: "div",
-      // element properties
-      props: {
-        className: 'className'
+React.createClass({
+  render: function () {
+    return spark({
+      mixin: RenderWithReact,
+      renderWithProps: function () { 
+        return {
+          // element name
+          type: "div",
+          // element properties
+          props: {
+            className: 'className'
+          }
+        }
       }
-    }
-  }
-}).attr({
-  chart: {
-    ...
-  },
-  data: {
-    ...
+    }).attr({
+      chart: {
+        ...
+      },
+      data: {
+        ...
+      }
+    });
   }
 })
 

@@ -1,15 +1,17 @@
 var React = require('react');
 /**
- * Readner with react addon
+ * An addon to render with ReactJs
  */
 var RenderWithReact = module.exports = {
+  // Overrides default make
   make: function (tagName, attribute, dataAttribute, content) {
     return React.createElement(tagName, RenderWithReact.filter(attribute), content);
   },
   filter: function (props) {
     var keys = Object.keys(props);
     var newProps = {};
-    for(var i in keys) {
+
+    for(var i = 0; i < keys.length; i++) {
       if (keys[i] == 'class') {
         newProps['className'] = props[keys[i]];
       } else if (/-/.test(keys[i])) {
@@ -23,21 +25,26 @@ var RenderWithReact = module.exports = {
     }
     return newProps;
   },
+  // Overrides default append
   append: function (parent, childs) {
-    if (Object.prototype.toString.call(childs) !== '[object Array]') {
-      childs = [childs];
-    }
     if (parent === '') {
       return childs;
     }
+
+    if (Object.prototype.toString.call(childs) !== '[object Array]') {
+      childs = [childs];
+    }
+
     childs.unshift(parent._store.props);
     childs.unshift(parent.type);
     return React.createElement.apply(self, childs);
   },
-  render: function (content) {
-    var props = this.renderWithProps();
-    if (!props)
+ postRender: function (content) {
+    if (this.postRenderWithProps) {
       return content;
+    }
+
+    var props = this.postRenderWithProps() || 0;
     return React.createElement(props.type, props.props, content);
   }
 }
