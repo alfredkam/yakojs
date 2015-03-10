@@ -39,7 +39,8 @@ var RenderWithReact = module.exports = {
     childs.unshift(parent.type);
     return React.createElement.apply(self, childs);
   },
- postRender: function (content) {
+  // Overrides default postRender
+  postRender: function (content) {
     if (!this.renderWithProps) {
       return content;
     }
