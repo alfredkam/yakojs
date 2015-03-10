@@ -40,11 +40,11 @@ var RenderWithReact = module.exports = {
     return React.createElement.apply(self, childs);
   },
  postRender: function (content) {
-    if (this.postRenderWithProps) {
+    if (!this.renderWithProps) {
       return content;
     }
 
-    var props = this.postRenderWithProps() || 0;
+    var props = this.renderWithProps() || 0;
     return React.createElement(props.type, props.props, content);
   }
 }
