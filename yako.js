@@ -75,8 +75,8 @@
 	var donut = __webpack_require__(6);
 	var bar = __webpack_require__(7);
 	var bubble = __webpack_require__(8);
-	var svg = __webpack_require__(10);
-	var mixin = __webpack_require__(9);
+	var svg = __webpack_require__(9);
+	var mixin = __webpack_require__(10);
 	var label = __webpack_require__(11);
 
 	var initialize = function (component, obj) {
@@ -574,24 +574,25 @@
 	            maxRadius = scale.bubble.maxRadius = parseInt(scale.bubble.maxRadius) || maxRadius;
 	            var tick = (width - scale.paddingLeft - scale.paddingRight) / (scale.len - 1);
 	            var len = scale.len;
-	            var x = 0;
-	            var lastRadius = 0;
-	            var firstRadius = 0;
-	            while (len--) {
-	                if (lastRadius < maxRadius) {
-	                    lastRadius = scale.bubble.maxRadius * (data[len] / scale.max);
-	                    lastRadius = lastRadius < maxRadius && lastRadius < tick * x ? tick * x : lastRadius;
-	                }
-	                if (firstRadius < maxRadius) {
-	                    firstRadius = scale.bubble.maxRadius * (data[x] / scale.max);
-	                    firstRadius = firstRadius < maxRadius && firstRadius < tick * x ? tick * x : firstRadius;
-	                }
-	                if (lastRadius > maxRadius && firstRadius > maxRadius)
-	                    break;
-	                x++;
-	            }
-	            scale.paddingLeft = scale.paddingLeft || firstRadius;
-	            scale.paddingRight = scale.paddingRight || lastRadius;
+
+	            // figure out the maxRadius, maxRadius is a guide line
+	            var secondPoisitionRadius = scale.bubble.maxRadius * (data[0] / scale.max) * tick * 2;
+
+	            scale.paddingLeft = scale.paddingLeft || scale.bubble.maxRadius * (data[0] / scale.max);
+	            scale.paddingRight = scale.paddingRight || scale.bubble.maxRadius * (data[len - 1] / scale.max);
+	            // while (len--) {
+	            //     if (lastRadius < maxRadius) {
+	            //         lastRadius = scale.bubble.maxRadius * (data[len] / scale.max);
+	            //         lastRadius = lastRadius < maxRadius && lastRadius < tick * x ? tick * x : lastRadius;
+	            //     }
+	            //     if (firstRadius < maxRadius) {
+	            //         firstRadius = scale.bubble.maxRadius * (data[x] / scale.max);
+	            //         firstRadius = firstRadius < maxRadius && firstRadius < tick * x ? tick * x : firstRadius;
+	            //     }
+	            //     if (lastRadius > maxRadius && firstRadius > maxRadius)
+	            //         break;
+	            //     x++;
+	            // }
 	            scale.tickSize = (width - scale.paddingLeft - scale.paddingRight) / (scale.len - 1);
 	        }
 	    },
@@ -660,8 +661,10 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	
-	var mixin = module.exports = function (component, obj) {
-	    return component.extend(obj);
+	module.exports = {
+	    path: __webpack_require__(14),
+	    arc: __webpack_require__(15),
+	    react: __webpack_require__(16)
 	};
 
 /***/ },
@@ -669,17 +672,15 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	
-	module.exports = {
-	    path: __webpack_require__(15),
-	    arc: __webpack_require__(16),
-	    react: __webpack_require__(17)
+	var mixin = module.exports = function (component, obj) {
+	    return component.extend(obj);
 	};
 
 /***/ },
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Common = __webpack_require__(14);
+	var Common = __webpack_require__(17);
 
 	var label = module.exports = Common.extend({
 	    // expect the boundaries
@@ -846,7 +847,7 @@
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Common = __webpack_require__(14);
+	var Common = __webpack_require__(17);
 	var base = module.exports = Common.extend({
 	    init: function (node) {
 	      var self = this;
@@ -877,7 +878,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var Base = __webpack_require__(12);
-	var arc = __webpack_require__(16);
+	var arc = __webpack_require__(15);
 	module.exports = Base.extend({
 	    // include missing values
 	    _prepare: function () {
@@ -951,6 +952,94 @@
 
 /***/ },
 /* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var spark = __webpack_require__(4);
+	spark = new spark();
+	// TODO:: shrink the arguments!
+	module.exports = {
+	    /**
+	     * scale describe the min max
+	     * @param  attr: {
+	     *                  data : an N * M array,
+	     *                  height: chart height,
+	     *                  width: chart width   
+	     *             }
+	     * @return obj              min / max
+	     */
+	    getScale: function (attr) {
+	        var data = attr.data || 0;
+	        var scale = spark._scale(data);
+	        scale.paddingY = attr.paddingY || 5;
+	        scale.tickSize = spark._sigFigs((attr.width / (scale.len - 1)),8);
+	        scale.heightRatio = (attr.height - (scale.paddingY * 2)) / scale.max;
+	        scale.height = attr.height;
+	        scale.width = attr.width;
+	        return scale;
+	    },
+	    /**
+	     * getOpenPath describes the open path with the given set
+	     * @param  {[obj]} scale         contains min, max, interval, heightRatio, height, width
+	     * @param  {[array]} numberArray an array of numbers
+	     * @return {[string]}            string that descibes attributeD
+	     */
+	    getOpenPath: function (scale, numberArray) {
+	        return spark._describeAttributeD(numberArray, 0, scale.paddingY, scale);
+	    },
+	    /**
+	     * getClosedPath describes the closed path with the given set
+	     * @param  {[obj]} scale         contains min, max, interval, heightRatio, height, width
+	     * @param  {[array]} numberArray an array of numbers
+	     * @return {[string]}            string that descibes attributeD
+	     */
+	    getClosedPath: function(scale, numberArray) {
+	        return spark._describeAttributeD(numberArray, 0, scale.paddingY, scale) +
+	        spark._describeCloseAttributeD(numberArray, 0, scale.paddingY, scale);
+	    }
+	};
+
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	var arc = module.exports = {
+	    // snippet from http://stackoverflow.com/questions/5736398/how-to-calculate-the-svg-path-for-an-arc-of-a-circle
+	    // calculates the polar to cartesian coordinates
+	    polarToCartesian: function (centerX, centerY, radius, angleInDegrees) {
+	      var angleInRadians = (angleInDegrees-90) * Math.PI / 180.0;
+
+	      return {
+	        x: centerX + (radius * Math.cos(angleInRadians)),
+	        y: centerY + (radius * Math.sin(angleInRadians))
+	      };
+	    },
+	    // describes an arc
+	    describeArc: function (centerX, centerY, radius, startAngle, endAngle){
+	        var start = arc.polarToCartesian(centerX, centerY, radius, endAngle);
+	        var end = arc.polarToCartesian(centerX, centerY, radius, startAngle);
+	        var arcSweep = endAngle - startAngle <= 180 ? "0" : "1";
+
+	        var d = [
+	            "M", start.x, start.y,
+	            "A", radius, radius, 0, arcSweep, 0, end.x, end.y
+	        ].join(" ");
+
+	        return d;
+	    },
+	    describePie: function (centerX, centerY, radius, startAngle, endAngle) {
+	        return arc.describeArc(centerX, centerY, radius, startAngle, endAngle) + ' L' + centerX + ' ' + centerY;
+	    }
+	};
+
+/***/ },
+/* 16 */
+/***/ function(module, exports, __webpack_require__) {
+
+
+
+/***/ },
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(18);
@@ -1254,94 +1343,6 @@
 	      };
 	  }
 	});
-
-/***/ },
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var spark = __webpack_require__(4);
-	spark = new spark();
-	// TODO:: shrink the arguments!
-	module.exports = {
-	    /**
-	     * scale describe the min max
-	     * @param  attr: {
-	     *                  data : an N * M array,
-	     *                  height: chart height,
-	     *                  width: chart width   
-	     *             }
-	     * @return obj              min / max
-	     */
-	    getScale: function (attr) {
-	        var data = attr.data || 0;
-	        var scale = spark._scale(data);
-	        scale.paddingY = attr.paddingY || 5;
-	        scale.tickSize = spark._sigFigs((attr.width / (scale.len - 1)),8);
-	        scale.heightRatio = (attr.height - (scale.paddingY * 2)) / scale.max;
-	        scale.height = attr.height;
-	        scale.width = attr.width;
-	        return scale;
-	    },
-	    /**
-	     * getOpenPath describes the open path with the given set
-	     * @param  {[obj]} scale         contains min, max, interval, heightRatio, height, width
-	     * @param  {[array]} numberArray an array of numbers
-	     * @return {[string]}            string that descibes attributeD
-	     */
-	    getOpenPath: function (scale, numberArray) {
-	        return spark._describeAttributeD(numberArray, 0, scale.paddingY, scale);
-	    },
-	    /**
-	     * getClosedPath describes the closed path with the given set
-	     * @param  {[obj]} scale         contains min, max, interval, heightRatio, height, width
-	     * @param  {[array]} numberArray an array of numbers
-	     * @return {[string]}            string that descibes attributeD
-	     */
-	    getClosedPath: function(scale, numberArray) {
-	        return spark._describeAttributeD(numberArray, 0, scale.paddingY, scale) +
-	        spark._describeCloseAttributeD(numberArray, 0, scale.paddingY, scale);
-	    }
-	};
-
-/***/ },
-/* 16 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	var arc = module.exports = {
-	    // snippet from http://stackoverflow.com/questions/5736398/how-to-calculate-the-svg-path-for-an-arc-of-a-circle
-	    // calculates the polar to cartesian coordinates
-	    polarToCartesian: function (centerX, centerY, radius, angleInDegrees) {
-	      var angleInRadians = (angleInDegrees-90) * Math.PI / 180.0;
-
-	      return {
-	        x: centerX + (radius * Math.cos(angleInRadians)),
-	        y: centerY + (radius * Math.sin(angleInRadians))
-	      };
-	    },
-	    // describes an arc
-	    describeArc: function (centerX, centerY, radius, startAngle, endAngle){
-	        var start = arc.polarToCartesian(centerX, centerY, radius, endAngle);
-	        var end = arc.polarToCartesian(centerX, centerY, radius, startAngle);
-	        var arcSweep = endAngle - startAngle <= 180 ? "0" : "1";
-
-	        var d = [
-	            "M", start.x, start.y,
-	            "A", radius, radius, 0, arcSweep, 0, end.x, end.y
-	        ].join(" ");
-
-	        return d;
-	    },
-	    describePie: function (centerX, centerY, radius, startAngle, endAngle) {
-	        return arc.describeArc(centerX, centerY, radius, startAngle, endAngle) + ' L' + centerX + ' ' + centerY;
-	    }
-	};
-
-/***/ },
-/* 17 */
-/***/ function(module, exports, __webpack_require__) {
-
-
 
 /***/ },
 /* 18 */
