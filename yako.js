@@ -555,45 +555,35 @@
 	            return append(self.element, append(svg, paths));
 	        }
 	    },
-	    // Extends default ratio
+	    // Extends default ratio w/ auto scaling
 	    _getRatio: function (scale) {
 	        var data = scale._data;
 	        var height = scale.height;
 	        var width = scale.width;
+	        var len = scale.len;
 	        var maxRadius = (height < width ? height : width) / 3;
 	        if (scale.type && scale.type == 'bubble-scattered') {
 	            // bubble as a scattered graph
+	            maxRadius = scale.maxRadius = parseInt(scale.maxRadius) || Math.sqrt(width * height / len) / 2;
+	            scale.paddingLeft = scale.paddingLeft < maxRadius ? maxRadius : scale.paddingLeft;
+	            scale.paddingRight = scale.paddingRight < maxRadius ? maxRadius : scale.paddingRight;
+	            scale.paddingTop = scale.paddingTop < maxRadius ? maxRadius : scale.paddingTop;
+	            scale.paddingBottom = scale.paddingBottom < maxRadius ? maxRadius : scale.paddingBottom;
 	            scale.widthRatio = (width - scale.paddingLeft - scale.paddingRight) / scale.max[0];
 	            scale.heightRatio = (height - scale.paddingTop - scale.paddingBottom) / scale.max[1];
-	            scale.maxRadius = parseInt(scale.maxRadius) || maxRadius;
 
 	        } else {
 	            // bubble line (point) graph
 	            scale.bubble = scale.bubble || {};
 	            scale.xAxis = scale.xAxis || {};
 	            maxRadius = scale.bubble.maxRadius = parseInt(scale.bubble.maxRadius) || maxRadius;
-	            var tick = (width - scale.paddingLeft - scale.paddingRight) / (scale.len - 1);
-	            var len = scale.len;
+	            // figure out the maxRadius & paddings, maxRadius is a guide line
 
-	            // figure out the maxRadius, maxRadius is a guide line
-	            var secondPoisitionRadius = scale.bubble.maxRadius * (data[0] / scale.max) * tick * 2;
-
+	            var tickSize = (width - scale.paddingLeft - scale.paddingRight) / (len - 1);
+	            scale.bubble.maxRadius = tickSize < maxRadius ? tickSize + scale.paddingLeft : maxRadius;
 	            scale.paddingLeft = scale.paddingLeft || scale.bubble.maxRadius * (data[0] / scale.max);
 	            scale.paddingRight = scale.paddingRight || scale.bubble.maxRadius * (data[len - 1] / scale.max);
-	            // while (len--) {
-	            //     if (lastRadius < maxRadius) {
-	            //         lastRadius = scale.bubble.maxRadius * (data[len] / scale.max);
-	            //         lastRadius = lastRadius < maxRadius && lastRadius < tick * x ? tick * x : lastRadius;
-	            //     }
-	            //     if (firstRadius < maxRadius) {
-	            //         firstRadius = scale.bubble.maxRadius * (data[x] / scale.max);
-	            //         firstRadius = firstRadius < maxRadius && firstRadius < tick * x ? tick * x : firstRadius;
-	            //     }
-	            //     if (lastRadius > maxRadius && firstRadius > maxRadius)
-	            //         break;
-	            //     x++;
-	            // }
-	            scale.tickSize = (width - scale.paddingLeft - scale.paddingRight) / (scale.len - 1);
+	            scale.tickSize = (width - scale.paddingLeft - scale.paddingRight) / (len - 1);
 	        }
 	    },
 	    // bubble graph
