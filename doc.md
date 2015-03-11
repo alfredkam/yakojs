@@ -160,20 +160,33 @@ bubble('.graph').attr({
     // optional parameters
     'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
     // options for the straight line
-    strokeColor: '#000',  // sets default stroke color
-    paddingX: 10, // default 10 & overrides the paddingX to better suit the adjusted maxRadius.
-    // options for the circle
-    maxRadius: 10, // overrides default & sets a cap for a max radius for the bubble
-    fill: '#333', // sets default fill color
-    fills: ['#333','#334'] // this will override the fill color and matches with the adjacent data set
-    // Note: if strokeColor / strokeColors / fill / fills are not provided - it will randomly generate a color
+    xAxis: {
+        strokeColor: '#000',  // sets stroke color,
+        strokeWidth: 2
+    },
+    bubble: {
+        maxRadius: 10, // overrides default & sets a cap for a max radius for the bubble
+        strokeColor: '#000',  // set default stroke color
+        strokeColors: ['#000', '#1234'], // this will override the fill color and matches with the adjacent data set
+        strokeWidth: 2, // set default stroke width
+        strokeWidths: [2, 2], // this will override the stroke width and matches with the adjacent data set
+        fill: '#333', // sets default fill color
+        fills: ['#333','#334'] // this will override the fill color and matches with the adjacent data set
+        // Note: if strokeColor / strokeColors / fill / fills are not provided - it will randomly generate a color
+    },
+    // padding configuration for the chart
+    paddingLeft: 0, 
+    paddingRight: 0,
+    paddingTop: 0,
+    paddingBottom: 0
   },
   data: set
 });
-
 // default maxRadius base on chart attributes
-var maxRadius =  chart.maxRadius || (chart.height < chart.width ? chart.height : chart.width) / 2;
+var maxRadius =  chart.maxRadius || (chart.height < chart.width ? chart.height : chart.width) / 3;
 ```
+<b>Note</b> if a user does not provide maxRadius or paddings it will try to fit all the bubbles into the graph.
+
 ####Bubble Graph Attributes <i>( for representing a cohort)</i>
 ```javascript
 var set = [{

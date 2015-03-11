@@ -14,7 +14,7 @@ var fs = require('fs');
 // TODO:: fix edge case of 1 data Point
 var dataPoints = 30;
 var nOfGraphs = 10;
-var kind = 10;
+var kind = 11;
 var oddKinds = 2;
 var amount = nOfGraphs;
 
@@ -175,10 +175,25 @@ while (amount--) {
       width: 300,
       height: 100,
       'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
-      maxRadius: '10'
-      // additional options
-      // strokes: [],
-      // fills: []
+      xAxis: {
+        strokeColor: '#333',
+      },
+      bubble: {
+        maxRadius: 10
+        // additional options
+        // strokes: [],
+        // fills: []
+      }
+    },
+    title: 'just a test',
+    data: dataSet4
+  });
+
+  nodes += bubble('.graph').attr({
+    chart: {
+      width: 300,
+      height: 100,
+      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
     },
     title: 'just a test',
     data: dataSet4
