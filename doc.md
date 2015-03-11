@@ -185,8 +185,6 @@ bubble('.graph').attr({
 // default maxRadius base on chart attributes
 var maxRadius =  chart.maxRadius || (chart.height < chart.width ? chart.height : chart.width) / 3;
 ```
-<b>Note</b> if a user does not provide maxRadius or paddings it will try to fit all the bubbles into the graph.
-
 ####Bubble Graph Attributes <i>( for representing a cohort)</i>
 ```javascript
 var set = [{
@@ -207,14 +205,14 @@ bubble('.graph').attr({
     // options for the straight line
     // options for the circle
     maxRadius: 10, // overrides default & sets a cap for a max radius for the bubble
-    // fills: ['#333','#334'] // this will override the fill color and matches with the adjacent data set
+    // fills: ['#333','#334'] // this will override the fill color and matches with the adjacent dataset
     // Note: if fill / fills are not provided - it will randomly generate a color
   },
   data: set
 });
 
 // default maxRadius base on chart attributes
-var maxRadius =  chart.maxRadius || (chart.height < chart.width ? chart.height : chart.width) / 2;
+var maxRadius =  Math.sqrt(chart.width * chart.height / data.length) / 2;
 ```
 
 ###Bar Graph Attributes
