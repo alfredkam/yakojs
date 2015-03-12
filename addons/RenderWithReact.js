@@ -1,6 +1,7 @@
 var React = require('react');
 /**
  * An addon to render with ReactJs
+ * Usage documentation under https://github.com/alfredkam/yakojs/blob/master/doc.md#renderwithreact
  */
 var RenderWithReact = module.exports = {
   // Extends default make
@@ -32,7 +33,7 @@ var RenderWithReact = module.exports = {
       return childs;
     }
 
-    if (Object.prototype.toString.call(childs) !== '[object Array]') {
+    if (!(childs instanceof Array)) {
       childs = [childs];
     }
 

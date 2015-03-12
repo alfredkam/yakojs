@@ -1,3 +1,5 @@
+var util = require('util');
+
 var yako = require('./index');
 var spark = yako.spark;
 var pie = yako.pie;
@@ -5,6 +7,8 @@ var donut = yako.donut;
 var bubble = yako.bubble;
 var bar = yako.bar;
 var label = yako.label;
+
+var ReturnAsObject = require('./addons/ReturnAsObject');
 
 var http = require('http');
 var express = require('express');
@@ -179,7 +183,9 @@ while (amount--) {
         strokeColor: '#333',
       },
       bubble: {
-        maxRadius: 10
+        maxRadius: 10,
+        strokeColor: 'red',
+        strokeWidth: '3'
         // additional options
         // strokes: [],
         // fills: []
@@ -387,7 +393,6 @@ nodes = "<div class='.graph'>"+ bubble({
   title: 'just a test',
   data: bubbleSet
 })+ "</div>" + nodes;
-
 
 var diff = (Date.now() - now);
 

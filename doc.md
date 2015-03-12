@@ -2,6 +2,8 @@
 [API] (#api) <br>
 [SVG API] (#svg-api) <br>
 [Addons] (#addons) <br>
+&nbsp;&nbsp; [RenderWithReact] (#renderwithreact)<br>
+&nbsp;&nbsp; [ReturnAsObject] (#returnasobject)<br>
 [Extend or Modify Library] (#extending-or-modify-library) <br>
 
 [External Link: Visual Examples](http://alfredkam.com/yakojs/example.html) <br>
@@ -364,13 +366,43 @@ React.createClass({
       chart: {
         ...
       },
-      data: {
-        ...
-      }
+      data: [ ... ]
     });
   }
 })
 
+```
+
+###ReturnAsObject
+A plugin to return a dom like object representation
+```javascript
+var ReturnAsObject = require('yako/addons/ReturnAsObject');
+var spark = require('yako').spark;
+
+spark(RetunAsObject).attr({
+  chart: {
+    ...
+  },
+  data: [ ... ]
+});
+
+```
+
+Example result
+```javascript
+{ 
+  svg: [ 
+    g: {
+      path: { 
+        'stroke-linecap': 'round',
+        'stroke-linejoin': 'round',
+        'stroke-width': 2,
+        stroke: '#22e98e',
+        d: 'M0.8958407394241024 50 L60 298.5709207252044' 
+      } 
+    }
+  ]
+}
 ```
 
 ##Extending or Modify library
