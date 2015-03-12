@@ -640,8 +640,8 @@
 	                cy: centerY,
 	                r: config.maxRadius * (data[i] / scale.max),
 	                fill: fills[i] || (config.fill || this._randomColor()),
-	                strokeColor: strokeColors[i] || (config.strokeColor || this._randomColor()),
-	                strokeWidth: strokeWidths[i] || (config.strokeWidth || 2)
+	                stroke: strokeColors[i] || (config.strokeColor || this._randomColor()),
+	                'stroke-width': strokeWidths[i] || (config.strokeWidth || 2)
 	            }));
 	        }
 	        return paths;
@@ -1039,6 +1039,10 @@
 	__webpack_require__(18);
 	var utils;
 	var Class = __webpack_require__(19);
+
+	var isArray = function (obj) {
+	    return obj instanceof Array;
+	};
 	/**
 	 * deep extend object or json properties
 	 * @param  {object} object to extend
@@ -1069,7 +1073,7 @@
 	  append: function (parent, childs) {
 	    if (parent === '') return childs;
 
-	    if (!(childs instanceof Array)) {
+	    if (!isArray(childs)) {
 	      childs = [childs];
 	    }
 	    return parent.replace(/(.*)(<\/.*>$)/g, function (match, p1, p2) {
@@ -1099,9 +1103,8 @@
 	   * @param  any type
 	   * @return {Boolean}   true if its an array
 	   */
-	  _isArray: function (o) {
-	    return o instanceof Array;
-	  },
+	  _isArray: isArray,
+	  // Default ratio
 	  _getRatio: function (scale) {
 	    scale.heightRatio = scale.height - (scale.paddingTop + scale.paddingBottom) / scale.max;
 	  },
@@ -1156,7 +1159,7 @@
 
 	    var k = Object.keys(json), len = k.length;
 	    while(len--) {
-	        if (typeof json[k[len]] !== 'object' || self._isArray(json[k[len]])) {
+	        if (typeof json[k[len]] !== 'object' || isArray(json[k[len]])) {
 	            attr[k[len]] = json[k[len]];
 	        } else {    //it has child objects, copy them too.
 	            if (!attr[k[len]]) {
@@ -1173,7 +1176,7 @@
 	  makeToken: function () {
 	    return Math.random().toString(36).substr(2);
 	  },
-	    //sig fig rounding
+	  //sig fig rounding
 	  _sigFigs: function (n, sig) {
 	      var mult = Math.pow(10,
 	          sig - Math.floor(Math.log(n) / Math.LN10) - 1);
