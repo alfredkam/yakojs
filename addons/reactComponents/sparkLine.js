@@ -1,30 +1,15 @@
 var React = require('react');
+var spark = require('../../index').spark;
 var RenderWithReact = require('../RenderWithReact');
 
-modue.exports = React.createClass({
-
+module.exports = React.createClass({
     render: function () {
+        var self = this;
         return spark({
-            mixin: RenderWithReact,
-            renderWithProps: function () {
-              return {
-                    type: "div",
-                    props: {
-                      className: '',
-                    }
-                };
-            }
+            mixin: RenderWithReact
         }).attr({
-            'chart' : {
-                'height' : this.props.height,
-                'width'  : this.props.width
-            },
-            'data' : [{
-                'data'        : this.props.data,
-                'strokeColor' : colors['color-black-50'],
-                'strokeWidth' : 5,
-                'fill'        : colors['color-black-05'],
-            }]
+            'chart': self.props.chart,
+            'data' : self.props.data
         });
     }
 });
