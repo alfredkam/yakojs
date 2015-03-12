@@ -112,7 +112,7 @@
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(12);
+	var Base = __webpack_require__(13);
 	var Label = __webpack_require__(11);
 	var label = new Label();
 	var spark = module.exports = Base.extend({
@@ -317,7 +317,7 @@
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arcBase = __webpack_require__(13);
+	var arcBase = __webpack_require__(12);
 	var pie = module.exports = arcBase.extend({
 	    /**
 	     * [_describePath genereates the paths for each pie segment]
@@ -353,7 +353,7 @@
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arcBase = __webpack_require__(13);
+	var arcBase = __webpack_require__(12);
 	var pie = module.exports = arcBase.extend({
 	    /**
 	     * [_describePath genereates the paths for each pie segment]
@@ -421,7 +421,7 @@
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(12);
+	var Base = __webpack_require__(13);
 	var bar = module.exports = Base.extend({
 	    // include missing values
 	    _prepare: function () {
@@ -522,7 +522,7 @@
 /* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(13);
+	var Base = __webpack_require__(12);
 	var bubble = module.exports = Base.extend({
 	    _startCycle: function () {
 	        var self = this;
@@ -562,28 +562,30 @@
 	        var width = scale.width;
 	        var len = scale.len;
 	        var maxRadius = (height < width ? height : width) / 3;
+	        var paddingRight = scale.paddingRight;
+	        var paddingLeft = scale.paddingLeft;
+	        var paddingTop = scale.paddingTop;
+	        var paddingBottom = scale.paddingBottom;
 	        if (scale.type && scale.type == 'bubble-scattered') {
 	            // bubble as a scattered graph
 	            maxRadius = scale.maxRadius = parseInt(scale.maxRadius) || Math.sqrt(width * height / len) / 2;
-	            scale.paddingLeft = scale.paddingLeft < maxRadius ? maxRadius : scale.paddingLeft;
-	            scale.paddingRight = scale.paddingRight < maxRadius ? maxRadius : scale.paddingRight;
-	            scale.paddingTop = scale.paddingTop < maxRadius ? maxRadius : scale.paddingTop;
-	            scale.paddingBottom = scale.paddingBottom < maxRadius ? maxRadius : scale.paddingBottom;
+	            scale.paddingLeft = paddingLeft < maxRadius ? maxRadius : paddingLeft;
+	            scale.paddingRight = paddingRight < maxRadius ? maxRadius : paddingRight;
+	            scale.paddingTop = paddingTop < maxRadius ? maxRadius : paddingTop;
+	            scale.paddingBottom = paddingBottom < maxRadius ? maxRadius : paddingBottom;
 	            scale.widthRatio = (width - scale.paddingLeft - scale.paddingRight) / scale.max[0];
 	            scale.heightRatio = (height - scale.paddingTop - scale.paddingBottom) / scale.max[1];
-
 	        } else {
 	            // bubble line (point) graph
 	            scale.bubble = scale.bubble || {};
 	            scale.xAxis = scale.xAxis || {};
 	            maxRadius = scale.bubble.maxRadius = parseInt(scale.bubble.maxRadius) || maxRadius;
 	            // figure out the maxRadius & paddings, maxRadius is a guide line
-
-	            var tickSize = (width - scale.paddingLeft - scale.paddingRight) / (len - 1);
-	            scale.bubble.maxRadius = tickSize < maxRadius ? tickSize + scale.paddingLeft : maxRadius;
-	            scale.paddingLeft = scale.paddingLeft || scale.bubble.maxRadius * (data[0] / scale.max);
-	            scale.paddingRight = scale.paddingRight || scale.bubble.maxRadius * (data[len - 1] / scale.max);
-	            scale.tickSize = (width - scale.paddingLeft - scale.paddingRight) / (len - 1);
+	            var tickSize = (width - paddingLeft - paddingRight) / (len - 1);
+	            maxRadius = scale.bubble.maxRadius = tickSize < maxRadius ? tickSize + paddingLeft : maxRadius;
+	            scale.paddingLeft = paddingLeft || maxRadius * (data[0] / scale.max);
+	            scale.paddingRight = paddingRight || maxRadius * (data[len - 1] / scale.max);
+	            scale.tickSize = (width - paddingLeft - paddingRight) / (len - 1);
 	        }
 	    },
 	    // bubble graph
@@ -837,41 +839,12 @@
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Common = __webpack_require__(17);
-	var base = module.exports = Common.extend({
-	    init: function (node) {
-	      var self = this;
-	      // adding width 100% will allow us to have responsive graphs (in re-sizing)
-	      if (typeof node === 'string') {
-	        if (node[0] === '#') {
-	          this.element = this.make('div',{
-	            id: node.replace(/^#/,''),
-	            width: '100%'
-	          });
-	        } else {
-	          this.element = this.make('div',{
-	            "class": node.replace(/^\./,''),
-	            width: '100%'
-	          });
-	        }
-	      } else {
-	        this.element = '';
-	      }
-	      this.token = self.makeToken();
-	      this.attributes = {};
-	      return this;
-	    }
-	});
-
-/***/ },
-/* 13 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Base = __webpack_require__(12);
+	var Base = __webpack_require__(13);
 	var arc = __webpack_require__(15);
 	module.exports = Base.extend({
 	    // include missing values
 	    _prepare: function () {
+	        var self = this;
 	        var defaults = {
 	            chart: {
 	                type: 'chart',
@@ -884,19 +857,20 @@
 	                paddingBottom: 0
 	            }
 	        };
-	        this._extend(defaults, this.attributes.opts);
-	        this.attributes.opts = defaults;
-	        return this;
+	        self._extend(defaults, self.attributes.opts);
+	        self.attributes.opts = defaults;
+	        return self;
 	    },
 	    // public function for user to set & define the graph attributes
 	    attr: function (opts) {
+	        var self = this;
 	        opts = opts || 0;
 	        // width: 200,
 	        // height: 100
-	        this.attributes.data = opts.data || [];
-	        this.attributes.opts = opts;
+	        self.attributes.data = opts.data || [];
+	        self.attributes.opts = opts;
 
-	        return this.postRender(this._prepare()
+	        return self.postRender(self._prepare()
 	            ._startCycle());
 	    },
 	    // parent generator that manages the svg
@@ -924,8 +898,8 @@
 	            return self._describePath(outerRadius, relativeDataSet, scale);
 	        });
 
-	        return this.append(this.element,
-	                    this.append(svg, paths));
+	        return append(self.element,
+	                    append(svg, paths));
 	    },
 	    _polarToCartesian: arc.polarToCartesian,
 	    _describeArc: arc.describeArc,
@@ -937,6 +911,36 @@
 	     */
 	    _describePath: function () {
 	        return '';
+	    }
+	});
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Common = __webpack_require__(17);
+	var base = module.exports = Common.extend({
+	    init: function (node) {
+	      var self = this;
+	      // adding width 100% will allow us to have responsive graphs (in re-sizing)
+	      if (typeof node === 'string') {
+	        if (node[0] === '#') {
+	          this.element = this.make('div',{
+	            id: node.replace(/^#/,''),
+	            width: '100%'
+	          });
+	        } else {
+	          this.element = this.make('div',{
+	            "class": node.replace(/^\./,''),
+	            width: '100%'
+	          });
+	        }
+	      } else {
+	        this.element = '';
+	      }
+	      this.token = self.makeToken();
+	      this.attributes = {};
+	      return this;
 	    }
 	});
 
@@ -1064,7 +1068,8 @@
 	  // accepts multiple child
 	  append: function (parent, childs) {
 	    if (parent === '') return childs;
-	    if (Object.prototype.toString.call(childs) != '[object Array]') {
+
+	    if (!(childs instanceof Array)) {
 	      childs = [childs];
 	    }
 	    return parent.replace(/(.*)(<\/.*>$)/g, function (match, p1, p2) {
@@ -1095,7 +1100,7 @@
 	   * @return {Boolean}   true if its an array
 	   */
 	  _isArray: function (o) {
-	    return Object.prototype.toString.call(o) === '[object Array]';
+	    return o instanceof Array;
 	  },
 	  _getRatio: function (scale) {
 	    scale.heightRatio = scale.height - (scale.paddingTop + scale.paddingBottom) / scale.max;
@@ -1151,7 +1156,7 @@
 
 	    var k = Object.keys(json), len = k.length;
 	    while(len--) {
-	        if (typeof json[k[len]] !== 'object' || Object.prototype.toString.call(json[k[len]]) === '[object Array]') {
+	        if (typeof json[k[len]] !== 'object' || self._isArray(json[k[len]])) {
 	            attr[k[len]] = json[k[len]];
 	        } else {    //it has child objects, copy them too.
 	            if (!attr[k[len]]) {
