@@ -394,6 +394,19 @@ nodes = "<div class='.graph'>"+ bubble({
   data: bubbleSet
 })+ "</div>" + nodes;
 
+
+var obj = spark(ReturnAsObject).attr({
+    chart : {
+      width: 300,
+      height: 100,
+      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif'
+    },
+    title: 'just a test',
+    data: singleSet
+  });
+
+console.log(JSON.stringify(obj));
+
 var diff = (Date.now() - now);
 
 console.log('Took ' + diff + 'ms to generate ' + (nOfGraphs * kind + oddKinds) + ' graphs with '+ dataPoints + ' different data points each avg of ' + (diff/((nOfGraphs*kind)+oddKinds)) + 'ms');
