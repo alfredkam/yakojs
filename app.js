@@ -9,6 +9,7 @@ var bar = yako.bar;
 var label = yako.label;
 
 var ReturnAsObject = require('./addons/ReturnAsObject');
+var HoverWithReact = require('./addons/HoverWithReact');
 
 var http = require('http');
 var express = require('express');
@@ -395,7 +396,7 @@ nodes = "<div class='.graph'>"+ bubble({
 })+ "</div>" + nodes;
 
 
-var obj = spark(ReturnAsObject).attr({
+var obj = spark(HoverWithReact).attr({
     chart : {
       width: 300,
       height: 100,
@@ -405,7 +406,7 @@ var obj = spark(ReturnAsObject).attr({
     data: singleSet
   });
 
-console.log(JSON.stringify(obj));
+// console.log(JSON.stringify(obj));
 
 var diff = (Date.now() - now);
 
