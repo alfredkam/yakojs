@@ -112,7 +112,7 @@
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(13);
+	var Base = __webpack_require__(12);
 	var Label = __webpack_require__(11);
 	var label = new Label();
 	var spark = module.exports = Base.extend({
@@ -172,14 +172,10 @@
 	    var data = self.attributes.data;
 	    var opts = self.attributes.opts;
 	    var chart = opts.chart;
-	    var svg = self.make('svg',{
-	            width: chart.width,
-	            height: chart.height,
-	            viewBox: '0 0 ' + chart.width + ' ' + chart.height
-	        });
 	    var xAxis = opts.xAxis;
 	    var yAxis = opts.yAxis;
 	    var append = self.append;
+	    var svg;
 	    var paths = [];
 
 	    if (!self._isArray(data)) {
@@ -210,6 +206,11 @@
 	    }
 
 	    self._lifeCycleManager(scale, function (newScale) {
+	        svg = self.make('svg',{
+	            width: chart.width,
+	            height: chart.height,
+	            viewBox: '0 0 ' + chart.width + ' ' + chart.height
+	        });
 	        for (var x = 0; x < scale.rows; x++) {
 	            if (yAxis && yAxis.multi) {
 	              scale.heightRatio = scale.pHeight / scale.max[x];
@@ -292,24 +293,27 @@
 	        'stroke-width': data.strokeWidth || '3',
 	        'stroke-linejoin': 'round',
 	        'stroke-linecap': 'round',
-	        'class': '_yakoTransitions-' + data.label,
 	        fill: 'none'
 	    });
+	    var paths = [];
 
-	    return [
-	      data.fill && scale.fill ? self.make('path', {
+	    if (data.fill && scale.fill) {
+	      paths.push(self.make('path', {
 	        d: pathToken + self._describeCloseAttributeD(data.data, paddingLeft, paddingTop, scale),
 	        stroke: 'none',
 	        'stroke-width': '2',
 	        'stroke-linejoin': 'round',
 	        'stroke-linecap': 'round',
-	        'class': '_yakoTransitions-' + data.label,
 	        fill: data.fill
-	      }) : '',
-	      scale.line ? pathNode : ''
-	    ].concat(scale.scattered ?
-	        self._describeScatteredGraph(data, data.data, paddingLeft, paddingTop, scale) :
-	        []);
+	      }));
+	    }
+	    if (scale.line) {
+	      paths.push(pathNode);
+	    }
+	    if (scale.scattered) {
+	      paths.push(self._describeScatteredGraph(data, data.data, paddingLeft, paddingTop, scale))
+	    }
+	    return paths;
 	  }
 	});
 
@@ -317,7 +321,7 @@
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arcBase = __webpack_require__(12);
+	var arcBase = __webpack_require__(13);
 	var pie = module.exports = arcBase.extend({
 	    /**
 	     * [_describePath genereates the paths for each pie segment]
@@ -353,7 +357,7 @@
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arcBase = __webpack_require__(12);
+	var arcBase = __webpack_require__(13);
 	var pie = module.exports = arcBase.extend({
 	    /**
 	     * [_describePath genereates the paths for each pie segment]
@@ -421,7 +425,7 @@
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(13);
+	var Base = __webpack_require__(12);
 	var bar = module.exports = Base.extend({
 	    // include missing values
 	    _prepare: function () {
@@ -457,14 +461,15 @@
 	        var self = this;
 	        var chart = this.attributes.opts.chart;
 	        var append = self.append;
-	        var svg = this.make('svg',{
-	            width: chart.width,
-	            height: chart.height,
-	            viewBox: '0 0 ' + chart.width + ' ' + chart.height,
-	        });
+	        var svg;
 
 	        var scale = self._defineBaseScaleProperties(data, chart);
 	        paths = self._lifeCycleManager(scale, function (newScale) {
+	            svg = self.make('svg',{
+	                width: chart.width,
+	                height: chart.height,
+	                viewBox: '0 0 ' + chart.width + ' ' + chart.height,
+	            });
 	            return self._describeBar(data, scale);
 	        });
 	        return append(self.element,append(svg, paths));
@@ -522,32 +527,38 @@
 /* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(12);
+	var Base = __webpack_require__(13);
 	var bubble = module.exports = Base.extend({
 	    _startCycle: function () {
 	        var self = this;
 	        var chart = self.attributes.opts.chart;
 	        var data = self.attributes.data;
-	        var svg = self.make('svg',{
-	            width: chart.width,
-	            height: chart.height,
-	            viewBox: '0 0 ' + chart.width + ' ' + chart.height,
-	        });
+	        var svg;
 	        var append = self.append;
 	        var render = self.postRender;
 	        var paths = '';
 	        var scale;
 
+	        var getSvg = function () {
+	            return self.make('svg',{
+	                width: chart.width,
+	                height: chart.height,
+	                viewBox: '0 0 ' + chart.width + ' ' + chart.height,
+	            });
+	        };
+
 	        if (chart.type == 'scattered') {
 	            chart.type = 'bubble-scattered';
 	            scale = self._defineBaseScaleProperties(data, chart);
 	            paths = self._lifeCycleManager(scale, function (newScale) {
+	                svg = getSvg();
 	                return self._describeBubbleChart(data, newScale);
 	            });
 	            return append(self.element,append(svg, paths));
 	        } else {
 	            scale = self._defineBaseScaleProperties(data, chart);
 	            paths = self._lifeCycleManager(scale, function (newScale) {
+	                svg = getSvg();
 	                paths = self._describeBubble(data, chart.height, chart.width, newScale);
 	                paths.unshift(self._describeXAxis(chart.height, chart.width, newScale));
 	                return paths;
@@ -839,7 +850,37 @@
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(13);
+	var Common = __webpack_require__(17);
+	var base = module.exports = Common.extend({
+	    init: function (node) {
+	      var self = this;
+	      // adding width 100% will allow us to have responsive graphs (in re-sizing)
+	      if (typeof node === 'string') {
+	        if (node[0] === '#') {
+	          this.element = this.make('div',{
+	            id: node.replace(/^#/,''),
+	            width: '100%'
+	          });
+	        } else {
+	          this.element = this.make('div',{
+	            "class": node.replace(/^\./,''),
+	            width: '100%'
+	          });
+	        }
+	      } else {
+	        this.element = '';
+	      }
+	      this.token = self.makeToken();
+	      this.attributes = {};
+	      return this;
+	    }
+	});
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Base = __webpack_require__(12);
 	var arc = __webpack_require__(15);
 	module.exports = Base.extend({
 	    // include missing values
@@ -878,11 +919,7 @@
 	        var self = this;
 	        var chart = self.attributes.opts.chart;
 	        var data = self.attributes.data;
-	        var svg = self.make('svg',{
-	            width: chart.width,
-	            height: chart.height,
-	            viewBox: '0 0 ' + chart.width + ' ' + chart.height,
-	        });
+	        var svg;
 
 	        var append = this.append;
 	        // find the max width & height
@@ -895,6 +932,11 @@
 	        };
 	        self._extend(scale, chart);
 	        paths = self._lifeCycleManager(scale, function (newScale) {
+	            svg = self.make('svg',{
+	                width: chart.width,
+	                height: chart.height,
+	                viewBox: '0 0 ' + chart.width + ' ' + chart.height,
+	            });
 	            return self._describePath(outerRadius, relativeDataSet, scale);
 	        });
 
@@ -911,36 +953,6 @@
 	     */
 	    _describePath: function () {
 	        return '';
-	    }
-	});
-
-/***/ },
-/* 13 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Common = __webpack_require__(17);
-	var base = module.exports = Common.extend({
-	    init: function (node) {
-	      var self = this;
-	      // adding width 100% will allow us to have responsive graphs (in re-sizing)
-	      if (typeof node === 'string') {
-	        if (node[0] === '#') {
-	          this.element = this.make('div',{
-	            id: node.replace(/^#/,''),
-	            width: '100%'
-	          });
-	        } else {
-	          this.element = this.make('div',{
-	            "class": node.replace(/^\./,''),
-	            width: '100%'
-	          });
-	        }
-	      } else {
-	        this.element = '';
-	      }
-	      this.token = self.makeToken();
-	      this.attributes = {};
-	      return this;
 	    }
 	});
 
@@ -1091,10 +1103,12 @@
 	    el += this._makePairs('data', dataAttribute);
 	    return el += '>' + (content || content === 0 ? content : '') + '</'+tagName+'>';
 	  },
+	  // 
 	  _deepCopy: function (objToCopy) {
 	    return JSON.parse(JSON.stringify(objToCopy));
 	  },
-	 postRender: function (result) {
+	  // 
+	  postRender: function (result) {
 	    // super class
 	    return result;
 	  },
@@ -1120,11 +1134,16 @@
 	    self._getRatio(scale);
 	    return scale;
 	  },
+	  // TODO:: Rename lifeCycleManager, incorrect term usage
 	  _lifeCycleManager: function (scale, describe) {
 	    var self = this;
+	    // check if there is any external steps needed to be done
+	    if (self._call) {
+	      self._call(scale);
+	    }
 	    // make the obj's shallow properties immutable
 	    // we can know if we want to skip the entire process to speed up the computation
-	    var properties = (this.preRender ? this.preRender(Object.freeze(self._deepCopy(scale))) : 0);
+	    var properties = (self.preRender ? self.preRender(Object.freeze(self._deepCopy(scale))) : 0);
 	    // properties will except
 	    // append
 	    // prepend
