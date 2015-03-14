@@ -6,6 +6,7 @@ var React = require('react');
 var RenderWithReact = module.exports = {
   // Extends default make
   make: function (tagName, attribute, dataAttribute, content) {
+    attribute = attribute || {};
     return React.createElement(tagName, RenderWithReact.renameProps(attribute), content);
   },
   // Rename props to be react compatible
