@@ -50,7 +50,7 @@ module.exports = React.createClass({
         mixin: HoverWithReact,
         bindOn: ['path:hover','svg:mouseMove', 'path:click'],
         on: function (tagName, e, props) {
-          console.log('on:', tagName, e.type, JSON.stringify(props));
+          console.log('on:', tagName, e.type, props);
         }
       }).attr({
           chart : {

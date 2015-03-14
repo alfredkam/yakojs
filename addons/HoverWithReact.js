@@ -58,23 +58,26 @@ var Component = module.exports = RenderWithReact.extend({
     var data = this.attributes.data;
     var eX = e.nativeEvent.offsetX;
     var eY = e.nativeEvent.offsetY;
-    var result = [];
+    var points = [];
 
-    console.log(props);
     // if out of quadrant should return
 
     var quadrantX = (eX - scale.paddingLeft + (scale.tickSize / 2)) / (scale.tickSize * scale.len);
-    quadrantX = Math.floor(quadrantX * 10)
+    quadrantX = Math.floor(quadrantX * 10);
 
     for (var i in data) {
-      result.push({
+      points.push({
         label: data[i].label,
         value: data[i].data[quadrantX]
       });
     }
-    // console.log('quadrant:', , eX);
 
-    self.on(tagName, e, result);
+    var properties = {
+      points: points,
+      scale: scale
+    };
+
+    self.on(tagName, e, properties);
   },
   bindOn: ['path:hover', 'svg:click'],
   on: function (tagName, event, props) {

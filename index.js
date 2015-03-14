@@ -3,7 +3,7 @@
   MIT LICENSE
   Alfred Kam (@alfredkam)
 */
-var sparkLine = require('./lib/sparkLine');
+var sparkLine = require('./lib/spark');
 var pie = require('./lib/pie');
 var donut = require('./lib/donut');
 var bar = require('./lib/bar');
