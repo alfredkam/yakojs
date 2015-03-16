@@ -48,9 +48,27 @@ module.exports = React.createClass({
 
     return spark({
         mixin: HoverWithReact,
+        setThis: function () {
+          return self;
+        },
         bindOn: ['path:hover','svg:mouseMove', 'path:click'],
         on: function (tagName, e, props) {
-          console.log('on:', tagName, e.type, props);
+          // console.log('on:', tagName, e.type, props);
+          var str = [];
+          if (props.points) {
+            for (var i = 0; i < props.points.length; i++) {
+              str.push(props.points[i].label + "," + props.points[i].value);
+            }
+          }
+
+          return str;
+        },
+        toolTip: function (arr) {
+          var html = '';
+          for (var i in arr) {
+            html += '<span>' + arr[i] + '</span>';
+          }
+          return html;
         }
       }).attr({
           chart : {

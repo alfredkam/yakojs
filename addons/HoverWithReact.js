@@ -16,10 +16,30 @@ var shortHandBindFilterDefinitions = {
 var Component = module.exports = RenderWithReact.extend({
   _events: {},
   _props: {},
+  _refs: {},
   _call: function (scale) {
-    this._props = scale;
-    this._hydrate();
+    var self = this;
+    self._props = scale;
+    self._createMap();
+    self._hydrate();
     return this;
+  },
+  _createMap: function () {
+    var self = this;
+    var data = self.attributes.data;
+    var map = {};
+
+    if (self._isArray(data) && data[0] instanceof Object) {
+      for (var i = 0; i < data.length; i++) {
+        var ref = self._makeToken();
+        map[ref] = {
+          ref: ref,
+          data: data[i]
+        };
+        data[i]._ref = ref;
+      }
+    }
+    self._refs = map;
   },
   _hydrate: function () {
     var self = this;
@@ -38,6 +58,7 @@ var Component = module.exports = RenderWithReact.extend({
   },
   make: function (tagName, attribute, dataAttribute, content) {
     var self = this;
+    attribute = attribute || {};
     var props = Component.renameProps(attribute);
     var events = self._events;
     function associateTriggers() {
@@ -51,6 +72,37 @@ var Component = module.exports = RenderWithReact.extend({
     associateTriggers();
     return React.createElement(tagName, props, content);
   },
+  // show tool tip
+  _showTP: function (content) {
+    var self = this;
+    var component = self._this;
+    var element = component.refs.toolTip;
+
+    component.state.toolTipContent = 'x';
+
+  },
+  postRender: function (content) {
+    var self = this;
+
+    var toolTip = React.createClass({
+      getInitialState: function () {
+        
+      },
+      render: function () {
+        return React.createElement("div",{
+          ref: 'toolTip'
+        });
+      }
+    });
+
+    // console.log(toolTip);
+
+
+    return React.createElement("div", {},[
+      content,
+      toolTip
+    ]);
+  },
   _trigger: function (tagName, e, props, content) {
     var self = this;
     // do something
@@ -59,9 +111,9 @@ var Component = module.exports = RenderWithReact.extend({
     var eX = e.nativeEvent.offsetX;
     var eY = e.nativeEvent.offsetY;
     var points = [];
+    var ref = props._ref || 0;
 
     // if out of quadrant should return
-
     var quadrantX = (eX - scale.paddingLeft + (scale.tickSize / 2)) / (scale.tickSize * scale.len);
     quadrantX = Math.floor(quadrantX * 10);
 
@@ -74,16 +126,18 @@ var Component = module.exports = RenderWithReact.extend({
 
     var properties = {
       points: points,
-      scale: scale
+      scale: scale,
+      segmentXRef: quadrantX
     };
 
-    self.on(tagName, e, properties);
+    if (ref) {
+      properties.data = self._refs[ref];
+    }
+    var feedback = self.on(tagName, e, properties);
+    self._showTP(self.toolTip(feedback));
   },
-  bindOn: ['path:hover', 'svg:click'],
+  bindOn: [],
   on: function (tagName, event, props) {
-    return;
-  },
-  legend: function () {
     return;
   },
   toolTip: function () {
