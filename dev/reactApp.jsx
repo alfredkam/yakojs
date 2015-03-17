@@ -38,8 +38,14 @@ var dataPoints = 10;
             label: 'blue'
         }
     ];
+
+var chart = {
+  width: 1200,
+  height: 150
+};
+
 React.render(
   <div>
-    <Spark dataSet={set}/>
+    <Spark chart={chart} dataSet={set}/>
   </div>,
   document.getElementsByTagName('body')[0]);

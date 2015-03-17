@@ -5,18 +5,24 @@ module.exports = React.createClass({
     mixins: [PureRenderMixin],
     render: function () {
       var self = this;
+      var position = self.props.position || 0;
       var style = {
         position: 'absolute',
-        transform: 'translate(' + self.props.position.left + 'px,' + self.props.position.top + 'px)',
+        transform: 'translate(' + (position.hasOwnProperty('left') ? position.left : position.right) + 'px,' + position.top + 'px)',
         visibility: self.props.shouldShow ? 'visible' : 'hidden',
-        top: 0,
-        left: 0
+        top: 0
       };
 
+      if (position.hasOwnProperty('left')) {
+        style.left = 0;
+      } else {
+        style.right = 0;
+      }
+
       return (
-        <div style={style}>
+        <span style={style}>
             {self.props.children}
-        </div>
+        </span>
       );
     }
 });

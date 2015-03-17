@@ -11,11 +11,7 @@ module.exports = React.createClass({
           bindOn: ['path:hover','svg:mouseMove','svg:mouseLeave', 'path:click'],
           on: self.props.onTrigger
         }).attr({
-            chart : {
-              width: 1200,
-              height: 150,
-              'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif'
-            },
+            chart : self.props.chart,
             'data': self.props.dataSet
         });
     }
