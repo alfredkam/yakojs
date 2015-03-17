@@ -53,7 +53,9 @@ module.exports = React.createClass({
     var self = this;
 
     var events = {
+      // bindOn are the events you want to listen
       bindOn: ['path:hover','svg:mouseMove','svg:mouseLeave', 'path:click'],
+      // event call back
       on: function (tagName, e, props) {
         var html = [];
         var shouldShow = false;
@@ -62,10 +64,8 @@ module.exports = React.createClass({
           var html = props.points.map(function (key) {
             return key.label + ':' + key.value;
           });
-        } else {
-          console.log(e.type);
-        }
-        // console.log()
+        } 
+
         self.setState({
           toolTip: {
             shouldShow: shouldShow,
