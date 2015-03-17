@@ -8,9 +8,6 @@ var bubble = yako.bubble;
 var bar = yako.bar;
 var label = yako.label;
 
-var ReturnAsObject = require('./addons/ReturnAsObject');
-var HoverWithReact = require('./addons/HoverWithReact');
-
 var http = require('http');
 var express = require('express');
 var app = express();
@@ -394,19 +391,6 @@ nodes = "<div class='.graph'>"+ bubble({
   title: 'just a test',
   data: bubbleSet
 })+ "</div>" + nodes;
-
-
-var obj = spark(HoverWithReact).attr({
-    chart : {
-      width: 300,
-      height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif'
-    },
-    title: 'just a test',
-    data: singleSet
-  });
-
-// console.log(JSON.stringify(obj));
 
 var diff = (Date.now() - now);
 

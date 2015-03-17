@@ -38,7 +38,7 @@ var RenderWithReact = module.exports = {
     if (!(childs instanceof Array)) {
       childs = [childs];
     }
-
+    
     childs.unshift(parent._store.props);
     childs.unshift(parent.type);
     return React.createElement.apply(null, childs);

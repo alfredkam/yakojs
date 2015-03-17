@@ -72,36 +72,10 @@ var Component = module.exports = RenderWithReact.extend({
     associateTriggers();
     return React.createElement(tagName, props, content);
   },
-  // show tool tip
-  _showTP: function (content) {
-    var self = this;
-    var component = self._this;
-    var element = component.refs.toolTip;
-
-    component.state.toolTipContent = 'x';
-
-  },
-  postRender: function (content) {
+  postRender: function (reactElement) {
     var self = this;
 
-    var toolTip = React.createClass({
-      getInitialState: function () {
-        
-      },
-      render: function () {
-        return React.createElement("div",{
-          ref: 'toolTip'
-        });
-      }
-    });
-
-    // console.log(toolTip);
-
-
-    return React.createElement("div", {},[
-      content,
-      toolTip
-    ]);
+    return reactElement;
   },
   _trigger: function (tagName, e, props, content) {
     var self = this;
@@ -133,8 +107,7 @@ var Component = module.exports = RenderWithReact.extend({
     if (ref) {
       properties.data = self._refs[ref];
     }
-    var feedback = self.on(tagName, e, properties);
-    self._showTP(self.toolTip(feedback));
+    self.on(tagName, e, properties);
   },
   bindOn: [],
   on: function (tagName, event, props) {
