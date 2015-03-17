@@ -13,6 +13,8 @@ var express = require('express');
 var app = express();
 var fs = require('fs');
 
+var Label = require('./addons/Label');
+
 // TODO:: fix edge case of 1 data Point
 var dataPoints = 30;
 var nOfGraphs = 10;
@@ -281,10 +283,7 @@ var set = [
 ];
 
 var sparkInstance = spark({
-  preRender: function (immutableScale) {
-    // console.log(immutableScale);
-    return {};
-  }
+  mixin: Label
 });
 
 nodes = '<div class=".graph">' + sparkInstance.attr({
@@ -319,7 +318,7 @@ nodes = '<div class=".graph">' + sparkInstance.attr({
       // or if wanted custom label
       // format: 'label',
       // labels: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
-  }
+    }
 }) + '</div><div class=".graph">'  + sparkInstance.attr({
     chart : {
       width: 1200,
@@ -356,8 +355,8 @@ nodes = '<div class=".graph">' + sparkInstance.attr({
 
 
 // *** preRender Test *** //
-var label = new label();
 nodes = "<div class='.graph'>"+ bubble({
+  mixin: Label,
   preRender: function (immutableScale) {
     // console.log(immutableScale);
     var self = this;
@@ -373,7 +372,7 @@ nodes = "<div class='.graph'>"+ bubble({
     copy.paddingLeft = 30;
     copy.max = splitProperty.max;
     copy.ySecs = splitProperty.splits;
-    var axis = label.describeYAxis(copy);
+    var axis = self.describeYAxis(copy);
     
     return {
       prepend: axis

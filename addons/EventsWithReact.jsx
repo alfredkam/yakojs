@@ -61,6 +61,7 @@ var Component = module.exports = RenderWithReact.extend({
     self._events = list;
   },
   make: function (tagName, attribute, dataAttribute, content) {
+    console.log(attribute);
     var self = this;
     attribute = attribute || {};
     var props = Component.renameProps(attribute);

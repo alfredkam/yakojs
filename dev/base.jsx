@@ -1,13 +1,24 @@
 var React = require('react');
 var Spark = require('./react/spark');
-var ToolTip = require('../addons/reactComponents/toolTip');
-
+var ToolTip = require('../addons/react-components/toolTip');
+var Legend = require('../addons/react-components/legend');
 module.exports = React.createClass({
   getInitialState: function () {
     return {
       shouldShow: false,
+      toolTip: {
+        shouldShow: false,
+        content: '',
+        style: {},
+        position: {}
+      },
       toolTipPosition: {},
       toolTipContent: '',
+      legend: {
+        shouldShow: false,
+        style: {},
+        content: ''
+      }
     };
   },
   getToolTipPosition: function (e, props) {
@@ -80,6 +91,10 @@ module.exports = React.createClass({
           position={self.state.toolTipPosition} >
             {self.state.toolTipContent}
         </ToolTip>
+        <Legend
+          shouldShow={self.state.legend.shouldShow}>
+            {self.state.legend.content}
+        </Legend>
       </div>
     );
   }

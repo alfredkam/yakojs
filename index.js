@@ -10,7 +10,6 @@ var bar = require('./lib/bar');
 var bubble = require('./lib/bubble');
 var svg = require('./lib/svg/svg');
 var mixin = require('./lib/utils/mixin');
-var label = require('./lib/utils/label');
 
 var initialize = function (component, obj) {
   if (typeof obj === 'object') {
@@ -37,6 +36,5 @@ module.exports = {
   bar: function (opts) {
     return initialize(bar, opts);
   },
-  svg: svg,
-  label: label
+  svg: svg
 };

@@ -1,4 +1,5 @@
 var yako = require('../index');
+var Label = require('../addons/Label');
 var spark = yako.spark;
 var pie = yako.pie;
 var donut = yako.donut;
@@ -10,18 +11,20 @@ var append = function (className, content) {
 };
 
 var spark = yako.spark;
-var component = spark();
+var component = spark({
+  mixin: Label
+});
 
-var set = [ { data: 
+var set = [ { data:
      [ 494, 306, 350, 389, 367, 295, 281, 404, 256, 378, 389, 127, 214, 103, 425, 99, 413, 320, 204, 276, 307, 107, 436, 485, 227, 42, 439, 167, 55, 33 ],
     strokeColor: '#f2ee2',
     fill: '#424c2d',
-    scattered: 
+    scattered:
      { strokeColor: '#38c98f',
        fill: 'white',
        strokeWidth: 2,
        radius: 3 } },
-  { data: 
+  { data:
      [ 282, 336, 181, 329, 209, 338, 16, 215, 251, 270, 49, 389, 216, 218, 11, 485, 145, 60, 33, 299, 333, 126, 464, 69, 329, 257, 328, 282, 247, 397 ],
     strokeColor: '#ab2ab1',
     fill: '#be514',

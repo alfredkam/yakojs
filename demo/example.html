@@ -66,7 +66,10 @@ var svg = component.attr({
                 <pre class='lang-javascript'>
     <code>
     var spark = yako.spark;
-    var component = spark();
+    var Label = yako.addons.Label;
+    var component = spark({
+      mixin: Label
+    });
     var set = [ {
             data: [ 36, 409, 109, 245, 355, 410, 257, 316, 179, 19 ],
             strokeColor: 'red',
@@ -127,7 +130,10 @@ var svg = component.attr({
                 <pre class='lang-javascript'>
 <code>
 var spark = yako.spark;
-var component = spark();
+var Label = yako.addons.Label;
+var component = spark({
+  mixin: Label
+});
 var set = [ {
         data: [ 36, 409, 109, 245, 355, 410, 257, 316, 179, 19 ],
         strokeColor: 'red',

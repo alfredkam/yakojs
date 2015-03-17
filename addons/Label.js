@@ -1,13 +1,4 @@
-var Common = require('../base/common');
-
-var label = module.exports = Common.extend({
-    // expect the boundaries
-    describe: function (minMax, chart) {
-
-    },
-    describeBorder: function () {
-
-    },
+var label = module.exports = {
     describeYAxis: function (scale, opts) {
         var self = this;
         var axis = [];
@@ -141,10 +132,10 @@ var label = module.exports = Common.extend({
             str = str.replace(/hh/, (dateObj.getHours() - 12 === 0 ? 12 : dateObj.getHours() - 12))
                     .replace(/ap/, 'pm');
           else
-            str = str.replace(/hh/, (dateObj.getHours() == 0? 12 :  dateObj.getHours()))
+            str = str.replace(/hh/, (dateObj.getHours() === 0 ? 12 :  dateObj.getHours()))
                     .replace(/ap/,'am');
         } else
-          str = str.replace(/hh/, (dateObj.getHours() == 0? 12 :  dateObj.getHours()))
+          str = str.replace(/hh/, (dateObj.getHours() === 0 ? 12 :  dateObj.getHours()));
 
         str = str.replace(/MM/,dateObj.getMonth()+1)
             .replace(/DD/, dateObj.getDate());
@@ -155,7 +146,7 @@ var label = module.exports = Common.extend({
         } else {
             str = str.replace(/mm/,dateObj.getMinutes())
             .replace(/ss/,dateObj.getSeconds());
-        } 
+        }
         return str;
     }
-});
+};

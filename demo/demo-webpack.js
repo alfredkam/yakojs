@@ -1,4 +1,5 @@
 var yako = require('../index');
+var Label = require('../addons/Label');
 var spark = yako.spark;
 var pie = yako.pie;
 var donut = yako.donut;
@@ -252,6 +253,11 @@ var set = [
         }
     }
 ];
+
+var sparkInstance = spark({
+  mixin: Label
+});
+
 nodes = sparkInstance.attr({
     chart : {
       width: 1200,
