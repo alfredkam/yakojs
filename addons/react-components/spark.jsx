@@ -66,8 +66,7 @@ module.exports = React.createClass({
     var style = {
       height: chart.height || 100,
       width: chart.width || 200,
-      position: 'relative',
-      border: '1px solid red'
+      position: 'relative'
     };
 
     var toolTipSettings = {
@@ -78,7 +77,10 @@ module.exports = React.createClass({
       position: {}
     };
 
-    var userDefinedToolTip = self.props.toolTip;
+    var events = self.props.events || {};
+    var userDefinedToolTip = self.props.toolTip || {};
+    var legend = self.props.legend || {};
+
     if ((Object.keys(userDefinedToolTip) == 0) || (userDefinedToolTip.shouldShow === false)) {
         toolTipSettings.shouldShow = false;
     } else {
@@ -90,7 +92,7 @@ module.exports = React.createClass({
       <div style={style}>
         <Spark
           chart={chart}
-          bindOn={self.props.events.bindOn}
+          bindOn={events.bindOn}
           onTrigger={self.onYakoEvent}
           dataSet={self.props.dataSet} />
         <ToolTip 
@@ -100,7 +102,7 @@ module.exports = React.createClass({
         </ToolTip>
         <Legend
           settings={self.props.legend} >
-            {self.props.legend.content}
+            {legend.content}
         </Legend>
       </div>
     );

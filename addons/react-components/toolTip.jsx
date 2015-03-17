@@ -12,7 +12,6 @@ module.exports = React.createClass({
         position: 'absolute',
         transform: 'translate(' + (position.hasOwnProperty('left') ? position.left : 0) + 'px,' + position.top + 'px)',
         visibility: settings.shouldShow ? 'visible' : 'hidden',
-        background: 'white',
         top: 0
       };
 

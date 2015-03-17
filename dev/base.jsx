@@ -57,6 +57,7 @@ module.exports = React.createClass({
       bindOn: ['path:hover','svg:mouseMove','svg:mouseLeave', 'path:click'],
       // event call back
       on: function (tagName, e, props) {
+        console.log(props);
         var html = [];
         var shouldShow = false;
         if (tagName == 'svg' && e.type == 'mousemove') {
@@ -76,7 +77,12 @@ module.exports = React.createClass({
     };
 
     return (
-      <Spark chart={chart} dataSet={this.props.set} events={events} toolTip={self.state.toolTip} legend={self.state.legend} />
+      <Spark 
+        chart={chart} 
+        dataSet={this.props.set}
+        events={events}
+        toolTip={self.state.toolTip}
+        legend={self.state.legend} />
     );
   }
 });
