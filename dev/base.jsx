@@ -7,12 +7,17 @@ var Spark = require('../addons/react-components/spark');
 module.exports = React.createClass({
   getInitialState: function () {
     return {
-        toolTip: {
+      toolTip: {
         shouldShow: false,
         content: '',
         className: '',
         offsetBottom: 20,
         position: {}
+      },
+      legend: {
+        shouldShow: false,
+        className: '',
+        content: ''
       }
     };
   },
@@ -50,32 +55,28 @@ module.exports = React.createClass({
     var events = {
       bindOn: ['path:hover','svg:mouseMove','svg:mouseLeave', 'path:click'],
       on: function (tagName, e, props) {
+        var html = [];
+        var shouldShow = false;
         if (tagName == 'svg' && e.type == 'mousemove') {
-
+          shouldShow = true;
           var html = props.points.map(function (key) {
             return key.label + ':' + key.value;
           });
-          
-          self.setState({
-            toolTip: {
-              shouldShow: true,
-              content: html.join(","),
-            }
-          });
-
         } else {
-          self.setState({
-            toolTip: {
-              shouldShow: false
-            }
-          });
+          console.log(e.type);
         }
+        // console.log()
+        self.setState({
+          toolTip: {
+            shouldShow: shouldShow,
+            content: html.join(","),
+          }
+        });
       }
     };
 
-    var legend = {};
     return (
-      <Spark chart={chart} dataSet={this.props.set} events={events} toolTip={self.state.toolTip} legend={legend} />
+      <Spark chart={chart} dataSet={this.props.set} events={events} toolTip={self.state.toolTip} legend={self.state.legend} />
     );
   }
 });

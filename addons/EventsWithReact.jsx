@@ -36,10 +36,7 @@ var Component = module.exports = RenderWithReact.extend({
 
     if (self._isArray(data) && data[0] instanceof Object) {
       for (var i = 0; i < data.length; i++) {
-        map[data[i]._ref] = {
-          ref: data[i]._ref,
-          data: data[i]
-        };
+        map[data[i]._ref] = data[i];
       }
     }
     self._refs = map;
@@ -108,6 +105,10 @@ var Component = module.exports = RenderWithReact.extend({
     };
 
     if (ref) {
+      properties.exactPoint = {
+        value: self._refs[ref].data[quadrantX],
+        label: self._refs[ref].label
+      };
       properties.data = self._refs[ref];
     } else {
       properties.data = self._refs;

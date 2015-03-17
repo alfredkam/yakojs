@@ -4,15 +4,6 @@ var ToolTip = require('./toolTip');
 var Legend = require('./legend');
 var extend = require('../../lib/utils/extend');
 module.exports = React.createClass({
-  getInitialState: function () {
-    return {
-      legend: {
-        shouldShow: false,
-        className: '',
-        content: ''
-      }
-    };
-  },
   _eventData: {},
   getToolTipPosition: function (props) {
 
@@ -109,7 +100,7 @@ module.exports = React.createClass({
         </ToolTip>
         <Legend
           settings={self.props.legend} >
-            {self.state.legend.content}
+            {self.props.legend.content}
         </Legend>
       </div>
     );

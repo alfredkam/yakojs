@@ -10,7 +10,7 @@ module.exports = React.createClass({
       var self = this;
 
       EventsWithReact.bindOn = self.props.bindOn || [];
-      EventsWithReact.on = self.props.onTrigger;
+      EventsWithReact.on = self.props.onTrigger || EventsWithReact.on;
 
       return spark({
           mixin: [
