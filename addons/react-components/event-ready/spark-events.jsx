@@ -1,13 +1,15 @@
 var React = require('react');
-var spark = require('../../index').spark;
-var EventsWithReact = require('../../addons/EventsWithReact');
-var Label = require('../../addons/Label');
+var spark = require('../../../index').spark;
+var EventsWithReact = require('../../EventsWithReact');
+var Label = require('../../Label');
+var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
 module.exports = React.createClass({
+    mixin: [PureRenderMixin],
     render: function () {
       var self = this;
 
-      EventsWithReact.bindOn = ['path:hover','svg:mouseMove','svg:mouseLeave', 'path:click'];
+      EventsWithReact.bindOn = self.props.bindOn || [];
       EventsWithReact.on = self.props.onTrigger;
 
       return spark({

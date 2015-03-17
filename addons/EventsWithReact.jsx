@@ -6,6 +6,7 @@ RenderWithReact.extend = require('../lib/utils/extend');
  * An add on to interact and trigger events with react
  */
 
+// TODO:: make this work with all charts
 var shortHandBindFilterDefinitions = {
   'hover': ['onMouseEnter','onMouseLeave'],
   'click': ['onClick'],
@@ -35,12 +36,10 @@ var Component = module.exports = RenderWithReact.extend({
 
     if (self._isArray(data) && data[0] instanceof Object) {
       for (var i = 0; i < data.length; i++) {
-        var ref = self._makeToken();
-        map[ref] = {
-          ref: ref,
+        map[data[i]._ref] = {
+          ref: data[i]._ref,
           data: data[i]
         };
-        data[i]._ref = ref;
       }
     }
     self._refs = map;
@@ -61,7 +60,6 @@ var Component = module.exports = RenderWithReact.extend({
     self._events = list;
   },
   make: function (tagName, attribute, dataAttribute, content) {
-    console.log(attribute);
     var self = this;
     attribute = attribute || {};
     var props = Component.renameProps(attribute);
@@ -71,7 +69,7 @@ var Component = module.exports = RenderWithReact.extend({
       for (var i = 0; i < list.length; i++) {
         props[list[i]] = function (e) {
           self._trigger(tagName, e, props, content);
-        };
+        }
       }
     }
     associateTriggers();
@@ -111,6 +109,8 @@ var Component = module.exports = RenderWithReact.extend({
 
     if (ref) {
       properties.data = self._refs[ref];
+    } else {
+      properties.data = self._refs;
     }
     self.on(tagName, e, properties);
   },

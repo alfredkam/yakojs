@@ -1,101 +1,81 @@
+/**
+ * TEMPLATE for hovering with multiple axis in react
+ * @type {[type]}
+ */
 var React = require('react');
-var Spark = require('./react/spark');
-var ToolTip = require('../addons/react-components/toolTip');
-var Legend = require('../addons/react-components/legend');
+var Spark = require('../addons/react-components/spark');
 module.exports = React.createClass({
   getInitialState: function () {
     return {
-      shouldShow: false,
-      toolTip: {
+        toolTip: {
         shouldShow: false,
         content: '',
-        style: {},
+        className: '',
+        offsetBottom: 20,
         position: {}
-      },
-      toolTipPosition: {},
-      toolTipContent: '',
-      legend: {
-        shouldShow: false,
-        style: {},
-        content: ''
       }
     };
   },
-  getToolTipPosition: function (e, props) {
-    var self = this;
-    var scale = props.scale;
-
-    var left = (scale.tickSize * props.segmentXRef) + scale.paddingLeft;
-
-    var numberOfLines = props.points.length;
-    var values = [];
-    for (var i = 0; i < numberOfLines; i++) {
-      values.push(props.points[i].value);
-    }
-
-    var max = Math.max.apply(null, values);
-    var min = Math.min.apply(null, values);
-
-    var midPoint = ((max - min) / 2) + (scale.max - max);
-    var top = midPoint * scale.heightRatio + scale.paddingTop;
-
-    // check if we are displaying on the rightside
-    if (scale.len - 1 == props.segmentXRef) {
-      return {
-        top: top,
-        right: scale.paddingRight
-      };
-    }
-    return {
-      top: top,
-      left: left
-    };
-  },
-  onYakoEvent: function (tagName, e, props) {
-    if (tagName == 'svg' && e.type == 'mousemove') {
-
-      var html = props.points.map(function (key) {
-        return key.label + ':' + key.value;
-      });
-
-      this.setState({
-        shouldShow: true,
-        toolTipContent: html.join(","),
-        toolTipPosition: this.getToolTipPosition(e, props)
-      });
-    }
-    if (tagName == 'svg' && e.type == 'mouseleave') {
-      this.setState({
-        shouldShow: false
-      });
-    }
-  },
   render: function () {
+    var chart = {
+      width: 1200,
+      height: 150,
+      yAxis: {
+        multi: true
+      },
+      xAxis : {
+        // including format will show the xAxis Label
+        format : 'dateTime',
+        // interval indicates the data interval, the number of the interval indicates the label tick interval
+        // same representation is also used for `dateTimeLabelFormat`
+        // s - seconds
+        // m - minutes
+        // h - hours
+        // D - days
+        // M - months
+        // Y - years
+        interval: '4h',  //[1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
+        // uses the min start date and increment the label by the set interval.  interval will be converted to miliseconds
+        minUTC: Date.UTC(2013,8,7),
+        //this controls the dateTime label format
+        //depending on the format, it will affect the label, try :: dateTimeLabelFormat: 'hhh'
+        dateTimeLabelFormat: 'MM/DD hh ap'
+        // or if wanted custom label
+        // format: 'label',
+        // labels: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
+      }
+    };
     var self = this;
-    var chart = self.props.chart || {};
-    var style = {
-      height: chart.height || 100,
-      width: chart.width || 200,
-      position: 'relative',
-      border: '1px solid red'
+
+    var events = {
+      bindOn: ['path:hover','svg:mouseMove','svg:mouseLeave', 'path:click'],
+      on: function (tagName, e, props) {
+        if (tagName == 'svg' && e.type == 'mousemove') {
+
+          var html = props.points.map(function (key) {
+            return key.label + ':' + key.value;
+          });
+          
+          self.setState({
+            toolTip: {
+              shouldShow: true,
+              content: html.join(","),
+            }
+          });
+
+        } else {
+          self.setState({
+            toolTip: {
+              shouldShow: false
+            }
+          });
+        }
+      }
     };
 
+    var legend = {};
     return (
-      <div style={style}>
-        <Spark
-          chart={chart}
-          onTrigger={self.onYakoEvent}
-          dataSet={self.props.dataSet} />
-        <ToolTip 
-          shouldShow={self.state.shouldShow}
-          position={self.state.toolTipPosition} >
-            {self.state.toolTipContent}
-        </ToolTip>
-        <Legend
-          shouldShow={self.state.legend.shouldShow}>
-            {self.state.legend.content}
-        </Legend>
-      </div>
+      <Spark chart={chart} dataSet={this.props.set} events={events} toolTip={self.state.toolTip} legend={legend} />
     );
   }
-})
+});
