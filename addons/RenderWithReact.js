@@ -30,7 +30,6 @@ var RenderWithReact = module.exports = {
   },
   // Extends default append
   append: function (parent, childs) {
-    // console.log(parent, childs);
     if (parent === '') {
       return childs;
     }

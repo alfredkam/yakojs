@@ -8,7 +8,7 @@ module.exports = React.createClass({
       shouldShow: false,
       toolTipPosition: {},
       toolTipContent: '',
-    }
+    };
   },
   getToolTipPosition: function (e, props) {
     var self = this;

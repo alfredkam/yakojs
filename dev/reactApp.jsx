@@ -45,7 +45,7 @@ var chart = {
 };
 
 React.render(
-  <div>
-    <Spark chart={chart} dataSet={set}/>
-  </div>,
+    <Spark
+      chart={chart}
+      dataSet={set} />,
   document.getElementsByTagName('body')[0]);

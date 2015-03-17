@@ -2,6 +2,10 @@ var RenderWithReact = require('./RenderWithReact');
 var React = require('react');
 RenderWithReact.extend = require('../lib/utils/extend');
 
+/**
+ * An add on to interact and trigger events with react
+ */
+
 var shortHandBindFilterDefinitions = {
   'hover': ['onMouseEnter','onMouseLeave'],
   'click': ['onClick'],
