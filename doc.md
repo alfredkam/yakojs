@@ -61,7 +61,9 @@ var set = [
   }
 ];
 // spark accepts multiple data sets
-spark('.graph').attr({
+spark({
+  mixin: require('yako/addons/Label') // this is require if you want to work with labels
+}).attr({
   chart : {
     // width & height controls the svg view box
     width: 300, // default 200
