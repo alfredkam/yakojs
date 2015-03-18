@@ -77,7 +77,6 @@
 	var bubble = __webpack_require__(8);
 	var svg = __webpack_require__(9);
 	var mixin = __webpack_require__(10);
-	var label = __webpack_require__(11);
 
 	var initialize = function (component, obj) {
 	  if (typeof obj === 'object') {
@@ -104,8 +103,7 @@
 	  bar: function (opts) {
 	    return initialize(bar, opts);
 	  },
-	  svg: svg,
-	  label: label
+	  svg: svg
 	};
 
 /***/ },
@@ -113,8 +111,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var Base = __webpack_require__(12);
-	var Label = __webpack_require__(11);
-	var label = new Label();
+	var Error = __webpack_require__(13);
 	var spark = module.exports = Base.extend({
 	  // the graph data & options setter
 	  attr: function (opts) {
@@ -127,10 +124,6 @@
 	    var self = this;
 	    self.attributes.data = opts.data || 0;
 	    self.attributes.opts = opts;
-
-	    for(var i in opts.data) {
-	        opts.data[i].label = (opts.data[i].label || '').replace(/\s/g,'-');
-	    }
 
 	    return self.postRender(self._prepare()
 	    ._startCycle());
@@ -172,8 +165,8 @@
 	    var data = self.attributes.data;
 	    var opts = self.attributes.opts;
 	    var chart = opts.chart;
-	    var xAxis = opts.xAxis;
-	    var yAxis = opts.yAxis;
+	    var xAxis = chart.xAxis || opts.xAxis;
+	    var yAxis = chart.yAxis || opts.yAxis;
 	    var append = self.append;
 	    var svg;
 	    var paths = [];
@@ -189,20 +182,23 @@
 	    // TODO:: fix the paddingX & Y dependecies
 	    if (yAxis || xAxis) {
 	      self._getLabelConfig(scale, yAxis, xAxis);
+	      if (!self.describeYAxis) {
+	        Error.label();
+	      }
 	    }
 
 	    scale.pHeight = chart.height - scale.paddingTop - scale.paddingBottom;
 	    scale.pWidth = chart.width - scale.paddingLeft - scale.paddingRight;
 
-	    if (yAxis) {
-	      paths.push(label.describeYAxis(scale, yAxis));
+	    if (yAxis && self.describeYAxis) {
+	        paths.push(self.describeYAxis(scale, yAxis));
 	    }
 
 	    scale.heightRatio = scale.pHeight / scale.max;
 	    scale.tickSize = self._sigFigs((scale.pWidth / (scale.len - 1)),8);
 	    // xAxis depends on scale.tickSize
-	    if (xAxis) {
-	      paths.push(label.describeXAxis(scale, xAxis));
+	    if (xAxis && self.describeXAxis) {
+	      paths.push(self.describeXAxis(scale, xAxis));
 	    }
 
 	    self._lifeCycleManager(scale, function (newScale) {
@@ -215,9 +211,7 @@
 	            if (yAxis && yAxis.multi) {
 	              scale.heightRatio = scale.pHeight / scale.max[x];
 	            }
-	            var g = self.make('g',{},{
-	                label: data[x].label
-	            });
+	            var g = self.make('g');
 	            paths.push(
 	              append(g, self._describePath(data[x], scale.paddingLeft, scale.paddingTop, scale))
 	            );
@@ -232,8 +226,10 @@
 	    var heightRatio = scale.heightRatio;
 	    var tickSize = scale.tickSize;
 	    var pathToken = '';
+
 	    //path generator
 	    for (var i = 0; i < numArr.length; i++) {
+	      // console.log( height, numArr[i], heightRatio, paddingTop);
 	        if (i === 0) {
 	          // X Y
 	            pathToken += 'M ' + paddingLeft + ' '+ (height - (numArr[i] * heightRatio) - paddingTop);
@@ -270,6 +266,7 @@
 	    var radius = scattered.radius || 2;
 	    var fill = scattered.fill || 'white';
 	    var paths = [];
+	    var ref = data._ref || '';
 
 	    for (var i = 0; i < numArr.length; i++) {
 	      paths.push(self.make('circle', {
@@ -278,7 +275,8 @@
 	        r: radius,
 	        stroke: strokeColor,
 	        'stroke-width': strokeWidth,
-	        fill: 'white'
+	        fill: 'white',
+	        _ref : ref
 	      }));
 	    }
 	    return paths;
@@ -287,13 +285,15 @@
 	  _describePath : function (data, paddingLeft, paddingTop, scale) {
 	    var self = this;
 	    var pathToken = self._describeAttributeD(data.data, paddingLeft, paddingTop, scale);
+	    var ref = data._ref || '';
 	    var pathNode = self.make('path',{
 	        d: pathToken,
 	        stroke: data.strokeColor || self._randomColor(),
 	        'stroke-width': data.strokeWidth || '3',
 	        'stroke-linejoin': 'round',
 	        'stroke-linecap': 'round',
-	        fill: 'none'
+	        fill: 'none',
+	        _ref: ref
 	    });
 	    var paths = [];
 
@@ -304,14 +304,15 @@
 	        'stroke-width': '2',
 	        'stroke-linejoin': 'round',
 	        'stroke-linecap': 'round',
-	        fill: data.fill
+	        fill: data.fill,
+	        _ref: ref
 	      }));
 	    }
 	    if (scale.line) {
 	      paths.push(pathNode);
 	    }
 	    if (scale.scattered) {
-	      paths.push(self._describeScatteredGraph(data, data.data, paddingLeft, paddingTop, scale))
+	      paths.push(self._describeScatteredGraph(data, data.data, paddingLeft, paddingTop, scale));
 	    }
 	    return paths;
 	  }
@@ -321,7 +322,7 @@
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arcBase = __webpack_require__(13);
+	var arcBase = __webpack_require__(11);
 	var pie = module.exports = arcBase.extend({
 	    /**
 	     * [_describePath genereates the paths for each pie segment]
@@ -357,7 +358,7 @@
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arcBase = __webpack_require__(13);
+	var arcBase = __webpack_require__(11);
 	var pie = module.exports = arcBase.extend({
 	    /**
 	     * [_describePath genereates the paths for each pie segment]
@@ -527,7 +528,7 @@
 /* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(13);
+	var Base = __webpack_require__(11);
 	var bubble = module.exports = Base.extend({
 	    _startCycle: function () {
 	        var self = this;
@@ -674,210 +675,18 @@
 /* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	
 	var mixin = module.exports = function (component, obj) {
+	    if (obj instanceof Array) {
+	        for (var i = 0; i < obj.length; i++) {
+	            component = component.extend(obj[i]);
+	        }
+	        return component;
+	    }
 	    return component.extend(obj);
 	};
 
 /***/ },
 /* 11 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Common = __webpack_require__(17);
-
-	var label = module.exports = Common.extend({
-	    // expect the boundaries
-	    describe: function (minMax, chart) {
-
-	    },
-	    describeBorder: function () {
-
-	    },
-	    describeYAxis: function (scale, opts) {
-	        var self = this;
-	        var axis = [];
-	        var labels = [];
-	        var y = rows = scale.rows;
-	        opts = opts || {};
-	        if (!opts.multi) {
-	            y = rows = 1;
-	            scale.ySecs = [scale.ySecs];
-	            scale.max = [scale.max];
-	        }
-
-	        var partialHeight = scale.pHeight;
-	        var paddingY = scale.paddingY || scale.paddingTop;
-	        var paddingX = scale.paddingX || scale.paddingLeft - 5;
-
-	        // goes through the number of yaxis need
-	        while (y--) {
-	            var g = self.make('g');
-	            var splits = fSplits = scale.ySecs[y];
-	            var heightFactor = partialHeight / splits;
-	            var xCord = ((y + 1) % 2 === 0 ? scale.width - y * paddingX : (y+1) * paddingX);
-
-	            labels = [];
-	            splits += 1;
-	            while(splits--) {
-	                labels.push(self.make('text',{
-	                    y: paddingY + (heightFactor * splits),
-	                    x: xCord,
-	                    'font-size': 12,
-	                    'text-anchor': (y + 1) % 2 === 0 ? 'start' : 'end',
-	                    fill: opts.color || '#333',
-	                }, null, scale.max[y] / fSplits * (fSplits - splits)));
-	            }
-	            // building the border
-	            // TODO:: this needs to be more dynamic!
-	            xCord = ( (y + 1) % 2 === 0) ? xCord - 5 : xCord + 5;
-	            labels.push(self.make('path',{
-	              'd' : 'M' + xCord + ' 0L' + xCord + ' ' + (partialHeight + paddingY),
-	              'stroke-width': '1',
-	              'stroke': opts.multi ? scale.color[y] : '#c0c0c0',
-	              'fill': 'none',
-	              'opacity': '1',
-	              'stroke-linecap': 'round'
-	            }));
-	            axis.push(self.append(g, labels));
-	        }
-	        return axis;
-	    },
-	    // TODO:: support custom format
-	    // for simplicity lets only consider dateTime format atm
-	    describeXAxis: function (scale, opts) {
-	        var self = this;
-	        var g = self.make('g', {
-	          'class': 'xaxis'
-	        });
-	        var labels = [];
-	        var partialHeight = scale.pHeight;
-	        var tickSize = scale.tickSize;
-	        var paddingX = scale.paddingX || scale.paddingLeft;
-	        var paddingY = scale.paddingY ? scale.paddingY * 2 - 8 : (scale.paddingTop + scale.paddingBottom) - 8;
-	        var yAxis = partialHeight + paddingY;
-	        var form = opts.format == 'dateTime' ? true : false;
-	     
-	        if (form) {
-	            //to get the UTC time stamp multiplexer
-	            var tick = opts.interval;
-	            var utc = self._utcMultiplier(opts.interval);
-	            var tickInterval =  (/\d+/.test(tick) ? tick.match(/\d+/)[0] : 1);
-	            var format = opts.dateTimeLabelFormat;
-	            var base = opts.minUTC;
-	        }
-
-	        for (var i = 1; i < scale.len - 1; i++) {
-	            labels.push(self.make('text',{
-	                y: yAxis,
-	                x: (tickSize * i) + paddingX,
-	                'font-size': 12,
-	                'text-anchor': 'start',
-	                fill: opts.color || '#333',
-	            }, null, (form ? self._formatTimeStamp(format, base + (utc * i)) : opts.labels[i] || 0)));
-	        }
-
-	        labels.push(self.make('path',{
-	          'd' : 'M' + (paddingX  * 2) + ' ' + (yAxis - 12) + ' L' + (scale.width - paddingX*2) + ' ' + (yAxis - 12),
-	          'stroke-width': '1',
-	          'stroke': '#c0c0c0',
-	          'fill': 'none',
-	          'opacity': '1',
-	          'stroke-linecap': 'round'
-	        }));
-
-	        return [self.append(g, labels)];
-	    },
-	    _utcMultiplier: function(tick) {
-	        var mili = 1e3,
-	            s = 60,
-	            m = 60,
-	            h = 24,
-	            D = 30,
-	            M = 12,
-	            Y = 1,
-	            multiplier = 0;
-	        if (/s$/.test(tick))
-	            multiplier = mili;
-	        else if (/m$/.test(tick))
-	            multiplier = s * mili;
-	        else if (/h$/.test(tick))
-	            multiplier = s * m * mili;
-	        else if (/D$/.test(tick))
-	            multiplier = s * m * h * mili;
-	        else if (/M$/.test(tick))
-	            multiplier = s * m * h * D * mili;
-	        else if (/Y$/.test(tick))
-	            multiplier = s * m * h * D * M * mili;
-
-	        return multiplier;
-	    },
-	    //formats the time stamp
-	    _formatTimeStamp: function (str, time) {
-	        var dateObj = new Date(time),
-	            flag = false;
-
-	        if (/YYYY/.test(str))
-	            str = str.replace('YYYY',dateObj.getFullYear());
-	        else if (/YY/.test(str))
-	            str = str.replace('YY',(dateObj.getFullYear()).toString().replace(/^\d{1,2}/,''));
-
-	        if (/hh/.test(str) && /ap/.test(str)) {
-	          if ((dateObj.getHours())  > 11)
-	            str = str.replace(/hh/, (dateObj.getHours() - 12 === 0 ? 12 : dateObj.getHours() - 12))
-	                    .replace(/ap/, 'pm');
-	          else
-	            str = str.replace(/hh/, (dateObj.getHours() == 0? 12 :  dateObj.getHours()))
-	                    .replace(/ap/,'am');
-	        } else
-	          str = str.replace(/hh/, (dateObj.getHours() == 0? 12 :  dateObj.getHours()))
-
-	        str = str.replace(/MM/,dateObj.getMonth()+1)
-	            .replace(/DD/, dateObj.getDate());
-
-	        if (/mm/.test(str) && /ss/.test(str)) {
-	            str = str.replace(/mm/,(dateObj.getMinutes().toString().length == 1 ? '0'+dateObj.getMinutes(): dateObj.getMinutes()))
-	            .replace(/ss/,(dateObj.getSeconds().toString().length == 1 ? '0'+dateObj.getSeconds(): dateObj.getSeconds()));
-	        } else {
-	            str = str.replace(/mm/,dateObj.getMinutes())
-	            .replace(/ss/,dateObj.getSeconds());
-	        } 
-	        return str;
-	    }
-	});
-
-
-/***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Common = __webpack_require__(17);
-	var base = module.exports = Common.extend({
-	    init: function (node) {
-	      var self = this;
-	      // adding width 100% will allow us to have responsive graphs (in re-sizing)
-	      if (typeof node === 'string') {
-	        if (node[0] === '#') {
-	          this.element = this.make('div',{
-	            id: node.replace(/^#/,''),
-	            width: '100%'
-	          });
-	        } else {
-	          this.element = this.make('div',{
-	            "class": node.replace(/^\./,''),
-	            width: '100%'
-	          });
-	        }
-	      } else {
-	        this.element = '';
-	      }
-	      this.token = self.makeToken();
-	      this.attributes = {};
-	      return this;
-	    }
-	});
-
-/***/ },
-/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Base = __webpack_require__(12);
@@ -955,6 +764,50 @@
 	        return '';
 	    }
 	});
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Common = __webpack_require__(17);
+	var base = module.exports = Common.extend({
+	    init: function (node) {
+	      var self = this;
+	      // adding width 100% will allow us to have responsive graphs (in re-sizing)
+	      if (typeof node === 'string') {
+	        if (node[0] === '#') {
+	          self.element = self.make('div',{
+	            id: node.replace(/^#/,''),
+	            width: '100%'
+	          });
+	        } else {
+	          self.element = self.make('div',{
+	            "class": node.replace(/^\./,''),
+	            width: '100%'
+	          });
+	        }
+	      } else {
+	        self.element = '';
+	      }
+	      self.token = self._makeToken();
+	      self.attributes = {};
+	      return self;
+	    }
+	});
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var warn = function (msg) {
+	  console.warn(msg);
+	}
+
+	module.exports = {
+	  label: function () {
+	    warn("You're attempting to use labels without the `Label` addons.  Check documentation https://github.com/alfredkam/yakojs/blob/master/doc.md")
+	  }
+	}
 
 /***/ },
 /* 14 */
@@ -1137,6 +990,7 @@
 	  // TODO:: Rename lifeCycleManager, incorrect term usage
 	  _lifeCycleManager: function (scale, describe) {
 	    var self = this;
+	    var data = this.attributes.data;
 	    // check if there is any external steps needed to be done
 	    if (self._call) {
 	      self._call(scale);
@@ -1192,7 +1046,7 @@
 	  isFn: function (object) {
 	    return !!(object && object.constructor && object.call && object.apply);
 	  },
-	  makeToken: function () {
+	  _makeToken: function () {
 	    return Math.random().toString(36).substr(2);
 	  },
 	  //sig fig rounding
@@ -1267,14 +1121,23 @@
 	      opts = opts || 0;
 	      data = typeof data[0] === 'object' ? data : [data];
 	      var max = 0;
-	      var yAxis = opts.yAxis;
+	      var yAxis = opts.yAxis || (opts.chart ? opts.chart.yAxis : 0);
 	      var min = Number.MAX_VALUE;
 	      var maxSet = [];
 	      var temp;
 	      var ans;
+	      var self = this;
 	      var ySecs = 0;
 	      var getSplits = this._getSplits;
 	      var color = [];
+	      var refs = {};
+
+	      if (self._call) {
+	        for (var x = 0; x < data.length; x++) {
+	          data[x]._ref = self._makeToken();
+	          refs[x] = data[x]._ref;
+	        }
+	      }
 
 	      // change up the structure if the data set is an object
 	      if (data[0].data) {
@@ -1350,13 +1213,14 @@
 	      }
 	      
 	      return {
-	          min : min,
-	          max : max,
+	          min: min,
+	          max: max,
 	          maxSet: maxSet,
 	          len: len,
 	          rows: rows,
 	          ySecs: ySecs,
-	          color: color
+	          color: color,
+	          _refs: refs
 	      };
 	  }
 	});
