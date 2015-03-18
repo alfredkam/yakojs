@@ -65,19 +65,23 @@ module.exports = React.createClass({
   },
   onDivLeaveEvent: function (e) {
     var self = this;
-    if (self.props.events.on['div:mouseLeave']) {
-      self.props.events.on['div:mouseLeave'](e);
+    if (self.props.events.on['container:mouseLeave']) {
+      self.props.events.on['container:mouseLeave'](e);
     }
   },
   render: function () {
     var self = this;
     var chart = self.props.chart || {};
+
+    // default chart style
     var style = {
       height: chart.height || 100,
       width: chart.width || 200,
       position: 'relative'
     };
 
+
+    // default tool tip settings
     var toolTipSettings = {
       shouldShow: false,
       content: '',
@@ -87,6 +91,7 @@ module.exports = React.createClass({
     };
 
     var events = self.props.events || {};
+    events.bindOn = Object.keys(events.on) || [];
     var userDefinedToolTip = self.props.toolTip || {};
     var legend = self.props.legend || {};
 

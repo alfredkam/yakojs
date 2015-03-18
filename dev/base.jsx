@@ -6,14 +6,12 @@ var React = require('react');
 var Spark = require('../addons/react-components/spark');
 module.exports = React.createClass({
   getInitialState: function () {
+    // Normally this should be controlled by props
     return {
       toolTip: {
-        ref: '',
         shouldShow: false,
         content: '',
-        className: '',
-        offsetBottom: 20,
-        position: {}
+        className: ''
       },
       legend: {
         shouldShow: false,
@@ -54,8 +52,6 @@ module.exports = React.createClass({
     var self = this;
 
     var events = {
-      // bindOn are the events you want to listen
-      bindOn: ['path:hover','svg:mouseMove','div:mouseLeave', 'path:click'],
       // Event call backs base on bind
       on: {
         'path:hover': function (e, props) {
@@ -72,7 +68,7 @@ module.exports = React.createClass({
             }
           });
         },
-        'div:mouseLeave': function (e) {
+        'container:mouseLeave': function (e) {
           e.stopPropagation();
           self.setState({
             toolTip: {
