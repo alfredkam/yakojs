@@ -6,6 +6,7 @@ var extend = require('../../lib/utils/extend');
 module.exports = React.createClass({
   _eventData: {},
   getToolTipPosition: function (props) {
+    if (Object.keys(props).length === 0) return;
 
     var self = this;
     var scale = props.scale;
@@ -62,6 +63,12 @@ module.exports = React.createClass({
       self._eventData = props;
     }
   },
+  onDivLeaveEvent: function (e) {
+    var self = this;
+    if (self.props.events.on['div:mouseLeave']) {
+      self.props.events.on['div:mouseLeave'](e);
+    }
+  },
   render: function () {
     var self = this;
     var chart = self.props.chart || {};
@@ -90,14 +97,11 @@ module.exports = React.createClass({
       extend(toolTipSettings, userDefinedToolTip);
     }
 
+    // TODO:: Implement a dynamic fix for handling div / legend / tooltip level of event binding
     return (
-      <div style={style}>
-        <Spark
-          chart={chart}
-          bindOn={events.bindOn}
-          onTrigger={self.onYakoEvent}
-          dataSet={self.props.dataSet} />
-        <ToolTip 
+      <div onMouseLeave={self.onDivLeaveEvent}
+        style={style} >
+        <ToolTip
           settings={toolTipSettings}
           position={toolTipSettings.position} >
             {toolTipSettings.content}
@@ -106,6 +110,11 @@ module.exports = React.createClass({
           settings={self.props.legend} >
             {legend.content}
         </Legend>
+        <Spark
+          chart={chart}
+          bindOn={events.bindOn}
+          onTrigger={self.onYakoEvent}
+          dataSet={self.props.dataSet} />
       </div>
     );
   }

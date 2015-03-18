@@ -8,6 +8,7 @@ module.exports = React.createClass({
   getInitialState: function () {
     return {
       toolTip: {
+        ref: '',
         shouldShow: false,
         content: '',
         className: '',
@@ -54,7 +55,7 @@ module.exports = React.createClass({
 
     var events = {
       // bindOn are the events you want to listen
-      bindOn: ['path:hover','svg:mouseMove','svg:mouseLeave', 'path:click'],
+      bindOn: ['path:hover','svg:mouseMove','div:mouseLeave', 'path:click'],
       // Event call backs base on bind
       on: {
         'path:hover': function (e, props) {
@@ -71,7 +72,8 @@ module.exports = React.createClass({
             }
           });
         },
-        'svg:mouseLeave': function (e, props) {
+        'div:mouseLeave': function (e) {
+          e.stopPropagation();
           self.setState({
             toolTip: {
               shouldShow: false

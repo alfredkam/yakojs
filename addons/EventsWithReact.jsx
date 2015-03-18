@@ -13,6 +13,7 @@ var shortHandBindFilterDefinitions = {
   'mouseMove': ['onMouseMove'],
   'mouseEnter': ['onMouseEnter'],
   'mouseOver': ['onMouseOver'],
+  'mouseOut': ['onMouseOut'],
   'mouseUp': ['onMouseUp'],
   'mouseLeave': ['onMouseLeave'],
   'doubleClick': ['onDoubleClick']

@@ -4,48 +4,11 @@ var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 // Issue arise on tooltip is visible on hover then flickers between its visible state.
 // Had to cache the previous data to prevent it from loosing its state
 module.exports = React.createClass({
-    // mixin: [PureRenderMixin],
-    getInitialState: function () {
-      return {
-        shouldShow: false,
-        settings: '',
-        position: ''
-      };
-    },
-    shouldEnable: function (e) {
-      e.stopPropagation();
-      this.setState({
-        shouldShow: true,
-        settings: this._cacheData.settings,
-        position: this._cacheData.position
-      });
-    },
-    shouldDisable: function (e) {
-      this.setState({
-        shouldShow: false
-      });
-    },
-    _cacheData: {
-      settings: {},
-      position: {}
-    },
+    mixin: [PureRenderMixin],
     render: function () {
       var self = this;
       var settings = self.props.settings;
       var position = self.props.position || 0;
-      var displayContent = self.props.children;
-
-      if (settings.content !== '') {
-        this._cacheData = {
-          settings: settings,
-          position: position
-        };
-      }
-      if (this.state.shouldShow) {
-        settings = this.state.settings;
-        position = this.state.position;
-        displayContent = settings.content;
-      }
 
       // TODO:: Support other browsers
       var style = {
@@ -62,8 +25,8 @@ module.exports = React.createClass({
       }
 
       return (
-        <span onMouseOver={this.shouldEnable} onMouseOut={this.shouldDisable} className={settings.className} style={style}>
-            {displayContent}
+        <span ref="toolTip" className={settings.className} style={style}>
+            {self.props.children}
         </span>
       );
     }
