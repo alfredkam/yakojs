@@ -97,25 +97,29 @@ module.exports = React.createClass({
       extend(toolTipSettings, userDefinedToolTip);
     }
 
+
+    var factory = React.createFactory("div");
     // TODO:: Implement a dynamic fix for handling div / legend / tooltip level of event binding
-    return (
-      <div onMouseLeave={self.onDivLeaveEvent}
-        style={style} >
+    return factory({
+          onMouseLeave: self.onDivLeaveEvent,
+          style: style
+        },
+      [
         <ToolTip
           settings={toolTipSettings}
           position={toolTipSettings.position} >
             {toolTipSettings.content}
-        </ToolTip>
+        </ToolTip>,
         <Legend
           settings={self.props.legend} >
             {legend.content}
-        </Legend>
+        </Legend>,
         <Spark
           chart={chart}
           bindOn={events.bindOn}
           onTrigger={self.onYakoEvent}
           dataSet={self.props.dataSet} />
-      </div>
+      ]
     );
   }
 })
