@@ -350,20 +350,11 @@ a react plugin to generate ```react``` code
 // example usage
 var RenderWithReact = require('yako/addons/RenderWithReact');
 var spark = require('yako').spark;
-React.createClass({
+
+module.exports = React.createClass({
   render: function () {
     return spark({
-      mixin: RenderWithReact,
-      renderWithProps: function () { 
-        return {
-          // element name
-          type: "div",
-          // element properties
-          props: {
-            className: 'className'
-          }
-        }
-      }
+      mixin: RenderWithReact
     }).attr({
       chart: {
         ...
@@ -371,7 +362,18 @@ React.createClass({
       data: [ ... ]
     });
   }
-})
+});
+
+// optionally you could extend RenderWithReact
+
+RenderWithReact
+  .renderWithProps = function () { 
+    return {
+      props: {
+        className: 'className'
+      }
+    }
+  }
 
 ```
 
