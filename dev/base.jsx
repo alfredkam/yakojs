@@ -55,24 +55,29 @@ module.exports = React.createClass({
     var events = {
       // bindOn are the events you want to listen
       bindOn: ['path:hover','svg:mouseMove','svg:mouseLeave', 'path:click'],
-      // event call back
-      on: function (tagName, e, props) {
-        // console.log(props);
-        var shouldShow = false;
-        var html = [];
-        if (tagName == 'svg' && e.type == 'mousemove') {
-          shouldShow = true;
+      // Event call backs base on bind
+      on: {
+        'path:hover': function (e, props) {
+
+        },
+        'svg:mouseMove': function (e, props) {
           var html = props.points.map(function (key) {
             return key.label + ':' + key.value;
           });
+          self.setState({
+            toolTip: {
+              shouldShow: true,
+              content: html
+            }
+          });
+        },
+        'svg:mouseLeave': function (e, props) {
+          self.setState({
+            toolTip: {
+              shouldShow: false
+            }
+          });
         }
-
-        self.setState({
-          toolTip: {
-            shouldShow: shouldShow,
-            content: html.join(","),
-          }
-        });
       }
     };
 

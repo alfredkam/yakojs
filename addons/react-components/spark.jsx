@@ -57,8 +57,10 @@ module.exports = React.createClass({
   },
   onYakoEvent: function (tagName, e, props) {
     var self = this;
-    self.props.events.on(tagName, e, props) || 0;
-    self._eventData = props;
+    if (self.props.events.on[tagName]) {
+      self.props.events.on[tagName](e, props);
+      self._eventData = props;
+    }
   },
   render: function () {
     var self = this;

@@ -50,7 +50,10 @@ var Component = module.exports = RenderWithReact.extend({
       filters[i].replace(/(.*):(.*)/, function (match, p1, p2) {
         list[p1] = list[p1] || [];
         if (shortHandBindFilterDefinitions[p2]) {
-          list[p1] = list[p1].concat(shortHandBindFilterDefinitions[p2]);
+          list[p1].push({
+            definition: shortHandBindFilterDefinitions[p2],
+            bind: p2
+          });
         }
       });
     }
@@ -61,12 +64,17 @@ var Component = module.exports = RenderWithReact.extend({
     attribute = attribute || {};
     var props = Component.renameProps(attribute);
     var events = self._events;
+
+    function appendTrigger(eventDefinition) {
+      props[eventDefinition.definition] = function (e) {
+        self._trigger(tagName + ':'+ eventDefinition.bind, e, props, content);
+      };
+    }
+
     function associateTriggers() {
       var list = events[tagName] || [];
       for (var i = 0; i < list.length; i++) {
-        props[list[i]] = function (e) {
-          self._trigger(tagName, e, props, content);
-        }
+        appendTrigger(list[i]);
       }
     }
     associateTriggers();
@@ -113,6 +121,7 @@ var Component = module.exports = RenderWithReact.extend({
     } else {
       properties.data = self._refs;
     }
+
     self.on(tagName, e, properties);
   },
   bindOn: [],
