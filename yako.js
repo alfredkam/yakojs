@@ -110,8 +110,8 @@
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(12);
-	var Error = __webpack_require__(13);
+	var Base = __webpack_require__(11);
+	var Error = __webpack_require__(12);
 	var spark = module.exports = Base.extend({
 	  // the graph data & options setter
 	  attr: function (opts) {
@@ -322,7 +322,7 @@
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arcBase = __webpack_require__(11);
+	var arcBase = __webpack_require__(13);
 	var pie = module.exports = arcBase.extend({
 	    /**
 	     * [_describePath genereates the paths for each pie segment]
@@ -358,7 +358,7 @@
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arcBase = __webpack_require__(11);
+	var arcBase = __webpack_require__(13);
 	var pie = module.exports = arcBase.extend({
 	    /**
 	     * [_describePath genereates the paths for each pie segment]
@@ -426,7 +426,7 @@
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(12);
+	var Base = __webpack_require__(11);
 	var bar = module.exports = Base.extend({
 	    // include missing values
 	    _prepare: function () {
@@ -528,7 +528,7 @@
 /* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(11);
+	var Base = __webpack_require__(13);
 	var bubble = module.exports = Base.extend({
 	    _startCycle: function () {
 	        var self = this;
@@ -593,11 +593,11 @@
 	            scale.xAxis = scale.xAxis || {};
 	            maxRadius = scale.bubble.maxRadius = parseInt(scale.bubble.maxRadius) || maxRadius;
 	            // figure out the maxRadius & paddings, maxRadius is a guide line
-	            var tickSize = (width - paddingLeft - paddingRight) / (len - 1);
-	            maxRadius = scale.bubble.maxRadius = tickSize < maxRadius ? tickSize + paddingLeft : maxRadius;
-	            scale.paddingLeft = paddingLeft || maxRadius * (data[0] / scale.max);
-	            scale.paddingRight = paddingRight || maxRadius * (data[len - 1] / scale.max);
-	            scale.tickSize = (width - paddingLeft - paddingRight) / (len - 1);
+	            var tickSize = (width - scale.paddingLeft - scale.paddingRight) / (len - 1);
+	            scale.bubble.maxRadius = tickSize < maxRadius ? tickSize + scale.paddingLeft : maxRadius;
+	            scale.paddingLeft = scale.paddingLeft || scale.bubble.maxRadius * (data[0] / scale.max);
+	            scale.paddingRight = scale.paddingRight || scale.bubble.maxRadius * (data[len - 1] / scale.max);
+	            scale.tickSize = (width - scale.paddingLeft - scale.paddingRight) / (len - 1);
 	        }
 	    },
 	    // bubble graph
@@ -689,7 +689,51 @@
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(12);
+	var Common = __webpack_require__(17);
+	var base = module.exports = Common.extend({
+	    init: function (node) {
+	      var self = this;
+	      // adding width 100% will allow us to have responsive graphs (in re-sizing)
+	      if (typeof node === 'string') {
+	        if (node[0] === '#') {
+	          self.element = self.make('div',{
+	            id: node.replace(/^#/,''),
+	            width: '100%'
+	          });
+	        } else {
+	          self.element = self.make('div',{
+	            "class": node.replace(/^\./,''),
+	            width: '100%'
+	          });
+	        }
+	      } else {
+	        self.element = '';
+	      }
+	      self.token = self._makeToken();
+	      self.attributes = {};
+	      return self;
+	    }
+	});
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var warn = function (msg) {
+	  console.warn(msg);
+	}
+
+	module.exports = {
+	  label: function () {
+	    warn("You're attempting to use labels without the `Label` addons.  Check documentation https://github.com/alfredkam/yakojs/blob/master/doc.md")
+	  }
+	}
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Base = __webpack_require__(11);
 	var arc = __webpack_require__(15);
 	module.exports = Base.extend({
 	    // include missing values
@@ -764,50 +808,6 @@
 	        return '';
 	    }
 	});
-
-/***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Common = __webpack_require__(17);
-	var base = module.exports = Common.extend({
-	    init: function (node) {
-	      var self = this;
-	      // adding width 100% will allow us to have responsive graphs (in re-sizing)
-	      if (typeof node === 'string') {
-	        if (node[0] === '#') {
-	          self.element = self.make('div',{
-	            id: node.replace(/^#/,''),
-	            width: '100%'
-	          });
-	        } else {
-	          self.element = self.make('div',{
-	            "class": node.replace(/^\./,''),
-	            width: '100%'
-	          });
-	        }
-	      } else {
-	        self.element = '';
-	      }
-	      self.token = self._makeToken();
-	      self.attributes = {};
-	      return self;
-	    }
-	});
-
-/***/ },
-/* 13 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var warn = function (msg) {
-	  console.warn(msg);
-	}
-
-	module.exports = {
-	  label: function () {
-	    warn("You're attempting to use labels without the `Label` addons.  Check documentation https://github.com/alfredkam/yakojs/blob/master/doc.md")
-	  }
-	}
 
 /***/ },
 /* 14 */
