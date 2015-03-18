@@ -2,8 +2,11 @@
 [API] (#api) <br>
 [SVG API] (#svg-api) <br>
 [Addons] (#addons) <br>
-&nbsp;&nbsp; [RenderWithReact] (#renderwithreact)<br>
+&nbsp;&nbsp; [Label] (#label)<br>
 &nbsp;&nbsp; [ReturnAsObject] (#returnasobject)<br>
+&nbsp;&nbsp; [RenderWithReact] (#renderwithreact)<br>
+&nbsp;&nbsp; [EventsWithReact] (#eventswithreact)<br>
+&nbsp;&nbsp; [React Components] (#react-components)<br>
 [Extend or Modify Library] (#extending-or-modify-library) <br>
 
 [External Link: Visual Examples](http://alfredkam.com/yakojs/example.html) <br>
@@ -344,38 +347,7 @@ returns attribute D of ```<path>``` that descibes an arc
 returns attribute D of ```<path>``` that decribes an arc w/ the path closed ~ equivalent to a piece of pie 
 
 ##Addons
-###RenderWithReact
-a react plugin to generate ```react``` code
-```javascript
-// example usage
-var RenderWithReact = require('yako/addons/RenderWithReact');
-var spark = require('yako').spark;
-
-module.exports = React.createClass({
-  render: function () {
-    return spark({
-      mixin: RenderWithReact
-    }).attr({
-      chart: {
-        ...
-      },
-      data: [ ... ]
-    });
-  }
-});
-
-// optionally you could extend RenderWithReact
-
-RenderWithReact
-  .renderWithProps = function () { 
-    return {
-      props: {
-        className: 'className'
-      }
-    }
-  }
-
-```
+###Label
 
 ###ReturnAsObject
 A plugin to return a dom like object representation
@@ -408,6 +380,45 @@ Example result
   ]
 }
 ```
+###RenderWithReact
+A React plugin to generate ```React``` code
+```javascript
+// example usage
+var RenderWithReact = require('yako/addons/RenderWithReact');
+var spark = require('yako').spark;
+
+module.exports = React.createClass({
+  render: function () {
+    return spark({
+      mixin: RenderWithReact
+    }).attr({
+      chart: {
+        ...
+      },
+      data: [ ... ]
+    });
+  }
+});
+
+// optionally you could extend RenderWithReact
+RenderWithReact
+  .renderWithProps = function () { 
+    return {
+      props: {
+        className: 'className'
+      }
+    }
+  }
+
+```
+###EventsWithReact
+###React Components
+Under ```addons/react-components```, there offers a wild range of react ready graph components with its build through the React top level API!
+###Spark
+###Pie
+###Bubble
+###Donut
+###Bar
 
 ##Extending or Modify library
 say you wanted to create your own or modify the library to do something extra. you require the library and extend from it.  Since this is build using common js and inheritance, one could easily extend specific graphs.<br>
