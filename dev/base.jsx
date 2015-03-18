@@ -57,15 +57,15 @@ module.exports = React.createClass({
       bindOn: ['path:hover','svg:mouseMove','svg:mouseLeave', 'path:click'],
       // event call back
       on: function (tagName, e, props) {
-        console.log(props);
-        var html = [];
+        // console.log(props);
         var shouldShow = false;
+        var html = [];
         if (tagName == 'svg' && e.type == 'mousemove') {
           shouldShow = true;
           var html = props.points.map(function (key) {
             return key.label + ':' + key.value;
           });
-        } 
+        }
 
         self.setState({
           toolTip: {
