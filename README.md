@@ -28,11 +28,11 @@ Supports Chrome, Firefox, Safari, and IE 9+;
  - Bar Graphs (stack & non stack)
  - MixIn / Inheritance
  - Multi axis & labels for spark graphs
+ - Programmatic point of access (Only Avaliable for React)
+ - Events & Emitters (Only Avaliable for React)
 
 ### Road Map
  - Support labels for bar graph && bubble graph
- - Programmatic point of access
- - Events & Emitters
  - Expose math functions
  - Bring svg to live
  - Real time graphs
