@@ -415,10 +415,70 @@ RenderWithReact
 ###React Components
 Under ```addons/react-components```, there offers a wild range of react ready graph components with its build through the React top level API!
 ###Spark
+```javascript
+var Spark = require('./addons/react-components/simpleSpark');
+// Assumes the data type & chart configurations from above
+var data = [
+  {...},
+  {...}
+];
+var chartConfig = {...}
+React.render(
+<Spark data={data} chart={chartConfig} />,
+document.getElementsByTagName('body')[0]);
+```
 ###Pie
-###Bubble
+```javascript
+var Spark = require('./addons/react-components/pie');
+// Assumes the data type & chart configurations from above
+var data = [
+  {...},
+  {...}
+];
+var chartConfig = {...}
+React.render(
+<Pie data={data} chart={chartConfig} />,
+document.getElementsByTagName('body')[0]);
+```
 ###Donut
+```javascript
+var Donut = require('./addons/react-components/donut');
+// Assumes the data type & chart configurations from above
+var data = [
+  {...},
+  {...}
+];
+var chartConfig = {...}
+React.render(
+<Donut data={data} chart={chartConfig} />,
+document.getElementsByTagName('body')[0]);
+```
+###Bubble
+```javascript
+var Bubble = require('./addons/react-components/bubble');
+// Assumes the data type & chart configurations from above
+var data = [
+  {...},
+  {...}
+];
+var chartConfig = {...}
+React.render(
+<Bubble data={data} chart={chartConfig} />,
+document.getElementsByTagName('body')[0]);
+```
 ###Bar
+```javascript
+var Bar = require('./addons/react-components/bar');
+// Assumes the data type & chart configurations from above
+var data = [
+  {...},
+  {...}
+];
+var chartConfig = {...}
+React.render(
+<Bar data={data} chart={chartConfig} />,
+document.getElementsByTagName('body')[0]);
+```
 
 ##Extending or Modify library
 say you wanted to create your own or modify the library to do something extra. you require the library and extend from it.  Since this is build using common js and inheritance, one could easily extend specific graphs.<br>
