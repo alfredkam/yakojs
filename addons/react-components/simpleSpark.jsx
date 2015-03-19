@@ -4,12 +4,15 @@ var RenderWithReact = require('../RenderWithReact');
 
 module.exports = React.createClass({
     render: function () {
-        var self = this;
-        return spark({
-            mixin: RenderWithReact
-        }).attr({
-            'chart': self.props.chart,
-            'data' : self.props.data
+      var self = this;
+      var svg = spark()
+        .attr({
+          'chart': self.props.chart,
+          'data' : self.props.data
         });
+
+      return (
+        <div dangerouslySetInnerHTML={{__html: svg}} />
+      )
     }
 });
