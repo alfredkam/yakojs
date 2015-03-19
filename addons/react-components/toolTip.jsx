@@ -1,8 +1,8 @@
 var React = require('react');
 var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
-// TODO:: Is there a more granular way to approach this?
-// Issue arise on tooltip is visible on hover then flickers between its visible state.
-// Had to cache the previous data to prevent it from loosing its state
+
+var cssPrefix = ['-moz-','-webkit-','-ms-','-o-'];
+
 module.exports = React.createClass({
     mixin: [PureRenderMixin],
     render: function () {
@@ -17,6 +17,10 @@ module.exports = React.createClass({
         visibility: settings.shouldShow ? 'visible' : 'hidden',
         top: 0
       };
+
+      for (var i = 0; i < cssPrefix.length; i++) {
+        style[cssPrefix[i]+'transform'] = style.transform;
+      }
 
       if (position.hasOwnProperty('left')) {
         style.left = 0;
