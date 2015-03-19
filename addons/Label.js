@@ -1,14 +1,37 @@
 var label = module.exports = {
+    preRender: function (immutableScale) {
+        var self = this;
+        var opts = self.attributes.opts;
+        var chart = opts.chart;
+        var xAxis = chart.xAxis || opts.xAxis;
+        var yAxis = chart.yAxis || opts.yAxis;
+        var paths = [];
+        // simple hnadOff
+        if (yAxis) {
+            paths.push(self.describeYAxis(immutableScale, yAxis));
+        }
+        // xAxis depends on scale.tickSize
+        if (xAxis) {
+          paths.push(self.describeXAxis(immutableScale, xAxis));
+        }
+
+        return {
+            prepend: paths
+        };
+    },
+    _getLabelConfig: function (scale, yaxis, xaxis) {
+      var self = this;
+      scale.paddingLeft = scale.paddingRight = 30;
+      scale.paddingTop = scale.paddingBottom = 20;
+    },
     describeYAxis: function (scale, opts) {
         var self = this;
         var axis = [];
         var labels = [];
         var y = rows = scale.rows;
         opts = opts || {};
-        if (!opts.multi) {
+        if (!opts.hasOwnProperty('multi')) {
             y = rows = 1;
-            scale.ySecs = [scale.ySecs];
-            scale.max = [scale.max];
         }
 
         var partialHeight = scale.pHeight;
@@ -21,7 +44,6 @@ var label = module.exports = {
             var splits = fSplits = scale.ySecs[y];
             var heightFactor = partialHeight / splits;
             var xCord = ((y + 1) % 2 === 0 ? scale.width - y * paddingX : (y+1) * paddingX);
-
             labels = [];
             splits += 1;
             while(splits--) {

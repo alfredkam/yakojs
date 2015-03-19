@@ -356,28 +356,7 @@ nodes = '<div class=".graph">' + sparkInstance.attr({
 
 // *** preRender Test *** //
 nodes = "<div class='.graph'>"+ bubble({
-  mixin: Label,
-  preRender: function (immutableScale) {
-    // console.log(immutableScale);
-    var self = this;
-    var scale = self._deepCopy(immutableScale);
-    var max = scale.max;
-    scale.pHeight = (scale.height - (scale.paddingTop + scale.paddingBottom));
-    // with bubble
-    // max[0] = width
-    // max[1] = height
-    // say if you want to compute the number of y sections
-    var copy = self._deepCopy(scale);
-    var splitProperty = self._getSplits(scale.max[1]);
-    copy.paddingLeft = 30;
-    copy.max = splitProperty.max;
-    copy.ySecs = splitProperty.splits;
-    var axis = self.describeYAxis(copy);
-    
-    return {
-      prepend: axis
-    };
-  }
+  mixin: Label
 }).attr({
   chart: {
     width: 300,
@@ -385,7 +364,8 @@ nodes = "<div class='.graph'>"+ bubble({
     'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
     maxRadius: '10',
     type: 'scattered',
-    paddingLeft: 35
+    paddingLeft: 35,
+    yAxis: true
   },
   title: 'just a test',
   data: bubbleSet
