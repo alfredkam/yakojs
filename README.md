@@ -8,7 +8,7 @@
 
 Minimal & light weight graph library for fast front end and server side rending + build in CommonJs pattern.  This graph is intend to generate light weight SVG graphs, and its more performable compare to highcharts / flot / c3 when you do not need any complex graphs
 
-This library also works great with webpack & react w/ [prepared react graph components](https://github.com/alfredkam/yakojs/blob/master/doc.md#react-components) or through addon [RenderWithReact](https://github.com/alfredkam/yakojs/blob/master/doc.md#renderwithreact)
+This library also works great with webpack & react w/ [prepared react graph components](https://github.com/alfredkam/yakojs/blob/master/doc.md#react-components)
 
 Documentation [https://github.com/alfredkam/yakojs/blob/master/doc.md](https://github.com/alfredkam/yakojs/blob/master/doc.md)
 
