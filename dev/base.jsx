@@ -61,15 +61,26 @@ module.exports = React.createClass({
           var html = props.points.map(function (key) {
             return key.label + ':' + key.value;
           });
+
+          if(self.state.toolTip.shouldShow === false || self.state.toolTip.content.toString() != html.toString()) {
+            self.setState({
+              toolTip: {
+                shouldShow: true,
+                content: html
+              }
+            });
+          }
+        
+        },
+        'container:mouseLeave': function (e) {
+          // e.stopPropagation();
           self.setState({
             toolTip: {
-              shouldShow: true,
-              content: html
+              shouldShow: false
             }
           });
         },
-        'container:mouseLeave': function (e) {
-          e.stopPropagation();
+        'span:mouseLeave': function (e) {
           self.setState({
             toolTip: {
               shouldShow: false
@@ -82,7 +93,7 @@ module.exports = React.createClass({
     return (
       <Spark 
         chart={chart} 
-        dataSet={this.props.set}
+        data={this.props.set}
         events={events}
         toolTip={self.state.toolTip}
         legend={self.state.legend} />
