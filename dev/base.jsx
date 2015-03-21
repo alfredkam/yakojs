@@ -17,8 +17,62 @@ module.exports = React.createClass({
         shouldShow: false,
         className: '',
         content: ''
+      },
+      useSetOne: true
+    };
+  },
+  useSetOne: true,
+  componentWillMount: function () {
+    var self = this;
+    self.tagId = self.props.set[0].label;
+    console.log('initial tag', self.tagId);
+    self.events = {
+      // Event call backs base on bind
+      on: {
+        ref: self.tagId,
+        'path:hover': function (e, props) {
+
+        },
+        'svg:mouseMove': function (e, props) {
+          var html = props.points.map(function (key) {
+            return key.label + ':' + key.value;
+          });
+
+          if(self.state.toolTip.shouldShow === false || self.state.toolTip.content.toString() != html.toString()) {
+            self.setState({
+              toolTip: {
+                shouldShow: true,
+                content: html
+              }
+            });
+            console.log(self.tagId);
+          }
+        },
+        'container:mouseLeave': function (e) {
+          // e.stopPropagation();
+          self.setState({
+            toolTip: {
+              shouldShow: false
+            }
+          });
+        },
+        'span:mouseLeave': function (e) {
+          self.setState({
+            toolTip: {
+              shouldShow: false
+            }
+          });
+        }
       }
     };
+  },
+  componentDidMount: function () {
+    var self = this;
+    setTimeout(function () {
+      self.setState({
+        useSetOne: false
+      });
+    },5000);
   },
   render: function () {
     var chart = {
@@ -50,53 +104,25 @@ module.exports = React.createClass({
       }
     };
     var self = this;
-
-    var events = {
-      // Event call backs base on bind
-      on: {
-        'path:hover': function (e, props) {
-
-        },
-        'svg:mouseMove': function (e, props) {
-          var html = props.points.map(function (key) {
-            return key.label + ':' + key.value;
-          });
-
-          if(self.state.toolTip.shouldShow === false || self.state.toolTip.content.toString() != html.toString()) {
-            self.setState({
-              toolTip: {
-                shouldShow: true,
-                content: html
-              }
-            });
-          }
-        
-        },
-        'container:mouseLeave': function (e) {
-          // e.stopPropagation();
-          self.setState({
-            toolTip: {
-              shouldShow: false
-            }
-          });
-        },
-        'span:mouseLeave': function (e) {
-          self.setState({
-            toolTip: {
-              shouldShow: false
-            }
-          });
-        }
-      }
-    };
-
-    return (
-      <Spark 
-        chart={chart} 
-        data={this.props.set}
-        events={events}
-        toolTip={self.state.toolTip}
-        legend={self.state.legend} />
-    );
+    if (self.state.useSetOne) {
+       return (
+        <Spark 
+          chart={chart} 
+          data={self.props.set}
+          events={self.events}
+          toolTip={self.state.toolTip}
+          legend={self.state.legend} />
+      );
+    } else {
+       return (
+        <Spark 
+          chart={chart} 
+          data={self.props.set2}
+          events={self.events}
+          toolTip={self.state.toolTip}
+          legend={self.state.legend} />
+      );
+    }
+   
   }
 });

@@ -74,9 +74,34 @@ var set2 = [
   }
 ];
 
+var Profiler = React.createClass({
+  getInitialState: function (){
+    return {
+      gogogo: false
+    }
+  },
+  componentDidMount() {
+    var self = this;
+    setTimeout(function () {
+      self.setState({
+        gogogo: true
+      });
+    }, 1e3)
+  },
+
+  render() {
+    if (!this.state.gogogo) {
+      return null;
+    }
+
+    return (
+      <div>
+        <Base set={set} set2={set2}/>
+        <Base set={set2} set2={set}/>
+      </div>
+    );
+  }
+})
 React.render(
-    <div>
-      <Base set={set} />
-      <Base set={set2} />
-    </div>,
+  <Profiler />,
   document.getElementsByTagName('body')[0]);

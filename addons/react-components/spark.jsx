@@ -1,129 +1,96 @@
 var React = require('react');
 var Spark = require('./event-ready/spark-event');
 var extend = require('../../lib/utils/extend');
-var Events = {};
-// TODO:: switch to new
-Events = extend(Events, require('../Events'));
-// var Events = JSON.parse(JSON.stringify(require('../Events')))
-
+var EventsClass = require('../Events');
 var ToolTip = require('./toolTip');
 var Legend = require('./legend');
 var extend = require('../../lib/utils/extend');
+window.sparksArr = [];
+var _ = require('lodash');
+
+var cssPrefix = ['Moz','Webkit','ms','O'];
 
 module.exports = React.createClass({
     _eventData: {},
+    eventsHandler: '',
     setScale: function (scale) {
-      // console.log(scale);
       this._scale = scale;
-    },
-    getToolTipPosition: function (props) {
-       if (Object.keys(props).length === 0) return;
-
-       var self = this;
-       var scale = props.scale;
-       var offsetY = -1 * self.props.toolTip.offsetBottom || -20;
-       var left = (scale.tickSize * props.segmentXRef) + scale.paddingLeft;
-       var numberOfLines = props.points.length;
-       var values = [];
-       var maxOfSet = 0;
-       var max = 0;
-
-       if (scale.max instanceof Object) {
-         var maxRatio = 0;
-         var pos = 0;
-         for (var i = 0; i < numberOfLines; i++) {
-           var currValue = props.points[i].value;
-           var ratio = currValue / scale.max[0];
-           if (maxRatio < ratio) {
-             maxRatio = ratio;
-             maxOfSet = scale.max[i];
-             max = currValue;
-           }
-         }
-       } else {
-         maxOfSet = scale.max;
-         for (var i = 0; i < numberOfLines; i++) {
-           var currValue = props.points[i].value;
-           max = max < currValue ? currValue : max;
-         }
-       }
-       // Code snippet for finding mid point
-       // var min = Math.min.apply(null, values);
-       // var midPoint = ((max - min) / 2) + (scale.max - max);
-       // var top = midPoint * scale.heightRatio + scale.paddingTop;
-
-       var maxPoint = maxOfSet - max;
-       var top = maxPoint * scale.heightRatio + scale.paddingTop + offsetY;
-
-       // check if we are displaying on the rightside
-       if (scale.len - 1 == props.segmentXRef) {
-         return {
-           top: top,
-           right: scale.paddingRight
-         };
-       }
-       return {
-         top: top,
-         left: left
-       };
     },
     // base
     componentWillMount: function () {
-      Events._hook = this.triggers;
+      var self = this;
+      this.eventsHandler = Events = new EventsClass();
+      var userEvents = self.props.events;
+      Events._hook = self.triggers;
+      Events.on = userEvents.on;
+      Events.ref = self.props.data[0].label;
+      Events.hydrate();
+      sparksArr.push(Events.on);
+    },
+    componentDidMount: function () {
+      // this.getDOMNode().addEventListerner
     },
     triggers: function (e) {
       var self = this;
-      Events._associateTriggers(e, {
+
+      this.eventsHandler._associateTriggers(e, {
         scale: self._scale,
         data: self.props.data
       }, function (props) {
+
         self._eventData = props;
       });
     },
     render: function () {
       var self = this;
-      var userEvents = self.props.events;
-      Events.on = userEvents.on;
-      Events.hydrate();
-
+      var Events = this.eventsHandler;
       var props = Events._toRegister;
       var chart = self.props.chart || {};
       var style = {
-            height: chart.height || 100,
-            width: chart.width || 200,
-            position: 'relative'
+        height: chart.height || 100,
+        width: chart.width || 200,
+        position: 'relative'
       };
       props.style = style;
       // default tool tip settings
       var toolTipSettings = {
-        shouldShow: false,
-        content: '',
+        shouldShow: true,
+        content: 'test',
         className: '',
         offsetBottom: 20,
-        position: {}
+        position: {x: 0, y: 0}
       };
 
       var userDefinedToolTip = self.props.toolTip || {};
       var legend = self.props.legend || {};
 
-      if ((Object.keys(userDefinedToolTip) == 0) || (userDefinedToolTip.shouldShow === false)) {
-          toolTipSettings.shouldShow = false;
-      } else {
-        toolTipSettings.position = this.getToolTipPosition(self._eventData);
-        extend(toolTipSettings, userDefinedToolTip);
+      var position = Events.getToolTipPosition(self._eventData) || {};
+
+      var toolTipStyle = {
+        position: 'absolute',
+        transform: 'translate(' + (position.hasOwnProperty('left') ? position.left : 0) + 'px,' + position.top + 'px)',
+        visibility: userDefinedToolTip.shouldShow ? 'visible' : 'hidden',
+        top: 0
+      };
+
+      for (var i = 0; i < cssPrefix.length; i++) {
+        toolTipStyle[cssPrefix[i]+'Transform'] = toolTipStyle.transform;
       }
 
-      console.log('..');
+      if (position.hasOwnProperty('left')) {
+        toolTipStyle.left = 0;
+      } else {
+        toolTipStyle.right = position.right;
+      }
 
       var factory = React.createFactory("div");
       // TODO:: Implement a dynamic fix for handling div / legend / tooltip level of event binding
       return factory(props,
         [
-          <ToolTip
-            settings={toolTipSettings}
-            position={toolTipSettings.position} >
-              {toolTipSettings.content}
-          </ToolTip>,
+          <span style={toolTipStyle}>
+            {userDefinedToolTip.content}
+          </span>
+          ,
           <Legend
             settings={self.props.legend} >
               {legend.content}

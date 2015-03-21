@@ -1,5 +1,5 @@
 var React = require('react');
-var spark = require('../../../index').spark;
+
 var Label = require('../../Label');
 var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 // var Events = require('../../Events');
@@ -22,6 +22,7 @@ module.exports = React.createClass({
     // },
     render: function () {
       var self = this;
+      var spark = require('../../../index').spark;
       // var userEvents = self.props.events;
       // var Events = self.props.eventModule;
 

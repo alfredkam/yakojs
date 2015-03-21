@@ -44,6 +44,7 @@
     "jymin": "^0.4.1",
     "less": "^2.4.0",
     "less-loader": "^2.1.0",
+    "lodash": "^3.5.0",
     "mocha": "^2.1.0",
     "mocha-lcov-reporter": "0.0.1",
     "react": "^0.12.2",
