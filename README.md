@@ -42,7 +42,7 @@ Supports Chrome, Firefox, Safari, and IE 9+;
 ```npm test```
  
 ### Latest Release
-Please refer to the release branch - (https://github.com/alfredkam/yakojs/tree/release)[https://github.com/alfredkam/yakojs/tree/release]
+Please refer to the release branch - [https://github.com/alfredkam/yakojs/tree/release](https://github.com/alfredkam/yakojs/tree/release)
 
 [![Analytics](https://ga-beacon.appspot.com/UA-25416273-3/yakojs/readme)](https://github.com/igrigorik/ga-beacon)
 [![wercker status](https://app.wercker.com/status/a74eda189271b3b148197e07ad6fa9f1/s "wercker status")](https://app.wercker.com/project/bykey/a74eda189271b3b148197e07ad6fa9f1)
