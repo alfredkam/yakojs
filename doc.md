@@ -4,8 +4,6 @@
 [Addons] (#addons) <br>
 &nbsp;&nbsp; [Label] (#label)<br>
 &nbsp;&nbsp; [ReturnAsObject] (#returnasobject)<br>
-&nbsp;&nbsp; [RenderWithReact] (#renderwithreact)<br>
-&nbsp;&nbsp; [EventsWithReact] (#eventswithreact)<br>
 &nbsp;&nbsp; [React Components] (#react-components)<br>
 [Extend or Modify Library] (#extending-or-modify-library) <br>
 
@@ -380,38 +378,6 @@ Example result
   ]
 }
 ```
-###RenderWithReact
-A React plugin to generate ```React``` code
-```javascript
-// example usage
-var RenderWithReact = require('yako/addons/RenderWithReact');
-var spark = require('yako').spark;
-
-module.exports = React.createClass({
-  render: function () {
-    return spark({
-      mixin: RenderWithReact
-    }).attr({
-      chart: {
-        ...
-      },
-      data: [ ... ]
-    });
-  }
-});
-
-// optionally you could extend RenderWithReact
-RenderWithReact
-  .renderWithProps = function () { 
-    return {
-      props: {
-        className: 'className'
-      }
-    }
-  }
-
-```
-###EventsWithReact
 ###React Components
 Under ```addons/react-components```, there offers a wild range of react ready graph components with its build through the React top level API!
 ###Spark

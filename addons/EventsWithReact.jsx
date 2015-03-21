@@ -1,3 +1,7 @@
+/* NOTE */
+console.warn('EventsWithReact is no longer supported, it is proven to degrade performance');
+/* END OF NOTE */
+
 var RenderWithReact = require('./RenderWithReact');
 var React = require('react');
 RenderWithReact.extend = require('../lib/utils/extend');
