@@ -24,12 +24,9 @@ module.exports = React.createClass({
   useSetOne: true,
   componentWillMount: function () {
     var self = this;
-    self.tagId = self.props.set[0].label;
-    console.log('initial tag', self.tagId);
     self.events = {
       // Event call backs base on bind
       on: {
-        ref: self.tagId,
         'path:hover': function (e, props) {
 
         },
@@ -45,7 +42,6 @@ module.exports = React.createClass({
                 content: html
               }
             });
-            console.log(self.tagId);
           }
         },
         'container:mouseLeave': function (e) {
@@ -67,12 +63,12 @@ module.exports = React.createClass({
     };
   },
   componentDidMount: function () {
-    var self = this;
-    setTimeout(function () {
-      self.setState({
-        useSetOne: false
-      });
-    },5000);
+    // var self = this;
+    // setTimeout(function () {
+    //   self.setState({
+    //     useSetOne: false
+    //   });
+    // },5000);
   },
   render: function () {
     var chart = {
@@ -104,7 +100,7 @@ module.exports = React.createClass({
       }
     };
     var self = this;
-    if (self.state.useSetOne) {
+    // if (self.state.useSetOne) {
        return (
         <Spark 
           chart={chart} 
@@ -113,16 +109,16 @@ module.exports = React.createClass({
           toolTip={self.state.toolTip}
           legend={self.state.legend} />
       );
-    } else {
-       return (
-        <Spark 
-          chart={chart} 
-          data={self.props.set2}
-          events={self.events}
-          toolTip={self.state.toolTip}
-          legend={self.state.legend} />
-      );
-    }
+    // } else {
+    //    return (
+    //     <Spark 
+    //       chart={chart} 
+    //       data={self.props.set2}
+    //       events={self.events}
+    //       toolTip={self.state.toolTip}
+    //       legend={self.state.legend} />
+    //   );
+    // }
    
   }
 });

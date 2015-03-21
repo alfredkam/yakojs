@@ -1,12 +1,8 @@
 var React = require('react');
 var Spark = require('./event-ready/spark-event');
-var extend = require('../../lib/utils/extend');
 var EventsClass = require('../Events');
 var ToolTip = require('./toolTip');
 var Legend = require('./legend');
-var extend = require('../../lib/utils/extend');
-window.sparksArr = [];
-var _ = require('lodash');
 
 var cssPrefix = ['Moz','Webkit','ms','O'];
 
@@ -25,9 +21,9 @@ module.exports = React.createClass({
       Events.on = userEvents.on;
       Events.ref = self.props.data[0].label;
       Events.hydrate();
-      sparksArr.push(Events.on);
     },
     componentDidMount: function () {
+
       // this.getDOMNode().addEventListerner
     },
     triggers: function (e) {
@@ -37,7 +33,6 @@ module.exports = React.createClass({
         scale: self._scale,
         data: self.props.data
       }, function (props) {
-
         self._eventData = props;
       });
     },
@@ -84,7 +79,6 @@ module.exports = React.createClass({
       }
 
       var factory = React.createFactory("div");
-      // TODO:: Implement a dynamic fix for handling div / legend / tooltip level of event binding
       return factory(props,
         [
           <span style={toolTipStyle}>

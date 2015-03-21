@@ -1,8 +1,12 @@
+// TODO:: make this work with all charts
+// Current supports spark / line chart
 /**
  * An add on to interact and trigger events
  */
 
-// TODO:: make this work with all charts
+/**
+ * Event filter definitions
+ */
 var shortHandBindFilterDefinitions = {
   'hover': ['onMouseOver','onMouseLeave'],
   'click': ['onClick'],
@@ -15,14 +19,28 @@ var shortHandBindFilterDefinitions = {
   'doubleClick': ['onDoubleClick']
 };
 
-var Class = require('../lib/base/class');
+var ignore = function () {};
 
+var Class = require('../lib/base/class');
 module.exports = Class.extend({
+  // A list of tagName w/ event combination in key - value format for fast filtering. Hydrate from `hydrate` function
   _events: {},
   _props: {},
+  // The events should register with the top level binding
   _toRegister: {},
+  // The external call back for the top level event binding to call back
   _hook: function () {},
+  /**
+   * A user defined event map, eg:
+   * 'container:mouseLeave': function (e) {
+   *    // do something
+   *  },
+   *  'svg:mousemove': function (e) {
+   *    // do something
+   *  }
+   */
   on: {},
+  // Registers the events list we want to listen to
   hydrate: function () {
     var self = this;
     var filters = Object.keys(self.on);
@@ -45,6 +63,7 @@ module.exports = Class.extend({
     self._events = list;
     self._toRegister = eventsToRegister;
   },
+  // Entry point for top level event binding that will distribute to rest of binding
   _associateTriggers: function (e, props, next) {
     var self = this;
     var events = self._events;
@@ -58,15 +77,17 @@ module.exports = Class.extend({
         }
     }
   },
+  // Common entry point for each _associateTrigger once the eventName is associated
+  // Here it provides the material at those event points - if the data is avaliable
   _trigger: function (eventName, e, props, ref, next) {
     var self = this;
-    // do something
     var scale = props.scale;
     var data = props.data;
     var eX = e.nativeEvent.offsetX;
     var eY = e.nativeEvent.offsetY;
+    next = next || ignore;
     var points = [];
-    var ref = ref || 0;
+    ref = ref || 0;
 
     // if out of quadrant should return
     var quadrantX = (eX - scale.paddingLeft + (scale.tickSize / 2)) / (scale.tickSize * scale.len);
@@ -78,17 +99,17 @@ module.exports = Class.extend({
     };
 
     for (var i in data) {
-        if (ref && (data[i]._ref == ref)) {
-            properties.exactPoint = {
-                label: data[i].label,
-                value: data[i].data[quadrantX]
-            };
-            properties.data = data[i];
-        }
-        points.push({
-            label: data[i].label,
-            value: data[i].data[quadrantX]
-        });
+      if (ref && (data[i]._ref == ref)) {
+          properties.exactPoint = {
+              label: data[i].label,
+              value: data[i].data[quadrantX]
+          };
+          properties.data = data[i];
+      }
+      points.push({
+          label: data[i].label,
+          value: data[i].data[quadrantX]
+      });
     }
 
     properties.points = points;
@@ -100,6 +121,7 @@ module.exports = Class.extend({
     self.on[eventName](e, properties);
     next(properties);
   },
+  // Depending on the props data, it will figure out where the tooltip should show
   getToolTipPosition: function (props) {
        if (Object.keys(props).length === 0) return;
 
