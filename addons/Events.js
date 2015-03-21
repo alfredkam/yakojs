@@ -25,11 +25,24 @@ var Class = require('../lib/base/class');
 module.exports = Class.extend({
   // A list of tagName w/ event combination in key - value format for fast filtering. Hydrate from `hydrate` function
   _events: {},
+  // Sets props
+  setProps: function (scale, data) {
+    this._props = {
+      scale: scale,
+      data: data
+    };
+  },
   _props: {},
   // The events should register with the top level binding
   _toRegister: {},
-  // The external call back for the top level event binding to call back
-  _hook: function () {},
+  // The external call back for the top level event binding to emit the event
+  _emit: function (e) {
+    this._associateTriggers(e);
+  },
+  // Listens to the dom event 
+  listen: function () {
+    // this._associateTriggers(e);
+  },
   /**
    * A user defined event map, eg:
    * 'container:mouseLeave': function (e) {
@@ -55,7 +68,7 @@ module.exports = Class.extend({
                     var eLower = e.toLowerCase();
                     list[tagName + ':' + eLower] = list[tagName + ':' + eLower] || [];
                     list[tagName + ':' + eLower].push(eventName);
-                    eventsToRegister[e] = self._hook;
+                    eventsToRegister[e] = self._emit;
                 }
             }
         });
@@ -63,18 +76,25 @@ module.exports = Class.extend({
     self._events = list;
     self._toRegister = eventsToRegister;
   },
+  // TODO:: handle case when child event provides a stop pragation
   // Entry point for top level event binding that will distribute to rest of binding
-  _associateTriggers: function (e, props, next) {
+  _associateTriggers: function (e, next) {
     var self = this;
     var events = self._events;
+    var props = self._props;
 
-    var tagName = e.target.tagName.toLowerCase() == 'div' ? 'container' : e.target.tagName.toLowerCase();
-    var eventProps = events[tagName + ':on' + e.type] || 0;
-    if (eventProps) {
+    var tagNames = [];
+    var ref = e.target.dataset._ref || 0;
+    tagNames.push(e.target.tagName.toLowerCase() == 'div' ? 'container' : e.target.tagName.toLowerCase());
+    tagNames.push(e.currentTarget.tagName.toLowerCase() == 'div' ? 'container' : e.currentTarget.tagName.toLowerCase());
+
+    for (var i = 0; i < tagNames.length; i++) {
+      var eventProps = events[tagNames[i] + ':on' + e.type] || 0;
+      if (eventProps) {
         for (var x = 0; x < eventProps.length; x++) {
-            var ref = e.target.dataset._ref || 0;
-            self._trigger(tagName + ':' + eventProps[x], e, props, ref, next);
+          self._trigger(tagNames[i] + ':' + eventProps[x], e, props, ref, next);
         }
+      }
     }
   },
   // Common entry point for each _associateTrigger once the eventName is associated
@@ -99,7 +119,7 @@ module.exports = Class.extend({
     };
 
     for (var i in data) {
-      if (ref && (data[i]._ref == ref)) {
+      if (ref && (data[ref])) {
           properties.exactPoint = {
               label: data[i].label,
               value: data[i].data[quadrantX]
@@ -154,7 +174,9 @@ module.exports = Class.extend({
          }
        }
 
-       // Code snippet for finding mid point
+       /**
+        * Code snippet for finding mid point
+        */
        // var min = Math.min.apply(null, values);
        // var midPoint = ((max - min) / 2) + (scale.max - max);
        // var top = midPoint * scale.heightRatio + scale.paddingTop;

@@ -17,22 +17,17 @@ module.exports = React.createClass({
       var self = this;
       this.eventsHandler = Events = new EventsClass();
       var userEvents = self.props.events;
-      Events._hook = self.triggers;
+      Events._emit = self.triggers;
       Events.on = userEvents.on;
       Events.ref = self.props.data[0].label;
       Events.hydrate();
     },
     componentDidMount: function () {
-
-      // this.getDOMNode().addEventListerner
+      // this.getDOMNode().addEventListerner 
     },
     triggers: function (e) {
       var self = this;
-
-      this.eventsHandler._associateTriggers(e, {
-        scale: self._scale,
-        data: self.props.data
-      }, function (props) {
+      this.eventsHandler._associateTriggers(e, function (props) {
         self._eventData = props;
       });
     },
@@ -90,7 +85,7 @@ module.exports = React.createClass({
               {legend.content}
           </Legend>,
           <Spark
-            setScale={self.setScale}
+            events={self.eventsHandler}
             chart={chart}
             data = {self.props.data} />
         ]

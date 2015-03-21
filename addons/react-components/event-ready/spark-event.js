@@ -4,6 +4,12 @@ var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
 module.exports = React.createClass({
     mixin: [PureRenderMixin],
+    shouldComponentUpdate: function (nextProps) {
+      if (this.props.data == nextProps.data) {
+        return false;
+      }
+      return true;
+    },
     render: function () {
       var self = this;
       var spark = require('../../../index').spark;
@@ -12,7 +18,7 @@ module.exports = React.createClass({
       var svg = spark({
         mixin: [Label],
         _call: function (scale) {
-          self.props.setScale(scale);
+          self.props.events.setProps(scale, this.attributes.data);
         },
       }).attr({
           'chart': chart,

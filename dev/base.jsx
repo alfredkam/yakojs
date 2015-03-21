@@ -36,6 +36,7 @@ module.exports = React.createClass({
           });
 
           if(self.state.toolTip.shouldShow === false || self.state.toolTip.content.toString() != html.toString()) {
+
             self.setState({
               toolTip: {
                 shouldShow: true,
@@ -45,14 +46,6 @@ module.exports = React.createClass({
           }
         },
         'container:mouseLeave': function (e) {
-          // e.stopPropagation();
-          self.setState({
-            toolTip: {
-              shouldShow: false
-            }
-          });
-        },
-        'span:mouseLeave': function (e) {
           self.setState({
             toolTip: {
               shouldShow: false
