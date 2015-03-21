@@ -1,130 +1,94 @@
 var React = require('react');
-var Spark = require('./event-ready/spark-events');
+var Spark = require('./event-ready/spark-event');
+var EventsClass = require('../Events');
 var ToolTip = require('./toolTip');
 var Legend = require('./legend');
-var extend = require('../../lib/utils/extend');
+
+var cssPrefix = ['Moz','Webkit','ms','O'];
+
 module.exports = React.createClass({
-  _eventData: {},
-  getToolTipPosition: function (props) {
-    if (Object.keys(props).length === 0) return;
-
-    var self = this;
-    var scale = props.scale;
-    var offsetY = -1 * self.props.toolTip.offsetBottom || -20;
-    var left = (scale.tickSize * props.segmentXRef) + scale.paddingLeft;
-    var numberOfLines = props.points.length;
-    var values = [];
-    var maxOfSet = 0;
-    var max = 0;
-
-    if (scale.max instanceof Object) {
-      var maxRatio = 0;
-      var pos = 0;
-      for (var i = 0; i < numberOfLines; i++) {
-        var currValue = props.points[i].value;
-        var ratio = currValue / scale.max[0];
-        if (maxRatio < ratio) {
-          maxRatio = ratio;
-          maxOfSet = scale.max[i];
-          max = currValue;
-        }
-      }
-    } else {
-      maxOfSet = scale.max;
-      for (var i = 0; i < numberOfLines; i++) {
-        var currValue = props.points[i].value;
-        max = max < currValue ? currValue : max;
-      }
-    }
-    // Code snippet for finding mid point
-    // var min = Math.min.apply(null, values);
-    // var midPoint = ((max - min) / 2) + (scale.max - max);
-    // var top = midPoint * scale.heightRatio + scale.paddingTop;
-
-    var maxPoint = maxOfSet - max;
-    var top = maxPoint * scale.heightRatio + scale.paddingTop + offsetY;
-
-    // check if we are displaying on the rightside
-    if (scale.len - 1 == props.segmentXRef) {
-      return {
-        top: top,
-        right: scale.paddingRight
+    _eventData: {},
+    eventsHandler: '',
+    setScale: function (scale) {
+      this._scale = scale;
+    },
+    // base
+    componentWillMount: function () {
+      var self = this;
+      this.eventsHandler = Events = new EventsClass();
+      var userEvents = self.props.events;
+      Events._emit = self.triggers;
+      Events.on = userEvents.on;
+      Events.ref = self.props.data[0].label;
+      Events.hydrate();
+    },
+    componentDidMount: function () {
+      // this.getDOMNode().addEventListerner 
+    },
+    triggers: function (e) {
+      var self = this;
+      this.eventsHandler._associateTriggers(e, function (props) {
+        self._eventData = props;
+      });
+    },
+    render: function () {
+      var self = this;
+      var Events = this.eventsHandler;
+      var props = Events._toRegister;
+      var chart = self.props.chart || {};
+      var style = {
+        height: chart.height || 100,
+        width: chart.width || 200,
+        position: 'relative'
       };
+      props.style = style;
+      // default tool tip settings
+      var toolTipSettings = {
+        shouldShow: true,
+        content: 'test',
+        className: '',
+        offsetBottom: 20,
+        position: {x: 0, y: 0}
+      };
+
+      var userDefinedToolTip = self.props.toolTip || {};
+      var legend = self.props.legend || {};
+
+      var position = Events.getToolTipPosition(self._eventData) || {};
+
+      var toolTipStyle = {
+        position: 'absolute',
+        transform: 'translate(' + (position.hasOwnProperty('left') ? position.left : 0) + 'px,' + position.top + 'px)',
+        visibility: userDefinedToolTip.shouldShow ? 'visible' : 'hidden',
+        top: 0
+      };
+
+      for (var i = 0; i < cssPrefix.length; i++) {
+        toolTipStyle[cssPrefix[i]+'Transform'] = toolTipStyle.transform;
+      }
+
+      if (position.hasOwnProperty('left')) {
+        toolTipStyle.left = 0;
+      } else {
+        toolTipStyle.right = position.right;
+      }
+
+      var factory = React.createFactory("div");
+      return factory(props,
+        [
+          <span style={toolTipStyle}>
+            {userDefinedToolTip.content}
+          </span>
+          ,
+          <Legend
+            settings={self.props.legend} >
+              {legend.content}
+          </Legend>,
+          <Spark
+            events={self.eventsHandler}
+            chart={chart}
+            data = {self.props.data} />
+        ]
+      );
     }
-    return {
-      top: top,
-      left: left
-    };
-  },
-  onYakoEvent: function (tagName, e, props) {
-    var self = this;
-    if (self.props.events.on[tagName]) {
-      self.props.events.on[tagName](e, props);
-      self._eventData = props;
-    }
-  },
-  onDivLeaveEvent: function (e) {
-    var self = this;
-    if (self.props.events.on['container:mouseLeave']) {
-      self.props.events.on['container:mouseLeave'](e);
-    }
-  },
-  render: function () {
-    var self = this;
-    var chart = self.props.chart || {};
-
-    // default chart style
-    var style = {
-      height: chart.height || 100,
-      width: chart.width || 200,
-      position: 'relative'
-    };
-
-
-    // default tool tip settings
-    var toolTipSettings = {
-      shouldShow: false,
-      content: '',
-      className: '',
-      offsetBottom: 20,
-      position: {}
-    };
-
-    var events = self.props.events || {};
-    events.bindOn = Object.keys(events.on) || [];
-    var userDefinedToolTip = self.props.toolTip || {};
-    var legend = self.props.legend || {};
-
-    if ((Object.keys(userDefinedToolTip) == 0) || (userDefinedToolTip.shouldShow === false)) {
-        toolTipSettings.shouldShow = false;
-    } else {
-      toolTipSettings.position = this.getToolTipPosition(self._eventData);
-      extend(toolTipSettings, userDefinedToolTip);
-    }
-
-
-    var factory = React.createFactory("div");
-    // TODO:: Implement a dynamic fix for handling div / legend / tooltip level of event binding
-    return factory({
-          onMouseLeave: self.onDivLeaveEvent,
-          style: style
-        },
-      [
-        <ToolTip
-          settings={toolTipSettings}
-          position={toolTipSettings.position} >
-            {toolTipSettings.content}
-        </ToolTip>,
-        <Legend
-          settings={self.props.legend} >
-            {legend.content}
-        </Legend>,
-        <Spark
-          chart={chart}
-          bindOn={events.bindOn}
-          onTrigger={self.onYakoEvent}
-          dataSet={self.props.dataSet} />
-      ]
-    );
-  }
-})
+});

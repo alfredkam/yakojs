@@ -1,7 +1,7 @@
 var React = require('react');
 var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
-var cssPrefix = ['-moz-','-webkit-','-ms-','-o-'];
+var cssPrefix = ['Moz','Webkit','ms','O'];
 
 module.exports = React.createClass({
     mixin: [PureRenderMixin],
@@ -19,7 +19,7 @@ module.exports = React.createClass({
       };
 
       for (var i = 0; i < cssPrefix.length; i++) {
-        style[cssPrefix[i]+'transform'] = style.transform;
+        style[cssPrefix[i]+'Transform'] = style.transform;
       }
 
       if (position.hasOwnProperty('left')) {
