@@ -14,15 +14,14 @@ var label = module.exports = {
         if (xAxis) {
           paths.push(self.describeXAxis(immutableScale, xAxis));
         }
-
         return {
             prepend: paths
         };
     },
-    _getLabelConfig: function (scale, yaxis, xaxis) {
+    _getExternalProps: function (scale, yaxis, xaxis) {
       var self = this;
-      scale.paddingLeft = scale.paddingRight = 30;
-      scale.paddingTop = scale.paddingBottom = 20;
+        scale.paddingTop = scale.paddingBottom = 20;
+        scale.paddingLeft = scale.paddingRight = 30;
     },
     describeYAxis: function (scale, opts) {
         var self = this;
