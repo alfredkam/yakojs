@@ -23,7 +23,6 @@ describe('lib/svg/path', function () {
                         height: 100,
                         width: 300,
                         color: [],
-                        _refs: {},
                         rows: 1,
                         ySecs: 0
                     };

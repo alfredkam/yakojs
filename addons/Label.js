@@ -28,11 +28,14 @@ var label = module.exports = {
         var axis = [];
         var labels = [];
         var y = rows = scale.rows;
+        var max = scale.max;
+        var ySegments = scale.ySecs;
         opts = opts || {};
         if (!opts.hasOwnProperty('multi')) {
             y = rows = 1;
+            max = [max];
+            ySegments = [ySegments];
         }
-
         var partialHeight = scale.pHeight;
         var paddingY = scale.paddingY || scale.paddingTop;
         var paddingX = scale.paddingX || scale.paddingLeft - 5;
@@ -40,7 +43,7 @@ var label = module.exports = {
         // goes through the number of yaxis need
         while (y--) {
             var g = self.make('g');
-            var splits = fSplits = scale.ySecs[y];
+            var splits = fSplits = ySegments[y];
             var heightFactor = partialHeight / splits;
             var xCord = ((y + 1) % 2 === 0 ? scale.width - y * paddingX : (y+1) * paddingX);
             labels = [];
@@ -52,7 +55,7 @@ var label = module.exports = {
                     'font-size': 12,
                     'text-anchor': (y + 1) % 2 === 0 ? 'start' : 'end',
                     fill: opts.color || '#333',
-                }, null, scale.max[y] / fSplits * (fSplits - splits)));
+                }, null, max[y] / fSplits * (fSplits - splits)));
             }
             // building the border
             // TODO:: this needs to be more dynamic!
