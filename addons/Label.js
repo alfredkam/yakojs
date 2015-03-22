@@ -1,4 +1,5 @@
 var label = module.exports = {
+    // Applies the label prior to the graph is generate
     preRender: function (immutableScale) {
         var self = this;
         var opts = self.attributes.opts;
@@ -18,11 +19,21 @@ var label = module.exports = {
             prepend: paths
         };
     },
+    // Applies the external props to scale
+    // TODO:: Allow proper padding adjustment for single / multi axis
     _getExternalProps: function (scale, yaxis, xaxis) {
       var self = this;
-        scale.paddingTop = scale.paddingBottom = 20;
-        scale.paddingLeft = scale.paddingRight = 30;
+      scale.paddingTop = scale.paddingBottom = 20;
+      scale.paddingLeft = scale.paddingRight = 30;
+      if (!scale.pHeight) {
+        scale.pHeight = scale.height - scale.paddingTop - scale.paddingBottom;
+      }
+      if (!scale.pWidth) {
+        scale.pWidth = scale.width - scale.paddingLeft - scale.paddingRight;
+      }
     },
+    // TODO:: Support custom targets
+    // Describes the lable for y axis
     describeYAxis: function (scale, opts) {
         var self = this;
         var axis = [];
@@ -33,14 +44,16 @@ var label = module.exports = {
         opts = opts || {};
         if (!opts.hasOwnProperty('multi')) {
             y = rows = 1;
-            max = [max];
+            if (!((max instanceof Array) || (max instanceof Object))) {
+                max = [max];
+            }
             ySegments = [ySegments];
         }
         var partialHeight = scale.pHeight;
         var paddingY = scale.paddingY || scale.paddingTop;
         var paddingX = scale.paddingX || scale.paddingLeft - 5;
 
-        // goes through the number of yaxis need
+        // Goes through the number of yaxis need
         while (y--) {
             var g = self.make('g');
             var splits = fSplits = ySegments[y];
@@ -73,7 +86,8 @@ var label = module.exports = {
         return axis;
     },
     // TODO:: support custom format
-    // for simplicity lets only consider dateTime format atm
+    // Describes the label for x axis
+    // For simplicity lets only consider dateTime format atm
     describeXAxis: function (scale, opts) {
         var self = this;
         var g = self.make('g', {
@@ -117,6 +131,7 @@ var label = module.exports = {
 
         return [self.append(g, labels)];
     },
+    // Determines the utc multiplier
     _utcMultiplier: function(tick) {
         var mili = 1e3,
             s = 60,
@@ -141,7 +156,8 @@ var label = module.exports = {
 
         return multiplier;
     },
-    //formats the time stamp
+    // Formats the time stamp
+    // TODO:: Create a template to speed up the computation
     _formatTimeStamp: function (str, time) {
         var dateObj = new Date(time),
             flag = false;
