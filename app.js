@@ -355,8 +355,11 @@ nodes = '<div class=".graph">' + sparkInstance.attr({
 
 
 // *** preRender Test *** //
-nodes = "<div class='.graph'>"+ bubble({
-  mixin: Label
+nodes = bubble({
+  mixin: Label,
+  postRender: function (context) {
+    return "<div class='.graph'>" + context + "</div>";
+  }
 }).attr({
   chart: {
     width: 300,
@@ -365,11 +368,62 @@ nodes = "<div class='.graph'>"+ bubble({
     maxRadius: '10',
     type: 'scattered',
     paddingLeft: 35,
-    yAxis: true
+    yAxis: true,
+    // xAxis: {
+    //   format : 'dateTime',
+    //   interval: '1D',  //[1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
+    //   minUTC: Date.UTC(2013,8,7),
+    //   dateTimeLabelFormat: 'MM/DD hh ap'
+    // }
   },
   title: 'just a test',
   data: bubbleSet
-})+ "</div>" + nodes;
+}) + bar({
+  mixin: Label,
+  postRender: function (context) {
+    return "<div class='.graph'>" + context + "</div>";
+  }
+}).attr({
+  chart : {
+    stack: true,
+    width: 600,
+    height: 100,
+    'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+    showPointer: false,
+    fill: [],
+    yAxis: true,
+    xAxis: {
+      format : 'dateTime',
+      interval: '1D',  //[1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
+      minUTC: Date.UTC(2013,8,7),
+      dateTimeLabelFormat: 'MM/DD hh ap'
+    }
+  },
+  title: 'just a test',
+  data: set
+}) + bar({
+  mixin: Label,
+  postRender: function (context) {
+    return "<div class='.graph'>" + context + "</div>";
+  }
+}).attr({
+  chart : {
+    width: 600,
+    height: 100,
+    'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+    showPointer: false,
+    fill: [],
+    yAxis: true,
+    xAxis: {
+      format : 'dateTime',
+      interval: '1D',  //[1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
+      minUTC: Date.UTC(2013,8,7),
+      dateTimeLabelFormat: 'MM/DD hh ap'
+    }
+  },
+  title: 'just a test',
+  data: set
+}) + nodes;
 
 var diff = (Date.now() - now);
 

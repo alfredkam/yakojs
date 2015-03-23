@@ -21,15 +21,25 @@ var label = module.exports = {
     },
     // Applies the external props to scale
     // TODO:: Allow proper padding adjustment for single / multi axis
-    _getExternalProps: function (scale, yaxis, xaxis) {
+    _getExternalProps: function (scale, yAxis, xAxis) {
       var self = this;
-      scale.paddingTop = scale.paddingBottom = 20;
-      scale.paddingLeft = scale.paddingRight = 30;
-      if (!scale.pHeight) {
+      if (yAxis) {
+        scale.paddingLeft = scale.paddingRight = 30;
+      }
+
+      if (xAxis) {
+          scale.paddingTop = scale.paddingBottom = 20;
+      }
+      if (!scale.pHeight && yAxis) {
         scale.pHeight = scale.height - scale.paddingTop - scale.paddingBottom;
       }
-      if (!scale.pWidth) {
+      if (!scale.pWidth && xAxis) {
         scale.pWidth = scale.width - scale.paddingLeft - scale.paddingRight;
+        // scale.tickSize = 10;
+      }
+      if(scale.type == 'bar') {
+        var width = scale.width - scale.paddingLeft - scale.paddingRight;
+        scale.tickSize = width / scale.len;
       }
     },
     // TODO:: Support custom targets
@@ -110,7 +120,12 @@ var label = module.exports = {
             var base = opts.minUTC;
         }
 
-        for (var i = 1; i < scale.len - 1; i++) {
+        var offset = 1;
+        if (scale.type == 'bar') {
+            offset = 0;
+        }
+
+        for (var i = offset; i < scale.len - offset; i++) {
             labels.push(self.make('text',{
                 y: yAxis,
                 x: (tickSize * i) + paddingX,
