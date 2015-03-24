@@ -18,12 +18,9 @@ module.exports = React.createClass({
       this.eventsHandler = Events = new EventsClass();
       var userEvents = self.props.events;
       Events._emit = self.triggers;
-      Events.on = userEvents.on;
+      Events.on = userEvents.on || {};
       Events.ref = self.props.data[0].label;
       Events.hydrate();
-    },
-    componentDidMount: function () {
-      // this.getDOMNode().addEventListerner 
     },
     triggers: function (e) {
       var self = this;
@@ -36,6 +33,7 @@ module.exports = React.createClass({
       var Events = this.eventsHandler;
       var props = Events._toRegister;
       var chart = self.props.chart || {};
+      var content = [];
       var style = {
         height: chart.height || 100,
         width: chart.width || 200,
@@ -52,43 +50,47 @@ module.exports = React.createClass({
       };
 
       var userDefinedToolTip = self.props.toolTip || {};
-      var legend = self.props.legend || {};
+      var Legend = self.props.legend || 0;
+      var ToolTipReactElement = userDefinedToolTip.reactElement || 0;
 
-      var position = Events.getToolTipPosition(self._eventData) || {};
+      if (ToolTipReactElement) {
+        var position = Events.getToolTipPosition(self._eventData) || {};
 
-      var toolTipStyle = {
-        position: 'absolute',
-        transform: 'translate(' + (position.hasOwnProperty('left') ? position.left : 0) + 'px,' + position.top + 'px)',
-        visibility: userDefinedToolTip.shouldShow ? 'visible' : 'hidden',
-        top: 0
-      };
+        var toolTipStyle = {
+          position: 'absolute',
+          transform: 'translate(' + (position.hasOwnProperty('left') ? position.left : 0) + 'px,' + position.top + 'px)',
+          visibility: userDefinedToolTip.shouldShow ? 'visible' : 'hidden',
+          top: 0
+        };
 
-      for (var i = 0; i < cssPrefix.length; i++) {
-        toolTipStyle[cssPrefix[i]+'Transform'] = toolTipStyle.transform;
+        for (var i = 0; i < cssPrefix.length; i++) {
+          toolTipStyle[cssPrefix[i]+'Transform'] = toolTipStyle.transform;
+        }
+
+        if (position.hasOwnProperty('left')) {
+          toolTipStyle.left = 0;
+        } else {
+          toolTipStyle.right = position.right;
+        }
+
+        content.push(<span style={toolTipStyle}>   
+            <ToolTipReactElement 
+              content={self._eventData} /> 
+          </span>);
       }
 
-      if (position.hasOwnProperty('left')) {
-        toolTipStyle.left = 0;
-      } else {
-        toolTipStyle.right = position.right;
+      if (Legend){
+        content.push(<Legend />);
       }
+
+      content.push(<Spark
+            events={self.eventsHandler}
+            chart={chart}
+            data = {self.props.data} />);
 
       var factory = React.createFactory("div");
       return factory(props,
-        [
-          <span style={toolTipStyle}>
-            {userDefinedToolTip.content}
-          </span>
-          ,
-          <Legend
-            settings={self.props.legend} >
-              {legend.content}
-          </Legend>,
-          <Spark
-            events={self.eventsHandler}
-            chart={chart}
-            data = {self.props.data} />
-        ]
+        content
       );
     }
 });

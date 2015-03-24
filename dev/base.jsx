@@ -4,47 +4,66 @@
  */
 var React = require('react');
 var Spark = require('../addons/react-components/spark');
+var PureRenderMixin = React.addons.PureRenderMixin;
+
+var ToolTip = React.createClass({
+  mixin: [PureRenderMixin],
+  render: function () {
+    var html = {};
+    if (Object.keys(this.props.content).length !== 0) {
+      if (this.props.content.exactPoint) {
+        html = 'point at value : ' + this.props.content.exactPoint.label + ',' + this.props.content.exactPoint.value;
+      } else {
+        html = this.props.content.points.map(function (key) {
+          return key.label + ':' + key.value;
+        });
+      }
+    }
+    return (
+      <div>
+        {html}
+      </div>
+    );
+  }
+});
+
+var Legend = React.createClass({
+  mixin: [PureRenderMixin],
+  render: function () {
+    return (
+      <div>
+        I am a legend
+      </div>
+    );
+  }
+});
+
+
 module.exports = React.createClass({
   getInitialState: function () {
     // Normally this should be controlled by props
     return {
       toolTip: {
         shouldShow: false,
-        content: '',
-        className: ''
-      },
-      legend: {
-        shouldShow: false,
-        className: '',
-        content: ''
       },
       useSetOne: true
     };
   },
   useSetOne: true,
   componentWillMount: function () {
+    var onActivity = function (e, props) {
+      self.setState({
+        toolTip: {
+          shouldShow: true
+        }
+      });
+    }
     var self = this;
     self.events = {
       // Event call backs base on bind
       on: {
-        'path:hover': function (e, props) {
-
-        },
-        'svg:mouseMove': function (e, props) {
-          var html = props.points.map(function (key) {
-            return key.label + ':' + key.value;
-          });
-
-          if(self.state.toolTip.shouldShow === false || self.state.toolTip.content.toString() != html.toString()) {
-
-            self.setState({
-              toolTip: {
-                shouldShow: true,
-                content: html
-              }
-            });
-          }
-        },
+        'path:mouseMove': onActivity,
+        'svg:mouseMove': onActivity,
         'container:mouseLeave': function (e) {
           self.setState({
             toolTip: {
@@ -64,6 +83,7 @@ module.exports = React.createClass({
     // },5000);
   },
   render: function () {
+    var self = this;
     var chart = {
       width: 1200,
       height: 150,
@@ -92,6 +112,20 @@ module.exports = React.createClass({
         // labels: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
       }
     };
+
+    var toolTip = ToolTip || 0;
+    var legend = Legend || 0;
+
+    if (!toolTip) {
+      self.events = {};
+    } else {
+      toolTip = {
+        shouldShow: self.state.toolTip.shouldShow,
+        reactElement: ToolTip
+      }
+    }
+
+
     var self = this;
     // if (self.state.useSetOne) {
        return (
@@ -99,8 +133,8 @@ module.exports = React.createClass({
           chart={chart} 
           data={self.props.set}
           events={self.events}
-          toolTip={self.state.toolTip}
-          legend={self.state.legend} />
+          toolTip={toolTip}
+          legend={legend} />
       );
     // } else {
     //    return (

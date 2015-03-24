@@ -111,21 +111,22 @@ module.exports = Class.extend({
 
     // if out of quadrant should return
     var quadrantX = (eX - scale.paddingLeft + (scale.tickSize / 2)) / (scale.tickSize * scale.len);
-    quadrantX = Math.floor(quadrantX * 10);
+    quadrantX = Math.floor(quadrantX * scale.len);
 
     var properties = {
-      scale: scale,
-      segmentXRef: quadrantX
+      _scale: scale,
+      _segmentXRef: quadrantX
     };
 
+   if (ref && (data[ref])) {
+      properties.exactPoint = {
+          label: data[ref].label,
+          value: data[ref].data[quadrantX]
+      };
+      properties._data = data[ref];
+    }
+
     for (var i in data) {
-      if (ref && (data[ref])) {
-          properties.exactPoint = {
-              label: data[i].label,
-              value: data[i].data[quadrantX]
-          };
-          properties.data = data[i];
-      }
       points.push({
           label: data[i].label,
           value: data[i].data[quadrantX]
@@ -135,7 +136,7 @@ module.exports = Class.extend({
     properties.points = points;
 
     if(!ref) {
-      properties.data = data;
+      properties._data = data;
     }
 
     self.on[eventName](e, properties);
@@ -146,9 +147,9 @@ module.exports = Class.extend({
        if (Object.keys(props).length === 0) return;
 
        var self = this;
-       var scale = props.scale;
+       var scale = props._scale;
        var offsetY = -20;
-       var left = (scale.tickSize * props.segmentXRef) + scale.paddingLeft;
+       var left = (scale.tickSize * props._segmentXRef) + scale.paddingLeft;
        var numberOfLines = props.points.length;
        var values = [];
        var maxOfSet = 0;
@@ -185,7 +186,7 @@ module.exports = Class.extend({
        var top = maxPoint * scale.heightRatio + scale.paddingTop + offsetY;
 
        // check if we are displaying on the rightside
-       if (scale.len - 1 == props.segmentXRef) {
+       if (scale.len - 1 == props._segmentXRef) {
          return {
            top: top,
            right: scale.paddingRight

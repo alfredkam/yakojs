@@ -52,7 +52,7 @@ var label = module.exports = {
         var max = scale.max;
         var ySegments = scale.ySecs;
         opts = opts || {};
-        if (!opts.hasOwnProperty('multi')) {
+        if ((!opts.hasOwnProperty('multi')) || (!opts.multi)) {
             y = rows = 1;
             if (!((max instanceof Array) || (max instanceof Object))) {
                 max = [max];
