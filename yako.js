@@ -660,7 +660,6 @@
 	                type: 'chart',
 	                width: '100',
 	                height: '100',
-	                'font-family' : '"Open Sans", sans-serif',
 	                paddingLeft: 0,
 	                paddingRight: 0,
 	                paddingTop: 0,

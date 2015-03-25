@@ -94,8 +94,7 @@ while (amount--) {
   nodes += sparkInstance.attr({
     chart : {
       width: 300,
-      height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif'
+      height: 100
     },
     title: 'just a test',
     data: set
@@ -104,8 +103,7 @@ while (amount--) {
   nodes += sparkInstance.attr({
     chart : {
       width: 300,
-      height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif'
+      height: 100
     },
     title: 'just a test',
     data: singleSet
@@ -115,7 +113,6 @@ while (amount--) {
     chart : {
       width: 300,
       height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       scattered: true,
       fill: false
     },
@@ -127,7 +124,6 @@ while (amount--) {
     chart : {
       width: 300,
       height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       scattered: true,
       line: false,
       fill: false
@@ -139,8 +135,7 @@ while (amount--) {
   nodes += pie('.graph').attr({
     chart: {
       width: 300,
-      height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+      height: 100
       // additional options
       // strokes: [],
       // fills: []
@@ -153,7 +148,6 @@ while (amount--) {
     chart: {
       width: 300,
       height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       innerRadius: 40,
       outerRadius: 50
       // addtional options
@@ -168,7 +162,6 @@ while (amount--) {
     chart: {
       width: 300,
       height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       maxRadius: '10'
       // additional options
       // strokes: [],
@@ -182,7 +175,6 @@ while (amount--) {
     chart: {
       width: 300,
       height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       maxRadius: '10',
       type: 'scattered'
       // additional options
@@ -197,7 +189,6 @@ while (amount--) {
       stack: true,
       width: 300,
       height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       showPointer: false,
       fill: []
     },
@@ -209,7 +200,6 @@ while (amount--) {
     chart : {
       width: 300,
       height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       showPointer: false,
       fill: []
     },
@@ -261,8 +251,7 @@ var sparkInstance = spark({
 nodes = sparkInstance.attr({
     chart : {
       width: 1200,
-      height: 150,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+      height: 150
       // scattered: true
     },
     title: 'just a test',
@@ -295,7 +284,6 @@ nodes = sparkInstance.attr({
     chart : {
       width: 1200,
       height: 150,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       scattered: true
     },
     title: 'just a test',

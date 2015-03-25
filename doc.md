@@ -70,7 +70,6 @@ spark({
     width: 300, // default 200
     height: 100,  // default 100
     // optional parameters
-    'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
     stroke: false // it will disable the stroke from drawn
     line: true, // override to disable the line to be drawn
     fill: true, // defaults is true, override to disable fill
@@ -121,7 +120,6 @@ pie('.graph').attr({
     width: 300,
     height: 100,
     // optional parameters
-    'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
     strokeColor: '#000',  // sets default stroke color
     strokeColors: ["#333","#444"],  // this will override the default 
                                     //stroke color and matches with the adjacent data set
@@ -141,7 +139,6 @@ donut('.graph').attr({
     width: 300,
     height: 100,
     // optional parameters
-    'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
     outerRadius: 100, // overrides default & sets the outerRadius of the donut
     innerRadius: 25, // overrides the default & controls the innerRadius of the donut
     strokeColor: '#000',  // sets default stroke color
@@ -168,7 +165,6 @@ bubble('.graph').attr({
     width: 300,
     height: 100,
     // optional parameters
-    'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
     // options for the straight line
     xAxis: {
         strokeColor: '#000',  // sets stroke color,
@@ -211,7 +207,6 @@ bubble('.graph').attr({
     width: 300,
     height: 100,
     // optional parameters
-    'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
     // options for the straight line
     // options for the circle
     maxRadius: 10, // overrides default & sets a cap for a max radius for the bubble
@@ -243,7 +238,6 @@ bar('.graph').attr({
     width: 300,
     height: 100,
     // optional parameters
-    'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
     stack: true // this will enable stack graph
   },
   data: set

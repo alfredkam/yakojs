@@ -44,8 +44,7 @@ var set = [ { data:
 var svg = component.attr({
     chart : {
       width: 800,
-      height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif'
+      height: 100
     },
     data: set
 });
@@ -83,8 +82,7 @@ var svg = component.attr({
     var svg = component.attr({
         chart : {
           width: 800,
-          height: 100,
-          'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+          height: 100
         },
         title: 'just a test',
         data: set,
@@ -94,6 +92,7 @@ var svg = component.attr({
         xAxis : {
           // including format will show the xAxis Label
           format : 'dateTime',
+          fontSize '12',
           textAnchor: 'start', // or 'middle' or 'end' - positions the label
           // or if wanted custom label
           // format: 'custom',
@@ -168,7 +167,6 @@ var svg = component.attr({
     chart : {
       width: 800,
       height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       scattered: true
     },
     title: 'just a test',
@@ -224,8 +222,7 @@ var set = [ {
 var svg = component.attr({
     chart : {
       width: 800,
-      height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif'
+      height: 100
     },
     title: 'just a test',
     data: set
@@ -259,8 +256,7 @@ var svg = component.attr({
     chart : {
       width: 800,
       height: 100,
-      line: false,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif'
+      line: false
     },
     title: 'just a test',
     data: set
@@ -309,7 +305,6 @@ var svg = component.attr({
       width: 300,
       height: 100,
       line: false,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       scattered: true,
     },
     title: 'just a test',
