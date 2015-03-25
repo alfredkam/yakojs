@@ -19,7 +19,6 @@ module.exports = React.createClass({
       var userEvents = self.props.events;
       Events._emit = self.triggers;
       Events.on = userEvents.on || {};
-      Events.ref = self.props.data[0].label;
       Events.hydrate();
     },
     triggers: function (e) {
@@ -64,7 +63,7 @@ module.exports = React.createClass({
         };
 
         for (var i = 0; i < cssPrefix.length; i++) {
-          toolTipStyle[cssPrefix[i]+'Transform'] = toolTipStyle.transform;
+          toolTipStyle[cssPrefix[i] + 'Transform'] = toolTipStyle.transform;
         }
 
         if (position.hasOwnProperty('left')) {
@@ -73,9 +72,9 @@ module.exports = React.createClass({
           toolTipStyle.right = position.right;
         }
 
-        content.push(<span style={toolTipStyle}>   
-            <ToolTipReactElement 
-              content={self._eventData} /> 
+        content.push(<span style={toolTipStyle}>
+            <ToolTipReactElement
+              content={self._eventData} />
           </span>);
       }
 
