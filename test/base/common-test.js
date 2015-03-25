@@ -291,6 +291,68 @@ describe('lib/base/common', function () {
 
     });
 
+    it('_scale (type: "bubble-scattered") should return the min and max of set', function () {
+        var set = [
+            {
+                data: [
+                    [0,1,2],
+                    [1,2,3],
+                    [2,3,4],
+                    [3,4,5],
+                    [4,5,6]
+                ]
+            },
+            {
+                data: [
+                    [5,6,7],
+                    [6,7,8],
+                    [7,8,9],
+                    [8,9,10],
+                    [9,10,11]
+                ]
+            }
+        ];
+
+        var result = common._scale(set, {type: 'bubble-scattered'});
+
+        expect(result.max)
+            .to.deep.equal({ '0': 9, '1': 10, '2': 11 });
+
+        expect(result.min)
+            .to.deep.equal({ '0': 0, '1': 1, '2': 2 });
+
+        expect(result.len)
+            .to.equal(5);
+
+        expect(result.rows)
+            .to.equal(2);
+    });
+
+    it('_deepCopy should return a json copy', function () {
+        var json = {
+            a : {
+                b : {
+                    c : 1
+                }
+            },
+            k : {
+                k : {
+                    a : 'a'
+                }
+            }
+        };
+
+        var result = common._deepCopy(json);
+
+        expect(result)
+            .to.deep.equal(json);
+
+        json.a.b = 1;
+        expect(result)
+            .to.not.equal(json);
+
+    });
+
     it('_getSplits should return splits, checks number length from 3+ positions to 1 position', function () {
         expect(common._getSplits(1000))
             .to.deep.equal({ max: 1000, splits: 2});
