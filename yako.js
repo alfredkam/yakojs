@@ -192,7 +192,6 @@
 
 	    //path generator
 	    for (var i = 0; i < numArr.length; i++) {
-	      // console.log( height, numArr[i], heightRatio, paddingTop);
 	        if (i === 0) {
 	          // X Y
 	            pathToken += 'M ' + paddingLeft + ' '+ (height - (numArr[i] * heightRatio) - paddingTop);
@@ -662,13 +661,14 @@
 	                width: '100',
 	                height: '100',
 	                'font-family' : '"Open Sans", sans-serif',
-	                line: true,
-	                fill: true,
-	                scattered: false,
 	                paddingLeft: 0,
 	                paddingRight: 0,
 	                paddingTop: 0,
-	                paddingBottom: 0
+	                paddingBottom: 0,
+	                // spark graph configs
+	                line: true,
+	                fill: true,
+	                scattered: false
 	            }
 	        };
 	        self._extend(defaults, self.attributes.opts);
