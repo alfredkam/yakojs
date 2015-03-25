@@ -385,7 +385,7 @@ Example result
 }
 ```
 ###React Components
-Under ```addons/react-components```, there offers a wild range of react ready graph components with its build through the React top level API!
+Under ```addons/react-components```, there offers a wild range of react ready graph components.
 ###Spark
 ```javascript
 var Spark = require('./addons/react-components/simpleSpark');
@@ -398,6 +398,106 @@ var chartConfig = {...}
 React.render(
 <Spark data={data} chart={chartConfig} />,
 document.getElementsByTagName('body')[0]);
+```
+###Spark with Events / ToolTip / Legend (draft)
+The example code snippet demonstrate the usage of using events / tooltips / legends with the ```Spark``` component.
+```javascript
+var React = require('react');
+var Spark = require('./addons/react-componets/spark');
+var ToolTip = React.createClass({
+  mixin: [PureRenderMixin],
+  render: function () {
+    var html = {};
+    if (Object.keys(this.props.content).length !== 0) {
+      if (this.props.content.exactPoint) {
+        html = 'point at value : ' + this.props.content.exactPoint.value;
+      } else {
+        html = this.props.content.points.map(function (key) {
+          return key.value + ',';
+        });
+      }
+    }
+    return (
+      <div>
+        {html}
+      </div>
+    );
+  }
+});
+
+var Legend = React.createClass({
+  mixin: [PureRenderMixin],
+  render: function () {
+    return (
+      <div>
+        I am a legend
+      </div>
+    );
+  }
+});
+var component = React.createClass({
+  getInitialState: function () {
+    // Normally this should be controlled by props
+    return {
+        shouldShow: false,
+      };
+  },
+  componentWillMount: function () {
+    var onActivity = function (e, props) {
+      self.setState({
+        shouldShow: true
+      });
+    }
+    var self = this;
+    self.events = {
+      // Event call backs base on bind
+      on: {
+        'path:mouseMove': onActivity,
+        'svg:mouseMove': onActivity,
+        'container:mouseLeave': function (e) {
+          self.setState({
+              shouldShow: false
+          });
+        }
+      }
+    };
+  },
+  render: function () {
+    var self = this;
+    // Assumes the data type & chart configurations from above
+    var chart = { ... };
+    var data = { ... };
+
+    var toolTip = ToolTip || 0;
+    var legend = Legend || 0;
+
+    if (!toolTip) {
+      self.events = {};
+    } else {
+      toolTip = {
+        shouldShow: self.state.toolTip.shouldShow,
+        reactElement: ToolTip
+      }
+    }
+
+    var self = this;
+    return (
+      <Spark 
+        chart={chart} 
+        data={data}
+        events={self.events}
+        toolTip={toolTip}
+        legend={legend} />
+    );
+    /**
+     * Alternatively you could return, events / toolTip / legends are optional
+     * <Spark 
+        chart={chart} 
+        data={data} />
+     */
+  }
+});
+
 ```
 ###Pie
 ```javascript
