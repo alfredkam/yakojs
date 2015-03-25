@@ -128,30 +128,6 @@
 	    return self.postRender(self._prepare()
 	    ._startCycle());
 	  },
-	  // set default value if they are missing
-	  _prepare: function () {
-	    var defaults = {
-	      chart: {
-	          width: '100',
-	          height: '200',
-	          'font-family' : '"Open Sans", sans-serif',
-	          line: true,
-	          fill: true,
-	          scattered: false,
-	          paddingLeft: 0,
-	          paddingRight: 0,
-	          paddingTop: 0,
-	          paddingBottom: 0
-	      },
-	      // 
-	      showNodes: false,
-	      // reservered for labels
-	      data : []
-	    };
-	    this._extend(defaults, this.attributes.opts);
-	    this.attributes.opts = defaults;
-	    return this;
-	  },
 	  /**
 	   * the parent generator that manages the svg generation
 	   * @return {object} global function object 
@@ -424,6 +400,7 @@
 	        var chart = this.attributes.opts.chart;
 	        var append = self.append;
 	        var svg;
+	        chart.type = 'bar';
 
 	        paths = self._lifeCycleManager(data, chart, function (newScale) {
 	            svg = self.make('svg',{
@@ -458,7 +435,7 @@
 	                var total = 0;
 	                for (var j = 0; j < rows; j++) {
 	                    paths.push(this.make('rect',{
-	                        x: tickSize * i + (tickSize/4) + scale.paddingLeft,
+	                        x: tickSize * i + (tickSize / 4) + scale.paddingLeft,
 	                        y: yAxis,
 	                        width: tickSize / rows,
 	                        height: (data[j].data[i] / scale.maxSet[i] * relativeMax),
@@ -468,12 +445,14 @@
 	                }
 	            } else {
 	                // side by side
+	                var x = tickSize * i + (tickSize / 4) + scale.paddingLeft;
 	                for (var j = 0; j < rows; j++) {
+	                    x += tickSize / (rows+1)* j;
 	                    var relativeMax = height * data[j].data[i] / scale.max;
 	                    paths.push(this.make('rect',{
-	                        x: (tickSize * (i + 1)) - (tickSize/(j + 1)) + scale.paddingLeft,
+	                        x: x,
 	                        y: height - relativeMax + scale.paddingTop,
-	                        width: tickSize / (rows + 0.5),
+	                        width: tickSize / (rows+1),
 	                        height: relativeMax,
 	                        fill: data[j].fill || this._randomColor()
 	                    }));
@@ -490,6 +469,7 @@
 
 	var Base = __webpack_require__(11);
 	var bubble = module.exports = Base.extend({
+	    // Start of a life cyle
 	    _startCycle: function () {
 	        var self = this;
 	        var chart = self.attributes.opts.chart;
@@ -517,7 +497,6 @@
 	            return append(self.element,append(svg, paths));
 	        } else {
 	            chart.type = 'bubble-point';
-	            // console.log(chart);
 	            paths = self._lifeCycleManager(data, chart, function (newScale) {
 	                svg = getSvg();
 	                paths = self._describeBubble(data, chart.height, chart.width, newScale);
@@ -560,7 +539,7 @@
 	            scale.tickSize = (width - scale.paddingLeft - scale.paddingRight) / (len - 1);
 	        }
 	    },
-	    // bubble graph
+	    // Describes bubble scattered graph
 	    _describeBubbleChart: function(data, scale) {
 	        var height = scale.height;
 	        var width = scale.width;
@@ -576,8 +555,8 @@
 	            for (var i = 0; i < len; i++) {
 	                var point = data[r].data[i];
 	                paths.push(self.make('circle', {
-	                    cx: width - (point[0] * widthRatio) - scale.paddingRight,
-	                    cy: height - (point[1] * heightRatio) - scale.paddingBottom,
+	                    cx: width - (point[0] * widthRatio) - scale.paddingLeft,
+	                    cy: height - (point[1] * heightRatio) - scale.paddingTop,
 	                    r: scale.maxRadius * (point[2]/max[2]),
 	                    fill: data[r].fill || (fills[i] || self._randomColor())
 	                }));
@@ -585,6 +564,7 @@
 	        }
 	        return paths;
 	    },
+	    // Describes the xAxis for bubble point graph
 	    _describeXAxis: function (height, width, chart) {
 	        var config = chart.xAxis;
 	        var centerY = height / 2;
@@ -596,7 +576,7 @@
 	            d: 'M' + chart.paddingLeft + ' ' + centerY + ' H' + (width - chart.paddingLeft - chart.paddingRight)
 	        });
 	    },
-	    // bubble point
+	    // Describes bubble point graph
 	    _describeBubble: function (data, height, width, scale) {
 	        if (!data) return '';
 	        var config = scale.bubble;
@@ -682,6 +662,9 @@
 	                width: '100',
 	                height: '100',
 	                'font-family' : '"Open Sans", sans-serif',
+	                line: true,
+	                fill: true,
+	                scattered: false,
 	                paddingLeft: 0,
 	                paddingRight: 0,
 	                paddingTop: 0,
@@ -710,15 +693,16 @@
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/* istanbul ignore next */
 	var warn = function (msg) {
 	  console.warn(msg);
-	}
-
+	};
+	/* istanbul ignore next */
 	module.exports = {
 	  label: function () {
-	    warn("You're attempting to use labels without the `Label` addons.  Check documentation https://github.com/alfredkam/yakojs/blob/master/doc.md")
+	    warn("You're attempting to use labels without the `Label` addons.  Check documentation https://github.com/alfredkam/yakojs/blob/master/doc.md");
 	  }
-	}
+	};
 
 /***/ },
 /* 13 */
@@ -1152,6 +1136,12 @@
 	          max = max < rowTotal ? rowTotal : max;
 	          min = min > rowTotal ? rowTotal : min;
 	        }
+	        
+	        if (yAxis) {
+	          ans = getSplits(max);
+	          max = ans.max;
+	          ySecs = ans.splits;
+	        }
 	      } else if (opts.type == 'bubble-scattered') {
 	        // for bubble and need to find min / max across the x, y , z axis
 	        min = {};
@@ -1170,9 +1160,9 @@
 	          }
 	        }
 	        if (yAxis) {
-	          ans = getSplits(max[0]);
-	          max[0] = ans.max;
-	          ySecs = [ans.splits];
+	          ans = getSplits(max[1]);
+	          max[1] = ans.max;
+	          ySecs = ans.splits;
 	        }
 
 	      } else {
@@ -1186,8 +1176,8 @@
 
 	        if (yAxis) {
 	          ans = getSplits(max);
-	          max = [ans.max];
-	          ySecs = [ans.splits];
+	          max = ans.max;
+	          ySecs = ans.splits;
 	        }
 	      }
 	      

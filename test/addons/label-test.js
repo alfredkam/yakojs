@@ -1,10 +1,12 @@
 var chai = require('chai');
 var expect = chai.expect;
 var Label = require('../../addons/Label');
+var _ = require('lodash');
 
 describe('addons/Label', function () {
     var label;
     var scale;
+    var log;
     before(function () {
         // mocks
         var isArray = function (obj) {
@@ -49,7 +51,8 @@ describe('addons/Label', function () {
         };
 
         label = Label;
-        scale = { min: { '0': 30, '1': 24 },
+        scale = {
+          min: { '0': 30, '1': 24 },
           max: { '0': 300, '1': 600 },
           maxSet: [],
           len: 10,
@@ -63,7 +66,24 @@ describe('addons/Label', function () {
           width: 1200,
           pHeight: 460,
           paddingY: 20,
-          paddingX: 30 };
+          paddingX: 30
+        };
+        log = console.warn;
+    });
+
+    after(function () {
+      console.warn = log;
+    });
+
+    it('_getExternalProps check with type  - will it complain', function () {
+      var copy = _.cloneDeep(scale);
+      copy.type = 'bubble-scattered';
+      var msg;
+      console.warn = function (m) {
+        msg = m;
+      };
+      var result = label._getExternalProps(copy,{},{});
+      expect(msg).to.not.be.empty;
     });
 
     it('describeYAxis (scale, multi : true ) should return a yaxis border', function () {

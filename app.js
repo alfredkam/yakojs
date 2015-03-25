@@ -19,7 +19,7 @@ var Label = require('./addons/Label');
 var dataPoints = 30;
 var nOfGraphs = 10;
 var kind = 11;
-var oddKinds = 2;
+var oddKinds = 4;
 var amount = nOfGraphs;
 
 var now = Date.now();
@@ -369,12 +369,10 @@ nodes = bubble({
     type: 'scattered',
     paddingLeft: 35,
     yAxis: true,
-    // xAxis: {
-    //   format : 'dateTime',
-    //   interval: '1D',  //[1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
-    //   minUTC: Date.UTC(2013,8,7),
-    //   dateTimeLabelFormat: 'MM/DD hh ap'
-    // }
+    xAxis: {
+      format : 'custom',
+      labels : ['low', 'high']
+    }
   },
   title: 'just a test',
   data: bubbleSet

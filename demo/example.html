@@ -94,6 +94,11 @@ var svg = component.attr({
         xAxis : {
           // including format will show the xAxis Label
           format : 'dateTime',
+          textAnchor: 'start', // or 'middle' or 'end' - positions the label
+          // or if wanted custom label
+          // format: 'custom',
+          // labels: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
+          // options for configuring format `datetime`
           // interval indicates the data interval, the number of the interval indicates the label tick interval
           // same representation is also used for `dateTimeLabelFormat`
           // s - seconds
@@ -108,11 +113,14 @@ var svg = component.attr({
           //this controls the dateTime label format
           //depending on the format, it will affect the label, try :: dateTimeLabelFormat: 'hhh'
           dateTimeLabelFormat: 'MM/DD hh ap'
-          // or if wanted custom label
-          // format: 'label',
-          // labels: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
       }
     });
+
+    /**
+     * NOTE::
+     * When labeling is enabled for `xAxis` the default `paddingTop` & `paddingBottom` is 30px;
+     * When labeling is enabled for `yAxis` the default `paddingLeft` & `paddingRight` is 20px;
+     */
     </code>
                 </pre>
             </div>
