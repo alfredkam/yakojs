@@ -28,18 +28,25 @@ var label = module.exports = {
       }
 
       if (xAxis) {
-          scale.paddingTop = scale.paddingBottom = 20;
+        scale.paddingTop = scale.paddingBottom = 20;
       }
       if (!scale.pHeight && yAxis) {
         scale.pHeight = scale.height - scale.paddingTop - scale.paddingBottom;
       }
       if (!scale.pWidth && xAxis) {
         scale.pWidth = scale.width - scale.paddingLeft - scale.paddingRight;
-        // scale.tickSize = 10;
       }
       if(scale.type == 'bar') {
-        var width = scale.width - scale.paddingLeft - scale.paddingRight;
-        scale.tickSize = width / scale.len;
+        scale.tickSize = scale.pWidth / scale.len;
+      }
+
+      if (scale.type == 'bubble-scattered') {
+        var len = (xAxis.labels ? xAxis.labels.length : 2);
+        scale.tickSize = scale.pWidth / len;
+        scale.prefLen = len;
+        if (!xAxis.labels) {
+            console.warn('Attempting to use labels with `bubble graph` type:scattered, without defining custom labels');
+        }
       }
     },
     // TODO:: Support custom targets
@@ -52,6 +59,9 @@ var label = module.exports = {
         var max = scale.max;
         var ySegments = scale.ySecs;
         opts = opts || {};
+        if (scale.type == 'bubble-scattered') {
+            max = [max[1]];
+        }
         if ((!opts.hasOwnProperty('multi')) || (!opts.multi)) {
             y = rows = 1;
             if (!((max instanceof Array) || (max instanceof Object))) {
@@ -81,7 +91,6 @@ var label = module.exports = {
                 }, null, max[y] / fSplits * (fSplits - splits)));
             }
             // building the border
-            // TODO:: this needs to be more dynamic!
             xCord = ( (y + 1) % 2 === 0) ? xCord - 5 : xCord + 5;
             labels.push(self.make('path',{
               'd' : 'M' + xCord + ' 0L' + xCord + ' ' + (partialHeight + paddingY),
@@ -100,9 +109,7 @@ var label = module.exports = {
     // For simplicity lets only consider dateTime format atm
     describeXAxis: function (scale, opts) {
         var self = this;
-        var g = self.make('g', {
-          'class': 'xaxis'
-        });
+        var g = self.make('g');
         var labels = [];
         var partialHeight = scale.pHeight;
         var tickSize = scale.tickSize;
@@ -121,22 +128,22 @@ var label = module.exports = {
         }
 
         var offset = 1;
-        if (scale.type == 'bar') {
+        if (scale.type == 'bar' || !form) {
             offset = 0;
         }
 
-        for (var i = offset; i < scale.len - offset; i++) {
+        for (var i = offset; i < (scale.prefLen || scale.len) - offset; i++) {
             labels.push(self.make('text',{
                 y: yAxis,
-                x: (tickSize * i) + paddingX,
+                x: (tickSize * i) + paddingX + (scale.type == 'bar' ? tickSize / 4 : 0 ),
                 'font-size': 12,
-                'text-anchor': 'start',
+                'text-anchor': opts.textAnchor || 'start',
                 fill: opts.color || '#333',
             }, null, (form ? self._formatTimeStamp(format, base + (utc * i)) : opts.labels[i] || 0)));
         }
 
         labels.push(self.make('path',{
-          'd' : 'M' + (paddingX  * 2) + ' ' + (yAxis - 12) + ' L' + (scale.width - paddingX*2) + ' ' + (yAxis - 12),
+          'd' : 'M' + (scale.paddingLeft) + ' ' + (yAxis - 12) + ' L' + (scale.width - scale.paddingRight) + ' ' + (yAxis - 12),
           'stroke-width': '1',
           'stroke': '#c0c0c0',
           'fill': 'none',

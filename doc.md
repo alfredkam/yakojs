@@ -83,6 +83,11 @@ spark({
     xAxis : {
       // including format will show the xAxis Label
       format : 'dateTime',
+      // or if wanted custom label
+      // format: 'custom',
+      // labels: [Array of label], this label must match the data value length, if not it will be zero
+      textAnchor: 'start', // or 'middle' or 'end' - positions the label
+      // options for configuring format `datetime`
       // interval indicates the data interval, the number of the interval indicates the label tick interval
       // same representation is also used for `dateTimeLabelFormat`
       // s - seconds
@@ -98,14 +103,14 @@ spark({
       // depending on the format, it will affect the label, try :: dateTimeLabelFormat: 'hhh'
       // for 12hr time use `ap`, it then will use am/pm
       dateTimeLabelFormat: 'MM/DD hh ap'
-      // or if wanted custom label
-      // format: 'label',
-      // labels: [Array of label], this label must match the data value length, if not it will be zero
     }
   },
   data: set //accepts an array or json obj
 });
 ```
+NOTE:: <br>
+When labeling is enabled for ```xAxis``` the default ```paddingTop``` & ```paddingBottom``` is 30px;
+When labeling is enabled for ```yAxis``` the default ```paddingLeft``` & ```paddingRight``` is 20px;
 
 ####Pie Chart Attributes
 ```javascript
@@ -194,8 +199,8 @@ var maxRadius =  chart.maxRadius || (chart.height < chart.width ? chart.height :
 ```javascript
 var set = [{
   data: [
-          [0,1,2],  // x (xAxis), y (yAxis), z (sample size) 
-          [2,3,4]
+          [0, 1, 2],  // x (xAxis), y (yAxis), z (sample size) 
+          [2, 3, 4]
   ],
   fill: '#000' // default fill
 }]; // an array of a set of numbers
@@ -218,17 +223,18 @@ bubble('.graph').attr({
 
 // default maxRadius base on chart attributes
 var maxRadius =  Math.sqrt(chart.width * chart.height / data.length) / 2;
+// xAxis labels only works with custom `format`
 ```
 
 ###Bar Graph Attributes
 ```javascript
 var set = [
   {
-    data: [23424,2445],// an array with numbers
+    data: [23424, 2445],// an array with numbers
     fill: '#F0FFF0' // controls the fill color
   },
   {
-    data: [23423,34234], // an array with numbers
+    data: [23423, 34234], // an array with numbers
     fill: '#F0FFF0' // controls the fill color
   }
 ];
