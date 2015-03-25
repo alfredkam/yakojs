@@ -1,24 +1,26 @@
-[General Usage](#Usage) <br>
-&nbsp;&nbsp; [Spark Graph Attributes](#spark-graph-attributes) <br>
-&nbsp;&nbsp; [Pie Chart Attributes](#pie-chart-attributes) <br>
-&nbsp;&nbsp; [Donut Chart Attributes](#donut-chart-attributes) <br>
-&nbsp;&nbsp; [Bubble Point Graph Attributes (for a horizontal line time series representation)](#bubble-point-graph-attributes-for-a-horizontal-line-time-series-representation) <br>
-&nbsp;&nbsp; [Bubble Graph Attributes ( for representing a cohort)](#bubble-graph-attributes--for-representing-a-cohort) <br>
-&nbsp;&nbsp; [Bar Graph Attributes](#bar-graph-attributes) <br>
-[API & Mixin](#api--mixin) <br>
-[SVG API](#svg-api) <br>
-[Addons](#addons) <br>
-&nbsp;&nbsp; [Label] (#label)<br>
-&nbsp;&nbsp; [ReturnAsObject](#returnasobject) <br>
-&nbsp;&nbsp; [React Components](#react-components) <br>
-&nbsp;&nbsp;&nbsp;&nbsp; [Spark](#spark) <br>
-&nbsp;&nbsp;&nbsp;&nbsp; [Pie](#pie) <br>
-&nbsp;&nbsp;&nbsp;&nbsp; [Donut](#donut) <br>
-&nbsp;&nbsp;&nbsp;&nbsp; [Bubble](#bubble) <br>
-&nbsp;&nbsp;&nbsp;&nbsp; [Bar](#bar) <br>
-[Extend or Modify Library](#extending-or-modify-library) <br>
+##Content
+ - [General Usage](#Usage)
+  - [Spark Graph Attributes](#spark-graph-attributes)
+  - [Pie Chart Attributes](#pie-chart-attributes)
+  - [Donut Chart Attributes](#donut-chart-attributes)
+  - [Bubble Point Graph Attributes (for a horizontal line time series representation)](#bubble-point-graph-attributes-for-a-horizontal-line-time-series-representation)
+  - [Bubble Graph Attributes ( for representing a cohort)](#bubble-graph-attributes--for-representing-a-cohort)
+  - [Bar Graph Attributes](#bar-graph-attributes)
 
-[External Link: Visual Examples](http://alfredkam.com/yakojs/example.html) <br>
+- [API & Mixin](#api--mixin)
+- [SVG API](#svg-api)
+- [Addons](#addons)
+  - [Label] (#label)
+  - [ReturnAsObject](#returnasobject)
+  - [React Components](#react-components)
+    - [Spark](#spark)
+    - [Pie](#pie)
+    - [Donut](#donut)
+    - [Bubble](#bubble)
+    - [Bar](#bar)
+- [Extend or Modify Library](#extending-or-modify-library)
+
+[External Link: Visual Examples](http://alfredkam.com/yakojs/example.html)
 
 ##General Usage
 To use any of the graphs you could access them through these entry points.
@@ -31,13 +33,13 @@ var spark = yako.spark;     // Spark graph
 var pie = yako.pie;         // Pie chart
 ```
 
-####Calling
+####Initializing
 <i>graph</i>().attr(<i>attributes</i>) <br>
-&nbsp;&nbsp; => returns a string content with ```<svg>...</svg>``` <br>
+&nbsp;&nbsp; => returns a string ```<svg>...</svg>``` <br>
 <i>graph</i>("#graph").attr(<i>attributes</i>) <br>
-&nbsp;&nbsp; => returns a string content with ```<div id='graph'><svg>...</svg></div>```<br>
+&nbsp;&nbsp; => returns a string ```<div id='graph'><svg>...</svg></div>```<br>
 <i>graph</i>(".graph").attr(<i>attributes</i>) <br>
-&nbsp;&nbsp; => returns a string content with ```<div class='graph'><svg>...</svg></div>```<br>
+&nbsp;&nbsp; => returns a string ```<div class='graph'><svg>...</svg></div>```<br>
 
 ####Spark Graph Attributes
 ```javascript
