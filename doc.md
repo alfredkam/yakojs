@@ -200,11 +200,11 @@ var maxRadius =  chart.maxRadius || (chart.height < chart.width ? chart.height :
 ```javascript
 var set = [{
   data: [
-          [0, 1, 2],  // x (xAxis), y (yAxis), z (sample size) 
+          [0, 1, 2],          // x (xAxis), y (yAxis), z (sample size) 
           [2, 3, 4]
   ],
-  fill: '#000' // default fill
-}]; // an array of a set of numbers
+  fill: '#000'                // Default fill
+}]; 
 bubble('.graph').attr({
   chart: {
     type: 'scattered',        // <= This is needed for bubble graph
@@ -426,7 +426,9 @@ A plugin to return a dom like object representation
 var ReturnAsObject = require('yako/addons/ReturnAsObject');
 var spark = require('yako').spark;
 
-spark(RetunAsObject).attr({
+spark({
+  mixin: [RetunAsObject]
+}).attr({
   chart: {
     ...
   },
