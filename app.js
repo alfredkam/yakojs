@@ -323,13 +323,14 @@ nodes = '<div class=".graph">' + sparkInstance.attr({
     chart : {
       width: 1200,
       height: 150,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+      fontFamily: '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       scattered: true
     },
     title: 'just a test',
     data: set,
     yAxis: true,
     xAxis : {
+      fontSize: '14',
       // including format will show the xAxis Label
       format : 'dateTime',
       // interval indicates the data interval, the number of the interval indicates the label tick interval
