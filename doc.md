@@ -79,7 +79,7 @@ var set = [
     }
   }
 ];
-// spark accepts multiple data sets
+// Spark accepts multiple data sets
 spark().attr({
   chart : {
                                  // Width & height controls the svg view box
@@ -112,7 +112,7 @@ pie('.graph').attr({
     width: 300,
     height: 100,
 
-    /* optional parameters */
+    /* Optional parameters */
     strokeColor: '#000',            // Sets default stroke color
     strokeColors: ["#333","#444"],  // This will override the default 
                                     // Stroke color and matches with the adjacent data set
