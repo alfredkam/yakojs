@@ -104,8 +104,7 @@ while (amount--) {
   nodes += sparkInstance.attr({
     chart : {
       width: 300,
-      height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif'
+      height: 100
     },
     title: 'just a test',
     data: set
@@ -114,8 +113,7 @@ while (amount--) {
   nodes += sparkInstance.attr({
     chart : {
       width: 300,
-      height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif'
+      height: 100
     },
     title: 'just a test',
     data: singleSet
@@ -125,7 +123,6 @@ while (amount--) {
     chart : {
       width: 300,
       height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       scattered: true,
       fill: false
     },
@@ -137,7 +134,6 @@ while (amount--) {
     chart : {
       width: 300,
       height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       scattered: true,
       line: false,
       fill: false
@@ -150,7 +146,6 @@ while (amount--) {
     chart: {
       width: 300,
       height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       // additional options
       // strokes: [],
       // fills: []
@@ -163,7 +158,6 @@ while (amount--) {
     chart: {
       width: 300,
       height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       innerRadius: 40,
       outerRadius: 50
       // addtional options
@@ -178,7 +172,6 @@ while (amount--) {
     chart: {
       width: 300,
       height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       xAxis: {
         strokeColor: '#333',
       },
@@ -198,8 +191,7 @@ while (amount--) {
   nodes += bubble('.graph').attr({
     chart: {
       width: 300,
-      height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+      height: 100
     },
     title: 'just a test',
     data: dataSet4
@@ -210,7 +202,6 @@ while (amount--) {
     chart: {
       width: 300,
       height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       maxRadius: '10',
       type: 'scattered'
       // additional options
@@ -225,7 +216,6 @@ while (amount--) {
       stack: true,
       width: 300,
       height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       showPointer: false,
       fill: []
     },
@@ -237,7 +227,6 @@ while (amount--) {
     chart : {
       width: 300,
       height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       showPointer: false,
       fill: []
     },
@@ -290,7 +279,6 @@ nodes = '<div class=".graph">' + sparkInstance.attr({
     chart : {
       width: 1200,
       height: 150,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       // scattered: true
     },
     title: 'just a test',
@@ -323,13 +311,13 @@ nodes = '<div class=".graph">' + sparkInstance.attr({
     chart : {
       width: 1200,
       height: 150,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       scattered: true
     },
     title: 'just a test',
     data: set,
     yAxis: true,
     xAxis : {
+      fontSize: '14',
       // including format will show the xAxis Label
       format : 'dateTime',
       // interval indicates the data interval, the number of the interval indicates the label tick interval
@@ -364,7 +352,6 @@ nodes = bubble({
   chart: {
     width: 300,
     height: 100,
-    'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
     maxRadius: '10',
     type: 'scattered',
     paddingLeft: 35,
@@ -386,7 +373,6 @@ nodes = bubble({
     stack: true,
     width: 600,
     height: 100,
-    'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
     showPointer: false,
     fill: [],
     yAxis: true,
@@ -408,7 +394,6 @@ nodes = bubble({
   chart : {
     width: 600,
     height: 100,
-    'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
     showPointer: false,
     fill: [],
     yAxis: true,
@@ -430,7 +415,7 @@ nodes = '<div>' + 'Took ' + diff + 'ms to generate ' + (nOfGraphs * kind + oddKi
 
 // test optimization => round all numbers to 1 decimal place
 nodes = nodes.replace(/([0-9]+\.[0-9]+)/g, function (match, p1) {
-  return Math.round10(p1,-1);
+  return Math.round10(p1, -1);
 });
 
 var str = '<html><head>'+

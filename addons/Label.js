@@ -85,7 +85,7 @@ var label = module.exports = {
                 labels.push(self.make('text',{
                     y: paddingY + (heightFactor * splits),
                     x: xCord,
-                    'font-size': 12,
+                    'font-size': opts.fontSize || 12,
                     'text-anchor': (y + 1) % 2 === 0 ? 'start' : 'end',
                     fill: opts.color || '#333',
                 }, null, max[y] / fSplits * (fSplits - splits)));
@@ -136,7 +136,7 @@ var label = module.exports = {
             labels.push(self.make('text',{
                 y: yAxis,
                 x: (tickSize * i) + paddingX + (scale.type == 'bar' ? tickSize / 4 : 0 ),
-                'font-size': 12,
+                'font-size': opts.fontSize || 12,
                 'text-anchor': opts.textAnchor || 'start',
                 fill: opts.color || '#333',
             }, null, (form ? self._formatTimeStamp(format, base + (utc * i)) : opts.labels[i] || 0)));

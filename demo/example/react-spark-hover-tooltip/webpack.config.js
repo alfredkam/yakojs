@@ -3,10 +3,10 @@ var webpack = require('webpack');
 module.exports = {
   context : __dirname,
   entry : [
-    './dev/reactApp',
+    './app',
   ],
   output : {
-    path: __dirname + '/dev',
+    path: __dirname,
     filename: 'bundle.js'
   },
   plugins: [

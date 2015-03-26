@@ -42,8 +42,7 @@ var singleSet = [ { label: 'Auto Generated 3',
 var svg = component.attr({
     chart : {
       width: 800,
-      height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif'
+      height: 100
     },
     title: 'just a test',
     data: set
@@ -64,8 +63,7 @@ append('spark-spark', svg);
 var svg = component.attr({
     chart : {
       width: 800,
-      height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif'
+      height: 100
     },
     title: 'just a test',
     data: singleSet
@@ -76,8 +74,7 @@ var svg = component.attr({
     chart : {
       width: 800,
       height: 100,
-      line: false,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif'
+      line: false
     },
     title: 'just a test',
     data: set
@@ -88,8 +85,7 @@ append('spark-area', svg);
 var svg = component.attr({
     chart : {
       width: 800,
-      height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
+      height: 100
       // scattered: true
     },
     title: 'just a test',
@@ -127,7 +123,6 @@ var svg = component.attr({
     chart : {
       width: 800,
       height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       line: false,
       fill: false,
       scattered: true,
@@ -142,7 +137,6 @@ var svg = component.attr({
     chart : {
       width: 800,
       height: 100,
-      'font-family': '"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif',
       scattered: true
     },
     title: 'just a test',

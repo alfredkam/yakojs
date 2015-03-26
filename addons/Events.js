@@ -39,11 +39,28 @@ module.exports = Class.extend({
   _emit: function (e) {
     this._associateTriggers(e);
   },
-  // Listens to the dom event 
-  listen: function () {
-    // this._associateTriggers(e);
+  // Manually pass the domObj thats pass in, and add the events
+  listen: function (domObj) {
+    var self = this;
+    self._element = domObj;
+    self.hydrate();
+    var props = self._toRegister;
+    var keys = Object.keys(props);
+    for(var i = 0; i < keys.length; i++) {
+      domObj.addEventListener(keys[i].replace('on','').toLowerCase(),props[keys[i]], false);
+    }
   },
-  /**
+  // Manually removes the event listener
+  removeListener: function () {
+    var self = this;
+    var domObj = self._element;
+    var props = self._toRegister;
+    var keys = Object.keys(props);
+    for(var i = 0; i < keys.length; i++) {
+      domObj.removeEventListener(keys[i].replace('on','').toLowerCase(),props[keys[i]], false);
+    }
+  },
+   /**
    * A user defined event map, eg:
    * 'container:mouseLeave': function (e) {
    *    // do something
