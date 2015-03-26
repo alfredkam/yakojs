@@ -124,7 +124,7 @@ var node = '<div class="graph">' + spark({
             // same representation is also used for `dateTimeLabelFormat`
             // s - seconds
             // m - minutes
-            // h - hours
+            // h - hoursp
             // D - days
             // M - months
             // Y - years
@@ -143,3 +143,11 @@ var node = '<div class="graph">' + spark({
 }) + "</div>";
 
 document.getElementsByTagName("body")[0].innerHTML = node;
+var handler = new Events();
+handler.on = {
+    'svg:mouseMove': function (e, props) {
+        console.log(e, props);
+    }
+};
+
+handler.listen(document.getElementsByClassName("graph")[0]);

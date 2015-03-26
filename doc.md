@@ -423,6 +423,14 @@ NOTE:: <br>
 When labeling is enabled for ```xAxis``` the default ```paddingTop``` & ```paddingBottom``` is 30 in px;
 When labeling is enabled for ```yAxis``` the default ```paddingLeft``` & ```paddingRight``` is 20 in px;
 
+###Events (draft)
+Yako provides an Event addon that will let you hook into your Yako graphs.
+
+```javascript
+var Events = require('yako/addons/Events');
+
+```
+
 ###ReturnAsObject
 A plugin to return a dom like object representation
 ```javascript
@@ -526,7 +534,7 @@ React.render(
     events={events} />,
 document.getElementsByTagName('body')[0]);
 ```
-Notice when your registering an event, you would register with ```container``` or ```svg element``` in the combination of ```event name```.
+Notice when your registering an event, you would register with ```container``` or ```svg element``` in the combination of ```event name```.  Here ```container``` is the wrapper that contains the svg elements.
 
 List of supported events:
 

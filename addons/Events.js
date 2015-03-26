@@ -37,6 +37,7 @@ module.exports = Class.extend({
   _toRegister: {},
   // The external call back for the top level event binding to emit the event
   _emit: function (e) {
+    // console.log(this);
     this._associateTriggers(e);
   },
   // Manually pass the domObj thats pass in, and add the events
