@@ -14,6 +14,7 @@
   - [ReturnAsObject](#returnasobject)
   - [React Components](#react-components)
     - [Spark](#spark)
+    - [Spark with Events in react](#spark-with-events-in-react)
     - [Pie](#pie)
     - [Donut](#donut)
     - [Bubble](#bubble)
@@ -460,7 +461,7 @@ Under ```addons/react-components```, there offers a wild range of react ready gr
 
 ###Spark
 ```javascript
-var Spark = require('./addons/react-components/simpleSpark');
+var Spark = require('yako/addons/react-components/simpleSpark');
 // Assumes the data type & chart configurations from above
 var data = [
   {...},
@@ -471,110 +472,78 @@ React.render(
 <Spark data={data} chart={chartConfig} />,
 document.getElementsByTagName('body')[0]);
 ```
-###Spark with Events / ToolTip / Legend (draft)
-The example code snippet demonstrate the usage of using events / tooltips / legends with the ```Spark``` component.
+###Spark with Events in react
+Yako includes a react component for the more complex ```spark``` graphs.  In this component you could hook in events and react base on the props passed back from the response.  This component also supports tooltips and legends, an [example of the code usage could be found here](https://github.com/alfredkam/yakojs/tree/master/demo/example/react-spark-hover-tooltip) that takes full advantage of tooltip hovering with events 
+
+The snippet below explains the events hooks usage
+
 ```javascript
-var React = require('react');
-var Spark = require('./addons/react-componets/spark');
-var ToolTip = React.createClass({
-  mixin: [PureRenderMixin],
-  render: function () {
-    var html = {};
-    if (Object.keys(this.props.content).length !== 0) {
-      if (this.props.content.exactPoint) {
-        html = 'point at value : ' + this.props.content.exactPoint.value;
-      } else {
-        html = this.props.content.points.map(function (key) {
-          return key.value + ',';
-        });
-      }
+var Spark = require('yako/addons/react-components/spark');
+// Assumes the data type & chart configurations from above
+var data = [
+  {...},
+  {...}
+];
+var chartConfig = {...}
+
+var events = {
+  // Registers events to listen to
+  on: {
+    'path:mouseMove': function (e, props) {
+      /**
+       * You would expect props to include
+       * {
+       *   points : [             // values unders X segment
+       *     {
+       *       label    : String, // data label
+       *       value    : Number  // value at X segment
+       *     }
+       *   ],
+       *   exactPoint : { // only included if hovered on a path / circle
+       *     label      : String, // data label,
+       *     value      : Number  // value at X segment on a path
+       *   },
+       *   _segmentXRef : Number, // reference to X segment
+       *   _data        : Object, // reference to user data
+       *   _scale       : Object  // reference to the mathematical values used to calculate the graph
+       * }
+       */
+      // do something
+    },
+    'svg:mouseMove': function (e, props) {
+      // do something
+    },
+    'container:mouseLeave': function (e, props) {
+      // do something
     }
-    return (
-      <div>
-        {html}
-      </div>
-    );
   }
-});
+};
 
-var Legend = React.createClass({
-  mixin: [PureRenderMixin],
-  render: function () {
-    return (
-      <div>
-        I am a legend
-      </div>
-    );
-  }
-});
-var component = React.createClass({
-  getInitialState: function () {
-    // Normally this should be controlled by props
-    return {
-        shouldShow: false,
-      };
-  },
-  componentWillMount: function () {
-    var onActivity = function (e, props) {
-      self.setState({
-        shouldShow: true
-      });
-    }
-    var self = this;
-    self.events = {
-      // Event call backs base on bind
-      on: {
-        'path:mouseMove': onActivity,
-        'svg:mouseMove': onActivity,
-        'container:mouseLeave': function (e) {
-          self.setState({
-              shouldShow: false
-          });
-        }
-      }
-    };
-  },
-  render: function () {
-    var self = this;
-    // Assumes the data type & chart configurations from above
-    var chart = { ... };
-    var data = { ... };
-
-    var toolTip = ToolTip || 0;
-    var legend = Legend || 0;
-
-    if (!toolTip) {
-      self.events = {};
-    } else {
-      toolTip = {
-        shouldShow: self.state.toolTip.shouldShow,
-        reactElement: ToolTip
-      }
-    }
-
-    var self = this;
-    return (
-      <Spark 
-        chart={chart} 
-        data={data}
-        events={self.events}
-        toolTip={toolTip}
-        legend={legend} />
-    );
-    /**
-     * Alternatively you could return, events / toolTip / legends are optional
-     * <Spark 
-        chart={chart} 
-        data={data} />
-     */
-  }
-});
-
+React.render(
+  <Spark
+    data={data}
+    chart={chartConfig}
+    events={events} />,
+document.getElementsByTagName('body')[0]);
 ```
+Notice when your registering an event, you would register with ```container``` or ```svg element``` in the combination of ```event name```.
+
+Support events are
+
+Event Name | Translates to
+-----------|---------------
+hover | onMouseOver & onMouseLeave
+click | onClick
+mouseMove | onMouseMove
+mouseEnter | onMouseEnter
+mouseOver | onMouseOver
+mouseLeave | onMouseLeave
+doubleClick | onDoubleClick
+
 
 ###Pie
 ```javascript
-var Spark = require('./addons/react-components/pie');
+var Spark = require('yako/addons/react-components/pie');
 
 /* Assumes the data type & chart configurations from above */
 var data = [
@@ -589,7 +558,7 @@ document.getElementsByTagName('body')[0]);
 
 ###Donut
 ```javascript
-var Donut = require('./addons/react-components/donut');
+var Donut = require('yako/addons/react-components/donut');
 
 /* Assumes the data type & chart configurations from above */
 var data = [
@@ -604,7 +573,7 @@ document.getElementsByTagName('body')[0]);
 
 ###Bubble
 ```javascript
-var Bubble = require('./addons/react-components/bubble');
+var Bubble = require('yako/addons/react-components/bubble');
 
 /* Assumes the data type & chart configurations from above */
 var data = [
@@ -619,7 +588,7 @@ document.getElementsByTagName('body')[0]);
 
 ###Bar
 ```javascript
-var Bar = require('./addons/react-components/bar');
+var Bar = require('yako/addons/react-components/bar');
 
 /* Assumes the data type & chart configurations from above */
 var data = [
@@ -637,7 +606,7 @@ Say you wanted to create your own or modify the library to do something extra. y
 
 For example you think its smarter to append the svg objects into dom object, during the mid process you would
 ```javascript
-var defaultSpark = require('./lib/spark');
+var defaultSpark = require('yako/lib/spark');
 var mySparkGraph = defaultSpark.extend({
 
   // This will have mySparkGraph's internal call to default to this function

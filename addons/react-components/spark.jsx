@@ -1,9 +1,7 @@
 var React = require('react');
 var Spark = require('./event-ready/spark-event');
 var EventsClass = require('../Events');
-var ToolTip = require('./toolTip');
 var Legend = require('./legend');
-
 var cssPrefix = ['Moz','Webkit','ms','O'];
 
 module.exports = React.createClass({
