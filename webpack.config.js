@@ -6,7 +6,7 @@ module.exports = {
     './dev/reactApp',
   ],
   output : {
-    path: __dirname,
+    path: __dirname + '/dev',
     filename: 'bundle.js'
   },
   plugins: [

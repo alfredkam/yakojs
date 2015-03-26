@@ -10,7 +10,7 @@
 - [API & Mixin](#api--mixin)
 - [SVG API](#svg-api)
 - [Addons](#addons)
-  - [Label] (#label)
+  - [Label](#label)
   - [ReturnAsObject](#returnasobject)
   - [React Components](#react-components)
     - [Spark](#spark)
@@ -528,9 +528,9 @@ document.getElementsByTagName('body')[0]);
 ```
 Notice when your registering an event, you would register with ```container``` or ```svg element``` in the combination of ```event name```.
 
-Support events are
+List of supported events:
 
-Event Name | Translates to
+Event Name | Reference To 
 -----------|---------------
 hover | onMouseOver & onMouseLeave
 click | onClick

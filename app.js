@@ -415,7 +415,7 @@ nodes = '<div>' + 'Took ' + diff + 'ms to generate ' + (nOfGraphs * kind + oddKi
 
 // test optimization => round all numbers to 1 decimal place
 nodes = nodes.replace(/([0-9]+\.[0-9]+)/g, function (match, p1) {
-  return Math.round10(p1,-1);
+  return Math.round10(p1, -1);
 });
 
 var str = '<html><head>'+

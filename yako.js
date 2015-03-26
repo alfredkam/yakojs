@@ -113,14 +113,14 @@
 	var Base = __webpack_require__(11);
 	var Error = __webpack_require__(12);
 	var spark = module.exports = Base.extend({
-	  // the graph data & options setter
+	  // The graph data & options setter
 	  attr: function (opts) {
 	    opts = opts || {};
-	    // to deal with no data fed in
+	    // To deal with no data fed in
 	    if (opts && (!opts.data || opts.data.length === 0)) {
 	        opts.data = undefined;
 	    }
-	    // make sure the data will not cause memory reference error, if some sets of data a shared among other graphs
+	    // Make sure the data will not cause memory reference error, if some sets of data a shared among other graphs
 	    var self = this;
 	    self.attributes.data = opts.data || 0;
 	    self.attributes.opts = opts;
@@ -129,7 +129,7 @@
 	    ._startCycle());
 	  },
 	  /**
-	   * the parent generator that manages the svg generation
+	   * The parent generator that manages the svg generation
 	   * @return {object} global function object 
 	   */
 	  _startCycle: function () {
@@ -175,6 +175,7 @@
 	    });
 	    return append(self.element,append(svg, paths));
 	  },
+	  // Extends default getRatio in lib/base/common.js
 	  _getRatio: function (scale) {
 	    var self = this;
 
@@ -183,14 +184,14 @@
 	    scale.heightRatio = scale.pHeight / scale.max;
 	    scale.tickSize = self._sigFigs((scale.pWidth / (scale.len - 1)),8);
 	  },
-	  // describes an open path
+	  // Describes an open path
 	  _describeAttributeD: function (numArr, paddingLeft, paddingTop, scale) {
 	    var height = scale.height;
 	    var heightRatio = scale.heightRatio;
 	    var tickSize = scale.tickSize;
 	    var pathToken = '';
 
-	    //path generator
+	    // Path generator
 	    for (var i = 0; i < numArr.length; i++) {
 	        if (i === 0) {
 	          // X Y
@@ -199,13 +200,13 @@
 	            pathToken += ' L '+ ((tickSize * i) + paddingLeft) + ' ' + (height - (numArr[i] * heightRatio) - paddingTop);
 	        }
 	    }
-	    // eliminates the error calls when attributiting this to the svg path
+	    // Eliminates the error calls when attributiting this to the svg path
 	    if (pathToken === '') {
 	      pathToken = 'M 0 0';
 	    }
 	    return pathToken;
 	  },
-	  // describes the path to close the open path
+	  // Describes the path to close the open path
 	  _describeCloseAttributeD: function (numArr, paddingLeft, paddingTop, scale) {
 	    var height = scale.height;
 	    var heightRatio = scale.heightRatio;
@@ -216,7 +217,7 @@
 	            (height - (numArr[0] * heightRatio) - paddingTop)
 	          ].join(" ");
 	  },
-	  // describes scattered graph
+	  // Describes scattered graph
 	  _describeScatteredGraph: function(data, numArr, paddingLeft, paddingTop, scale, ref) {
 	    var height = scale.height;
 	    var heightRatio = scale.heightRatio;
@@ -244,7 +245,7 @@
 	    }
 	    return paths;
 	  },
-	  //svg path builder
+	  // Svg path builder
 	  _describePath : function (data, paddingLeft, paddingTop, scale, ref) {
 	    ref = ref || 0;
 	    var self = this;
@@ -291,10 +292,10 @@
 	var pie = module.exports = arcBase.extend({
 	    /**
 	     * [_describePath genereates the paths for each pie segment]
-	     * @param  {[int]} radius [circumfrance]
-	     * @param  {[array]} data      [data set]
-	     * @param  {[json]} chart     [user specified chart options]
-	     * @return {[string]}           [the html string for the pie]
+	     * @param  {[int]}   radius         [circumfrance]
+	     * @param  {[array]} data           [data set]
+	     * @param  {[json]}  chart          [user specified chart options]
+	     * @return {[string]}               [the html string for the pie]
 	     */
 	    _describePath: function (radius, data, chart) {
 	        if (!data) return '';
@@ -411,11 +412,11 @@
 	        });
 	        return append(self.element,append(svg, paths));
 	    },
-	    // describes the svg that builds out the bar
+	    // Describes the svg that builds out the bar
 	    _describeBar: function (data, scale) {
 	        if (!data.length) return '';
 	        // TODO:: need to account paddings for labels
-	        // wrap in array for consistency
+	        // Wrap in array for consistency
 	        data = typeof data[0] === 'object' ? data : [data];
 	        var height = scale.height - scale.paddingTop - scale.paddingBottom;
 	        var paddingY = 5;
@@ -426,9 +427,9 @@
 	        var paths = [];
 
 	        for (var i = 0; i < len; i++) {
-	            // stack chart
+	            // Stack chart
 	            if (scale.stack) {
-	                // the top padding has been taken care off, now account for the bottom padding
+	                // The top padding has been taken care off, now account for the bottom padding
 	                var relativeMax = height * scale.maxSet[i] / scale.max;
 	                var yAxis = height - relativeMax + scale.paddingTop;
 	                var total = 0;
@@ -443,7 +444,7 @@
 	                    yAxis += (data[j].data[i] / scale.maxSet[i] * relativeMax);
 	                }
 	            } else {
-	                // side by side
+	                // Side by side
 	                var x = tickSize * i + (tickSize / 4) + scale.paddingLeft;
 	                for (var j = 0; j < rows; j++) {
 	                    x += tickSize / (rows+1)* j;
@@ -710,7 +711,7 @@
 	var Base = __webpack_require__(11);
 	var arc = __webpack_require__(15);
 	module.exports = Base.extend({
-	    // parent generator that manages the svg
+	    // Parent generator that manages the svg
 	    _startCycle: function (){
 	        var self = this;
 	        var chart = self.attributes.opts.chart;
@@ -730,12 +731,13 @@
 	        return append(self.element,
 	                    append(svg, paths));
 	    },
+	    // Extends _defineBaseScaleProperties in lib/base/common.js
 	    _defineBaseScaleProperties: function (data, chart) {
 	        var self = this;
 	        var scale = {
-	            // converts nums to relative => total sum equals 1
+	            // Converts nums to relative => total sum equals 1
 	            relativeDataSet: self._dataSetRelativeToTotal(data),
-	            // find the max width & height
+	            // Find the max width & height
 	            outerRadius: chart.outerRadius || (chart.height < chart.width ? chart.height : chart.width) / 2
 	        };
 
@@ -745,7 +747,6 @@
 	    _polarToCartesian: arc.polarToCartesian,
 	    _describeArc: arc.describeArc,
 	    _describePie: arc.describePie,
-	    /* end of snippet */
 	    /**
 	     * [_describePath super class]
 	     * @return {[type]} [empty string]
