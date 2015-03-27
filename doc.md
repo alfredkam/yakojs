@@ -457,7 +457,7 @@ Example result
 }
 ```
 ###React Components
-Under ```addons/react-components```, there offers a wild range of react ready graph components.
+Under ```addons/react-components```, there offers a wild range of React ready graph components.
 
 ###Spark
 ```javascript

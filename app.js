@@ -100,7 +100,7 @@ while (amount--) {
 
 
   var sparkInstance = spark('.graph');
-
+  
   nodes += sparkInstance.attr({
     chart : {
       width: 300,
