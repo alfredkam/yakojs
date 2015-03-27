@@ -2,10 +2,6 @@
   "name": "yako",
   "version": "0.3.12",
   "description": "A minimal and light weight graph",
-  "dependencies": {
-    "expose-loader": "^0.6.0",
-    "webpack": "^1.5.3"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/alfredkam/yakojs.git"
@@ -22,7 +18,9 @@
     "graph api",
     "beautiful graph",
     "minimal graph",
-    "serverside rendering"
+    "serverside rendering",
+    "chart",
+    "react"
   ],
   "engines": {
     "node": ">=0.8.0"
@@ -33,7 +31,11 @@
       "url": "https://github.com/alfredkam/yakojs/blob/master/LICENSE.md"
     }
   ],
+  "author": "Alfred Kam",
+  "readmeFilename": "README.md",
   "devDependencies": {
+    "expose-loader": "^0.6.0",
+    "webpack": "^1.5.3",
     "autoprefixer-loader": "^1.2.0",
     "chai": "^2.0.0",
     "coveralls": "^2.11.2",
