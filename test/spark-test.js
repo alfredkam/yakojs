@@ -59,7 +59,7 @@ describe('lib/spark', function () {
             });
     });
 
-    it('calling attr should render w/ default properties should render 2 series', function () {
+    it('calling attr should render w/ default properties should render 2 series & without NaN', function () {
           var set = [ { data:
            [ 100, 45, 500, 264, 380, 126, 186, 291, 69 ],
           strokeColor: '#2b26a0',
@@ -83,7 +83,7 @@ describe('lib/spark', function () {
         expect(svg)
             .that.is.a('string').
             to.satisfy(function (result) {
-                return /<path\s.*>/i.test(result);
+                return /<path\s.*>/i.test(result) && !(/NaN/).test(result);;
             });
     });
 
