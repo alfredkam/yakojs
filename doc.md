@@ -26,7 +26,7 @@
 ##General Usage
 To use any of the graphs you could access them through these entry points.
 ``` javascript
-var yako = require('yako'); // Or window.yako if FE
+var yako = require('yako'); // or window.yako on the browser
 var bar = yako.bar;         // Bar graph
 var bubble = yako.bubble    // Bubble graph
 var donut = yako.donut;     // Donut chart

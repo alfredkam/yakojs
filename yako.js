@@ -87,7 +87,7 @@
 
 	module.exports = {
 	  name: 'yakojs',
-	  VERSION: '0.1.0',
+	  VERSION: '0.3.13',
 	  spark: function (opts) {
 	    return initialize(sparkLine, opts);
 	  },
@@ -111,23 +111,8 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var Base = __webpack_require__(11);
-	var Error = __webpack_require__(12);
+	var Errors = __webpack_require__(12);
 	var spark = module.exports = Base.extend({
-	  // The graph data & options setter
-	  attr: function (opts) {
-	    opts = opts || {};
-	    // To deal with no data fed in
-	    if (opts && (!opts.data || opts.data.length === 0)) {
-	        opts.data = undefined;
-	    }
-	    // Make sure the data will not cause memory reference error, if some sets of data a shared among other graphs
-	    var self = this;
-	    self.attributes.data = opts.data || 0;
-	    self.attributes.opts = opts;
-
-	    return self.postRender(self._prepare()
-	    ._startCycle());
-	  },
 	  /**
 	   * The parent generator that manages the svg generation
 	   * @return {object} global function object 
@@ -657,30 +642,35 @@
 	    _prepare: function () {
 	        var self = this;
 	        var defaults = {
-	            chart: {
-	                type: 'chart',
-	                width: '100',
-	                height: '100',
-	                paddingLeft: 0,
-	                paddingRight: 0,
-	                paddingTop: 0,
-	                paddingBottom: 0,
-	                // spark graph configs
-	                line: true,
-	                fill: true,
-	                scattered: false
-	            }
+	          type: 'chart',
+	          width: '100',
+	          height: '100',
+	          paddingLeft: 0,
+	          paddingRight: 0,
+	          paddingTop: 0,
+	          paddingBottom: 0,
+	          // spark graph configs
+	          line: true,
+	          fill: true,
+	          scattered: false
 	        };
-	        self._extend(defaults, self.attributes.opts);
-	        self.attributes.opts = defaults;
+	        self._extend(defaults, self.attributes.opts.chart);
+	        self.attributes.opts.chart = defaults;
 	        return self;
 	    },
 	    // public function for user to set & define the graph attributes
 	    attr: function (opts) {
 	        var self = this;
 	        opts = opts || 0;
-	        // width: 200,
-	        // height: 100
+	        // if a user does not include opts.chart
+	        if (typeof opts.chart === 'undefined') {
+	          opts = {
+	            chart: opts,
+	            data: opts.data
+	          };
+	          delete opts.chart.data;
+	        }
+
 	        self.attributes.data = opts.data || [];
 	        self.attributes.opts = opts;
 
@@ -850,7 +840,7 @@
 
 	__webpack_require__(18);
 	var Class = __webpack_require__(19);
-	var Error = __webpack_require__(12);
+	var Errors = __webpack_require__(12);
 
 	var isArray = function (obj) {
 	    return obj instanceof Array;
@@ -942,7 +932,7 @@
 	    if ((chart.type != 'bubble-point') && (yAxis || xAxis)) {
 	      self._getExternalProps(scale, yAxis, xAxis);
 	      if (!self.describeYAxis) {
-	        Error.label();
+	        Errors.label();
 	      }
 	    }
 	    self._getRatio(scale);
