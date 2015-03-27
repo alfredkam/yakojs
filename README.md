@@ -18,6 +18,8 @@ Supports Chrome, Firefox, Safari, and IE 9+;
 
 ### Install
 ```npm install yako```
+or
+```bower install yako```
 
 ### API Ready
  - Spark / Scattered / Line / Area Graphs
