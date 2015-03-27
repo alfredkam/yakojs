@@ -26,7 +26,7 @@
 ##General Usage
 To use any of the graphs you could access them through these entry points.
 ``` javascript
-var yako = require('yako'); // Or window.yako if FE
+var yako = require('yako'); // or window.yako on the browser
 var bar = yako.bar;         // Bar graph
 var bubble = yako.bubble    // Bubble graph
 var donut = yako.donut;     // Donut chart
@@ -79,7 +79,7 @@ var set = [
     }
   }
 ];
-// spark accepts multiple data sets
+// Spark accepts multiple data sets
 spark().attr({
   chart : {
                                  // Width & height controls the svg view box
@@ -112,7 +112,7 @@ pie('.graph').attr({
     width: 300,
     height: 100,
 
-    /* optional parameters */
+    /* Optional parameters */
     strokeColor: '#000',            // Sets default stroke color
     strokeColors: ["#333","#444"],  // This will override the default 
                                     // Stroke color and matches with the adjacent data set
@@ -457,7 +457,7 @@ Example result
 }
 ```
 ###React Components
-Under ```addons/react-components```, there offers a wild range of react ready graph components.
+Under ```addons/react-components```, there offers a wild range of React ready graph components.
 
 ###Spark
 ```javascript

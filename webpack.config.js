@@ -3,7 +3,7 @@ var webpack = require('webpack');
 module.exports = {
   context : __dirname,
   entry : [
-    './dev/reactApp',
+    './dev/event-base',
   ],
   output : {
     path: __dirname + '/dev',
