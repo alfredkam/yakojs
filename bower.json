@@ -30,6 +30,8 @@
     "tests",
     "dev",
     "coverage",
-    "build-tools"
+    "build-tools",
+    "wercker.yml",
+    "webpack.config.js"
   ]
 }
