@@ -18,7 +18,9 @@ Supports Chrome, Firefox, Safari, and IE 9+;
 
 ### Install
 ```npm install yako```
-or
+
+<i>or</i>
+
 ```bower install yako```
 
 ### API Ready
