@@ -22,6 +22,36 @@
  *   }
  * })
  */
+
+ /**
+  * React Usage
+  
+  var React = require('react');
+  var spark = require('yako').spark;
+  var TimeSeriesTickFitting = require('yako/addons/TimeSeriesTickFitting');
+  var Label = require('yako/addons/Label');
+
+  module.exports = React.createClass({
+      render: function () {
+        var self = this;
+        var svg = spark({
+          mixin: [
+           TimeSeriesTickFitting,
+           Label
+          ]
+        }).attr({
+            'chart': self.props.chart,
+            'data' : self.props.data
+          });
+
+        return (
+          <div dangerouslySetInnerHTML={{__html: svg}} />
+        )
+      }
+  });
+
+  */
+ 
 module.exports = {
   // Find min max in time series data
   _scale: function (content, opts) {

@@ -1,6 +1,5 @@
 var React = require('react');
 var bubble = require('../../index').bubble;
-var RenderWithReact = require('../RenderWithReact');
 
 module.exports = React.createClass({
     render: function () {
