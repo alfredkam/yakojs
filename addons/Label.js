@@ -90,6 +90,7 @@ var label = module.exports = {
                     fill: opts.color || '#333',
                 }, null, max[y] / fSplits * (fSplits - splits)));
             }
+
             // building the border
             xCord = ( (y + 1) % 2 === 0) ? xCord - 5 : xCord + 5;
             labels.push(self.make('path',{
@@ -119,12 +120,12 @@ var label = module.exports = {
         var form = opts.format == 'dateTime' ? true : false;
      
         if (form) {
-            //to get the UTC time stamp multiplexer
+            // Get UTC time stamp multiplexer
             var tick = opts.interval;
-            var utc = self._utcMultiplier(opts.interval);
+            var utcMultiplier = self._utcMultiplier(opts.interval);
             var tickInterval =  (/\d+/.test(tick) ? tick.match(/\d+/)[0] : 1);
             var format = opts.dateTimeLabelFormat;
-            var base = opts.minUTC;
+            var minUTC = opts.minUTC || scale.xAxis.minUTC;
         }
 
         var offset = 1;
@@ -132,14 +133,36 @@ var label = module.exports = {
             offset = 0;
         }
 
-        for (var i = offset; i < (scale.prefLen || scale.len) - offset; i++) {
-            labels.push(self.make('text',{
-                y: yAxis,
-                x: (tickSize * i) + paddingX + (scale.type == 'bar' ? tickSize / 4 : 0 ),
-                'font-size': opts.fontSize || 12,
-                'text-anchor': opts.textAnchor || 'start',
-                fill: opts.color || '#333',
-            }, null, (form ? self._formatTimeStamp(format, base + (utc * i)) : opts.labels[i] || 0)));
+        if (scale.type == 'timeSeries' && form) {
+            // In timeSeries, the data is relatively to time and there are possiblities
+            // a label should exist in spots where data does not exist.
+            // The label for the time series will be relative to time.
+            var tickSize = scale.tickSize;
+            var maxUTC = scale.xAxis.maxUTC;
+            var numberOfTicks = (maxUTC - minUTC) / utcMultiplier;
+
+            for (var i = 0; i < numberOfTicks; i++) {
+                var positionX = utcMultiplier * i  * tickSize + paddingX;
+                labels.push(self.make('text',{
+                    y: yAxis,
+                    x: positionX,
+                    'font-size': opts.fontSize || 12,
+                    'text-anchor': opts.textAnchor || 'start',
+                    fill: opts.color || '#333',
+                }, null, (form ? self._formatTimeStamp(format, minUTC + (utcMultiplier * i)) : opts.labels[i] || 0)));
+            }
+
+        } else {
+            // Non timeSeries
+            for (var i = offset; i < (scale.prefLen || scale.len) - offset; i++) {
+                labels.push(self.make('text',{
+                    y: yAxis,
+                    x: (tickSize * i) + paddingX + (scale.type == 'bar' ? tickSize / 4 : 0 ),
+                    'font-size': opts.fontSize || 12,
+                    'text-anchor': opts.textAnchor || 'start',
+                    fill: opts.color || '#333',
+                }, null, (form ? self._formatTimeStamp(format, minUTC + (utcMultiplier * i)) : opts.labels[i] || 0)));
+            }
         }
 
         labels.push(self.make('path',{

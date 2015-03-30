@@ -142,4 +142,5 @@ var node = '<div class="graph">' + spark({
     data: set2
 }) + "</div>";
 
+
 document.getElementsByTagName("body")[0].innerHTML = node;
