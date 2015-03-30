@@ -90,6 +90,7 @@ var label = module.exports = {
                     fill: opts.color || '#333',
                 }, null, max[y] / fSplits * (fSplits - splits)));
             }
+
             // building the border
             xCord = ( (y + 1) % 2 === 0) ? xCord - 5 : xCord + 5;
             labels.push(self.make('path',{

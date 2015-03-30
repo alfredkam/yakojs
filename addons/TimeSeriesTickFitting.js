@@ -37,7 +37,7 @@ module.exports = {
     var ans;
     var self = this;
     var ySecs = 0;
-    var getSplits = this._getSplits;
+    var getSplits = self._getSplits;
     var color = [];
     var data = content.data;
     var key;
@@ -46,6 +46,12 @@ module.exports = {
     var labels = Object.keys(content.labels);
     var rows = labels.length;
     var len = data.length;
+    var colors = [];
+
+    for (var c = 0; c < rows; c++) {
+      var color = content.labels[labels[c]].strokeColor = content.labels[labels[c]].strokeColor || self._randomColor();
+      colors.push(color);
+    }
 
     if (yAxis) {
       chart.paddingLeft = chart.paddingRight = 30;
@@ -68,7 +74,7 @@ module.exports = {
       heightRatio = {};
       for (var i = 0; i < rows; i++) {
         key = labels[i];
-        temp = data.slice(0).sort(asc);
+        temp = data.slice(0).sort(ascByKey);
         min[i] = temp[0][key];
         ans = getSplits(temp[len - 1][key]);
         max[i] = ans.max;
@@ -86,7 +92,6 @@ module.exports = {
         max = max < parseInt(temp[len - 1][key]) ? temp[len - 1][key] : max;
         delete temp;
       }
-
 
       if (yAxis) {
         ans = getSplits(max);
@@ -106,7 +111,8 @@ module.exports = {
         labels: labels,
         pHeight: pHeight,
         pWidth: pWidth,
-        heightRatio: heightRatio
+        heightRatio: heightRatio,
+        color: colors
     };
   },
   _startCycle: function () {
@@ -149,47 +155,17 @@ module.exports = {
     scale.tickSize = self._sigFigs((scale.pWidth / (max - min)),8);
   },
   // Describes the path to close the open path
-  _describeCloseAttributeD: function (numArr, paddingLeft, paddingTop, scale) {
-    var height = scale.height;
-    var heightRatio = scale.heightRatio;
+  _describeCloseAttributeD: function (point, height, heightRatio, paddingLeft, paddingTop) {
     return [
             'V',(height - paddingTop),
             'H', paddingLeft,
             'L', paddingLeft,
-            (height - (numArr[0] * heightRatio) - paddingTop)
+            (height - (point * heightRatio) - paddingTop)
           ].join(" ");
-  },
-  // Describes scattered graph
-  _describeScatteredGraph: function(data, numArr, paddingLeft, paddingTop, scale, ref) {
-    var height = scale.height;
-    var heightRatio = scale.heightRatio;
-    var self = this;
-    var tickSize = scale.tickSize;
-    var scattered = data.scattered || 0;
-    var strokeWidth = scattered.strokeWidth || 3;
-    var strokeColor = scattered.strokeColor || self._randomColor();
-    var radius = scattered.radius || 2;
-    var fill = scattered.fill || 'white';
-    var paths = [];
-    ref = ref || 0;
-
-    for (var i = 0; i < numArr.length; i++) {
-      paths.push(self.make('circle', {
-        cx: ((tickSize * i) + paddingLeft),
-        cy: (height - (numArr[i] * heightRatio) - paddingTop),
-        r: radius,
-        stroke: strokeColor,
-        'stroke-width': strokeWidth,
-        fill: 'white'
-      }, {
-        _ref : ref
-      }));
-    }
-    return paths;
   },
   _describePathAndCircle: function (dataObj, labels, paddingLeft, paddingTop, scale, isScattered, isLine, isFill) {
     var height = scale.height;
-    var heightRatio = scale.heightRatio;
+    var heightRatio = {};
     var tickSize = scale.tickSize;
     var minUTC = scale.xAxis.minUTC;
     var pathTokens = {};
@@ -197,37 +173,63 @@ module.exports = {
     var items = scale.labels;
     var self = this;
     var paths = [];
+    var entryPoints = {};
 
-    // Initialize pathtokens
-    // TODO:: need to re do this snippet paths needs to start with M
+    // Initialize
     for (var x = 0; x < rows; x++) {
+      var item = labels[items[x]];
       pathTokens[x] = '';
+      if (scale.yAxis && scale.yAxis.multi) {
+        heightRatio[x] = scale.pHeight / scale.max[x];
+      } else {
+        heightRatio[x] = scale.heightRatio;
+      }
+      item.strokeColor  = item.strokeColor || self._randomColor();
     }
 
     // The length of the data obj
     for (var i = 0; i < dataObj.length; i++) {
-        // The number of items to include
-        var timestamp = (new Date(dataObj[i].timestamp)).getTime();
-        var position = (timestamp - minUTC)  * tickSize;
+      // The number of items to include
+      var timestamp = (new Date(dataObj[i].timestamp)).getTime();
+      var position = (timestamp - minUTC)  * tickSize;
 
-        for (var row = 0; row < rows; row++) {
-          var point = dataObj[i][items[row]] || 0;
-          if (point) {
-            if (i === 0) {
-              // X Y
-              pathTokens[row] += 'M ' + paddingLeft + ' '+ (height - (point * heightRatio) - paddingTop);
-            } else {
-              pathTokens[row] += ' L '+ (position + paddingLeft) + ' ' + (height - (point * heightRatio) - paddingTop);
+      for (var row = 0; row < rows; row++) {
+        var point = dataObj[i][items[row]] || 0;
+        // Generate the path
+        if (point && isLine) {
+          if (pathTokens[row] == '') {
+            if (isFill) {
+              entryPoints[row] = point;
             }
+            // X Y
+            pathTokens[row] = 'M ' + paddingLeft + ' '+ (height - (point * heightRatio[row]) - paddingTop);
+          } else {
+            pathTokens[row] += ' L '+ (position + paddingLeft) + ' ' + (height - (point * heightRatio[row]) - paddingTop);
           }
         }
-    }
 
+        // Generate the scatter points
+        var item = labels[items[row]];
+        if (point && isScattered && item.scattered) {
+          var strokeColor = item.scattered.strokeColor || item.strokeColor;
+          paths.push(self.make('circle', {
+            cx: position + paddingLeft,
+            cy: (height - (point * heightRatio[row]) - paddingTop),
+            r: item.scattered.radius || '3',
+            stroke: strokeColor,
+            'stroke-width': item.scattered.strokeWidth || '3',
+            fill: 'white'
+          }, {
+            _ref : row
+          }));
+        }
+      }
+    }
     for (var c = 0; c < rows; c++) {
       var item = labels[items[c]];
-      paths.push(self.make('path',{
+      paths.unshift(self.make('path',{
           d: pathTokens[c],
-          stroke: item.strokeColor || self._randomColor(),
+          stroke: item.strokeColor,
           'stroke-width': item.strokeWidth || '3',
           'stroke-linejoin': 'round',
           'stroke-linecap': 'round',
@@ -235,13 +237,25 @@ module.exports = {
       },{
           _ref: c
       }));
+      if (isFill && item.fill) {
+        paths.push(self.make('path',{
+            d: pathTokens[c] + self._describeCloseAttributeD(entryPoints[c], height, heightRatio[c], paddingLeft, paddingTop),
+            stroke: item.strokeColor,
+            'stroke-width': item.strokeWidth || '3',
+            'stroke-linejoin': 'round',
+            'stroke-linecap': 'round',
+            fill: item.fill
+        },{
+            _ref: c
+        }));
+      }
     }
     return paths;
   },
   // Svg path builder
   _describeSeries: function (data, paddingLeft, paddingTop, scale) {
     var self = this;
-    var paths = self._describePathAndCircle(data.data, data.labels, paddingLeft, paddingTop, scale, scale.scattered, scale.line, data.fill && scale.fill);
+    var paths = self._describePathAndCircle(data.data, data.labels, paddingLeft, paddingTop, scale, scale.scattered, scale.line, scale.fill);
     return paths;
   }
 };

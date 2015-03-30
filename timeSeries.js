@@ -22,11 +22,7 @@ try {
 }
 
 // TODO:: fix edge case of 1 data Point
-var dataPoints = 30;
-var nOfGraphs = 10;
-var kind = 11;
-var oddKinds = 4;
-var amount = nOfGraphs;
+var nOfGraphs = 0;
 
 var now = Date.now();
 var nodes = '';
@@ -37,6 +33,7 @@ for (var i = 0; i < testData.length; i++) {
   if (!(testData[i].content instanceof Array)) {
     continue;
   }
+  nOfGraphs++;
   testData[i].content.sort(function (a, b) {
     var a = new Date(a.timestamp),
             b = new Date(b.timestamp);
@@ -51,7 +48,12 @@ for (var i = 0; i < testData.length; i++) {
     }
     labels[keys[x]] = {
       strokeColor: yako.spark()._randomColor(),
-      strokeWidth: '2'
+      strokeWidth: '2',
+      scattered: {
+        strokeWidth: '1',
+        radius: '1.5'
+      }
+      // fill: yako.spark()._randomColor()
     };
   }
 
@@ -61,8 +63,9 @@ for (var i = 0; i < testData.length; i++) {
           chart : {
             width: 600,
             height: 100,
-            showPointer: false,
-            yAxis: true,
+            scattered: true,
+            // fill: true,
+            yAxis: (Object.keys(labels).length == 2 ? {multi: true} : true),
             xAxis: {
               format : 'dateTime',
               interval: '1M',  //[1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
@@ -79,8 +82,8 @@ for (var i = 0; i < testData.length; i++) {
 }
 
 
-console.log('Took ' + diff + 'ms to generate ' + (nOfGraphs * kind + oddKinds) + ' graphs with '+ dataPoints + ' different data points each avg of ' + (diff/((nOfGraphs*kind)+oddKinds)) + 'ms');
-nodes = '<div>' + 'Took ' + diff + 'ms to generate ' + (nOfGraphs * kind + oddKinds) + ' graphs with '+ dataPoints + ' different data points avg of ' + (diff/((nOfGraphs*kind)+oddKinds)) + 'ms' + '</div>' + nodes;
+console.log('Took ' + diff + 'ms to generate ' + (nOfGraphs) + ' graphs with avg of ' + (diff/nOfGraphs) + 'ms');
+nodes = '<div>' + 'Took ' + diff + 'ms to generate ' + (nOfGraphs) +' graphs with avg of ' + (diff/nOfGraphs) + 'ms' + '</div>' + nodes;
 
 // test optimization => round all numbers to 1 decimal place
 nodes = nodes.replace(/([0-9]+\.[0-9]+)/g, function (match, p1) {
