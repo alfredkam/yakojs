@@ -1,5 +1,5 @@
-var yako = require('../index');
-var Label = require('../addons/Label');
+var yako = require('../index/addons');
+var Label = yako.addons.label;
 var spark = yako.spark;
 var pie = yako.pie;
 var donut = yako.donut;
