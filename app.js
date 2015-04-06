@@ -1,3 +1,4 @@
+console.log(require('./components'));
 var util = require('util');
 
 var yako = require('./index');

@@ -368,7 +368,7 @@ Custom tags is only supported for ```bubble``` graph with ```type: 'scattered'``
 General configuration
 ```javascript
 var yako = require('yako/addons');
-var Label = yako.addons.label;
+var Label = yako.addons.Label;
 var spark = yako.spark;                     // Or yako.bar or yako.bubble
 
 var svg = spark({
@@ -427,7 +427,7 @@ When labeling is enabled for ```yAxis``` the default ```paddingLeft``` & ```padd
 A plugin to return a dom like object representation
 ```javascript
 var yako = require('yako/addons');
-var ReturnAsObject = yako.addons.returnAsObject;
+var ReturnAsObject = yako.addons.ReturnAsObject;
 var spark = yako.spark;
 
 spark({
@@ -458,12 +458,17 @@ Example result
 }
 ```
 ###React Components
-Under ```addons/react-components```, there offers a wild range of React ready graph components.
+Yako offers a wild range of Reactjs ready graph components.
+
+```javascript
+var yako = require('yako/components');
+```
+Note:: Here ```yako``` also includes ```yako.addons```
 
 ###Spark
 ```javascript
-var yako = require('yako/addons/react-components');
-var Spark = yako.simpleSpark;
+var yako = require('yako/components');
+var Spark = yako.components.SimpleSpark;
 // Assumes the data type & chart configurations from above
 var data = [
   {...},
@@ -480,8 +485,8 @@ Yako includes a react component for the more complex ```spark``` graphs.  In thi
 The snippet below explains the events hooks usage
 
 ```javascript
-var yako = require('yako/addons/react-components');
-var Spark = yako.spark;
+var yako = require('yako/components');
+var Spark = yako.components.Spark;
 // Assumes the data type & chart configurations from above
 var data = [
   {...},
@@ -546,8 +551,8 @@ doubleClick | onDoubleClick
 
 ###Pie
 ```javascript
-var yako = require('yako/addons/react-components');
-var Pie = yako.pie
+var yako = require('yako/components');
+var Pie = yako.components.Pie
 
 /* Assumes the data type & chart configurations from above */
 var data = [
@@ -562,8 +567,8 @@ document.getElementsByTagName('body')[0]);
 
 ###Donut
 ```javascript
-var yako = require('yako/addons/react-components');
-var Donut = yako.donut;
+var yako = require('yako/components');
+var Donut = yako.components.Donut;
 
 /* Assumes the data type & chart configurations from above */
 var data = [
@@ -578,8 +583,8 @@ document.getElementsByTagName('body')[0]);
 
 ###Bubble
 ```javascript
-var yako = require('yako/addons/react-components');
-var Bubble = yako.bubble;
+var yako = require('yako/components');
+var Bubble = yako.components.Bubble;
 
 /* Assumes the data type & chart configurations from above */
 var data = [
@@ -594,8 +599,8 @@ document.getElementsByTagName('body')[0]);
 
 ###Bar
 ```javascript
-var yako = require('yako/addons/react-components');
-var Bar = yako.bar;
+var yako = require('yako/components');
+var Bar = yako.components.Bar;
 
 /* Assumes the data type & chart configurations from above */
 var data = [

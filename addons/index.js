@@ -1,6 +1,6 @@
 var yako = require('../index');
 yako.addons = {
-  label: require('./Label'),
-  returnAsObject: require('./returnAsObject')
+  Label: require('./Label'),
+  ReturnAsObject: require('./ReturnAsObject')
 };
 module.exports = yako;

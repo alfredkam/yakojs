@@ -2,7 +2,8 @@
  * TEMPLATE for hovering with multiple axis in react
  */
 var React = require('react');
-var Spark = require('../../../addons/react-components/spark');
+var yako = require('../../../components');
+var Spark = yako.components.Spark;
 var PureRenderMixin = React.addons.PureRenderMixin;
 
 /* Tool Tip Component */

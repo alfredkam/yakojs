@@ -1,8 +1,8 @@
 module.exports = {
-  bar: require('./bar'),
-  bubble: requrie('./bubble'),
-  donut: require('./dount'),
-  pie: require('./pie'),
-  spark: require('./spark'),
-  simpleSpark: require('./simpleSpark')
+  Bar: require('./bar'),
+  Bubble: require('./bubble'),
+  Donut: require('./donut'),
+  Pie: require('./pie'),
+  Spark: require('./spark'),
+  SimpleSpark: require('./simpleSpark')
 };
