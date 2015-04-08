@@ -7,7 +7,7 @@
 
 
 A tiny **DOM-less** graph library, build for fast front end and server side rendering in CommonJs pattern.
-This library is intend to generate light weight SVG graphs, and is more performable compare to highcharts / flot / c3 / d3 when **front end matters** for simple graphs.
+This library is intend to generate light weight and simple SVG graphs, and is more performable compare to highcharts / flot / c3 / d3 when **front end matters**.
 
 This library also works great with webpack & react w/ [prepared react graph components](https://github.com/alfredkam/yakojs/blob/master/doc.md#react-components)
 
