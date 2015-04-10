@@ -68,8 +68,8 @@
 
 	var yako = __webpack_require__(4);
 	yako.addons = {
-	  label: __webpack_require__(5),
-	  returnAsObject: __webpack_require__(6)
+	  Label: __webpack_require__(5),
+	  ReturnAsObject: __webpack_require__(6)
 	};
 	module.exports = yako;
 

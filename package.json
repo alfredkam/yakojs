@@ -10,7 +10,7 @@
     "test": "./node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha test -- --recursive",
     "coveralls": "./node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha test -- --recursive --report loconly -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --hot",
-    "pack": "webpack --config ./build-tools/demo.config.js -p && webpack --config ./build-tools/expose.config.js && webpack --config ./build-tools/expose.min.config.js -p && webpack --config ./build-tools/addons.expose.config.js && webpack --config ./build-tools/addons.expose.min.config.js -p"
+    "pack": "webpack --config ./build-tools/demo.config.js -p && webpack --config ./build-tools/example.config.js -p && webpack --config ./build-tools/expose.config.js && webpack --config ./build-tools/expose.min.config.js -p && webpack --config ./build-tools/addons.expose.config.js && webpack --config ./build-tools/addons.expose.min.config.js -p"
   },
   "keywords": [
     "graph",
