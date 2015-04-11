@@ -4,6 +4,7 @@ module.exports = {
   context : __dirname,
   entry : [
     './dev/event-base',
+    // './dev/reactApp'
   ],
   output : {
     path: __dirname + '/dev',

@@ -48,7 +48,11 @@ module.exports = Class.extend({
     var props = self._toRegister;
     var keys = Object.keys(props);
     for(var i = 0; i < keys.length; i++) {
-      domObj.addEventListener(keys[i].replace('on','').toLowerCase(),props[keys[i]], false);
+      domObj.addEventListener(
+        keys[i].replace('on','').toLowerCase(),
+        props[keys[i]],
+        false
+      );
     }
   },
   // Manually removes the event listener
@@ -86,7 +90,9 @@ module.exports = Class.extend({
                     var eLower = e.toLowerCase();
                     list[tagName + ':' + eLower] = list[tagName + ':' + eLower] || [];
                     list[tagName + ':' + eLower].push(eventName);
-                    eventsToRegister[e] = self._emit;
+                    eventsToRegister[e] = function (e) {
+                      self._emit(e);
+                    };
                 }
             }
         });
@@ -121,12 +127,13 @@ module.exports = Class.extend({
     var self = this;
     var scale = props.scale;
     var data = props.data;
+    // For react, uses nativeEvent
+    e.nativeEvent = e.nativeEvent || e;
     var eX = e.nativeEvent.offsetX;
     var eY = e.nativeEvent.offsetY;
     next = next || ignore;
     var points = [];
     ref = ref || 0;
-
     // if out of quadrant should return
     var quadrantX = (eX - scale.paddingLeft + (scale.tickSize / 2)) / (scale.tickSize * scale.len);
     quadrantX = Math.floor(quadrantX * scale.len);

@@ -75,9 +75,14 @@ var set2 = [
   }
 ];
 
-
+var handler = new Events();
 var node = '<div class="graph">' + spark({
-    mixin: [Label]
+    mixin: [Label],
+    _call: function (scale) {
+      
+      handler.setProps(scale, this.attributes.data);
+      // self.props.events.setProps(scale, this.attributes.data);
+    },
 }).attr({
     chart: {
         width: 1200,
@@ -142,12 +147,11 @@ var node = '<div class="graph">' + spark({
     data: set2
 }) + "</div>";
 
-document.getElementsByTagName("body")[0].innerHTML = node;
-var handler = new Events();
 handler.on = {
     'svg:mouseMove': function (e, props) {
-        console.log(e, props);
+        var pos = handler.getToolTipPosition(props);
+        console.log('relative tooltip position', pos);
     }
 };
-
+document.getElementsByTagName("body")[0].innerHTML = node;
 handler.listen(document.getElementsByClassName("graph")[0]);
