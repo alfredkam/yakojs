@@ -26,7 +26,7 @@
 ##General Usage
 To use any of the graphs you could access them through these entry points.
 ``` javascript
-var yako = require('yako'); // Or window.yako if FE
+var yako = require('yako'); // or window.yako on the browser
 var bar = yako.bar;         // Bar graph
 var bubble = yako.bubble    // Bubble graph
 var donut = yako.donut;     // Donut chart
@@ -174,18 +174,18 @@ bubble('.graph').attr({
     /* Optional parameters */
     /* Options for the straight line */
     xAxis: {
-        strokeColor: '#000',                // sets stroke color,
-        strokeWidth: 2
+      strokeColor: '#000',                // sets stroke color,
+      strokeWidth: 2
     },
     bubble: {
-        maxRadius: 10,                      // Overrides default & sets a cap for a max radius for the bubble
-        strokeColor: '#000',                // Set default stroke color
-        strokeColors: ['#000', '#1234'],    // This will override the fill color and matches with the adjacent data set
-        strokeWidth: 2,                     // Set default stroke width
-        strokeWidths: [2, 2],               // This will override the stroke width and matches with the adjacent data set
-        fill: '#333',                       // Sets default fill color
-        fills: ['#333','#334']              // This will override the fill color and matches with the adjacent data set
-                                            // Note: if strokeColor / strokeColors / fill / fills are not provided - it will randomly generate a color
+      maxRadius: 10,                      // Overrides default & sets a cap for a max radius for the bubble
+      strokeColor: '#000',                // Set default stroke color
+      strokeColors: ['#000', '#1234'],    // This will override the fill color and matches with the adjacent data set
+      strokeWidth: 2,                     // Set default stroke width
+      strokeWidths: [2, 2],               // This will override the stroke width and matches with the adjacent data set
+      fill: '#333',                       // Sets default fill color
+      fills: ['#333','#334']              // This will override the fill color and matches with the adjacent data set
+                                          // Note: if strokeColor / strokeColors / fill / fills are not provided - it will randomly generate a color
     },
 
     /* Padding options for the chart */
@@ -367,8 +367,8 @@ Custom tags is only supported for ```bubble``` graph with ```type: 'scattered'``
 
 General configuration
 ```javascript
-var yako = require('yako');
-var Label = require('yako/addons/label');
+var yako = require('yako/addons');
+var Label = yako.addons.Label;
 var spark = yako.spark;                     // Or yako.bar or yako.bubble
 
 var svg = spark({
@@ -434,8 +434,9 @@ var Events = require('yako/addons/Events');
 ###ReturnAsObject
 A plugin to return a dom like object representation
 ```javascript
-var ReturnAsObject = require('yako/addons/ReturnAsObject');
-var spark = require('yako').spark;
+var yako = require('yako/addons');
+var ReturnAsObject = yako.addons.ReturnAsObject;
+var spark = yako.spark;
 
 spark({
   mixin: [RetunAsObject]
@@ -465,11 +466,17 @@ Example result
 }
 ```
 ###React Components
-Under ```addons/react-components```, there offers a wild range of react ready graph components.
+Yako offers a wild range of Reactjs ready graph components.
+
+```javascript
+var yako = require('yako/components');
+```
+Note:: Here ```yako``` also includes ```yako.addons```
 
 ###Spark
 ```javascript
-var Spark = require('yako/addons/react-components/simpleSpark');
+var yako = require('yako/components');
+var Spark = yako.components.SimpleSpark;
 // Assumes the data type & chart configurations from above
 var data = [
   {...},
@@ -486,7 +493,8 @@ Yako includes a react component for the more complex ```spark``` graphs.  In thi
 The snippet below explains the events hooks usage
 
 ```javascript
-var Spark = require('yako/addons/react-components/spark');
+var yako = require('yako/components');
+var Spark = yako.components.Spark;
 // Assumes the data type & chart configurations from above
 var data = [
   {...},
@@ -551,7 +559,8 @@ doubleClick | onDoubleClick
 
 ###Pie
 ```javascript
-var Spark = require('yako/addons/react-components/pie');
+var yako = require('yako/components');
+var Pie = yako.components.Pie
 
 /* Assumes the data type & chart configurations from above */
 var data = [
@@ -566,7 +575,8 @@ document.getElementsByTagName('body')[0]);
 
 ###Donut
 ```javascript
-var Donut = require('yako/addons/react-components/donut');
+var yako = require('yako/components');
+var Donut = yako.components.Donut;
 
 /* Assumes the data type & chart configurations from above */
 var data = [
@@ -581,7 +591,8 @@ document.getElementsByTagName('body')[0]);
 
 ###Bubble
 ```javascript
-var Bubble = require('yako/addons/react-components/bubble');
+var yako = require('yako/components');
+var Bubble = yako.components.Bubble;
 
 /* Assumes the data type & chart configurations from above */
 var data = [
@@ -596,7 +607,8 @@ document.getElementsByTagName('body')[0]);
 
 ###Bar
 ```javascript
-var Bar = require('yako/addons/react-components/bar');
+var yako = require('yako/components');
+var Bar = yako.components.Bar;
 
 /* Assumes the data type & chart configurations from above */
 var data = [

@@ -1,6 +1,5 @@
 var React = require('react');
 var spark = require('../../index').spark;
-var RenderWithReact = require('../RenderWithReact');
 
 module.exports = React.createClass({
     render: function () {

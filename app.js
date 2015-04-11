@@ -6,7 +6,6 @@ var pie = yako.pie;
 var donut = yako.donut;
 var bubble = yako.bubble;
 var bar = yako.bar;
-var label = yako.label;
 
 var http = require('http');
 var express = require('express');
@@ -100,7 +99,7 @@ while (amount--) {
 
 
   var sparkInstance = spark('.graph');
-
+  
   nodes += sparkInstance.attr({
     chart : {
       width: 300,

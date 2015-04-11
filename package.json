@@ -1,11 +1,7 @@
 {
   "name": "yako",
-  "version": "0.3.12",
+  "version": "0.3.19",
   "description": "A minimal and light weight graph",
-  "dependencies": {
-    "expose-loader": "^0.6.0",
-    "webpack": "^1.5.3"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/alfredkam/yakojs.git"
@@ -14,7 +10,7 @@
     "test": "./node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha test -- --recursive",
     "coveralls": "./node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha test -- --recursive --report loconly -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --hot",
-    "pack": "webpack --config ./build-tools/demo.config.js -p && webpack --config ./build-tools/expose.config.js && webpack --config ./build-tools/expose.min.config.js -p"
+    "pack": "webpack --config ./build-tools/demo.config.js -p && webpack --config ./build-tools/example.config.js -p && webpack --config ./build-tools/expose.config.js && webpack --config ./build-tools/expose.min.config.js -p && webpack --config ./build-tools/addons.expose.config.js && webpack --config ./build-tools/addons.expose.min.config.js -p"
   },
   "keywords": [
     "graph",
@@ -22,7 +18,9 @@
     "graph api",
     "beautiful graph",
     "minimal graph",
-    "serverside rendering"
+    "serverside rendering",
+    "chart",
+    "react"
   ],
   "engines": {
     "node": ">=0.8.0"
@@ -33,12 +31,16 @@
       "url": "https://github.com/alfredkam/yakojs/blob/master/LICENSE.md"
     }
   ],
+  "author": "Alfred Kam",
+  "readmeFilename": "README.md",
   "devDependencies": {
     "autoprefixer-loader": "^1.2.0",
     "chai": "^2.0.0",
     "coveralls": "^2.11.2",
     "es6-loader": "^0.2.0",
+    "expose-loader": "^0.6.0",
     "file-loader": "^0.8.1",
+    "gulp": "^3.8.11",
     "istanbul": "^0.3.5",
     "jsx-loader": "^0.12.2",
     "jymin": "^0.4.1",
@@ -50,6 +52,7 @@
     "react": "^0.12.2",
     "react-hot-loader": "^1.2.3",
     "style-loader": "^0.8.3",
+    "webpack": "^1.5.3",
     "webpack-dev-middleware": "^1.0.11",
     "webpack-dev-server": "^1.7.0"
   }

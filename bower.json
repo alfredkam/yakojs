@@ -1,0 +1,37 @@
+{
+  "name": "yako",
+  "main": "yako.js",
+  "version": "0.3.15",
+  "homepage": "https://github.com/alfredkam/yakojs",
+  "authors": [
+    "@alfredkam"
+  ],
+  "description": "A minimal and light weight graph",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "graph",
+    "graph",
+    "library",
+    "graph",
+    "api",
+    "beautiful",
+    "graphs",
+    "minimal",
+    "graph"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "dev",
+    "coverage",
+    "build-tools",
+    "wercker.yml",
+    "webpack.config.js"
+  ]
+}

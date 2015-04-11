@@ -7,3 +7,5 @@ app.js
 .tmp
 .build
 npm-debug.log
+testData/
+testData.json
