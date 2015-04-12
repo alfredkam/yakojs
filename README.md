@@ -5,7 +5,6 @@
 [![Build Status](https://img.shields.io/travis/alfredkam/yakojs.svg)](https://travis-ci.org/alfredkam/yakojs)
 [![Coverage Status](https://coveralls.io/repos/alfredkam/yakojs/badge.svg?branch=master)](https://coveralls.io/r/alfredkam/yakojs?branch=master)
 
-
 A tiny **DOM-less** graph library, build for fast front end and server side rendering in CommonJs pattern.
 This library is intend to generate light weight and simple SVG graphs, and is more performable compare to highcharts / flot / c3 / d3 when **front end matters**.
 
