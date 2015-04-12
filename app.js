@@ -209,7 +209,7 @@ while (amount--) {
     title: 'just a test',
     data: bubbleSet
   });
-
+  
   nodes += bar('.graph').attr({
     chart : {
       stack: true,
