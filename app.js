@@ -221,7 +221,7 @@ while (amount--) {
     title: 'just a test',
     data: set
   });
-
+  
   nodes += bar('.graph').attr({
     chart : {
       width: 300,
