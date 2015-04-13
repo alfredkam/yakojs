@@ -5,14 +5,14 @@
 [![Build Status](https://img.shields.io/travis/alfredkam/yakojs.svg)](https://travis-ci.org/alfredkam/yakojs)
 [![Coverage Status](https://coveralls.io/repos/alfredkam/yakojs/badge.svg?branch=master)](https://coveralls.io/r/alfredkam/yakojs?branch=master)
 
-
-Minimal & light weight graph library for fast front end and server side rending + build in CommonJs pattern.  This graph is intend to generate light weight SVG graphs, and its more performable compare to highcharts / flot / c3 / d3 when you do not need any complex graphs
+A tiny **DOM-less** graph library, build for fast front end and server side rendering in CommonJs pattern.
+This library is intend to generate light weight and simple SVG graphs, and is more performable compare to highcharts / flot / c3 / d3 when **front end matters**.
 
 This library also works great with webpack & react w/ [prepared react graph components](https://github.com/alfredkam/yakojs/blob/master/doc.md#react-components)
 
 Documentation [https://github.com/alfredkam/yakojs/blob/master/doc.md](https://github.com/alfredkam/yakojs/blob/master/doc.md)
 
-Demo [http://alfredkam.com/yakojs](http://alfredkam.com/yakojs) or ```node app.js``` and vist ```http://localhost:3000```
+Demo [http://alfredkam.com/yakojs](http://alfredkam.com/yakojs) or ```node app.js``` and visit ```http://localhost:3000```
 
 Supports Chrome, Firefox, Safari, and IE 9+;
 
@@ -24,19 +24,25 @@ Supports Chrome, Firefox, Safari, and IE 9+;
 ```bower install yako```
 
 ### API Ready
- - Spark / Scattered / Line / Area Graphs
- - Pie Charts
- - Donut Charts
- - Bubble Point Chart for Time Flow Representation (Represents actions across a period of time)
- - Bubble Graph  (Represents a cohort / segment activty)
- - Bar Graphs (stack & non stack)
+ - Simple Graphs
+  - Spark / Scattered / Line / Area Graphs
+  - Pie Charts
+  - Donut Charts
+  - Bubble Point Chart for Time Flow Representation (Represents actions across a period of time)
+  - Bubble Graph  (Represents a cohort / segment activty)
+  - Bar Graphs (stack & non stack)
  - MixIn / Inheritance
- - Multi axis & labels for spark graphs
- - Labels for bar graph && bubble graph
+ - Multi axis for spark graphs
+ - Labels
+  - Bar graph
+  - Spark Graph
+  - Bubble Graph
  - Programmatic point of access (Only Avaliable for React)
  - Events & Emitters (Only Avaliable for React)
 
 ### Road Map
+ - Complex Graphs
+  - eg. time series w/ auto fill
  - Expose math functions
  - Bring svg to live
  - Real time graphs

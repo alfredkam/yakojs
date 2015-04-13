@@ -16,6 +16,24 @@
         </div>
     </header>
     <section>
+      <div class='row'>
+            <h4>Usage</h4>
+        </div>
+        <div class='row'>
+            <pre class='lang-javascript'>
+<code>
+/* Common js pattern */
+var yako = require('yako');            // Require without addons      
+var yako = require('yako.addons');     // Require with addons
+
+/* Through the browser */
+&#60script src='yako.js' type='text/javascript'&#62&#60/script&#62               // Requires without addons
+&#60script src='yako.addons.js' type='text/javascript'&#62&#60/script&#62        // Require with addons
+</code>
+            </pre>
+        </div>
+    </section>
+    <section>
         <div class='row'>
             <h4>Spark Graph</h4>
         </div>
@@ -63,64 +81,64 @@ var svg = component.attr({
             </div>
             <div class='row'>
                 <pre class='lang-javascript'>
-    <code>
-    var spark = yako.spark;
-    var Label = yako.addons.Label;
-    var component = spark({
-      mixin: Label
-    });
-    var set = [ {
-            data: [ 36, 409, 109, 245, 355, 410, 257, 316, 179, 19 ],
-            strokeColor: 'red',
-            strokeWidth: 2
-        },
-        { 
-            data: [ 273, 354, 307, 68, 483, 70, 253, 507, 325, 474 ],
-            strokeColor: 'blue',
-            strokeWidth: 2
-        } ];
-    var svg = component.attr({
-        chart : {
-          width: 800,
-          height: 100
-        },
-        title: 'just a test',
-        data: set,
-        yAxis: {
-          multi: true
-        },
-        xAxis : {
-          // including format will show the xAxis Label
-          format : 'dateTime',
-          fontSize '12',
-          textAnchor: 'start', // or 'middle' or 'end' - positions the label
-          // or if wanted custom label
-          // format: 'custom',
-          // labels: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
-          // options for configuring format `datetime`
-          // interval indicates the data interval, the number of the interval indicates the label tick interval
-          // same representation is also used for `dateTimeLabelFormat`
-          // s - seconds
-          // m - minutes
-          // h - hours
-          // D - days
-          // M - months
-          // Y - years
-          interval: '4h',  //[1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
-          // uses the min start date and increment the label by the set interval.  interval will be converted to miliseconds
-          minUTC: Date.UTC(2013,8,7),
-          //this controls the dateTime label format
-          //depending on the format, it will affect the label, try :: dateTimeLabelFormat: 'hhh'
-          dateTimeLabelFormat: 'MM/DD hh ap'
-      }
-    });
+<code>
+var spark = yako.spark;
+var Label = yako.addons.Label;
+var component = spark({
+  mixin: Label
+});
+var set = [ {
+        data: [ 36, 409, 109, 245, 355, 410, 257, 316, 179, 19 ],
+        strokeColor: 'red',
+        strokeWidth: 2
+    },
+    { 
+        data: [ 273, 354, 307, 68, 483, 70, 253, 507, 325, 474 ],
+        strokeColor: 'blue',
+        strokeWidth: 2
+    } ];
+var svg = component.attr({
+    chart : {
+      width: 800,
+      height: 100
+    },
+    title: 'just a test',
+    data: set,
+    yAxis: {
+      multi: true
+    },
+    xAxis : {
+      // including format will show the xAxis Label
+      format : 'dateTime',
+      fontSize '12',
+      textAnchor: 'start', // or 'middle' or 'end' - positions the label
+      // or if wanted custom label
+      // format: 'custom',
+      // labels: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
+      // options for configuring format `datetime`
+      // interval indicates the data interval, the number of the interval indicates the label tick interval
+      // same representation is also used for `dateTimeLabelFormat`
+      // s - seconds
+      // m - minutes
+      // h - hours
+      // D - days
+      // M - months
+      // Y - years
+      interval: '4h',  //[1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
+      // uses the min start date and increment the label by the set interval.  interval will be converted to miliseconds
+      minUTC: Date.UTC(2013,8,7),
+      //this controls the dateTime label format
+      //depending on the format, it will affect the label, try :: dateTimeLabelFormat: 'hhh'
+      dateTimeLabelFormat: 'MM/DD hh ap'
+  }
+});
 
-    /**
-     * NOTE::
-     * When labeling is enabled for `xAxis` the default `paddingTop` & `paddingBottom` is 30px;
-     * When labeling is enabled for `yAxis` the default `paddingLeft` & `paddingRight` is 20px;
-     */
-    </code>
+/**
+ * NOTE::
+ * When labeling is enabled for `xAxis` the default `paddingTop` & `paddingBottom` is 30px;
+ * When labeling is enabled for `yAxis` the default `paddingLeft` & `paddingRight` is 20px;
+ */
+</code>
                 </pre>
             </div>
     </section>
