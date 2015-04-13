@@ -24,28 +24,28 @@ Supports Chrome, Firefox, Safari, and IE 9+;
 ```bower install yako```
 
 ### API Ready
- - Simple Graphs
+ * [x] Simple Graphs
   - Spark / Scattered / Line / Area Graphs
   - Pie Charts
   - Donut Charts
   - Bubble Point Chart for Time Flow Representation (Represents actions across a period of time)
   - Bubble Graph  (Represents a cohort / segment activty)
   - Bar Graphs (stack & non stack)
- - MixIn / Inheritance
- - Multi axis for spark graphs
- - Labels
+ * [x] MixIn / Inheritance
+ * [x] Multi axis for spark graphs
+ * [x] Labels
   - Bar graph
   - Spark Graph
   - Bubble Graph
- - Programmatic point of access (Only Avaliable for React)
- - Events & Emitters (Only Avaliable for React)
+ * [x] Programmatic point of access (Only Avaliable for React)
+ * [x] Events & Emitters (Only Avaliable for React)
 
 ### Road Map
- - Complex Graphs
+ * [ ] Complex Graphs
   - eg. time series w/ auto fill
- - Expose math functions
- - Bring svg to live
- - Real time graphs
+ * [ ] Expose math functions
+ * [ ] Bring svg to live
+ * [ ] Real time graphs
 
 
 ### How to run unit test
