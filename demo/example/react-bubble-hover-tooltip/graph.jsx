@@ -3,7 +3,7 @@
  */
 var React = require('react');
 var yako = require('../../../components');
-var Spark = yako.components.Spark;
+var Bubble = yako.components.Bubble;
 var PureRenderMixin = React.addons.PureRenderMixin;
 
 /* Tool Tip Component */
@@ -89,32 +89,33 @@ module.exports = React.createClass({
   render: function () {
     var self = this;
     var chart = {
+                                           // Width & height controls the svg view box
       width: 1200,
-      height: 150,
-      yAxis: {
-        multi: true
+      height: 500,
+
+      /* Optional parameters */
+      /* Options for the straight line */
+      xAxis: {
+       strokeColor: '#000',                // sets stroke color,
+       strokeWidth: 2
       },
-      xAxis : {
-        // including format will show the xAxis Label
-        format : 'dateTime',
-        // interval indicates the data interval, the number of the interval indicates the label tick interval
-        // same representation is also used for `dateTimeLabelFormat`
-        // s - seconds
-        // m - minutes
-        // h - hours
-        // D - days
-        // M - months
-        // Y - years
-        interval: '4h',  //[1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
-        // uses the min start date and increment the label by the set interval.  interval will be converted to miliseconds
-        minUTC: Date.UTC(2013,8,7),
-        //this controls the dateTime label format
-        //depending on the format, it will affect the label, try :: dateTimeLabelFormat: 'hhh'
-        dateTimeLabelFormat: 'MM/DD hh ap'
-        // or if wanted custom label
-        // format: 'label',
-        // labels: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
-      }
+
+      bubble: {
+        maxRadius: 10,                      // Overrides default & sets a cap for a max radius for the bubble
+        strokeColor: '#000',                // Set default stroke color
+        strokeColors: ['#000', '#123'],     // This will override the fill color and matches with the adjacent data set
+        strokeWidth: 2,                     // Set default stroke width
+        strokeWidths: [2, 2],               // This will override the stroke width and matches with the adjacent data set
+        fill: '#333',                       // Sets default fill color
+        fills: ['#333','#334']              // This will override the fill color and matches with the adjacent data set
+                                            // Note: if strokeColor / strokeColors / fill / fills are not provided - it will randomly generate a color
+      },
+
+      /* Padding options for the chart */
+      paddingLeft: 0,
+      paddingRight: 0,
+      paddingTop: 0,
+      paddingBottom: 0
     };
 
     var toolTip = ToolTip || 0;
@@ -131,7 +132,7 @@ module.exports = React.createClass({
 
     var self = this;
      return (
-      <Spark 
+      <Bubble 
         chart={chart} 
         data={self.props.set}
         events={self.events}

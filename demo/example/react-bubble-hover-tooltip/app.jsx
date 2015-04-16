@@ -17,62 +17,13 @@ var strokColorFirst = 'red';
 var strokeColorSecond = 'blue';
 var strokeColorThird = 'pink';
 var strokeColorFourth = 'green';
-var set = [
-  {
-      data: dataSet,
-      strokeColor: strokColorFirst,
-      strokeWidth: 2,
-      scattered : {
-        strokeColor: strokColorFirst,
-        fill: 'white',
-        strokeWidth: 2,
-        radius: 5
-      },
-      label: 'red'
-  },
-  {
-      data: dataSet2,
-      strokeColor: strokeColorSecond,
-      strokeWidth: 2,
-      scattered : {
-        strokeColor: strokeColorSecond,
-        fill: 'white',
-        strokeWidth: 2,
-        radius: 5
-      },
-      label: 'blue'
-  }
-];
-var set2 = [
-  {
-      data: dataSet3,
-      strokeColor: strokeColorThird,
-      strokeWidth: 2,
-      scattered : {
-        strokeColor: strokeColorThird,
-        fill: 'white',
-        strokeWidth: 2,
-        radius: 5
-      },
-      label: 'pink'
-  },
-  {
-      data: dataSet4,
-      strokeColor: strokeColorFourth,
-      strokeWidth: 2,
-      scattered : {
-        strokeColor: strokeColorFourth,
-        fill: 'white',
-        strokeWidth: 2,
-        radius: 5
-      },
-      label: 'green'
-  }
-];
+
+var set2 = dataSet3;
+var set = dataSet4;
 
 React.render(
   <div>
-    <Spark set={set} set2={set2}/>
-    <Spark set={set2} set2={set}/>
+    <Spark set={set} set2={set2} />
+    <Spark set={set2} set2={set} />
   </div>,
   document.getElementsByTagName('body')[0]);
