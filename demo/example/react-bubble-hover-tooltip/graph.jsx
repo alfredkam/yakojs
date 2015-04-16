@@ -32,11 +32,7 @@ var ToolTip = React.createClass({
      */
     if (Object.keys(content).length !== 0) {
       if (content.exactPoint) {
-        html = 'point at value : ' + content.exactPoint.label + ',' + content.exactPoint.value;
-      } else {
-        html = content.points.map(function (key) {
-          return key.label + ':' + key.value;
-        });
+        html = 'point at value : ' + content.exactPoint.value;
       }
     }
     return (
@@ -72,17 +68,18 @@ module.exports = React.createClass({
         shouldShow: true
       });
     }
+    var onLeave = function (e, props) {
+      self.setState({
+        shouldShow: false
+      });
+    }
     var self = this;
     self.events = {
       // Register events for call back
       on: {
-        'path:mouseMove': onActivity,
-        'svg:mouseMove': onActivity,
-        'container:mouseLeave': function (e) {
-          self.setState({
-            shouldShow: false
-          });
-        }
+        'circle:mouseMove': onActivity,
+        'circle:mouseOut': onLeave,
+        'container:mouseLeave': onLeave
       }
     };
   },
@@ -91,7 +88,7 @@ module.exports = React.createClass({
     var chart = {
                                            // Width & height controls the svg view box
       width: 1200,
-      height: 500,
+      height: 100,
 
       /* Optional parameters */
       /* Options for the straight line */

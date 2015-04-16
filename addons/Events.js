@@ -121,105 +121,176 @@ module.exports = Class.extend({
       }
     }
   },
+
+  getProps: {
+    spark: function (props, ref, eX, eY) {
+      var points = [];
+      var self = this;
+      var scale = props.scale;
+      var data = props.data;
+      // if out of quadrant should return
+      var quadrantX = (eX - scale.paddingLeft + (scale.tickSize / 2)) / (scale.tickSize * scale.len);
+      quadrantX = Math.floor(quadrantX * scale.len);
+
+      var properties = {
+        _scale: scale,
+        _segmentXRef: quadrantX
+      };
+
+     if (ref && (data[ref])) {
+        properties.exactPoint = {
+            label: data[ref].label,
+            value: data[ref].data[quadrantX]
+        };
+        properties._data = data[ref];
+      }
+
+      for (var i in data) {
+        points.push({
+            label: data[i].label,
+            value: data[i].data[quadrantX]
+        });
+      }
+
+      properties.points = points;
+
+      if(!ref) {
+        properties._data = data;
+      }
+      return properties;
+    },
+    bubble: function (e, props, eX, eY) {
+      var scale = props.scale;
+      var data = props.data;
+      // var column = e.target.dataset.c;
+
+      if (scale.type == 'bubble-point') {
+        var quadrantX = (eX - scale.paddingLeft + (scale.tickSize / 2)) / (scale.tickSize * scale.len);
+        quadrantX = Math.floor(quadrantX * scale.len);
+
+        var properties = {
+          _scale: scale,
+          _segmentXRef: quadrantX
+        };
+        properties.exactPoint = {
+          value: data[quadrantX]
+        }
+
+        return properties;
+      } else {
+
+      }
+
+      return {};
+    }
+  },
   // Common entry point for each _associateTrigger once the eventName is associated
   // Here it provides the material at those event points - if the data is avaliable
   _trigger: function (eventName, e, props, ref, next) {
     var self = this;
     var scale = props.scale;
-    var data = props.data;
     // For react, uses nativeEvent
     e.nativeEvent = e.nativeEvent || e;
     var eX = e.nativeEvent.offsetX;
     var eY = e.nativeEvent.offsetY;
     next = next || ignore;
-    var points = [];
     ref = ref || 0;
-    // if out of quadrant should return
-    var quadrantX = (eX - scale.paddingLeft + (scale.tickSize / 2)) / (scale.tickSize * scale.len);
-    quadrantX = Math.floor(quadrantX * scale.len);
+    var properties = {};
 
-    var properties = {
-      _scale: scale,
-      _segmentXRef: quadrantX
-    };
-
-   if (ref && (data[ref])) {
-      properties.exactPoint = {
-          label: data[ref].label,
-          value: data[ref].data[quadrantX]
-      };
-      properties._data = data[ref];
-    }
-
-    for (var i in data) {
-      points.push({
-          label: data[i].label,
-          value: data[i].data[quadrantX]
-      });
-    }
-
-    properties.points = points;
-
-    if(!ref) {
-      properties._data = data;
+    if (scale.parentType == 'bubble') {
+      properties = self.getProps.bubble(e, props, eX, eY);
+    } else {
+      properties = self.getProps.spark(props, ref, eX, eY);
     }
 
     self.on[eventName](e, properties);
     next(properties);
   },
-  // Depending on the props data, it will figure out where the tooltip should show
-  getToolTipPosition: function (props) {
-       if (Object.keys(props).length === 0) return;
 
-       var self = this;
-       var scale = props._scale;
-       var offsetY = -20;
-       var left = (scale.tickSize * props._segmentXRef) + scale.paddingLeft;
-       var numberOfLines = props.points.length;
-       var values = [];
-       var maxOfSet = 0;
-       var max = 0;
+  getPositionProps: {
+    spark: function (props) {
+      if (Object.keys(props).length === 0) return;
 
-       if (scale.max instanceof Object) {
-         var maxRatio = 0;
-         var pos = 0;
-         for (var i = 0; i < numberOfLines; i++) {
-           var currValue = props.points[i].value;
-           var ratio = currValue / scale.max[0];
-           if (maxRatio < ratio) {
-             maxRatio = ratio;
-             maxOfSet = scale.max[i];
-             max = currValue;
-           }
-         }
-       } else {
-         maxOfSet = scale.max;
-         for (var i = 0; i < numberOfLines; i++) {
-           var currValue = props.points[i].value;
-           max = max < currValue ? currValue : max;
+      var self = this;
+      var scale = props._scale;
+      var offsetY = -20;
+      var left = (scale.tickSize * props._segmentXRef) + scale.paddingLeft;
+      var values = [];
+      var maxOfSet = 0;
+      var max = 0;
+
+      var numberOfLines = props.points.length;
+      if (scale.max instanceof Object) {
+       var maxRatio = 0;
+       var pos = 0;
+       for (var i = 0; i < numberOfLines; i++) {
+         var currValue = props.points[i].value;
+         var ratio = currValue / scale.max[0];
+         if (maxRatio < ratio) {
+           maxRatio = ratio;
+           maxOfSet = scale.max[i];
+           max = currValue;
          }
        }
-
-       /**
-        * Code snippet for finding mid point
-        */
-       // var min = Math.min.apply(null, values);
-       // var midPoint = ((max - min) / 2) + (scale.max - max);
-       // var top = midPoint * scale.heightRatio + scale.paddingTop;
-
-       var maxPoint = maxOfSet - max;
-       var top = maxPoint * scale.heightRatio + scale.paddingTop + offsetY;
-
-       // check if we are displaying on the rightside
-       if (scale.len - 1 == props._segmentXRef) {
-         return {
-           top: top,
-           right: scale.paddingRight
-         };
+      } else {
+       maxOfSet = scale.max;
+       for (var i = 0; i < numberOfLines; i++) {
+         var currValue = props.points[i].value;
+         max = max < currValue ? currValue : max;
        }
+      }
+
+      /**
+      * Code snippet for finding mid point
+      */
+      // var min = Math.min.apply(null, values);
+      // var midPoint = ((max - min) / 2) + (scale.max - max);
+      // var top = midPoint * scale.heightRatio + scale.paddingTop;
+
+      var maxPoint = maxOfSet - max;
+      var top = maxPoint * scale.heightRatio + scale.paddingTop + offsetY;
+
+      // check if we are displaying on the rightside
+      if (scale.len - 1 == props._segmentXRef) {
        return {
          top: top,
-         left: left
+         right: scale.paddingRight
        };
+      }
+      return {
+       top: top,
+       left: left
+      };
+    },
+    bubble: function (props) {
+      var scale = props._scale;
+      var data = scale._data;
+      if (scale.type == 'bubble-point') {
+        var left = (scale.tickSize * props._segmentXRef) + scale.paddingLeft;
+        var centerY = scale.height / 2;
+        var top = centerY - (scale.bubble.maxRadius * data[props._segmentXRef] / scale.max) - 50;
+      }
+
+      if (scale.len - 1 == props._segmentXRef) {
+       return {
+         top: top,
+         right: scale.paddingRight
+       };
+      }
+      return {
+        top: top,
+        left: left
+      }
     }
+  },
+  // Depending on the props data, it will figure out where the tooltip should show
+  getToolTipPosition: function (props) {
+    var scale = props._scale || {};
+    var self = this;
+    if (scale.parentType == 'bubble') {
+      return self.getPositionProps.bubble(props);
+    } else {
+      return self.getPositionProps.spark(props);
+    }
+  }
 });
