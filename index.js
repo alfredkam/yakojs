@@ -10,6 +10,8 @@ var bar = require('./lib/bar');
 var bubble = require('./lib/bubble');
 var svg = require('./lib/svg/svg');
 var mixin = require('./lib/utils/mixin');
+var bubbleScatterComplex = require('./lib/complex/bubble-scatter');
+var bubblePointComplex = require('./lib/complex/bubble-point');
 
 var initialize = function (component, obj) {
   if (typeof obj === 'object') {
@@ -36,5 +38,15 @@ module.exports = {
   bar: function (opts) {
     return initialize(bar, opts);
   },
-  svg: svg
+  svg: svg,
+  complex: {
+    bubble: {
+      scatter: function (opts) {
+        return initialize(bubbleScatterComplex, opts);
+      },
+      point: function (opts) {
+        return initialize(bubblePointComplex, opts);
+      }
+    }
+  }
 };

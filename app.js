@@ -6,6 +6,8 @@ var pie = yako.pie;
 var donut = yako.donut;
 var bubble = yako.bubble;
 var bar = yako.bar;
+var bubbleScatterComplex = yako.complex.bubble.scatter;
+var bubblePointComplex = yako.complex.bubble.point;
 
 var http = require('http');
 var express = require('express');
@@ -31,6 +33,7 @@ while (amount--) {
   var dataSet4 = [];
   var dataSet5 = [];
   var dataSet6 = [];
+  var dataSet7 = [];
   for (var i=0;i < dataPoints;i++) {
     dataSet.push(Math.floor((Math.random() * 500) + 10));
     dataSet2.push(Math.floor((Math.random() * 500) + 10));
@@ -45,6 +48,9 @@ while (amount--) {
       temp.push(Math.floor((Math.random() * 500) + 10));
       temp2.push(Math.floor((Math.random() * 500) + 10));
     }
+    dataSet7.push({
+      data: temp
+    });
     dataSet5.push(temp);
     dataSet6.push(temp2);
   }
@@ -96,6 +102,67 @@ while (amount--) {
       fill: yako.spark()._randomColor()
     }
   ];
+
+  nodes += "<div class='.graph'>" + bubbleScatterComplex().attr({
+    width: 300,
+    height: 100,
+    /* Optional parameters */
+    /* Options for the circle */
+    maxRadius: 10,            // Overrides default & sets a cap for a max radius for the bubble
+    fill: '#000',             // Sets the default fill color
+
+    /* Padding options for the chart */
+    paddingLeft: 0, 
+    paddingRight: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
+    points: dataSet7
+  });
+
+  nodes += "<div class='.graph'>" + bubblePointComplex().attr({
+    // Width & height controls the svg view box
+    width: 300,
+    height: 100,
+
+    /* Optional parameters */
+    /* Options for the straight line */
+    axis: {
+      strokeColor: '#000',                // sets stroke color,
+      strokeWidth: 2
+    },
+    maxRadius: 10,                      // Overrides default & sets a cap for a max radius for the bubble
+    strokeColor: '#000',                // Set default stroke color
+    strokeWidth: 2,                     // Set default stroke width
+    fill: '#333',                       // Sets default fill color
+    // tickSize: '1d',                  // time series if ticksize is passed in.
+    startTick: 1418885572796,
+    endTick: 1439253572796,
+    points: [
+    {
+            tick: 1420613572796,
+            data: 300,
+            fill : '#000'
+            // meta: Object
+    },
+    {
+        tick: 1426661572796,
+        data: 150,
+        fill : '#000'
+        // meta: Object
+    },
+    {
+        tick: 1429253572796,
+        data: 200,
+        fill : '#000'
+        // meta: Object
+    }],
+
+    /* Padding options for the chart */
+    paddingLeft: 0,
+    paddingRight: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
+  });
 
 
   var sparkInstance = spark('.graph');
