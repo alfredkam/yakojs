@@ -1,4 +1,4 @@
-var Base = require('../base/default');
+var Base = require('../../lib/base/default');
 var bubble = module.exports = Base.extend({
     // Start of a life cyle
     _startCycle: function () {
@@ -45,31 +45,19 @@ var bubble = module.exports = Base.extend({
         maxRadius = scale.maxRadius = parseInt(scale.maxRadius) || maxRadius;
 
         // Determine if its time series
-        if (data[0].date) {
-            scale.timeSeries = true;
-            // Check if the start date is defined, if not defined using first element in array
-            // TODO:: Handle edge case of single point
-            scale.startTick = startTick = (scale.startDate || data[0].date).getTime();
-            scale.endTick = endTick = (scale.endDate || data[len - 1].date).getTime();
-            var tickLen = endTick - startTick;  // Need to handle zero
-            var firstTick = data[0].date.getTime();
-            var lastTick = data[len - 1].date.getTime();
-            var firstTickLeftRadius = firstTick - startTick - (scale.maxRadius * data[0].data / scale.max);
-            var lastTickRightRadius = lastTick - endTick + (scale.maxRadius * data[len - 1].data / scale.max);
-            scale.paddingLeft = firstTickLeftRadius < 0 ? Math.abs(firstTickLeftRadius) : 0;
-            scale.paddingRight = lastTickRightRadius > 0 ? lastTickRightRadius : 0;
-            scale.tickSize = (width - scale.paddingLeft - scale.paddingRight) / (tickLen);
-            
-        } else {
-            // If data set is relative to data length
-            // Figure out the maxRadius & paddings, maxRadius is a guide line
-            // TODO:: Need to look out for edge case - 
-            var tickSize = (width - scale.paddingLeft - scale.paddingRight) / (len - 1);
-            scale.maxRadius = tickSize < maxRadius ? tickSize + scale.paddingLeft : maxRadius;
-            scale.paddingLeft = scale.paddingLeft || scale.maxRadius * (data[0] / scale.max);
-            scale.paddingRight = scale.paddingRight || scale.maxRadius * (data[len - 1] / scale.max);
-            scale.tickSize = (width - scale.paddingLeft - scale.paddingRight) / (len - 1);
-        }
+        scale.timeSeries = true;
+        // Check if the start date is defined, if not defined using first element in array
+        // TODO:: Handle edge case of single point
+        scale.startTick = startTick = (scale.startDate || data[0].date).getTime();
+        scale.endTick = endTick = (scale.endDate || data[len - 1].date).getTime();
+        var tickLen = endTick - startTick;  // Need to handle zero
+        var firstTick = data[0].date.getTime();
+        var lastTick = data[len - 1].date.getTime();
+        var firstTickLeftRadius = firstTick - startTick - (scale.maxRadius * data[0].data / scale.max);
+        var lastTickRightRadius = lastTick - endTick + (scale.maxRadius * data[len - 1].data / scale.max);
+        scale.paddingLeft = firstTickLeftRadius < 0 ? Math.abs(firstTickLeftRadius) : 0;
+        scale.paddingRight = lastTickRightRadius > 0 ? lastTickRightRadius : 0;
+        scale.tickSize = (width - scale.paddingLeft - scale.paddingRight) / (tickLen);
     },
     // Describes the xAxis for bubble point graph
     _describeXAxis: function (height, width, chart) {
@@ -115,7 +103,6 @@ var bubble = module.exports = Base.extend({
                 stroke: point.strokeColor || (defaultStrokeColor || 'transparent'),
                 'stroke-width' : point.strokeWidth || (defaultStrokeWidth || 0)
             }, refs));
-
         }
 
         return paths;

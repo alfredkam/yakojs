@@ -1,13 +1,14 @@
 var util = require('util');
 
 var yako = require('./index');
+var timeSeries = require('./time-series');
 var spark = yako.spark;
 var pie = yako.pie;
 var donut = yako.donut;
 var bubble = yako.bubble;
 var bar = yako.bar;
-var bubbleScatterComplex = yako.complex.bubble.scatter;
-var bubblePointComplex = yako.complex.bubble.point;
+var bubbleScatterComplex = timeSeries.bubble.scatter;
+var bubblePointComplex = timeSeries.bubble.point;
 
 var http = require('http');
 var express = require('express');
@@ -138,22 +139,22 @@ while (amount--) {
     // endDate: 1439253572796,
     points: [
     {
-            date: new Date(2015,2,1),
-            data: 300,
-            fill : '#000'
-            // meta: Object
+      date: new Date(2015,2,1),
+      data: 300,
+      fill : '#000'
+      // meta: Object
     },
     {
-        date: new Date(2015, 4, 30),
-        data: 150,
-        fill : '#000'
-        // meta: Object
+      date: new Date(2015, 4, 30),
+      data: 150,
+      fill : '#000'
+      // meta: Object
     },
     {
-        date: new Date(2015, 9, 30),
-        data: 200,
-        fill : '#000'
-        // meta: Object
+      date: new Date(2015, 9, 30),
+      data: 200,
+      fill : '#000'
+      // meta: Object
     }],
 
     /* Padding options for the chart */

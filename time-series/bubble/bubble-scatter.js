@@ -1,5 +1,5 @@
-var Bubble = require('../base/default');
-module.exports = Bubble.extend({
+var Base = require('../../lib/base/default');
+module.exports = Base.extend({
     _startCycle: function () {
         var self = this;
         var chart = self.attributes.opts.chart;
