@@ -162,26 +162,37 @@ module.exports = Class.extend({
     bubble: function (e, props, eX, eY) {
       var scale = props.scale;
       var data = props.data;
-      // var column = e.target.dataset.c;
 
       if (scale.type == 'bubble-point') {
         var quadrantX = (eX - scale.paddingLeft + (scale.tickSize / 2)) / (scale.tickSize * scale.len);
         quadrantX = Math.floor(quadrantX * scale.len);
 
-        var properties = {
+        return {
           _scale: scale,
-          _segmentXRef: quadrantX
+          _segmentXRef: quadrantX,
+          exactPoint: {
+            value: data[quadrantX]
+          }
         };
-        properties.exactPoint = {
-          value: data[quadrantX]
+
+      } else {
+        var dataset = e.target.dataset;
+        var row = dataset.r;
+        var column = dataset.c;
+
+        if (!row && !column) {
+          return {
+            _scale: scale
+          }
         }
 
-        return properties;
-      } else {
-
+        return {
+          _scale: scale,
+          exactPoint: {
+            value: data[row].data[column]
+          }
+        };
       }
-
-      return {};
     }
   },
   // Common entry point for each _associateTrigger once the eventName is associated
@@ -268,7 +279,16 @@ module.exports = Class.extend({
       if (scale.type == 'bubble-point') {
         var left = (scale.tickSize * props._segmentXRef) + scale.paddingLeft;
         var centerY = scale.height / 2;
-        var top = centerY - (scale.bubble.maxRadius * data[props._segmentXRef] / scale.max) - 50;
+        var top = centerY - (scale.bubble.maxRadius * data[props._segmentXRef] / scale.max) - 30;
+      } else {
+        if (!props.exactPoint) {
+          return {};
+        }
+        var point = props.exactPoint.value;
+        var left = scale.width - (point[0] * scale.widthRatio) - scale.paddingLeft;
+        var radius = scale.maxRadius * point[2]/ scale.max[2];
+        var top = scale.height - (point[1] * scale.heightRatio) - scale.paddingTop;
+        top -= (radius + 20);
       }
 
       if (scale.len - 1 == props._segmentXRef) {

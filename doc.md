@@ -219,7 +219,7 @@ bubble('.graph').attr({
     /* Options for the circle */
     maxRadius: 10,            // Overrides default & sets a cap for a max radius for the bubble
     fill: ['#000'],           // Sets the default fill color
-    fills: ['#333','#334']    // This will override the fill color and matches with the adjacent dataset
+    fills: ['#333','#334'],   // This will override the fill color and matches with the adjacent dataset
                               // Note: if fill / fills are not provided - it will randomly generate a color
 
     /* Padding options for the chart */

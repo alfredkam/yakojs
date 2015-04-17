@@ -2,6 +2,7 @@ var React = require('react');
 var bubble = require('../../index').bubble;
 
 module.exports = React.createClass({
+    
     render: function () {
       var self = this;
       var svg = bubble()

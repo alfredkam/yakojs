@@ -1,16 +1,25 @@
 var React = require('react');
-var Spark = require('./graph');
+var BubblePoint = require('./bubble-point');
+var BubbleScatter = require('./bubble-scatter');
 
 var dataPoints = 10;
 var dataSet = [];
-var dataSet2 = [];
-var dataSet3 = [];
-var dataSet4 = [];
+var dataSet5 = [];
+var dataSet6 = [];
+
 for (var i=0;i < dataPoints;i++) {
   dataSet.push(Math.floor((Math.random() * 500) + 10));
-  dataSet2.push(Math.floor((Math.random() * 500) + 10));
-  dataSet3.push(Math.floor((Math.random() * 500) + 10));
-  dataSet4.push(Math.floor((Math.random() * 500) + 10));
+}
+
+for (var i = 0; i < dataPoints; i++) {
+  var temp = [];
+  var temp2 = [];
+  for (var j = 0; j < 3; j++) {
+    temp.push(Math.floor((Math.random() * 500) + 10));
+    temp2.push(Math.floor((Math.random() * 500) + 10));
+  }
+  dataSet5.push(temp);
+  dataSet6.push(temp2);
 }
 
 var strokColorFirst = 'red';
@@ -18,12 +27,20 @@ var strokeColorSecond = 'blue';
 var strokeColorThird = 'pink';
 var strokeColorFourth = 'green';
 
-var set2 = dataSet3;
-var set = dataSet4;
+var bubbleSet = [
+  {
+    data: dataSet5,
+    fill: strokColorFirst
+  },
+  {
+    data: dataSet6,
+    fill: strokeColorSecond
+  }
+];
 
 React.render(
   <div>
-    <Spark set={set} set2={set2} />
-    <Spark set={set2} set2={set} />
+    <BubblePoint set={dataSet} />
+    <BubbleScatter set={bubbleSet}/>
   </div>,
   document.getElementsByTagName('body')[0]);
