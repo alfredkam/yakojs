@@ -64,6 +64,7 @@ module.exports = React.createClass({
   },
   componentWillMount: function () {
     var onActivity = function (e, props) {
+      console.log(props);
       self.setState({
         shouldShow: true
       });
@@ -88,7 +89,7 @@ module.exports = React.createClass({
     var chart = {
       type: 'scattered',        // <= This is needed for bubble graph
                                 // Width & height controls the svg view box
-      width: 300,
+      width: 1200,
       height: 100,
 
       /* Optional parameters */

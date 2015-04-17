@@ -134,24 +134,23 @@ while (amount--) {
     strokeColor: '#000',                // Set default stroke color
     strokeWidth: 2,                     // Set default stroke width
     fill: '#333',                       // Sets default fill color
-    // tickSize: '1d',                  // time series if ticksize is passed in.
-    startTick: 1418885572796,
-    endTick: 1439253572796,
+    // startDate: 1418885572796,
+    // endDate: 1439253572796,
     points: [
     {
-            tick: 1420613572796,
+            date: new Date(2015,2,1),
             data: 300,
             fill : '#000'
             // meta: Object
     },
     {
-        tick: 1426661572796,
+        date: new Date(2015, 4, 30),
         data: 150,
         fill : '#000'
         // meta: Object
     },
     {
-        tick: 1429253572796,
+        date: new Date(2015, 9, 30),
         data: 200,
         fill : '#000'
         // meta: Object
