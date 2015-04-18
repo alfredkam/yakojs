@@ -19,7 +19,7 @@ var Label = require('./addons/Label');
 
 // TODO:: fix edge case of 1 data Point
 var dataPoints = 30;
-var nOfGraphs = 10;
+var nOfGraphs = 12;
 var kind = 11;
 var oddKinds = 4;
 var amount = nOfGraphs;

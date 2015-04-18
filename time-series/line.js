@@ -23,8 +23,8 @@
  * })
  */
 
- /**
-  * React Usage
+/**
+ * React Usage
   
   var React = require('react');
   var spark = require('yako').spark;
@@ -41,7 +41,7 @@
           ]
         }).attr({
             'chart': self.props.chart,
-            'data' : self.props.data
+            'points' : self.props.data
           });
 
         return (
@@ -49,10 +49,10 @@
         )
       }
   });
+*/
 
-  */
- 
-module.exports = {
+var Base = require('../lib/base/default');
+module.exports = Base.extend({
   // Find min max in time series data
   _scale: function (content, opts) {
     content = content[0];
@@ -288,4 +288,4 @@ module.exports = {
     var paths = self._describePathAndCircle(data.data, data.labels, paddingLeft, paddingTop, scale, scale.scattered, scale.line, scale.fill);
     return paths;
   }
-};
+});
