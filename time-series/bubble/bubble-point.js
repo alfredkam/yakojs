@@ -22,6 +22,10 @@ var bubble = module.exports = Base.extend({
         chart.complex = true;
         chart.parentType = 'bubble';
 
+        // sort data
+        var ascByDate = function (a,b) { return a.date - b.date;};
+        data.sort(ascByDate);
+
         paths = self._lifeCycleManager(data, chart, function (newScale) {
             svg = getSvg();
             paths = self._describeBubble(data, chart.height, chart.width, newScale);
@@ -68,8 +72,8 @@ var bubble = module.exports = Base.extend({
             "stroke-linecap": "round",
             "stroke-linejoin": "round",
             'stroke-width': config.strokeWidth || 2,
-            stroke: config.strokeColor || this._randomColor(),
-            d: 'M' + chart.paddingLeft + ' ' + centerY + ' H' + (width - chart.paddingLeft)
+            stroke: config.strokeColor || 'transparent',
+            d: 'M' + chart.paddingLeft + ' ' + centerY + ' H' + width
         });
     },
     // Describes bubble point graph
@@ -84,8 +88,6 @@ var bubble = module.exports = Base.extend({
         var refs;
         var tickSize = scale.tickSize;
         var startTick = scale.startTick;
-
-        // console.log(scale.max, scale.paddingLeft, scale.paddingRight, scale.tickSize);
 
         for (var i = 0; i < data.length; i++) {
             var point = data[i];
