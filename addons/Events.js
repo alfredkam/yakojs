@@ -216,7 +216,7 @@ module.exports = Class.extend({
               eY: eY,
               eX: eX,
               cX: scale.width - (point[0] * scale.widthRatio) - scale.paddingLeft,
-              cy: scale.height - (point[1] * scale.heightRatio) - scale.paddingTop,
+              cY: scale.height - (point[1] * scale.heightRatio) - scale.paddingTop,
               r: scale.maxRadius * (point[2]/scale.max[2])
             }
           };

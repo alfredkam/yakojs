@@ -181,7 +181,7 @@ while (amount--) {
       height: 100
     },
     title: 'just a test',
-    data: set
+    points: set
   });
 
   nodes += sparkInstance.attr({
