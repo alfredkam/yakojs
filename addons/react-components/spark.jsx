@@ -32,7 +32,7 @@ module.exports = React.createClass({
       var chart = self.props.chart || {};
       var content = [];
       var style = {
-        height: chart.height || 100,
+        // height: chart.height || 100,
         width: chart.width || 200,
         position: 'relative'
       };
@@ -76,14 +76,14 @@ module.exports = React.createClass({
           </span>);
       }
 
-      if (Legend){
-        content.push(<Legend />);
-      }
-
       content.push(<Spark
             events={self.eventsHandler}
             chart={chart}
             data = {self.props.data} />);
+
+      if (Legend){
+        content.push(<Legend />);
+      }
 
       var factory = React.createFactory("div");
       return factory(props,

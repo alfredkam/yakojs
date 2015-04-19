@@ -1,9 +1,35 @@
-var React = require('react');
-var Bubble = require('./event-ready/bubble-event');
-var EventsClass = require('../Events');
-var Legend = require('./legend');
+var React = require('react/addons');
+var EventsClass = require('../../../Events');
 var cssPrefix = ['Moz','Webkit','ms','O'];
+var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+var GraphPureRenderMixin = require('../../utils/GraphPureRenderMixin');
+/* Bubble Component */
 
+var Bubble = React.createClass({
+    mixin: [
+      PureRenderMixin,
+      GraphPureRenderMixin
+    ],
+    render: function () {
+      var self = this;
+      var bubblePoint = require('../../../../time-series').bubble.scatter;
+      var chart = self.props.chart || {};
+      var svg = bubblePoint({
+          _call: function (scale) {
+            scale.hasEvents = true;
+            scale.parentType = 'bubble';
+            self.props.events.setProps(scale, this.attributes.data);
+          }
+        }).attr(chart);
+      return React.createElement("span", {
+        dangerouslySetInnerHTML: {
+          __html: svg
+        }
+      });
+    }
+});
+// TODO:: Decouple tooltip logics
+/* EventHandling Component */
 module.exports = React.createClass({
     _eventData: {},
     eventsHandler: '',
@@ -49,6 +75,7 @@ module.exports = React.createClass({
       var userDefinedToolTip = self.props.toolTip || {};
       var Legend = self.props.legend || 0;
       var ToolTipReactElement = userDefinedToolTip.reactElement || 0;
+      var CustomComponent = self.props.customComponent || 0;
 
       if (ToolTipReactElement) {
         var position = Events.getToolTipPosition(self._eventData) || {};
@@ -83,6 +110,10 @@ module.exports = React.createClass({
 
       if (Legend){
         content.push(<Legend />);
+      }
+
+      if (CustomComponent) {
+        content = content.concat(CustomComponent);
       }
 
       var factory = React.createFactory("div");

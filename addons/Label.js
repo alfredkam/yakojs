@@ -147,7 +147,7 @@ var label = module.exports = {
                     y: yAxis,
                     x: positionX,
                     'font-size': opts.fontSize || 12,
-                    'text-anchor': opts.textAnchor || 'start',
+                    'text-anchor': opts.textAnchor || 'middle',
                     fill: opts.color || '#333',
                 }, null, (form ? self._formatTimeStamp(format, minUTC + (utcMultiplier * i)) : opts.labels[i] || 0)));
             }
@@ -159,7 +159,7 @@ var label = module.exports = {
                     y: yAxis,
                     x: (tickSize * i) + paddingX + (scale.type == 'bar' ? tickSize / 4 : 0 ),
                     'font-size': opts.fontSize || 12,
-                    'text-anchor': opts.textAnchor || 'start',
+                    'text-anchor': opts.textAnchor || (scale.type == 'bar' ? 'start' : 'middle'),
                     fill: opts.color || '#333',
                 }, null, (form ? self._formatTimeStamp(format, minUTC + (utcMultiplier * i)) : opts.labels[i] || 0)));
             }

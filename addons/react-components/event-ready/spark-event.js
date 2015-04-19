@@ -21,9 +21,9 @@ module.exports = React.createClass({
           self.props.events.setProps(scale, this.attributes.data);
         },
       }).attr({
-          'chart': chart,
-          'data' : self.props.data || []
-        });
+        'chart': chart,
+        'data' : self.props.data || []
+      });
       return React.createElement("span", {
         dangerouslySetInnerHTML: {
           __html: svg

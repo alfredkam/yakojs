@@ -46,7 +46,7 @@ var pie = yako.pie;         // Pie chart
 ```javascript
 var set = [
   {
-    data: [214,3423],             // An array with numbers
+    points: [214,3423],             // An array with numbers
 
     /* Optional parameters */
     strokeColor: "rgb(200,94,54)",// Controls the stroke color. 
@@ -63,7 +63,7 @@ var set = [
     }
   },
   {
-    data: [13414,243243],         // An array with numbers
+    points: [13414,243243],         // An array with numbers
 
     /* Optional parameters */
     strokeColor: "#333",          // Controls the stroke color. if its not provided, it will randomly generate a color
@@ -99,7 +99,7 @@ spark().attr({
     paddingTop: 0,
     paddingBottom: 0
   },
-  data: set                      // Accepts an array or json obj
+  points: set                      // Accepts an array or json obj
 });
 ```
 
@@ -125,7 +125,7 @@ pie('.graph').attr({
     paddingTop: 0,
     paddingBottom: 0
   },
-  data: set
+  points: set
 });
 ```
 
@@ -153,7 +153,7 @@ donut('.graph').attr({
     paddingTop: 0,
     paddingBottom: 0
   },
-  data: set
+  points: set
 });
 
 /* Default outerRadius & innerRadius base on chart attributes */
@@ -194,7 +194,7 @@ bubble('.graph').attr({
     paddingTop: 0,
     paddingBottom: 0
   },
-  data: set
+  points: set
 });
 // default maxRadius base on chart attributes
 var maxRadius =  chart.maxRadius || (chart.height < chart.width ? chart.height : chart.width) / 3;
@@ -219,7 +219,7 @@ bubble('.graph').attr({
     /* Options for the circle */
     maxRadius: 10,            // Overrides default & sets a cap for a max radius for the bubble
     fill: ['#000'],           // Sets the default fill color
-    fills: ['#333','#334']    // This will override the fill color and matches with the adjacent dataset
+    fills: ['#333','#334'],   // This will override the fill color and matches with the adjacent dataset
                               // Note: if fill / fills are not provided - it will randomly generate a color
 
     /* Padding options for the chart */
@@ -228,7 +228,7 @@ bubble('.graph').attr({
     paddingTop: 0,
     paddingBottom: 0
   },
-  data: set
+  points: set
 });
 
 /* Default maxRadius base on chart attributes */
@@ -255,7 +255,7 @@ bar('.graph').attr({
     /* Optional parameters */
     stack: true               // This will enable stack graph
   },
-  data: set
+  points: set
 });
 ```
 
@@ -278,8 +278,7 @@ var instance = spark({
 });
 
 var result = instance.attr({
-  chart: { ... },
-  data: [ ... ]
+  ...
 })
 ```
 
@@ -327,7 +326,7 @@ var svg = require('yako').svg;
 Returns the scale for the path and returns min, height, interval, heightRatio, height, width in json object.  Expects attr to contain
 ```javascript
 attr = {
-  data: [
+  points: [
           [1,2,3,4],
           [34,6,6,7]
         ],            // An N * M array or a single N * 1 array, eg [1,23,4,5]
@@ -444,7 +443,7 @@ spark({
   chart: {
     ...
   },
-  data: [ ... ]
+  points: [ ... ]
 });
 
 ```

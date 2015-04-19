@@ -1,11 +1,14 @@
 var util = require('util');
 
 var yako = require('./index');
+var timeSeries = require('./time-series');
 var spark = yako.spark;
 var pie = yako.pie;
 var donut = yako.donut;
 var bubble = yako.bubble;
 var bar = yako.bar;
+var bubbleScatterComplex = timeSeries.bubble.scatter;
+var bubblePointComplex = timeSeries.bubble.point;
 
 var http = require('http');
 var express = require('express');
@@ -16,7 +19,7 @@ var Label = require('./addons/Label');
 
 // TODO:: fix edge case of 1 data Point
 var dataPoints = 30;
-var nOfGraphs = 10;
+var nOfGraphs = 12;
 var kind = 11;
 var oddKinds = 4;
 var amount = nOfGraphs;
@@ -31,6 +34,7 @@ while (amount--) {
   var dataSet4 = [];
   var dataSet5 = [];
   var dataSet6 = [];
+  var dataSet7 = [];
   for (var i=0;i < dataPoints;i++) {
     dataSet.push(Math.floor((Math.random() * 500) + 10));
     dataSet2.push(Math.floor((Math.random() * 500) + 10));
@@ -45,6 +49,9 @@ while (amount--) {
       temp.push(Math.floor((Math.random() * 500) + 10));
       temp2.push(Math.floor((Math.random() * 500) + 10));
     }
+    dataSet7.push({
+      data: temp
+    });
     dataSet5.push(temp);
     dataSet6.push(temp2);
   }
@@ -97,6 +104,77 @@ while (amount--) {
     }
   ];
 
+  nodes += "<div class='graph'>" + bubbleScatterComplex().attr({
+    width: 300,
+    height: 100,
+    /* Optional parameters */
+    /* Options for the circle */
+    maxRadius: 10,            // Overrides default & sets a cap for a max radius for the bubble
+    fill: '#000',             // Sets the default fill color
+
+    /* Padding options for the chart */
+    paddingLeft: 0,
+    paddingRight: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
+    points: dataSet7
+  });
+
+  // var samplePoints = [{"data":8516,"fill":"#2960ac","date":"2014-10-08T00:00:00.000Z","meta":{"count":8516,"date":"2014-10-08","version":20.4,"rating":1.446}},{"data":5380,"fill":"#2960ac","date":"2014-07-17T00:00:00.000Z","meta":{"count":5380,"date":"2014-07-17","version":20.5,"rating":1.4635}},{"data":8251,"fill":"#da294a  ","date":"2014-11-24T00:00:00.000Z","meta":{"count":8251,"date":"2014-11-24","version":20.4,"rating":4.9304}},{"data":3456,"fill":"#9ccee0  ","date":"2014-06-06T00:00:00.000Z","meta":{"count":3456,"date":"2014-06-06","version":20.3,"rating":2.9126}},{"data":1208,"fill":"#6fa3cd  ","date":"2014-06-24T00:00:00.000Z","meta":{"count":1208,"date":"2014-06-24","version":20.3,"rating":1.7544}},{"data":8875,"fill":"#6fa3cd  ","date":"2014-03-07T00:00:00.000Z","meta":{"count":8875,"date":"2014-03-07","version":20.1,"rating":1.8366}},{"data":7559,"fill":"#2960ac  ","date":"2014-02-13T00:00:00.000Z","meta":{"count":7559,"date":"2014-02-13","version":20.5,"rating":1.4732}},{"data":926,"fill":"#9ccee0  ","date":"2014-12-12T00:00:00.000Z","meta":{"count":926,"date":"2014-12-12","version":20.2,"rating":2.7276}}];
+
+  // Sample point with 1 data point
+  var samplePoints = [{"data":8516,"fill":"#2960ac","date":"2014-10-08T00:00:00.000Z","meta":{"count":8516,"date":"2014-10-08","version":20.4,"rating":1.446}}];
+
+  for (var i in samplePoints) {
+      samplePoints[i].date = new Date (samplePoints[i].date);
+      samplePoints[i].fill = samplePoints[i].fill.trim();
+  }
+
+  nodes += "</div><div class='graph'>" + bubblePointComplex().attr({
+    // Width & height controls the svg view box
+    width: 300,
+    height: 100,
+
+    /* Optional parameters */
+    /* Options for the straight line */
+    axis: {
+      strokeColor: '#000',                // sets stroke color,
+      strokeWidth: 2
+    },
+    maxRadius: 10,                      // Overrides default & sets a cap for a max radius for the bubble
+    strokeColor: '#000',                // Set default stroke color
+    strokeWidth: 2,                     // Set default stroke width
+    fill: '#333',                       // Sets default fill color
+    // startDate: 1418885572796,
+    // endDate: 1439253572796,
+    // points: [
+    // {
+    //   date: new Date(2015,2,1),
+    //   data: 300,
+    //   fill : '#000'
+    //   // meta: Object
+    // },
+    // {
+    //   date: new Date(2015, 4, 30),
+    //   data: 150,
+    //   fill : '#000'
+    //   // meta: Object
+    // },
+    // {
+    //   date: new Date(2015, 9, 30),
+    //   data: 200,
+    //   fill : '#000'
+    //   // meta: Object
+    // }],
+    points: samplePoints,
+
+    /* Padding options for the chart */
+    paddingLeft: 0,
+    paddingRight: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
+  }) + "</div>";
+
 
   var sparkInstance = spark('.graph');
   
@@ -106,7 +184,7 @@ while (amount--) {
       height: 100
     },
     title: 'just a test',
-    data: set
+    points: set
   });
 
   nodes += sparkInstance.attr({
@@ -340,7 +418,6 @@ nodes = '<div class=".graph">' + sparkInstance.attr({
 }) + '</div>' + nodes;
 
 
-
 // *** preRender Test *** //
 nodes = bubble({
   mixin: Label,
@@ -419,7 +496,7 @@ nodes = nodes.replace(/([0-9]+\.[0-9]+)/g, function (match, p1) {
 
 var str = '<html><head>'+
 "<link href='http://fonts.googleapis.com/css?family=Open+Sans:300,600' rel='stylesheet' type='text/css'>"+
-'</head><body>' + nodes + '</body><style>.graph {display:inline-block;</style></html>';
+'</head><body>' + nodes + '</body><style>.graph {display:inline-block;}</style></html>';
 
 
 var proxy = http.createServer(function (req, res) {
