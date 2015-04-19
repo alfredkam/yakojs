@@ -12,7 +12,7 @@ describe('lib/spark', function () {
         spark = '';
     });
 
-    it('_describePath should return a path string', function () {
+    it('_describePath should return a path string & without NaN', function () {
         var path = spark._describePath(
             {
                 data: [ 0, 1, 2, 3, 4],
@@ -24,7 +24,8 @@ describe('lib/spark', function () {
                 width: 100,
                 line: true,
                 heightRatio: 290 / 4,
-                tickSize: spark._sigFigs((100 / 4),8)
+                tickSize: spark._sigFigs((100 / 4),8),
+                innerPadding: 0
             }
         );
         
