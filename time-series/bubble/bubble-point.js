@@ -55,6 +55,7 @@ var bubble = module.exports = Base.extend({
         scale.startTick = startTick = (scale.startDate || data[0].date).getTime();
         scale.endTick = endTick = (scale.endDate || data[len - 1].date).getTime();
         var tickLen = endTick - startTick;  // Need to handle zero
+        tickLen = (tickLen == 0 ? 1000 : tickLen);
         var firstTick = data[0].date.getTime();
         var lastTick = data[len - 1].date.getTime();
         var firstTickLeftRadius = firstTick - startTick - (scale.maxRadius * data[0].data / scale.max);

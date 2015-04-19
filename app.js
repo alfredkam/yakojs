@@ -120,7 +120,10 @@ while (amount--) {
     points: dataSet7
   });
 
-  var samplePoints = [{"data":8516,"fill":"#2960ac","date":"2014-10-08T00:00:00.000Z","meta":{"count":8516,"date":"2014-10-08","version":20.4,"rating":1.446}},{"data":5380,"fill":"#2960ac","date":"2014-07-17T00:00:00.000Z","meta":{"count":5380,"date":"2014-07-17","version":20.5,"rating":1.4635}},{"data":8251,"fill":"#da294a  ","date":"2014-11-24T00:00:00.000Z","meta":{"count":8251,"date":"2014-11-24","version":20.4,"rating":4.9304}},{"data":3456,"fill":"#9ccee0  ","date":"2014-06-06T00:00:00.000Z","meta":{"count":3456,"date":"2014-06-06","version":20.3,"rating":2.9126}},{"data":1208,"fill":"#6fa3cd  ","date":"2014-06-24T00:00:00.000Z","meta":{"count":1208,"date":"2014-06-24","version":20.3,"rating":1.7544}},{"data":8875,"fill":"#6fa3cd  ","date":"2014-03-07T00:00:00.000Z","meta":{"count":8875,"date":"2014-03-07","version":20.1,"rating":1.8366}},{"data":7559,"fill":"#2960ac  ","date":"2014-02-13T00:00:00.000Z","meta":{"count":7559,"date":"2014-02-13","version":20.5,"rating":1.4732}},{"data":926,"fill":"#9ccee0  ","date":"2014-12-12T00:00:00.000Z","meta":{"count":926,"date":"2014-12-12","version":20.2,"rating":2.7276}}];
+  // var samplePoints = [{"data":8516,"fill":"#2960ac","date":"2014-10-08T00:00:00.000Z","meta":{"count":8516,"date":"2014-10-08","version":20.4,"rating":1.446}},{"data":5380,"fill":"#2960ac","date":"2014-07-17T00:00:00.000Z","meta":{"count":5380,"date":"2014-07-17","version":20.5,"rating":1.4635}},{"data":8251,"fill":"#da294a  ","date":"2014-11-24T00:00:00.000Z","meta":{"count":8251,"date":"2014-11-24","version":20.4,"rating":4.9304}},{"data":3456,"fill":"#9ccee0  ","date":"2014-06-06T00:00:00.000Z","meta":{"count":3456,"date":"2014-06-06","version":20.3,"rating":2.9126}},{"data":1208,"fill":"#6fa3cd  ","date":"2014-06-24T00:00:00.000Z","meta":{"count":1208,"date":"2014-06-24","version":20.3,"rating":1.7544}},{"data":8875,"fill":"#6fa3cd  ","date":"2014-03-07T00:00:00.000Z","meta":{"count":8875,"date":"2014-03-07","version":20.1,"rating":1.8366}},{"data":7559,"fill":"#2960ac  ","date":"2014-02-13T00:00:00.000Z","meta":{"count":7559,"date":"2014-02-13","version":20.5,"rating":1.4732}},{"data":926,"fill":"#9ccee0  ","date":"2014-12-12T00:00:00.000Z","meta":{"count":926,"date":"2014-12-12","version":20.2,"rating":2.7276}}];
+
+  // Sample point with 1 data point
+  var samplePoints = [{"data":8516,"fill":"#2960ac","date":"2014-10-08T00:00:00.000Z","meta":{"count":8516,"date":"2014-10-08","version":20.4,"rating":1.446}}];
 
   for (var i in samplePoints) {
       samplePoints[i].date = new Date (samplePoints[i].date);
@@ -413,7 +416,6 @@ nodes = '<div class=".graph">' + sparkInstance.attr({
       // label: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
   }
 }) + '</div>' + nodes;
-
 
 
 // *** preRender Test *** //
