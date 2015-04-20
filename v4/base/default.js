@@ -29,15 +29,17 @@ var base = module.exports = Common.extend({
           type: 'chart',
           width: '100',
           height: '100',
+          // For controling the chart's external and internal spacing
+          paddingTop: 0,
           paddingLeft: 0,
           paddingRight: 0,
-          paddingTop: 0,
           paddingBottom: 0,
-          // spark graph configs
-          line: true,
-          fill: true,
-          scattered: false
+          innerPaddingTop: 0,
+          innerPaddingLeft: 0,
+          innerPaddingRight: 0,
+          innerPaddingBottom: 0
         };
+        
         self._extend(defaults, self.attributes.opts.chart);
         self.attributes.opts.chart = defaults;
         return self;

@@ -1,26 +1,32 @@
 var Base = require('../base/default');
-
 module.exports = Base.extend({
     _startCycle: function () {
-        var data = this.attributes.data;
+        var points  = this.attributes.data;
         var self = this;
         var chart = this.attributes.opts.chart;
         var append = self.append;
-        var svg;
-        chart.type = 'bar';
-
-        paths = self._lifeCycleManager(data, chart, function (newScale) {
-            // Chart will now only specifiy the space it needs
-            svg = self.make('svg',{
-                width: chart.width,
-                height: chart.height,
-                viewBox: '0 0 ' + chart.width + ' ' + chart.height,
-            });
-            return self._describeProps(data, newScale);
+        var svg = self.make('svg',{
+            width: chart.width,
+            height: chart.height,
+            viewBox: '0 0 ' + chart.width + ' ' + chart.height,
         });
-        return append(self.element,append(svg, paths));
+
+        var path = self._lifeCycleManager(data, chart, function (preliminraryScale) {
+            var paths = [];
+            for (var chartType in points) {
+                paths.push(self._dispatchProps(preliminraryScale, chartType, points[chartType], chart));
+            }
+            return paths;
+        });
+
+        return append(self.element,append(svg, path));
     },
     _describeProps: function (data, newScale) {
-        
+        // Preliminary Scale should be really tiny.
+        var scaleCopy = JSON.parse(JSON.stringify(preliminraryScale));
+        var scale = self._defineBaseScaleProperties(scaleCopy, data, chart);
+    },
+    _dispatchProps: function (preliminraryScale, chartType, data, chartProps) {
+        var self = this;
     }
 });
