@@ -218,8 +218,8 @@ module.exports = Class.extend({
               },
               eY: eY,
               eX: eX,
-              cX: scale.width - (point[0] * scale.widthRatio) - scale.paddingLeft,
-              cY: scale.height - (point[1] * scale.heightRatio) - scale.paddingTop,
+              cX: scale.hasInverse.x ? (point[0] * scale.widthRatio) + scale.paddingLeft : scale.width - (point[0] * scale.widthRatio) - scale.paddingLeft,
+              cY: scale.hasInverse.y ? scale.paddingTop + (point[1] * heightRatio) : scale.height - (point[1] * scale.heightRatio) - scale.paddingTop,
               r: scale.maxRadius * (point[2]/scale.max[2])
             }
           };

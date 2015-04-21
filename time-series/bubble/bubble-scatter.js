@@ -76,6 +76,7 @@ module.exports = Base.extend({
                 }
             }
         }
+        scale.hasInverse = inverse;
 
         for (var i = 0; i < len; i++) {
             var props = data[i];
