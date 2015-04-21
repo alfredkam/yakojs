@@ -405,8 +405,8 @@
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(15);
-	var Errors = __webpack_require__(16);
+	var Base = __webpack_require__(14);
+	var Errors = __webpack_require__(15);
 	var spark = module.exports = Base.extend({
 	  /**
 	   * The parent generator that manages the svg generation
@@ -587,7 +587,7 @@
 /* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arcBase = __webpack_require__(14);
+	var arcBase = __webpack_require__(16);
 	var pie = module.exports = arcBase.extend({
 	    /**
 	     * [_describePath genereates the paths for each pie segment]
@@ -623,7 +623,7 @@
 /* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arcBase = __webpack_require__(14);
+	var arcBase = __webpack_require__(16);
 	var pie = module.exports = arcBase.extend({
 	    /**
 	     * [_describePath genereates the paths for each pie segment]
@@ -691,7 +691,7 @@
 /* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(15);
+	var Base = __webpack_require__(14);
 	var bar = module.exports = Base.extend({
 	    _startCycle: function () {
 	        var data = this.attributes.data;
@@ -766,7 +766,7 @@
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(15);
+	var Base = __webpack_require__(14);
 	var bubble = module.exports = Base.extend({
 	    // Start of a life cyle
 	    _startCycle: function () {
@@ -944,58 +944,6 @@
 /* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(15);
-	var arc = __webpack_require__(18);
-	module.exports = Base.extend({
-	    // Parent generator that manages the svg
-	    _startCycle: function (){
-	        var self = this;
-	        var chart = self.attributes.opts.chart;
-	        var data = self.attributes.data;
-	        var svg;
-
-	        var append = this.append;
-	        paths = self._lifeCycleManager(data, chart, function (scale) {
-	            svg = self.make('svg',{
-	                width: chart.width,
-	                height: chart.height,
-	                viewBox: '0 0 ' + chart.width + ' ' + chart.height,
-	            });
-	            return self._describePath(scale.outerRadius, scale.relativeDataSet, scale);
-	        });
-
-	        return append(self.element,
-	                    append(svg, paths));
-	    },
-	    // Extends _defineBaseScaleProperties in lib/base/common.js
-	    _defineBaseScaleProperties: function (data, chart) {
-	        var self = this;
-	        var scale = {
-	            // Converts nums to relative => total sum equals 1
-	            relativeDataSet: self._dataSetRelativeToTotal(data),
-	            // Find the max width & height
-	            outerRadius: chart.outerRadius || (chart.height < chart.width ? chart.height : chart.width) / 2
-	        };
-
-	        self._extend(scale, chart);
-	        return scale;
-	    },
-	    _polarToCartesian: arc.polarToCartesian,
-	    _describeArc: arc.describeArc,
-	    _describePie: arc.describePie,
-	    /**
-	     * [_describePath super class]
-	     * @return {[type]} [empty string]
-	     */
-	    _describePath: function () {
-	        return '';
-	    }
-	});
-
-/***/ },
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
 	var Common = __webpack_require__(20);
 	var base = module.exports = Common.extend({
 	    init: function (node) {
@@ -1063,7 +1011,7 @@
 	});
 
 /***/ },
-/* 16 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* istanbul ignore next */
@@ -1076,6 +1024,58 @@
 	    warn("You're attempting to use labels without the `Label` addons.  Check documentation https://github.com/alfredkam/yakojs/blob/master/doc.md");
 	  }
 	};
+
+/***/ },
+/* 16 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Base = __webpack_require__(14);
+	var arc = __webpack_require__(18);
+	module.exports = Base.extend({
+	    // Parent generator that manages the svg
+	    _startCycle: function (){
+	        var self = this;
+	        var chart = self.attributes.opts.chart;
+	        var data = self.attributes.data;
+	        var svg;
+
+	        var append = this.append;
+	        paths = self._lifeCycleManager(data, chart, function (scale) {
+	            svg = self.make('svg',{
+	                width: chart.width,
+	                height: chart.height,
+	                viewBox: '0 0 ' + chart.width + ' ' + chart.height,
+	            });
+	            return self._describePath(scale.outerRadius, scale.relativeDataSet, scale);
+	        });
+
+	        return append(self.element,
+	                    append(svg, paths));
+	    },
+	    // Extends _defineBaseScaleProperties in lib/base/common.js
+	    _defineBaseScaleProperties: function (data, chart) {
+	        var self = this;
+	        var scale = {
+	            // Converts nums to relative => total sum equals 1
+	            relativeDataSet: self._dataSetRelativeToTotal(data),
+	            // Find the max width & height
+	            outerRadius: chart.outerRadius || (chart.height < chart.width ? chart.height : chart.width) / 2
+	        };
+
+	        self._extend(scale, chart);
+	        return scale;
+	    },
+	    _polarToCartesian: arc.polarToCartesian,
+	    _describeArc: arc.describeArc,
+	    _describePie: arc.describePie,
+	    /**
+	     * [_describePath super class]
+	     * @return {[type]} [empty string]
+	     */
+	    _describePath: function () {
+	        return '';
+	    }
+	});
 
 /***/ },
 /* 17 */
@@ -1172,7 +1172,7 @@
 
 	__webpack_require__(21);
 	var Class = __webpack_require__(22);
-	var Errors = __webpack_require__(16);
+	var Errors = __webpack_require__(15);
 
 	var isArray = function (obj) {
 	    return obj instanceof Array;
