@@ -111,7 +111,7 @@ while (amount--) {
     /* Options for the circle */
     maxRadius: 10,            // Overrides default & sets a cap for a max radius for the bubble
     fill: '#000',             // Sets the default fill color
-
+    inverse: [],
     /* Padding options for the chart */
     paddingLeft: 0,
     paddingRight: 0,

@@ -63,6 +63,20 @@ module.exports = Base.extend({
         var paths = [];
         var refs;
 
+        // Acceptable inverse flags to inverse the data set
+        var inverseList = {
+            'x': 'x',
+            'y': 'y'
+        };
+        var inverse = {};
+        if (scale.inverse) {
+            for (var x in scale.inverse) {
+                if (inverseList[scale.inverse[x]]) {
+                    inverse[inverseList[scale.inverse[x]]] = true;
+                }
+            }
+        }
+
         for (var i = 0; i < len; i++) {
             var props = data[i];
             var point = props.data;
@@ -73,8 +87,8 @@ module.exports = Base.extend({
                 };
             }
             paths.push(self.make('circle', {
-                cx: width - (point[0] * widthRatio) - scale.paddingLeft,
-                cy: height - (point[1] * heightRatio) - scale.paddingTop,
+                cx: (inverse.x ? (point[0] * widthRatio) + scale.paddingLeft : width - (point[0] * widthRatio) - scale.paddingLeft),
+                cy: (inverse.y ? scale.paddingTop + (point[1] * heightRatio) : height - (point[1] * heightRatio) - scale.paddingTop),
                 r: scale.maxRadius * (point[2]/max[2]),
                 fill: props.fill || (defaultFill || self._randomColor())
             }, refs));
