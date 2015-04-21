@@ -1,12 +1,12 @@
 ##Content
- - [General Usage](#Usage)
+- [General Usage](#Usage)
   - [Spark Graph Attributes](#spark-graph-attributes)
   - [Pie Chart Attributes](#pie-chart-attributes)
   - [Donut Chart Attributes](#donut-chart-attributes)
   - [Bubble Point Graph Attributes (for a horizontal line time series representation)](#bubble-point-graph-attributes-for-a-horizontal-line-time-series-representation)
   - [Bubble Graph Attributes ( for representing a cohort)](#bubble-graph-attributes--for-representing-a-cohort)
   - [Bar Graph Attributes](#bar-graph-attributes)
-
+- [Time Series] (#time-series--consumable-objects) 
 - [API & Mixin](#api--mixin)
 - [SVG API](#svg-api)
 - [Addons](#addons)
@@ -259,7 +259,74 @@ bar('.graph').attr({
 });
 ```
 
+##Time Series & Consumable Objects
+Yako provides a set of api for time series and consumable objects.  It can be access through ```var yako = require('yako').timeSeries```.
 
+###Line
+Yako's line chart consumes object as data and auto fills.
+
+###Bubble Line (Bubble Point)
+A time series graph and uses bubble to represent a sample size happening a cross a series.
+```javascript
+var bubblePoint = requrie('yako').timeSeries.bubble.point
+
+bubblePoint().attr({
+  // Width & height controls the svg view box
+  width: 1200,
+  height: 100,
+  points: self.props.set,
+  /* Optional parameters */
+  /* Options for the straight line */
+  axis: {
+    strokeColor: '#000',              // sets stroke color,
+    strokeWidth: 2
+  },
+  maxRadius: 10,                      // Caps the maxRadius
+  strokeColor: '#000',                // Set default stroke color
+  strokeWidth: 2,                     // Set default stroke width
+  fill: '#333',                       // Sets default fill color
+  startDate: new Date(2015,2,13),     // Sets the default start date
+  endDate: new Date(2015,2,15),       // Sets the default end date
+  /* Data Set */
+  points: [{
+    data: 123,
+    date: new Date(2015,2,14)
+    fill: '#000',
+    /* Optional Params */
+    strokeWidth: 2,
+    strokeColor: '#000'
+    metaData: {}
+  },{
+    ...
+  }]
+});
+
+```
+###Bubble Scatter
+A bubble graph and consumes an object, when including the ```Events``` mixin, it will pass back the object and the meta data.
+```javascript
+var bubblePoint = requrie('yako').timeSeries.bubble.point
+
+bubbleScatter().attr({
+  width: 1200,
+  height: 100,
+  /* Optional parameters */
+  /* Options for the circle */
+  maxRadius: 10,                        // Caps the maxRadius
+  fill: '#000',                         // Sets the default fill color
+  /* Data Set */
+  points: [{
+    data: [0,1,3],
+    fill: '#000',
+    /* Optional Params */
+    strokeWidth: 2,
+    strokeColor: '#000'
+    metaData: {}
+  },{
+    ...
+  }]
+});
+```
 ##API & Mixin
 Instances of the graph component are created internally, and each component could be re-used subsequently.  Once you've picked your entry point, you could access the component api. Within each component, you could access your component with ```javascript this```
 ```javascript

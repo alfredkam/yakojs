@@ -79,7 +79,11 @@ module.exports = Class.extend({
    * @param  {[obj]} chart [chart properties passed by the user]
    * @return {[obj]}       [return an obj that describes the scale base on the data & chart properties]
    */
-  _defineBaseScaleProperties: function (data, chart) {
+  _defineBaseScaleProperties: function (scale, data, chart) {
+    if (arguments.length == 2) {
+      chart = data;
+      data = scale;
+    }
     var self = this;
     var opts = this.attributes.opts;
     var chart = opts.chart;
@@ -251,7 +255,7 @@ module.exports = Class.extend({
 
 
       // change up the structure if the data set is an object
-      if (data[0].data || (data[0].data == 0)) {
+      if (data[0].data) {
         temp = [];
         for (var x = 0; x < data.length; x++) {
           temp.push(data[x].data);
