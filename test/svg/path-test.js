@@ -25,7 +25,9 @@ describe('lib/svg/path', function () {
                         color: [],
                         rows: 1,
                         ySecs: 0,
-                        innerPadding: 0
+                        innerPadding: 0,
+                        innerPaddingTop: 0,
+                        innerPaddingBottom: 0
                     };
         expect(scale).to.deep.equal(result);
     });

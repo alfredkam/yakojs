@@ -25,7 +25,9 @@ describe('lib/spark', function () {
                 line: true,
                 heightRatio: 290 / 4,
                 tickSize: spark._sigFigs((100 / 4),8),
-                innerPadding: 0
+                innerPadding: 0,
+                innerPaddingTop: 0,
+                innerPaddingBottom: 0
             }
         );
         
