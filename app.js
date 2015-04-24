@@ -19,7 +19,7 @@ var Label = require('./addons/Label');
 
 // TODO:: fix edge case of 1 data Point
 var dataPoints = 30;
-var nOfGraphs = 12;
+var nOfGraphs = 14;
 var kind = 11;
 var oddKinds = 4;
 var amount = nOfGraphs;
@@ -220,32 +220,6 @@ while (amount--) {
     data: set
   });
 
-  // nodes += pie('.graph').attr({
-  //   chart: {
-  //     width: 300,
-  //     height: 100,
-  //     // additional options
-  //     // strokes: [],
-  //     // fills: []
-  //   },
-  //   title: 'just a test',
-  //   data: dataSet4
-  // });
-
-  // nodes += donut('.graph').attr({
-  //   chart: {
-  //     width: 300,
-  //     height: 100,
-  //     innerRadius: 40,
-  //     outerRadius: 50
-  //     // addtional options
-  //     // strokes: [],
-  //     // fills: []
-  //   },
-  //   title: 'just a test',
-  //   data: dataSet4
-  // });
-
   nodes += pie('.graph').attr({
     chart: {
       width: 300,
@@ -255,7 +229,7 @@ while (amount--) {
       // fills: []
     },
     title: 'just a test',
-    data: [1100, 0]
+    data: dataSet4
   });
 
   nodes += donut('.graph').attr({
@@ -269,7 +243,33 @@ while (amount--) {
       // fills: []
     },
     title: 'just a test',
-    data: [1100, 0]
+    data: dataSet4
+  });
+
+  nodes += pie('.graph').attr({
+    chart: {
+      width: 300,
+      height: 100,
+      // additional options
+      // strokes: [],
+      // fills: []
+    },
+    title: 'just a test',
+    data: [0, 1]
+  });
+
+  nodes += donut('.graph').attr({
+    chart: {
+      width: 300,
+      height: 100,
+      innerRadius: 40,
+      outerRadius: 50
+      // addtional options
+      // strokes: [],
+      // fills: []
+    },
+    title: 'just a test',
+    data: [0, 1]
   });
 
   nodes += bubble('.graph').attr({
