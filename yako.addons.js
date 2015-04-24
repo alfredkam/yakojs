@@ -405,8 +405,8 @@
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(15);
-	var Errors = __webpack_require__(16);
+	var Base = __webpack_require__(14);
+	var Errors = __webpack_require__(15);
 	var spark = module.exports = Base.extend({
 	  /**
 	   * The parent generator that manages the svg generation
@@ -460,24 +460,35 @@
 	    var self = this;
 	    var data = self.attributes.data;
 
-	    scale.innerPadding = 0;
 	    // Check if need inner padding
 	    if (scale.paddingLeft != 0 && scale.paddingRight != 0) {
 	      scale.innerPadding = 5;
 	    }
 
-	    for (var i = 0; i < scale.len; i++) {
-	      // Find adjustments for inner left / right padding
-	      var o = data[i];
-	      var padding = 0;
-	      if (typeof o == 'object' && o.scattered && scale.scattered) {
-	        var p = o.scattered;
-	        padding = (p.strokeWidth ? p.strokeWidth : 2) + (p.radius ? p.radius : 2);
-	        scale.innerPadding = scale.innerPadding < padding + 5 ? padding + 5 : scale.innerPadding;
+	    if (!scale.xAxis && !scale.yAxis) { 
+	      for (var i = 0; i < scale.len; i++) {
+	        // Find adjustments for inner left / right padding
+	        var o = data[i];
+	        var padding = 0;
+
+	        if (typeof o == 'object') {
+	          var strokeWidth = o.strokeWidth || 2;
+	          scale.innerPaddingBottom = scale.innerPaddingTop < strokeWidth ? strokeWidth : scale.innerPaddingTop;
+	        }
+
+	        if (typeof o == 'object' && o.scattered && scale.scattered) {
+	          var p = o.scattered;
+	          padding = (p.strokeWidth ? p.strokeWidth : 2) + (p.radius ? p.radius : 2);
+	          scale.innerPadding = scale.innerPadding < padding + 5 ? padding + 5 : scale.innerPadding;
+	          scale.innerPaddingBottom = scale.innerPadding > scale.innerPaddingBottom ? scale.innerPadding : scale.innerPaddingBottom;
+	          scale.innerPaddingTop = scale.innerPaddingBottom
+	        }
 	      }
 	    }
 
-	    scale.pHeight = scale.height - scale.paddingTop - scale.paddingBottom;
+	    //scale.innerPaddingBottom = 60;
+
+	    scale.pHeight = scale.height - scale.paddingTop - scale.paddingBottom - scale.innerPaddingTop - scale.innerPaddingBottom;
 	    scale.pWidth = scale.width - scale.paddingLeft - scale.paddingRight - scale.innerPadding;
 	    scale.heightRatio = scale.pHeight / scale.max;
 	    scale.tickSize = self._sigFigs((scale.pWidth / (scale.len - 1)),8);
@@ -493,9 +504,9 @@
 	    for (var i = 0; i < numArr.length; i++) {
 	        if (i === 0) {
 	          // X Y
-	            pathToken += 'M ' + (paddingLeft + scale.innerPadding) + ' '+ (height - (numArr[i] * heightRatio) - paddingTop);
+	            pathToken += 'M ' + (paddingLeft + scale.innerPadding) + ' '+ (height - (numArr[i] * heightRatio) - paddingTop - scale.innerPaddingTop);
 	        } else {
-	            pathToken += ' L '+ ((tickSize * i) + paddingLeft) + ' ' + (height - (numArr[i] * heightRatio) - paddingTop);
+	            pathToken += ' L '+ ((tickSize * i) + paddingLeft) + ' ' + (height - (numArr[i] * heightRatio) - paddingTop - scale.innerPaddingTop);
 	        }
 	    }
 	    // Eliminates the error calls when attributiting this to the svg path
@@ -512,7 +523,7 @@
 	            'V',(height - paddingTop),
 	            'H', paddingLeft,
 	            'L', paddingLeft + scale.innerPadding,
-	            (height - (numArr[0] * heightRatio) - paddingTop)
+	            (height - (numArr[0] * heightRatio) - paddingTop - scale.innerPaddingTop)
 	          ].join(" ");
 	  },
 	  // Describes scattered graph
@@ -532,7 +543,7 @@
 	    for (var i = 0; i < numArr.length; i++) {
 	      paths.push(self.make('circle', {
 	        cx: i == 0 ? (i + scale.innerPadding + paddingLeft) : ((tickSize * i) + paddingLeft),
-	        cy: (height - (numArr[i] * heightRatio) - paddingTop),
+	        cy: (height - (numArr[i] * heightRatio) - paddingTop - scale.innerPaddingTop),
 	        r: radius,
 	        stroke: strokeColor,
 	        'stroke-width': strokeWidth,
@@ -587,7 +598,7 @@
 /* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arcBase = __webpack_require__(14);
+	var arcBase = __webpack_require__(16);
 	var pie = module.exports = arcBase.extend({
 	    /**
 	     * [_describePath genereates the paths for each pie segment]
@@ -623,7 +634,7 @@
 /* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arcBase = __webpack_require__(14);
+	var arcBase = __webpack_require__(16);
 	var pie = module.exports = arcBase.extend({
 	    /**
 	     * [_describePath genereates the paths for each pie segment]
@@ -666,6 +677,11 @@
 	     * @return {String}             [return path attribute 'd' for donut shape]
 	     */
 	    _describeDonut: function (x, y, outerRadius, innerRadius, startAngle, endAngle) {
+	        // A temporary fix for working with a stroke that is 360
+	        if (startAngle == 0 && endAngle == 360) {
+	            startAngle = 1;
+	        };
+	        
 	        var outerArc = {
 	            start: this._polarToCartesian(x, y, outerRadius, endAngle),
 	            end : this._polarToCartesian(x, y, outerRadius, startAngle)
@@ -674,6 +690,7 @@
 	            start: this._polarToCartesian(x, y, innerRadius, endAngle),
 	            end : this._polarToCartesian(x, y, innerRadius, startAngle)
 	        };
+
 	        var arcSweep = endAngle - startAngle <= 180 ? "0": "1";
 
 	        return [
@@ -691,7 +708,7 @@
 /* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(15);
+	var Base = __webpack_require__(14);
 	var bar = module.exports = Base.extend({
 	    _startCycle: function () {
 	        var data = this.attributes.data;
@@ -766,7 +783,7 @@
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(15);
+	var Base = __webpack_require__(14);
 	var bubble = module.exports = Base.extend({
 	    // Start of a life cyle
 	    _startCycle: function () {
@@ -944,7 +961,96 @@
 /* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(15);
+	var Common = __webpack_require__(20);
+	var base = module.exports = Common.extend({
+	    init: function (node) {
+	      var self = this;
+	      // adding width 100% will allow us to have responsive graphs (in re-sizing)
+	      if (typeof node === 'string') {
+	        if (node[0] === '#') {
+	          self.element = self.make('div',{
+	            id: node.replace(/^#/,''),
+	            width: '100%'
+	          });
+	        } else {
+	          self.element = self.make('div',{
+	            "class": node.replace(/^\./,''),
+	            width: '100%'
+	          });
+	        }
+	      } else {
+	        self.element = '';
+	      }
+	      self.token = self._makeToken();
+	      self.attributes = {};
+	      return self;
+	    },
+	    // include missing values
+	    _prepare: function () {
+	        var self = this;
+	        var defaults = {
+	          type: 'chart',
+	          width: '100',
+	          height: '100',
+	          paddingLeft: 0,
+	          paddingRight: 0,
+	          paddingTop: 0,
+	          paddingBottom: 0,
+	          innerPadding: 0,
+	          innerPaddingTop: 0,
+	          innerPaddingBottom: 0,
+	          // spark graph configs
+	          line: true,
+	          fill: true,
+	          scattered: false
+	        };
+	        self._extend(defaults, self.attributes.opts.chart);
+	        self.attributes.opts.chart = defaults;
+	        return self;
+	    },
+	    // public function for user to set & define the graph attributes
+	    attr: function (opts) {
+	        var self = this;
+	        opts = opts || 0;
+	        // if a user does not include opts.chart
+	        if (typeof opts.chart === 'undefined') {
+	          opts = {
+	            chart: opts,
+	            data: opts.data || opts.points
+	          };
+	          delete opts.chart.data;
+	          delete opts.chart.points;
+	        }
+
+	        self.attributes.data = (opts.data || opts.points) || [];
+	        self.attributes.opts = opts;
+
+	        return self.postRender(self._prepare()
+	            ._startCycle());
+	    }
+	});
+
+
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* istanbul ignore next */
+	var warn = function (msg) {
+	  console.warn(msg);
+	};
+	/* istanbul ignore next */
+	module.exports = {
+	  label: function () {
+	    warn("You're attempting to use labels without the `Label` addons.  Check documentation https://github.com/alfredkam/yakojs/blob/master/doc.md");
+	  }
+	};
+
+/***/ },
+/* 16 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Base = __webpack_require__(14);
 	var arc = __webpack_require__(18);
 	module.exports = Base.extend({
 	    // Parent generator that manages the svg
@@ -993,91 +1099,6 @@
 	});
 
 /***/ },
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Common = __webpack_require__(20);
-	var base = module.exports = Common.extend({
-	    init: function (node) {
-	      var self = this;
-	      // adding width 100% will allow us to have responsive graphs (in re-sizing)
-	      if (typeof node === 'string') {
-	        if (node[0] === '#') {
-	          self.element = self.make('div',{
-	            id: node.replace(/^#/,''),
-	            width: '100%'
-	          });
-	        } else {
-	          self.element = self.make('div',{
-	            "class": node.replace(/^\./,''),
-	            width: '100%'
-	          });
-	        }
-	      } else {
-	        self.element = '';
-	      }
-	      self.token = self._makeToken();
-	      self.attributes = {};
-	      return self;
-	    },
-	    // include missing values
-	    _prepare: function () {
-	        var self = this;
-	        var defaults = {
-	          type: 'chart',
-	          width: '100',
-	          height: '100',
-	          paddingLeft: 0,
-	          paddingRight: 0,
-	          paddingTop: 0,
-	          paddingBottom: 0,
-	          // spark graph configs
-	          line: true,
-	          fill: true,
-	          scattered: false
-	        };
-	        self._extend(defaults, self.attributes.opts.chart);
-	        self.attributes.opts.chart = defaults;
-	        return self;
-	    },
-	    // public function for user to set & define the graph attributes
-	    attr: function (opts) {
-	        var self = this;
-	        opts = opts || 0;
-	        // if a user does not include opts.chart
-	        if (typeof opts.chart === 'undefined') {
-	          opts = {
-	            chart: opts,
-	            data: opts.data || opts.points
-	          };
-	          delete opts.chart.data;
-	          delete opts.chart.points;
-	        }
-
-	        self.attributes.data = (opts.data || opts.points) || [];
-	        self.attributes.opts = opts;
-
-	        return self.postRender(self._prepare()
-	            ._startCycle());
-	    }
-	});
-
-/***/ },
-/* 16 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* istanbul ignore next */
-	var warn = function (msg) {
-	  console.warn(msg);
-	};
-	/* istanbul ignore next */
-	module.exports = {
-	  label: function () {
-	    warn("You're attempting to use labels without the `Label` addons.  Check documentation https://github.com/alfredkam/yakojs/blob/master/doc.md");
-	  }
-	};
-
-/***/ },
 /* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -1103,6 +1124,8 @@
 	        scale.height = attr.height;
 	        scale.width = attr.width;
 	        scale.innerPadding = attr.innerPadding || 0;
+	        scale.innerPaddingTop = attr.innerPaddingTop || 0;
+	        scale.innerPaddingBottom = attr.innerPaddingBottom || 0;
 	        return scale;
 	    },
 	    /**
@@ -1144,16 +1167,23 @@
 	    },
 	    // describes an arc
 	    describeArc: function (centerX, centerY, radius, startAngle, endAngle){
+	        if (startAngle == 0 && endAngle == 360) {
+	            // Alt solution http://stackoverflow.com/questions/5737975/circle-drawing-with-svgs-arc-path/10477334#10477334
+	            // return [
+	            //     "M", radius * 2, radius,
+	            //     "a", radius, radius, 0, 1, 0, radius*2, 0,
+	            //     "a", radius, radius, 0, 1, 0, -radius * 2, 0
+	            // ].join(" ");
+	            startAngle = 1;
+	        }
 	        var start = arc.polarToCartesian(centerX, centerY, radius, endAngle);
 	        var end = arc.polarToCartesian(centerX, centerY, radius, startAngle);
 	        var arcSweep = endAngle - startAngle <= 180 ? "0" : "1";
 
-	        var d = [
+	        return [
 	            "M", start.x, start.y,
 	            "A", radius, radius, 0, arcSweep, 0, end.x, end.y
 	        ].join(" ");
-
-	        return d;
 	    },
 	    describePie: function (centerX, centerY, radius, startAngle, endAngle) {
 	        return arc.describeArc(centerX, centerY, radius, startAngle, endAngle) + ' L' + centerX + ' ' + centerY;
@@ -1172,7 +1202,7 @@
 
 	__webpack_require__(21);
 	var Class = __webpack_require__(22);
-	var Errors = __webpack_require__(16);
+	var Errors = __webpack_require__(15);
 
 	var isArray = function (obj) {
 	    return obj instanceof Array;

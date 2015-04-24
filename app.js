@@ -19,7 +19,7 @@ var Label = require('./addons/Label');
 
 // TODO:: fix edge case of 1 data Point
 var dataPoints = 30;
-var nOfGraphs = 12;
+var nOfGraphs = 14;
 var kind = 11;
 var oddKinds = 4;
 var amount = nOfGraphs;
@@ -111,7 +111,7 @@ while (amount--) {
     /* Options for the circle */
     maxRadius: 10,            // Overrides default & sets a cap for a max radius for the bubble
     fill: '#000',             // Sets the default fill color
-
+    inverse: [],
     /* Padding options for the chart */
     paddingLeft: 0,
     paddingRight: 0,
@@ -244,6 +244,32 @@ while (amount--) {
     },
     title: 'just a test',
     data: dataSet4
+  });
+
+  nodes += pie('.graph').attr({
+    chart: {
+      width: 300,
+      height: 100,
+      // additional options
+      // strokes: [],
+      // fills: []
+    },
+    title: 'just a test',
+    data: [0, 1]
+  });
+
+  nodes += donut('.graph').attr({
+    chart: {
+      width: 300,
+      height: 100,
+      innerRadius: 40,
+      outerRadius: 50
+      // addtional options
+      // strokes: [],
+      // fills: []
+    },
+    title: 'just a test',
+    data: [0, 1]
   });
 
   nodes += bubble('.graph').attr({

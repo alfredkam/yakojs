@@ -103,12 +103,14 @@ module.exports = Class.extend({
   // TODO:: handle case when child event provides a stop pragation
   // Entry point for top level event binding that will distribute to rest of binding
   _associateTriggers: function (e, next) {
+    e = e || window.event;
     var self = this;
     var events = self._events;
     var props = self._props;
 
     var tagNames = [];
-    var ref = e.target.dataset._ref || 0;
+    var target = e.target || e.srcElement;
+    var ref = ((target.dataset || '')._ref || target.getAttribute('data-_ref')) || 0;
     tagNames.push(e.target.tagName.toLowerCase() == 'div' ? 'container' : e.target.tagName.toLowerCase());
     tagNames.push(e.currentTarget.tagName.toLowerCase() == 'div' ? 'container' : e.currentTarget.tagName.toLowerCase());
 
@@ -162,7 +164,8 @@ module.exports = Class.extend({
     bubble: function (e, props, eX, eY) {
       var scale = props.scale;
       var data = props.data;
-      var dataset = e.target.dataset;
+      var target = e.target;
+
       if (scale.type == 'bubble-point') {
         // var quadrantX = (eX - scale.paddingLeft + (scale.tickSize / 2)) / (scale.tickSize * scale.len);
         // quadrantX = Math.floor(quadrantX * scale.len);
@@ -174,7 +177,7 @@ module.exports = Class.extend({
         //   }
         // };
         
-        var column = dataset.c;
+        var column = ((target.dataset || '').c || target.getAttribute('data-c'));
         var point = data[column] || 0;
         var tickSize = scale.tickSize;
         var startTick = scale.startTick;  
@@ -195,8 +198,8 @@ module.exports = Class.extend({
         }
       } else {
         
-        var row = dataset.r;
-        var column = dataset.c;
+        var row = ((target.dataset || '').r || target.getAttribute('data-r'));
+        var column = ((target.dataset || '').c || target.getAttribute('data-c'));
         if (!row && !column) {
           return {
             _scale: scale
@@ -215,8 +218,8 @@ module.exports = Class.extend({
               },
               eY: eY,
               eX: eX,
-              cX: scale.width - (point[0] * scale.widthRatio) - scale.paddingLeft,
-              cY: scale.height - (point[1] * scale.heightRatio) - scale.paddingTop,
+              cX: scale.hasInverse.x ? (point[0] * scale.widthRatio) + scale.paddingLeft : scale.width - (point[0] * scale.widthRatio) - scale.paddingLeft,
+              cY: scale.hasInverse.y ? scale.paddingTop + (point[1] * scale.heightRatio) : scale.height - (point[1] * scale.heightRatio) - scale.paddingTop,
               r: scale.maxRadius * (point[2]/scale.max[2])
             }
           };
