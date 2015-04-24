@@ -220,6 +220,32 @@ while (amount--) {
     data: set
   });
 
+  // nodes += pie('.graph').attr({
+  //   chart: {
+  //     width: 300,
+  //     height: 100,
+  //     // additional options
+  //     // strokes: [],
+  //     // fills: []
+  //   },
+  //   title: 'just a test',
+  //   data: dataSet4
+  // });
+
+  // nodes += donut('.graph').attr({
+  //   chart: {
+  //     width: 300,
+  //     height: 100,
+  //     innerRadius: 40,
+  //     outerRadius: 50
+  //     // addtional options
+  //     // strokes: [],
+  //     // fills: []
+  //   },
+  //   title: 'just a test',
+  //   data: dataSet4
+  // });
+
   nodes += pie('.graph').attr({
     chart: {
       width: 300,
@@ -229,7 +255,7 @@ while (amount--) {
       // fills: []
     },
     title: 'just a test',
-    data: dataSet4
+    data: [1100, 0]
   });
 
   nodes += donut('.graph').attr({
@@ -243,7 +269,7 @@ while (amount--) {
       // fills: []
     },
     title: 'just a test',
-    data: dataSet4
+    data: [1100, 0]
   });
 
   nodes += bubble('.graph').attr({
