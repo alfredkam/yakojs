@@ -460,24 +460,35 @@
 	    var self = this;
 	    var data = self.attributes.data;
 
-	    scale.innerPadding = 0;
 	    // Check if need inner padding
 	    if (scale.paddingLeft != 0 && scale.paddingRight != 0) {
 	      scale.innerPadding = 5;
 	    }
 
-	    for (var i = 0; i < scale.len; i++) {
-	      // Find adjustments for inner left / right padding
-	      var o = data[i];
-	      var padding = 0;
-	      if (typeof o == 'object' && o.scattered && scale.scattered) {
-	        var p = o.scattered;
-	        padding = (p.strokeWidth ? p.strokeWidth : 2) + (p.radius ? p.radius : 2);
-	        scale.innerPadding = scale.innerPadding < padding + 5 ? padding + 5 : scale.innerPadding;
+	    if (!scale.xAxis && !scale.yAxis) { 
+	      for (var i = 0; i < scale.len; i++) {
+	        // Find adjustments for inner left / right padding
+	        var o = data[i];
+	        var padding = 0;
+
+	        if (typeof o == 'object') {
+	          var strokeWidth = o.strokeWidth || 2;
+	          scale.innerPaddingBottom = scale.innerPaddingTop < strokeWidth ? strokeWidth : scale.innerPaddingTop;
+	        }
+
+	        if (typeof o == 'object' && o.scattered && scale.scattered) {
+	          var p = o.scattered;
+	          padding = (p.strokeWidth ? p.strokeWidth : 2) + (p.radius ? p.radius : 2);
+	          scale.innerPadding = scale.innerPadding < padding + 5 ? padding + 5 : scale.innerPadding;
+	          scale.innerPaddingBottom = scale.innerPadding > scale.innerPaddingBottom ? scale.innerPadding : scale.innerPaddingBottom;
+	          scale.innerPaddingTop = scale.innerPaddingBottom
+	        }
 	      }
 	    }
 
-	    scale.pHeight = scale.height - scale.paddingTop - scale.paddingBottom;
+	    //scale.innerPaddingBottom = 60;
+
+	    scale.pHeight = scale.height - scale.paddingTop - scale.paddingBottom - scale.innerPaddingTop - scale.innerPaddingBottom;
 	    scale.pWidth = scale.width - scale.paddingLeft - scale.paddingRight - scale.innerPadding;
 	    scale.heightRatio = scale.pHeight / scale.max;
 	    scale.tickSize = self._sigFigs((scale.pWidth / (scale.len - 1)),8);
@@ -493,9 +504,9 @@
 	    for (var i = 0; i < numArr.length; i++) {
 	        if (i === 0) {
 	          // X Y
-	            pathToken += 'M ' + (paddingLeft + scale.innerPadding) + ' '+ (height - (numArr[i] * heightRatio) - paddingTop);
+	            pathToken += 'M ' + (paddingLeft + scale.innerPadding) + ' '+ (height - (numArr[i] * heightRatio) - paddingTop - scale.innerPaddingTop);
 	        } else {
-	            pathToken += ' L '+ ((tickSize * i) + paddingLeft) + ' ' + (height - (numArr[i] * heightRatio) - paddingTop);
+	            pathToken += ' L '+ ((tickSize * i) + paddingLeft) + ' ' + (height - (numArr[i] * heightRatio) - paddingTop - scale.innerPaddingTop);
 	        }
 	    }
 	    // Eliminates the error calls when attributiting this to the svg path
@@ -512,7 +523,7 @@
 	            'V',(height - paddingTop),
 	            'H', paddingLeft,
 	            'L', paddingLeft + scale.innerPadding,
-	            (height - (numArr[0] * heightRatio) - paddingTop)
+	            (height - (numArr[0] * heightRatio) - paddingTop - scale.innerPaddingTop)
 	          ].join(" ");
 	  },
 	  // Describes scattered graph
@@ -532,7 +543,7 @@
 	    for (var i = 0; i < numArr.length; i++) {
 	      paths.push(self.make('circle', {
 	        cx: i == 0 ? (i + scale.innerPadding + paddingLeft) : ((tickSize * i) + paddingLeft),
-	        cy: (height - (numArr[i] * heightRatio) - paddingTop),
+	        cy: (height - (numArr[i] * heightRatio) - paddingTop - scale.innerPaddingTop),
 	        r: radius,
 	        stroke: strokeColor,
 	        'stroke-width': strokeWidth,
@@ -666,6 +677,11 @@
 	     * @return {String}             [return path attribute 'd' for donut shape]
 	     */
 	    _describeDonut: function (x, y, outerRadius, innerRadius, startAngle, endAngle) {
+	        // A temporary fix for working with a stroke that is 360
+	        if (startAngle == 0 && endAngle == 360) {
+	            startAngle = 1;
+	        };
+	        
 	        var outerArc = {
 	            start: this._polarToCartesian(x, y, outerRadius, endAngle),
 	            end : this._polarToCartesian(x, y, outerRadius, startAngle)
@@ -674,6 +690,7 @@
 	            start: this._polarToCartesian(x, y, innerRadius, endAngle),
 	            end : this._polarToCartesian(x, y, innerRadius, startAngle)
 	        };
+
 	        var arcSweep = endAngle - startAngle <= 180 ? "0": "1";
 
 	        return [
@@ -979,6 +996,9 @@
 	          paddingRight: 0,
 	          paddingTop: 0,
 	          paddingBottom: 0,
+	          innerPadding: 0,
+	          innerPaddingTop: 0,
+	          innerPaddingBottom: 0,
 	          // spark graph configs
 	          line: true,
 	          fill: true,
@@ -1009,6 +1029,7 @@
 	            ._startCycle());
 	    }
 	});
+
 
 /***/ },
 /* 15 */
@@ -1103,6 +1124,8 @@
 	        scale.height = attr.height;
 	        scale.width = attr.width;
 	        scale.innerPadding = attr.innerPadding || 0;
+	        scale.innerPaddingTop = attr.innerPaddingTop || 0;
+	        scale.innerPaddingBottom = attr.innerPaddingBottom || 0;
 	        return scale;
 	    },
 	    /**
@@ -1144,16 +1167,23 @@
 	    },
 	    // describes an arc
 	    describeArc: function (centerX, centerY, radius, startAngle, endAngle){
+	        if (startAngle == 0 && endAngle == 360) {
+	            // Alt solution http://stackoverflow.com/questions/5737975/circle-drawing-with-svgs-arc-path/10477334#10477334
+	            // return [
+	            //     "M", radius * 2, radius,
+	            //     "a", radius, radius, 0, 1, 0, radius*2, 0,
+	            //     "a", radius, radius, 0, 1, 0, -radius * 2, 0
+	            // ].join(" ");
+	            startAngle = 1;
+	        }
 	        var start = arc.polarToCartesian(centerX, centerY, radius, endAngle);
 	        var end = arc.polarToCartesian(centerX, centerY, radius, startAngle);
 	        var arcSweep = endAngle - startAngle <= 180 ? "0" : "1";
 
-	        var d = [
+	        return [
 	            "M", start.x, start.y,
 	            "A", radius, radius, 0, arcSweep, 0, end.x, end.y
 	        ].join(" ");
-
-	        return d;
 	    },
 	    describePie: function (centerX, centerY, radius, startAngle, endAngle) {
 	        return arc.describeArc(centerX, centerY, radius, startAngle, endAngle) + ' L' + centerX + ' ' + centerY;
