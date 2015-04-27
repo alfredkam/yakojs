@@ -1,6 +1,6 @@
 var Base = require('../../lib/base/default');
 var circle = require('../../lib/svg/circle');
-var bubble = require('../../lib/graphs/bubble');
+var bubble = require('../../lib/describes/bubble');
 module.exports = Base.extend({
     // Start of a life cyle
     _startCycle: function () {

@@ -180,7 +180,10 @@ module.exports = Class.extend({
         var column = ((target.dataset || '').c || target.getAttribute('data-c'));
         var point = data[column] || 0;
         var tickSize = scale.tickSize;
-        var startTick = scale.startTick;  
+        var startTick = scale.startTick;
+        var minRadius = scale.minRadius || 0;
+        var radius = (scale.maxRadius - minRadius) * point.data / scale.max;
+        radius = radius ? radius + minRadius : 0;
         return {
           scale: scale,
           _segmentXRef: column,
@@ -193,7 +196,7 @@ module.exports = Class.extend({
             eX : eX,
             cY : scale.height / 2,
             cX : ((point.date.getTime() - startTick) * tickSize) + scale.paddingLeft,
-            r : scale.maxRadius * point.data / scale.max 
+            r : radius
           }
         }
       } else {
@@ -203,10 +206,13 @@ module.exports = Class.extend({
         if (!row && !column) {
           return {
             _scale: scale
-          }
+          };
         }
         if (scale.complex) {
           var point = data[column].data;
+          var minRadius = scale.minRadius || 0;
+          var radius = (scale.maxRadius - minRadius) * (point[2]/scale.max[2])
+          radius = radius ? radius + minRadius : 0;
           return {
             _scale: scale,
             exactPoint: {
@@ -220,7 +226,7 @@ module.exports = Class.extend({
               eX: eX,
               cX: scale.hasInverse.x ? (point[0] * scale.widthRatio) + scale.paddingLeft : scale.width - (point[0] * scale.widthRatio) - scale.paddingLeft,
               cY: scale.hasInverse.y ? scale.paddingTop + (point[1] * scale.heightRatio) : scale.height - (point[1] * scale.heightRatio) - scale.paddingTop,
-              r: scale.maxRadius * (point[2]/scale.max[2])
+              r: radius
             }
           };
         }
@@ -314,18 +320,22 @@ module.exports = Class.extend({
     bubble: function (props) {
       var scale = props._scale;
       var data = scale._data;
+      var minRadius = scale.minRadius || 0;
       if (scale.type == 'bubble-point') {
         var left = (scale.tickSize * props._segmentXRef) + scale.paddingLeft;
         var centerY = scale.height / 2;
         var maxRadius = scale.bubble ? scale.bubble.maxRadius : scale.maxRadius;
-        var top = centerY - (maxRadius * data[props._segmentXRef] / scale.max) - 30;
+        var radius = (maxRadius - minRadius) * data[props._segmentXRef] / scale.max;
+        radius = radius ? radius + minRadius : 0;
+        var top = centerY - radius - 30;
       } else {
         if (!props.exactPoint) {
           return {};
         }
         var point = props.exactPoint.data.meta;
         var left = scale.width - (point[0] * scale.widthRatio) - scale.paddingLeft;
-        var radius = scale.maxRadius * point[2]/ scale.max[2];
+        var radius = (scale.maxRadius - minRadius) * point[2]/ scale.max[2];
+        radius = radius ? radius + minRadius : 0;
         var top = scale.height - (point[1] * scale.heightRatio) - scale.paddingTop;
         top -= (radius + 20);
       }
