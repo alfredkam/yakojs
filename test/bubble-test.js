@@ -114,6 +114,7 @@ describe('/lib/bubble', function () {
             rows: 2,
             ySecs: 5,
             color: [ undefined, undefined ],
+            minRadius: 0,
             maxRadius: 10,
             yAxis: true,
             xAxis: { format: 'custom', labels: [ 'low', 'high' ] },
@@ -200,7 +201,12 @@ describe('/lib/bubble', function () {
             ySecs: 0,
             color: [],
             xAxis: { strokeColor: '#333' },
-            bubble: { maxRadius: 10, strokeColor: 'red', strokeWidth: '3' },
+            bubble: {
+                minRadius:0,
+                maxRadius: 10,
+                strokeColor: 'red',
+                strokeWidth: '3'
+            },
             scattered: false,
             fill: true,
             line: true,
