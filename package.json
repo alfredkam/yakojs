@@ -35,6 +35,8 @@
   "readmeFilename": "README.md",
   "devDependencies": {
     "autoprefixer-loader": "^1.2.0",
+    "babel-core": "^5.2.17",
+    "babel-loader": "^5.0.0",
     "chai": "^2.0.0",
     "coveralls": "^2.11.2",
     "es6-loader": "^0.2.0",
@@ -43,6 +45,8 @@
     "gulp": "^3.8.11",
     "gulp-load-plugins": "^0.10.0",
     "gulp-nodemon": "^2.0.3",
+    "gulp-plumber": "^1.0.0",
+    "gulp-webpack": "^1.4.0",
     "istanbul": "^0.3.5",
     "jsx-loader": "^0.12.2",
     "jymin": "^0.4.1",

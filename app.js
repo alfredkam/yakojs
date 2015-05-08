@@ -1,5 +1,3 @@
-var util = require('util');
-
 var yako = require('./index');
 var timeSeries = yako.timeSeries;
 var spark = yako.spark;
@@ -10,10 +8,9 @@ var bar = yako.bar;
 var bubbleScatterComplex = timeSeries.bubble.scatter;
 var bubblePointComplex = timeSeries.bubble.point;
 
-var http = require('http');
-var express = require('express');
-var app = express();
-var fs = require('fs');
+//var http = require('http');
+//var express = require('express');
+//var app = express();
 
 var Label = require('./addons/Label');
 
@@ -179,7 +176,7 @@ while (amount--) {
 
 
   var sparkInstance = spark('.graph');
-  
+
   nodes += sparkInstance.attr({
     chart : {
       width: 300,
@@ -315,7 +312,7 @@ while (amount--) {
     title: 'just a test',
     data: bubbleSet
   });
-  
+
   nodes += bar('.graph').attr({
     chart : {
       stack: true,
@@ -327,7 +324,7 @@ while (amount--) {
     title: 'just a test',
     data: set
   });
-  
+
   nodes += bar('.graph').attr({
     chart : {
       width: 300,
@@ -526,13 +523,16 @@ var str = '<html><head>'+
 "<link href='http://fonts.googleapis.com/css?family=Open+Sans:300,600' rel='stylesheet' type='text/css'>"+
 '</head><body>' + nodes + '</body><style>.graph {display:inline-block;}</style></html>';
 
+var body = document.getElementsByTagName('body')[0];
+body.innerHTML = nodes;
 
-var proxy = http.createServer(function (req, res) {
-  res.writeHead(200, {'Content-Type': 'text/plain'});
-});
 
-app.get('/', function (req, res) {
-  res.send(str);
-});
+//var proxy = http.createServer(function (req, res) {
+//  res.writeHead(200, {'Content-Type': 'text/plain'});
+//});
 
-app.listen(5000);
+//app.get('/', function (req, res) {
+//  res.send(str);
+//});
+
+//app.listen(5000);

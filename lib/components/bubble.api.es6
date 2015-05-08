@@ -1,16 +1,20 @@
+// TODO:: Consolidate code
 module.exports = {
+
     getConfigForScatterTimeSeries: function (chart) {
         chart.type = 'bubble-scattered';
         chart.complex = true;
         chart.parentType = 'bubble';
         return chart;
     },
+
     getConfigForLine: function (chart) {
         chart.type = 'bubble-point';
         chart.complex = true;
         chart.parentType = 'bubble';
         return chart;
     },
+
     // TODO::  Should refer to a function in path to build this
     // Describes the xAxis for bubble point graph
     describeXAxisForBubbleLine: function (height, width, chart) {
@@ -26,6 +30,7 @@ module.exports = {
             d: 'M' + chart.paddingLeft + ' ' + centerY + ' H' + width
         });
     },
+
     describeBubbleByObject: function(data, scale) {
         var height = scale.height;
         var width = scale.width;
@@ -76,6 +81,7 @@ module.exports = {
         }
         return paths;
     },
+
     describeBubbleByNumberArray: function(data, scale) {
         var height = scale.height;
         var width = scale.width;
@@ -111,6 +117,7 @@ module.exports = {
         }
         return paths;
     },
+
     describeLineByObject: function (data, height, width, scale) {
         if (!data) return '';
         var dataPoints = data.length;
@@ -145,6 +152,7 @@ module.exports = {
         }
         return paths;
     },
+
     describeLineByNumberArray: function (data, height, width, scale) {
         if (!data) return '';
         var config = scale.bubble;
@@ -177,6 +185,7 @@ module.exports = {
         }
         return paths;
     },
+
     getRatioByNumberArray: function (scale) {
         var data = scale._data;
         var height = scale.height;
@@ -212,6 +221,7 @@ module.exports = {
             scale.tickSize = (width - scale.paddingLeft - scale.paddingRight) / (tickLen);
         }
     },
+
     // Extends default ratio w/ auto scaling for Bubble Scatter
     getRatioByObject: function (scale) {
         var data = scale._data;
@@ -234,6 +244,7 @@ module.exports = {
         scale.widthRatio = (width - scale.paddingLeft - scale.paddingRight) / scale.max[0];
         scale.heightRatio = (height - scale.paddingTop - scale.paddingBottom) / scale.max[1];
     },
+
     // Extends default ratio w/ auto scaling for Bubble point
     getRatioByTimeSeries: function (scale) {
         var data = scale._data;
@@ -249,8 +260,6 @@ module.exports = {
         maxRadius = scale.maxRadius = parseInt(scale.maxRadius) || maxRadius;
         scale.minRadius = scale.minRadius || 0;
 
-        // Determine if its time series
-        scale.timeSeries = true;
         // Check if the start date is defined, if not defined using first element in array
         // TODO:: Handle edge case of single point
         scale.startTick = startTick = (scale.startDate || data[0].date).getTime();
@@ -263,6 +272,6 @@ module.exports = {
         var lastTickRightRadius = lastTick - endTick + (scale.maxRadius * data[len - 1].data / scale.max);
         scale.paddingLeft = firstTickLeftRadius < 0 ? Math.abs(firstTickLeftRadius) : 0;
         scale.paddingRight = lastTickRightRadius > 0 ? lastTickRightRadius : 0;
-        scale.tickSize = (width - scale.paddingLeft - scale.paddingRight) / (tickLen);   
+        scale.tickSize = (width - scale.paddingLeft - scale.paddingRight) / (tickLen);
     }
 };

@@ -1,15 +1,16 @@
 var gulp = require('gulp');
 var webpack = require('webpack');
-var plugins = require('glup-load-plugins');
+var plugins = require('gulp-load-plugins')();
+var _ = require('lodash');
 
 gulp.task('dev', function () {
   var webpackConfig = require('./webpack.config.js');
   var nodemon = plugins.nodemon;
 
-  var watchList = ['lib/', 'timeseries/', '/demo']
+  var watchList = ['lib/**/*.js','lib/**/*.es6','./app.js'];
 
   nodemon({
-    scripts: 'app.js',
+    scripts: 'index',
     watch: watchList,
     ext: 'js jsx html'
   })
@@ -20,7 +21,7 @@ gulp.task('dev', function () {
   var gWebpack = plugins.webpack;
   _.assign(webpackConfig, { watch: true });
 
-  return glulp.src(watchList)
+  return gulp.src(watchList)
     .pipe(plugins.plumber())
     .pipe(gWebpack(webpackConfig, webpack))
     .pipe(gulp.dest('dist'));
