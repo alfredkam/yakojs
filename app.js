@@ -1,7 +1,7 @@
 var util = require('util');
 
 var yako = require('./index');
-var timeSeries = require('./time-series');
+var timeSeries = yako.timeSeries;
 var spark = yako.spark;
 var pie = yako.pie;
 var donut = yako.donut;
