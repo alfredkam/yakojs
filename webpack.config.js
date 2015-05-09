@@ -6,7 +6,7 @@ module.exports = {
   context : __dirname,
 
   entry : {
-    yako : './lib'
+      yako : './index'
   },
 
   output : {

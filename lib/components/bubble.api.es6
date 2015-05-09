@@ -32,34 +32,15 @@ module.exports = {
     },
 
     describeBubbleByObject: function(data, scale) {
-        var height = scale.height;
-        var width = scale.width;
-        var heightRatio = scale.heightRatio;
-        var widthRatio = scale.widthRatio;
+        var { height, width, heightRatio, widthRatio, len, max } = scale;
         var self = this;
-        var len = scale.len;
-        var max = scale.max;
         var defaultFill = scale.fill || 0;
         var defaultStrokeColor = scale.strokeColor || 0;
         var defaultStrokeWidth = scale.strokeWidth || 0;
         var paths = [];
         var refs;
         var minRadius = scale.minRadius || 0;
-
-        // Acceptable inverse flags to inverse the data set
-        var inverseList = {
-            'x': 'x',
-            'y': 'y'
-        };
-        var inverse = {};
-        if (scale.inverse) {
-            for (var x in scale.inverse) {
-                if (inverseList[scale.inverse[x]]) {
-                    inverse[inverseList[scale.inverse[x]]] = true;
-                }
-            }
-        }
-        scale.hasInverse = inverse;
+        var inverse = scale.hasInverse;
 
         for (var i = 0; i < len; i++) {
             var props = data[i];
