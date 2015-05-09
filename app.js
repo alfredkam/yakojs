@@ -1,3 +1,9 @@
+require("babel-core/register")({
+  blacklist: ["strict"],
+  ignore: 'node_modules',
+  extensions: [".es6"]
+});
+
 var yako = require('./index');
 var timeSeries = yako.timeSeries;
 var spark = yako.spark;
@@ -8,9 +14,9 @@ var bar = yako.bar;
 var bubbleScatterComplex = timeSeries.bubble.scatter;
 var bubblePointComplex = timeSeries.bubble.point;
 
-//var http = require('http');
-//var express = require('express');
-//var app = express();
+var http = require('http');
+var express = require('express');
+var app = express();
 
 var Label = require('./addons/Label');
 
@@ -523,16 +529,16 @@ var str = '<html><head>'+
 "<link href='http://fonts.googleapis.com/css?family=Open+Sans:300,600' rel='stylesheet' type='text/css'>"+
 '</head><body>' + nodes + '</body><style>.graph {display:inline-block;}</style></html>';
 
-var body = document.getElementsByTagName('body')[0];
-body.innerHTML = nodes;
+//var body = document.getElementsByTagName('body')[0];
+//body.innerHTML = nodes;
 
 
-//var proxy = http.createServer(function (req, res) {
-//  res.writeHead(200, {'Content-Type': 'text/plain'});
-//});
+var proxy = http.createServer(function (req, res) {
+  res.writeHead(200, {'Content-Type': 'text/plain'});
+});
 
-//app.get('/', function (req, res) {
-//  res.send(str);
-//});
+app.get('/', function (req, res) {
+  res.send(str);
+});
 
-//app.listen(5000);
+app.listen(5000);

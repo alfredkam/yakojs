@@ -1,6 +1,6 @@
 // time series / object base
-var Base = require('../classes/default');
-var api = require('./bubble.api');
+import Base from '../classes/default';
+import api from './bubble.api.es6';
 
 module.exports = Base.extend({
 

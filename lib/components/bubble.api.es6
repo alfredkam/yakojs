@@ -120,16 +120,15 @@ module.exports = {
 
     describeLineByObject: function (data, height, width, scale) {
         if (!data) return '';
+        var { strokeColors, strokeWidths, fill, tickSize, startTick, minRadius, maxRadius } = scale;
         var dataPoints = data.length;
         var paths = [];
-        var defaultStrokeColor = scale.strokeColors || 0;
-        var defaultStrokeWidth = scale.strokeWidths || 0;
+        var defaultStrokeColor = strokeColors || 0;
+        var defaultStrokeWidth = strokeWidths || 0;
         var defaultFill = scale.fill || 0;
         var centerY = height / 2;
         var refs;
-        var tickSize = scale.tickSize;
-        var startTick = scale.startTick;
-        var minRadius = scale.minRadius || 0;
+        var minRadius = minRadius || 0;
 
         for (var i = 0; i < data.length; i++) {
             var point = data[i];
@@ -139,7 +138,7 @@ module.exports = {
                     c: i
                 };
             }
-            var r = (scale.maxRadius - minRadius) * point.data / scale.max;
+            var r = ( maxRadius - minRadius ) * point.data / scale.max;
             r = r ? r + minRadius : 0;
             paths.push(this.make('circle', {
                 cx: ((point.date.getTime() - startTick) * tickSize) + scale.paddingLeft,
@@ -159,11 +158,12 @@ module.exports = {
         var dataPoints = data.length;
         var paths = [];
         var fills = config.fills || 0;
-        var strokeColors = config.strokeColors || 0;
-        var strokeWidths = config.strokeWidths || 0;
+        var { strokeColor, strokeWidths, minRadius } = config;
+        var minRadius = minRadius || 0;
+        var strokeColors = strokeColors || 0;
+        var strokeWidths = strokeWidths || 0;
         var centerY = height / 2;
         var refs;
-        var minRadius = config.minRadius || 0;
 
         for (var i = 0; i < data.length; i++) {
             if (scale.hasEvents) {
@@ -187,15 +187,10 @@ module.exports = {
     },
 
     getRatioByNumberArray: function (scale) {
-        var data = scale._data;
-        var height = scale.height;
-        var width = scale.width;
-        var len = scale.len;
+        var { _data, height, width, len, paddingTop, paddingLeft, paddingRight, paddingBottom } = scale;
+        var data = _data;
         var maxRadius = (height < width ? height : width) / 3;
-        var paddingRight = scale.paddingRight;
-        var paddingLeft = scale.paddingLeft;
-        var paddingTop = scale.paddingTop;
-        var paddingBottom = scale.paddingBottom;
+
         if (scale.type && scale.type == 'bubble-scattered') {
             // Bubble as a scattered graph
             maxRadius = scale.maxRadius = parseInt(scale.maxRadius) || Math.sqrt(width * height / len) / 2;
@@ -224,18 +219,11 @@ module.exports = {
 
     // Extends default ratio w/ auto scaling for Bubble Scatter
     getRatioByObject: function (scale) {
-        var data = scale._data;
-        var height = scale.height;
-        var width = scale.width;
-        var len = scale.len;
-        var maxRadius = (height < width ? height : width) / 3;
-        var paddingRight = scale.paddingRight;
-        var paddingLeft = scale.paddingLeft;
-        var paddingTop = scale.paddingTop;
-        var paddingBottom = scale.paddingBottom;
+        var { _data, height, width, len, paddingLeft, paddingTop, paddingRight, paddingBottom, minRadius } = scale;
+        var data = _data;
         // bubble as a scattered graph
-        maxRadius = scale.maxRadius = parseInt(scale.maxRadius) || Math.sqrt(width * height / len) / 2;
-        scale.minRadius = scale.minRadius || 0;
+        var maxRadius = scale.maxRadius = parseInt(scale.maxRadius) || Math.sqrt(width * height / len) / 2;
+        scale.minRadius = minRadius || 0;
 
         scale.paddingLeft = paddingLeft < maxRadius ? maxRadius : paddingLeft;
         scale.paddingRight = paddingRight < maxRadius ? maxRadius : paddingRight;
@@ -247,29 +235,30 @@ module.exports = {
 
     // Extends default ratio w/ auto scaling for Bubble point
     getRatioByTimeSeries: function (scale) {
-        var data = scale._data;
-        var height = scale.height;
-        var width = scale.width;
-        var len = scale.len;
-        var maxRadius = (height < width ? height : width) / 3;
-        var paddingRight = scale.paddingRight;
-        var paddingLeft = scale.paddingLeft;
-        var paddingTop = scale.paddingTop;
-        var paddingBottom = scale.paddingBottom;
-        scale.axis = scale.axis || {};
-        maxRadius = scale.maxRadius = parseInt(scale.maxRadius) || maxRadius;
-        scale.minRadius = scale.minRadius || 0;
+        var { _data, height, width, len, paddingTop, paddingLeft, paddingRight, paddingBottom, axis } = scale;
+        var data = _data;
+        scale.axis = axis || {};
+        var maxRadius = scale.maxRadius = parseInt(scale.maxRadius) || maxRadius;
+        var minRadius = scale.minRadius = scale.minRadius || 0;
 
         // Check if the start date is defined, if not defined using first element in array
-        // TODO:: Handle edge case of single point
         scale.startTick = startTick = (scale.startDate || data[0].date).getTime();
         scale.endTick = endTick = (scale.endDate || data[len - 1].date).getTime();
-        var tickLen = endTick - startTick;  // Need to handle zero
+        var tickLen = endTick - startTick;
         tickLen = (tickLen == 0 ? 1000 : tickLen);
+
+        var potentialPxTickRatio = width / tickLen;
+
+        var firstElementRadius = ( maxRadius - minRadius ) * data[0].data / scale.max;
+        var lastElementRadius = ( maxRadius - minRadius ) * data[len - 1].data / scale.max;
+
+        firstElementRadius = firstElementRadius ? firstElementRadius + minRadius : 0;
+        lastElementRadius = lastElementRadius ? lastElementRadius + minRadius : 0;
+
         var firstTick = data[0].date.getTime();
         var lastTick = data[len - 1].date.getTime();
-        var firstTickLeftRadius = firstTick - startTick - (scale.maxRadius * data[0].data / scale.max);
-        var lastTickRightRadius = lastTick - endTick + (scale.maxRadius * data[len - 1].data / scale.max);
+        var firstTickLeftRadius = ((firstTick - startTick) * potentialPxTickRatio) - firstElementRadius;
+        var lastTickRightRadius = ((lastTick - endTick) * potentialPxTickRatio) + lastElementRadius;
         scale.paddingLeft = firstTickLeftRadius < 0 ? Math.abs(firstTickLeftRadius) : 0;
         scale.paddingRight = lastTickRightRadius > 0 ? lastTickRightRadius : 0;
         scale.tickSize = (width - scale.paddingLeft - scale.paddingRight) / (tickLen);

@@ -6,7 +6,7 @@ module.exports = {
   context : __dirname,
 
   entry : {
-    yako : './app'
+    yako : './lib'
   },
 
   output : {
@@ -24,7 +24,6 @@ module.exports = {
       {test: /\.jsx$/, loaders: ['react-hot', 'jsx-loader?harmony']},
       {
         test: /\.es6$/,
-        exclude: /node_modules/,
         loader: 'babel-loader?blacklist=strict'
       },
 
