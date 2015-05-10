@@ -31,8 +31,8 @@ module.exports = {
         });
     },
 
-    describeBubbleByObject: function(data, scale) {
-        var { height, width, heightRatio, widthRatio, len, max } = scale;
+    describeBubbleByObject (data, scale) {
+        var { height, width, heightRatio, widthRatio, len, max, innerPaddingLeft, paddingLeft, innerPaddingTop, paddingTop } = scale;
         var self = this;
         var defaultFill = scale.fill || 0;
         var defaultStrokeColor = scale.strokeColor || 0;
@@ -54,8 +54,8 @@ module.exports = {
             var r = (scale.maxRadius - minRadius) * (point[2]/max[2]);
             r = r ? r + minRadius : 0;
             paths.push(self.make('circle', {
-                cx: (inverse.x ? (point[0] * widthRatio) + scale.paddingLeft : width - (point[0] * widthRatio) - scale.paddingLeft),
-                cy: (inverse.y ? scale.paddingTop + (point[1] * heightRatio) : height - (point[1] * heightRatio) - scale.paddingTop),
+                cx: (inverse.x ? (point[0] * widthRatio) + innerPaddingLeft + paddingLeft : width - (point[0] * widthRatio) - innerPaddingLeft - paddingLeft),
+                cy: (inverse.y ? paddingTop + innerPaddingTop + (point[1] * heightRatio) : height - (point[1] * heightRatio) - innerPaddingTop - paddingTop),
                 r: r,
                 fill: props.fill || (defaultFill || self._randomColor())
             }, refs));
@@ -200,18 +200,18 @@ module.exports = {
 
     // Extends default ratio w/ auto scaling for Bubble Scatter
     getRatioByObject: function (scale) {
-        var { _data, height, width, len, paddingLeft, paddingTop, paddingRight, paddingBottom, minRadius } = scale;
+        var { _data, height, width, len, innerPaddingLeft, innerPaddingTop, innerPaddingRight, innerPaddingBottom, minRadius } = scale;
         var data = _data;
         // bubble as a scattered graph
         var maxRadius = scale.maxRadius = parseInt(scale.maxRadius) || Math.sqrt(width * height / len) / 2;
         scale.minRadius = minRadius || 0;
 
-        scale.paddingLeft = paddingLeft < maxRadius ? maxRadius : paddingLeft;
-        scale.paddingRight = paddingRight < maxRadius ? maxRadius : paddingRight;
-        scale.paddingTop = paddingTop < maxRadius ? maxRadius : paddingTop;
-        scale.paddingBottom = paddingBottom < maxRadius ? maxRadius : paddingBottom;
-        scale.widthRatio = (width - scale.paddingLeft - scale.paddingRight) / scale.max[0];
-        scale.heightRatio = (height - scale.paddingTop - scale.paddingBottom) / scale.max[1];
+        scale.innerPaddingLeft = innerPaddingLeft < maxRadius ? maxRadius : innerPaddingLeft;
+        scale.innerPaddingRight = innerPaddingRight < maxRadius ? maxRadius : innerPaddingRight;
+        scale.innerPaddingTop = innerPaddingTop < maxRadius ? maxRadius : innerPaddingTop;
+        scale.innerPaddingBottom = innerPaddingBottom < maxRadius ? maxRadius : innerPaddingBottom;
+        scale.widthRatio = (width - scale.innerPaddingLeft - scale.innerPaddingRight) / scale.max[0];
+        scale.heightRatio = (height - scale.innerPaddingTop - scale.innerPaddingBottom) / scale.max[1];
     },
 
     // Extends default ratio w/ auto scaling for Bubble point

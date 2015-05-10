@@ -192,6 +192,16 @@ while (amount--) {
     points: set
   });
 
+  nodes += spark('.graph').attr({
+    chart : {
+      width: 300,
+      height: 100,
+      inverse: ["y"]
+    },
+    title: 'just a test',
+    points: set,
+  });
+
   nodes += sparkInstance.attr({
     chart : {
       width: 300,
