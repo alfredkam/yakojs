@@ -10,7 +10,7 @@ var pie = require('./lib/components/pie');
 var donut = require('./lib/components/donut');
 var bar = require('./lib/components/bar');
 var bubble = require('./lib/components/bubble.es6');
-var svg = require('./lib/svg/svg');
+var svg = require('./lib/svg/svg.es6');
 var mixin = require('./lib/utils/mixin');
 // time series / object base
 var bubblePoint = require('./lib/components/bubble.point.es6');
