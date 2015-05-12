@@ -115,6 +115,15 @@ gulp.task('pack:example', function () {
     .pipe(gulp.dest('demo'));
 });
 
+gulp.task("build", function () {
+  var babel = plugins.babel;
+  return gulp.src(["src/**/*.js","src/**/*.es6"])
+  .pipe(babel({
+    blacklist: ["strict"]
+  }))
+  .pipe(gulp.dest("lib"));
+});
+
 
 gulp.task('pack', ['pack:lite', 'minify:lite', 'pack:addons', 'minify:addons', 'pack:demo', 'pack:example']);
 

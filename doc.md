@@ -314,7 +314,7 @@ bubbleScatter().attr({
   /* Optional parameters */
   maxRadius: 10,                        // Caps the maxRadius
   fill: '#000',                         // Sets the default fill color
-  inverse : ['x', 'y'],                 // If need to inverse the x or y cords
+  invert : ['x', 'y'],                 // If need to invert the x or y cords
   /* Data Set */
   points: [{
     data: [0,1,3],

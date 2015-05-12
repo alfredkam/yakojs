@@ -55,7 +55,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "894264e54834201665a1";
+/******/ 	var hotCurrentHash = "f6ce31212b82275afb4f";
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = [];
 /******/ 	
@@ -560,13 +560,13 @@
 	var pie = __webpack_require__(4);
 	var donut = __webpack_require__(5);
 	var bar = __webpack_require__(6);
-	var bubble = __webpack_require__(9);
-	var svg = __webpack_require__(12);
-	var mixin = __webpack_require__(8);
+	var bubble = __webpack_require__(7);
+	var svg = __webpack_require__(11);
+	var mixin = __webpack_require__(12);
 	// time series / object base
-	var bubblePoint = __webpack_require__(10);
-	var bubbleScatter = __webpack_require__(11);
-	var line = __webpack_require__(7);
+	var bubblePoint = __webpack_require__(8);
+	var bubbleScatter = __webpack_require__(9);
+	var line = __webpack_require__(10);
 
 	var initialize = function (component, obj) {
 	  if (typeof obj === 'object') {
@@ -627,7 +627,7 @@
 	   * The parent generator that manages the svg generation
 	   * @return {object} global function object
 	   */
-	  _startCycle: function () {
+	  _startCycle: function _startCycle() {
 	    var self = this;
 	    var data = self.attributes.data;
 	    var opts = self.attributes.opts;
@@ -651,22 +651,20 @@
 	    }
 
 	    return self._lifeCycleManager(data, chart, function (scale) {
-	        for (var x = 0; x < scale.rows; x++) {
-	            if (yAxis && yAxis.multi) {
-	              scale.heightRatio = scale.pHeight / scale.max[x];
-	            }
-	            var g = self.make('g');
-	            // pass in a ref for event look up, here `ref` is x
-	            paths.push(
-	              append(g, self._describePath(data[x], scale.paddingLeft, scale.paddingTop, scale, x))
-	            );
+	      for (var x = 0; x < scale.rows; x++) {
+	        if (yAxis && yAxis.multi) {
+	          scale.heightRatio = scale.pHeight / scale.max[x];
 	        }
-	        return paths;
+	        var g = self.make('g');
+	        // pass in a ref for event look up, here `ref` is x
+	        paths.push(append(g, self._describePath(data[x], scale.paddingLeft, scale.paddingTop, scale, x)));
+	      }
+	      return paths;
 	    });
 	  },
 
 	  // Extends default getRatio in lib/base/common.js
-	  _getRatio: function (scale) {
+	  _getRatio: function _getRatio(scale) {
 	    var self = this;
 	    var data = self.attributes.data;
 
@@ -698,26 +696,26 @@
 	    scale.pHeight = scale.height - scale.paddingTop - scale.paddingBottom - scale.innerPaddingTop - scale.innerPaddingBottom;
 	    scale.pWidth = scale.width - scale.paddingLeft - scale.paddingRight - scale.innerPadding;
 	    scale.heightRatio = scale.pHeight / scale.max;
-	    scale.tickSize = self._sigFigs((scale.pWidth / (scale.len - 1)),8);
+	    scale.tickSize = self._sigFigs(scale.pWidth / (scale.len - 1), 8);
 	  },
 
 	  // Describes scattered graph
 	  _describeScatteredGraph: api.describeScatter,
 
 	  // Svg path builder
-	  _describePath : function (data, paddingLeft, paddingTop, scale, ref) {
+	  _describePath: function _describePath(data, paddingLeft, paddingTop, scale, ref) {
 	    ref = ref || 0;
 	    var self = this;
 	    var pathToken = svgPath.describeAttributeD(data.data, paddingLeft, paddingTop, scale, ref);
-	    var pathNode = self.make('path',{
-	        d: pathToken,
-	        stroke: data.strokeColor || self._randomColor(),
-	        'stroke-width': data.strokeWidth || '3',
-	        'stroke-linejoin': 'round',
-	        'stroke-linecap': 'round',
-	        fill: 'none'
-	    },{
-	        _ref: ref
+	    var pathNode = self.make('path', {
+	      d: pathToken,
+	      stroke: data.strokeColor || self._randomColor(),
+	      'stroke-width': data.strokeWidth || '3',
+	      'stroke-linejoin': 'round',
+	      'stroke-linecap': 'round',
+	      fill: 'none'
+	    }, {
+	      _ref: ref
 	    });
 	    var paths = [];
 
@@ -728,8 +726,7 @@
 	        'stroke-width': '2',
 	        'stroke-linejoin': 'round',
 	        'stroke-linecap': 'round',
-	        fill: data.fill,
-	      },{
+	        fill: data.fill }, {
 	        _ref: ref
 	      }));
 	    }
@@ -745,7 +742,6 @@
 	    return paths;
 	  }
 	});
-
 
 /***/ },
 /* 4 */
@@ -763,7 +759,7 @@
 	     * @param  {[json]}  chart          [user specified chart options]
 	     * @return {[string]}               [the html string for the pie]
 	     */
-	    _describePath: function (radius, data, chart) {
+	    _describePath: function _describePath(radius, data, chart) {
 	        if (!data) return '';
 	        var paths = [];
 	        var startAngle = 0;
@@ -773,9 +769,9 @@
 	        var centerY = chart.height / 2;
 	        for (var i = 0; i < data.length; i++) {
 	            var endAngle = startAngle + 360 * data[i];
-	            paths.push(this.make('path',{
-	                "stroke-linecap": "round",
-	                "stroke-linejoin": "round",
+	            paths.push(this.make('path', {
+	                'stroke-linecap': 'round',
+	                'stroke-linejoin': 'round',
 	                stroke: strokes[i] || (chart.strokeColor || this._randomColor()),
 	                d: this._describePie(centerX, centerY, radius, startAngle, endAngle),
 	                fill: fills[i] || this._randomColor()
@@ -794,7 +790,7 @@
 	var pie = module.exports = arcBase.extend({
 
 	    componentName: 'donut',
-	    
+
 	    /**
 	     * [_describePath genereates the paths for each pie segment]
 	     * @param  {[int]} radius [circumfrance]
@@ -802,11 +798,11 @@
 	     * @param  {[json]} chart     [user specified chart options]
 	     * @return {[string]}           [the html string for the pie]
 	     */
-	    _describePath: function (radius, data, chart) {
+	    _describePath: function _describePath(radius, data, chart) {
 	        if (!data) return '';
 	        var paths = [];
 	        var outerRadius = chart.outerRadius || radius;
-	        var innerRadius = chart.innerRadius || (outerRadius / 2);
+	        var innerRadius = chart.innerRadius || outerRadius / 2;
 	        var startAngle = 0;
 	        var fills = chart.fills || 0;
 	        var strokes = chart.strokeColors || 0;
@@ -814,11 +810,11 @@
 	        var centerX = chart.width / 2;
 
 	        for (var i = 0; i < data.length; i++) {
-	            var endAngle = startAngle +  360 * data[i];
+	            var endAngle = startAngle + 360 * data[i];
 	            paths.push(this.make('path', {
-	                "stroke-linecap": "round",
-	                "stroke-linejoin": "round",
-	                stroke: strokes[i] || (chart.strokeColor||this._randomColor()),
+	                'stroke-linecap': 'round',
+	                'stroke-linejoin': 'round',
+	                stroke: strokes[i] || (chart.strokeColor || this._randomColor()),
 	                fill: fills[i] || this._randomColor(),
 	                d: this._describeDonut(centerX, centerY, outerRadius, innerRadius, startAngle, endAngle)
 	            }));
@@ -837,32 +833,24 @@
 	     * @param  {Number} endAngle    [description]
 	     * @return {String}             [return path attribute 'd' for donut shape]
 	     */
-	    _describeDonut: function (x, y, outerRadius, innerRadius, startAngle, endAngle) {
+	    _describeDonut: function _describeDonut(x, y, outerRadius, innerRadius, startAngle, endAngle) {
 	        // A temporary fix for working with a stroke that is 360
 	        if (startAngle == 0 && endAngle == 360) {
 	            startAngle = 1;
 	        };
 	        var outerArc = {
 	            start: this._polarToCartesian(x, y, outerRadius, endAngle),
-	            end : this._polarToCartesian(x, y, outerRadius, startAngle)
+	            end: this._polarToCartesian(x, y, outerRadius, startAngle)
 	        };
 	        var innerArc = {
 	            start: this._polarToCartesian(x, y, innerRadius, endAngle),
-	            end : this._polarToCartesian(x, y, innerRadius, startAngle)
+	            end: this._polarToCartesian(x, y, innerRadius, startAngle)
 	        };
-	        var arcSweep = endAngle - startAngle <= 180 ? "0": "1";
+	        var arcSweep = endAngle - startAngle <= 180 ? '0' : '1';
 
-	        return [
-	            'M', outerArc.start.x, outerArc.start.y,
-	            'A', outerRadius, outerRadius, 0, arcSweep, 0, outerArc.end.x, outerArc.end.y,
-	            'L', innerArc.end.x, innerArc.end.y,
-	            'A', innerRadius, innerRadius, 0, arcSweep, 1, innerArc.start.x, innerArc.start.y,
-	            'L', outerArc.start.x, outerArc.start.y,
-	            'Z'
-	        ].join(" ");
+	        return ['M', outerArc.start.x, outerArc.start.y, 'A', outerRadius, outerRadius, 0, arcSweep, 0, outerArc.end.x, outerArc.end.y, 'L', innerArc.end.x, innerArc.end.y, 'A', innerRadius, innerRadius, 0, arcSweep, 1, innerArc.start.x, innerArc.start.y, 'L', outerArc.start.x, outerArc.start.y, 'Z'].join(' ');
 	    }
 	});
-
 
 /***/ },
 /* 6 */
@@ -874,7 +862,7 @@
 
 	    componentName: 'bar',
 
-	    _startCycle: function () {
+	    _startCycle: function _startCycle() {
 	        var data = this.attributes.data;
 	        var self = this;
 	        var chart = this.attributes.opts.chart;
@@ -886,7 +874,7 @@
 	    },
 
 	    // Describes the svg that builds out the bar
-	    _describeBar: function (data, scale) {
+	    _describeBar: function _describeBar(data, scale) {
 	        if (!data.length) return '';
 	        // TODO:: need to account paddings for labels
 	        // Wrap in array for consistency
@@ -907,25 +895,25 @@
 	                var yAxis = height - relativeMax + scale.paddingTop;
 	                var total = 0;
 	                for (var j = 0; j < rows; j++) {
-	                    paths.push(this.make('rect',{
-	                        x: tickSize * i + (tickSize / 4) + scale.paddingLeft,
+	                    paths.push(this.make('rect', {
+	                        x: tickSize * i + tickSize / 4 + scale.paddingLeft,
 	                        y: yAxis,
 	                        width: tickSize / rows,
-	                        height: (data[j].data[i] / scale.maxSet[i] * relativeMax),
+	                        height: data[j].data[i] / scale.maxSet[i] * relativeMax,
 	                        fill: data[j].fill || this._randomColor()
 	                    }));
-	                    yAxis += (data[j].data[i] / scale.maxSet[i] * relativeMax);
+	                    yAxis += data[j].data[i] / scale.maxSet[i] * relativeMax;
 	                }
 	            } else {
 	                // Side by side
-	                var x = tickSize * i + (tickSize / 4) + scale.paddingLeft;
+	                var x = tickSize * i + tickSize / 4 + scale.paddingLeft;
 	                for (var j = 0; j < rows; j++) {
-	                    x += tickSize / (rows+1)* j;
+	                    x += tickSize / (rows + 1) * j;
 	                    var relativeMax = height * data[j].data[i] / scale.max;
-	                    paths.push(this.make('rect',{
+	                    paths.push(this.make('rect', {
 	                        x: x,
 	                        y: height - relativeMax + scale.paddingTop,
-	                        width: tickSize / (rows+1),
+	                        width: tickSize / (rows + 1),
 	                        height: relativeMax,
 	                        fill: data[j].fill || this._randomColor()
 	                    }));
@@ -933,12 +921,167 @@
 	            }
 	        }
 	        return paths;
-	    },
-	});
-
+	    } });
 
 /***/ },
 /* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	/* Entry Points */
+
+	var _classesDefault = __webpack_require__(13);
+
+	var _classesDefault2 = _interopRequireDefault(_classesDefault);
+
+	var _bubbleApiEs6 = __webpack_require__(18);
+
+	var _bubbleApiEs62 = _interopRequireDefault(_bubbleApiEs6);
+
+	module.exports = _classesDefault2['default'].extend({
+
+	    componentName: 'bubble',
+
+	    // Start of a life cyle
+	    _startCycle: function _startCycle() {
+	        var self = this;
+	        var chart = self.attributes.opts.chart;
+	        var data = self.attributes.data;
+	        var render = self.postRender;
+	        var paths = '';
+	        var scale;
+
+	        if (chart.type == 'scattered') {
+	            chart.type = 'bubble-scattered';
+	            return self._lifeCycleManager(data, chart, function (newScale) {
+	                return self._describeBubbleChart(data, newScale);
+	            });
+	        } else {
+	            chart.type = 'bubble-point';
+	            return self._lifeCycleManager(data, chart, function (newScale) {
+	                paths = self._describeBubble(data, chart.height, chart.width, newScale);
+	                paths.unshift(self._describeXAxis(chart.height, chart.width, newScale));
+	                return paths;
+	            });
+	        }
+	    },
+
+	    // Extends default ratio w/ auto scaling
+	    _getRatio: _bubbleApiEs62['default'].getRatioByNumberArray,
+
+	    // Describes bubble scattered graph
+	    _describeBubbleChart: _bubbleApiEs62['default'].describeBubbleByNumberArray,
+
+	    // Describes the xAxis for bubble point graph
+	    _describeXAxis: _bubbleApiEs62['default'].describeXAxisForBubbleLine,
+
+	    // Describes bubble point graph
+	    _describeBubble: _bubbleApiEs62['default'].describeLineByNumberArray
+	});
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	// time series / object base
+
+	var _classesDefault = __webpack_require__(13);
+
+	var _classesDefault2 = _interopRequireDefault(_classesDefault);
+
+	var _bubbleApiEs6 = __webpack_require__(18);
+
+	var _bubbleApiEs62 = _interopRequireDefault(_bubbleApiEs6);
+
+	module.exports = _classesDefault2['default'].extend({
+
+	    componentName: 'bubble.point',
+
+	    // Start of a life cyle
+	    _startCycle: function _startCycle() {
+	        var self = this;
+	        var chart = self.attributes.opts.chart;
+	        var data = self.attributes.data;
+	        var render = self.postRender;
+	        var paths = '';
+	        var scale;
+
+	        chart.type = 'bubble-point';
+	        chart.complex = true;
+	        chart.parentType = 'bubble';
+
+	        // sort data
+	        var ascByDate = function ascByDate(a, b) {
+	            return a.date - b.date;
+	        };
+	        data.sort(ascByDate);
+
+	        return self._lifeCycleManager(data, chart, function (newScale) {
+	            paths = self._describeBubble(data, chart.height, chart.width, newScale);
+	            paths.unshift(self._describeXAxis(chart.height, chart.width, newScale));
+	            return paths;
+	        });
+	    },
+
+	    // Extends default ratio w/ auto scaling
+	    _getRatio: _bubbleApiEs62['default'].getRatioByTimeSeries,
+
+	    // Describes the xAxis for bubble point graph
+	    _describeXAxis: _bubbleApiEs62['default'].describeXAxisForBubbleLine,
+
+	    // Describes bubble point graph
+	    _describeBubble: _bubbleApiEs62['default'].describeLineByObject
+	});
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	// time series / object base
+
+	var _classesDefault = __webpack_require__(13);
+
+	var _classesDefault2 = _interopRequireDefault(_classesDefault);
+
+	var _bubbleApiEs6 = __webpack_require__(18);
+
+	var _bubbleApiEs62 = _interopRequireDefault(_bubbleApiEs6);
+
+	module.exports = _classesDefault2['default'].extend({
+
+	    componentName: 'bubble.scatter',
+
+	    _startCycle: function _startCycle() {
+	        var self = this;
+	        var chart = self.attributes.opts.chart;
+	        var data = self.attributes.data;
+	        var render = self.postRender;
+	        var paths = '';
+	        var scale;
+
+	        chart.type = 'bubble-scattered';
+	        chart.complex = true;
+	        chart.parentType = 'bubble';
+
+	        return self._lifeCycleManager(data, chart, function (newScale) {
+	            return self._describeBubbleChart(data, newScale);
+	        });
+	    },
+
+	    // Describes bubble scattered graph
+	    // Extends default ratio w/ auto scaling
+	    _getRatio: _bubbleApiEs62['default'].getRatioByObject,
+
+	    _describeBubbleChart: _bubbleApiEs62['default'].describeBubbleByObject
+	});
+
+/***/ },
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1002,7 +1145,7 @@
 	  componentName: 'line',
 
 	  // Find min max in time series data
-	  _scale: function (content, opts) {
+	  _scale: function _scale(content, opts) {
 	    content = content[0];
 	    opts = opts || 0;
 	    var chart = opts.chart || opts;
@@ -1020,7 +1163,9 @@
 	    var data = content.data;
 	    var key;
 
-	    var ascByKey = function (a,b) { return parseInt(a[key]) - parseInt(b[key]); };
+	    var ascByKey = function ascByKey(a, b) {
+	      return parseInt(a[key]) - parseInt(b[key]);
+	    };
 	    var labels = Object.keys(content.labels);
 	    var rows = labels.length;
 	    var len = data.length;
@@ -1081,20 +1226,20 @@
 	    }
 
 	    return {
-	        min: min,
-	        max: max,
-	        len: len,
-	        rows: rows,
-	        ySecs: ySecs,
-	        labels: labels,
-	        pHeight: pHeight,
-	        pWidth: pWidth,
-	        heightRatio: heightRatio,
-	        color: colors
+	      min: min,
+	      max: max,
+	      len: len,
+	      rows: rows,
+	      ySecs: ySecs,
+	      labels: labels,
+	      pHeight: pHeight,
+	      pWidth: pWidth,
+	      heightRatio: heightRatio,
+	      color: colors
 	    };
 	  },
 
-	  _startCycle: function () {
+	  _startCycle: function _startCycle() {
 	    var self = this;
 	    var data = self.attributes.data;
 	    var opts = self.attributes.opts;
@@ -1106,39 +1251,34 @@
 	      data = [data];
 	    }
 	    return self._lifeCycleManager(data, chart, function (scale) {
-	        return self._describeSeries(data[0], scale.paddingLeft, scale.paddingTop, scale);
+	      return self._describeSeries(data[0], scale.paddingLeft, scale.paddingTop, scale);
 	    });
 	  },
 
 	  // Extends default getRatio in lib/base/common.js
-	  _getRatio: function (scale) {
+	  _getRatio: function _getRatio(scale) {
 	    var self = this;
 	    scale.type = 'timeSeries';
 
 	    var max = scale._data[0].data[scale.len - 1].timestamp;
-	    scale.xAxis.maxUTC = max = (new Date(max)).getTime();
+	    scale.xAxis.maxUTC = max = new Date(max).getTime();
 	    var min = scale.xAxis.minUTC || 0;
 	    if (!min) {
 	      min = scale._data[0].data[0].timestamp;
-	      scale.xAxis.minUTC = min = (new Date(min)).getTime();
+	      scale.xAxis.minUTC = min = new Date(min).getTime();
 	    }
 
 	    // Need to calculate a tickSize relative to time
 	    // Javascript MIN_VALUE is 5e-324, so should be fine
-	    scale.tickSize = self._sigFigs((scale.pWidth / (max - min)),8);
+	    scale.tickSize = self._sigFigs(scale.pWidth / (max - min), 8);
 	  },
 
 	  // Describes the path to close the open path
-	  _describeCloseAttributeD: function (point, height, heightRatio, paddingLeft, paddingTop) {
-	    return [
-	            'V',(height - paddingTop),
-	            'H', paddingLeft,
-	            'L', paddingLeft,
-	            (height - (point * heightRatio) - paddingTop)
-	          ].join(" ");
+	  _describeCloseAttributeD: function _describeCloseAttributeD(point, height, heightRatio, paddingLeft, paddingTop) {
+	    return ['V', height - paddingTop, 'H', paddingLeft, 'L', paddingLeft, height - point * heightRatio - paddingTop].join(' ');
 	  },
 
-	  _describePathAndCircle: function (dataObj, labels, paddingLeft, paddingTop, scale, isScattered, isLine, isFill) {
+	  _describePathAndCircle: function _describePathAndCircle(dataObj, labels, paddingLeft, paddingTop, scale, isScattered, isLine, isFill) {
 	    var height = scale.height;
 	    var heightRatio = {};
 	    var tickSize = scale.tickSize;
@@ -1159,14 +1299,14 @@
 	      } else {
 	        heightRatio[x] = scale.heightRatio;
 	      }
-	      item.strokeColor  = item.strokeColor || self._randomColor();
+	      item.strokeColor = item.strokeColor || self._randomColor();
 	    }
 
 	    // The length of the data obj
 	    for (var i = 0; i < dataObj.length; i++) {
 	      // The number of items to include
-	      var timestamp = (new Date(dataObj[i].timestamp)).getTime();
-	      var position = (timestamp - minUTC)  * tickSize;
+	      var timestamp = new Date(dataObj[i].timestamp).getTime();
+	      var position = (timestamp - minUTC) * tickSize;
 
 	      for (var row = 0; row < rows; row++) {
 	        var point = dataObj[i][items[row]] || 0;
@@ -1177,9 +1317,9 @@
 	              entryPoints[row] = point;
 	            }
 	            // X Y
-	            pathTokens[row] = 'M ' + paddingLeft + ' '+ (height - (point * heightRatio[row]) - paddingTop);
+	            pathTokens[row] = 'M ' + paddingLeft + ' ' + (height - point * heightRatio[row] - paddingTop);
 	          } else {
-	            pathTokens[row] += ' L '+ (position + paddingLeft) + ' ' + (height - (point * heightRatio[row]) - paddingTop);
+	            pathTokens[row] += ' L ' + (position + paddingLeft) + ' ' + (height - point * heightRatio[row] - paddingTop);
 	          }
 	        }
 
@@ -1189,39 +1329,39 @@
 	          var strokeColor = item.scattered.strokeColor || item.strokeColor;
 	          paths.push(self.make('circle', {
 	            cx: position + paddingLeft,
-	            cy: (height - (point * heightRatio[row]) - paddingTop),
+	            cy: height - point * heightRatio[row] - paddingTop,
 	            r: item.scattered.radius || '3',
 	            stroke: strokeColor,
 	            'stroke-width': item.scattered.strokeWidth || '3',
 	            fill: 'white'
 	          }, {
-	            _ref : row
+	            _ref: row
 	          }));
 	        }
 	      }
 	    }
 	    for (var c = 0; c < rows; c++) {
 	      var item = labels[items[c]];
-	      paths.unshift(self.make('path',{
-	          d: pathTokens[c],
+	      paths.unshift(self.make('path', {
+	        d: pathTokens[c],
+	        stroke: item.strokeColor,
+	        'stroke-width': item.strokeWidth || '3',
+	        'stroke-linejoin': 'round',
+	        'stroke-linecap': 'round',
+	        fill: 'none'
+	      }, {
+	        _ref: c
+	      }));
+	      if (isFill && item.fill) {
+	        paths.push(self.make('path', {
+	          d: pathTokens[c] + self._describeCloseAttributeD(entryPoints[c], height, heightRatio[c], paddingLeft, paddingTop),
 	          stroke: item.strokeColor,
 	          'stroke-width': item.strokeWidth || '3',
 	          'stroke-linejoin': 'round',
 	          'stroke-linecap': 'round',
-	          fill: 'none'
-	      },{
+	          fill: item.fill
+	        }, {
 	          _ref: c
-	      }));
-	      if (isFill && item.fill) {
-	        paths.push(self.make('path',{
-	            d: pathTokens[c] + self._describeCloseAttributeD(entryPoints[c], height, heightRatio[c], paddingLeft, paddingTop),
-	            stroke: item.strokeColor,
-	            'stroke-width': item.strokeWidth || '3',
-	            'stroke-linejoin': 'round',
-	            'stroke-linecap': 'round',
-	            fill: item.fill
-	        },{
-	            _ref: c
 	        }));
 	      }
 	    }
@@ -1229,139 +1369,11 @@
 	  },
 
 	  // Svg path builder
-	  _describeSeries: function (data, paddingLeft, paddingTop, scale) {
+	  _describeSeries: function _describeSeries(data, paddingLeft, paddingTop, scale) {
 	    var self = this;
 	    var paths = self._describePathAndCircle(data.data, data.labels, paddingLeft, paddingTop, scale, scale.scattered, scale.line, scale.fill);
 	    return paths;
 	  }
-	});
-
-
-/***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var mixin = module.exports = function (component, obj) {
-	    if (obj instanceof Array) {
-	        for (var i = 0; i < obj.length; i++) {
-	            component = component.extend(obj[i]);
-	        }
-	        return component;
-	    }
-	    return component.extend(obj);
-	};
-
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	/* Entry Points */
-
-	var _classesDefault = __webpack_require__(13);
-
-	var _classesDefault2 = _interopRequireDefault(_classesDefault);
-
-	var _bubbleApiEs6 = __webpack_require__(22);
-
-	var _bubbleApiEs62 = _interopRequireDefault(_bubbleApiEs6);
-
-	module.exports = _classesDefault2['default'].extend({
-
-	    componentName: 'bubble',
-
-	    // Start of a life cyle
-	    _startCycle: function _startCycle() {
-	        var self = this;
-	        var chart = self.attributes.opts.chart;
-	        var data = self.attributes.data;
-	        var render = self.postRender;
-	        var paths = '';
-	        var scale;
-
-	        if (chart.type == 'scattered') {
-	            chart.type = 'bubble-scattered';
-	            return self._lifeCycleManager(data, chart, function (newScale) {
-	                return self._describeBubbleChart(data, newScale);
-	            });
-	        } else {
-	            chart.type = 'bubble-point';
-	            return self._lifeCycleManager(data, chart, function (newScale) {
-	                paths = self._describeBubble(data, chart.height, chart.width, newScale);
-	                paths.unshift(self._describeXAxis(chart.height, chart.width, newScale));
-	                return paths;
-	            });
-	        }
-	    },
-
-	    // Extends default ratio w/ auto scaling
-	    _getRatio: _bubbleApiEs62['default'].getRatioByNumberArray,
-
-	    // Describes bubble scattered graph
-	    _describeBubbleChart: _bubbleApiEs62['default'].describeBubbleByNumberArray,
-
-	    // Describes the xAxis for bubble point graph
-	    _describeXAxis: _bubbleApiEs62['default'].describeXAxisForBubbleLine,
-
-	    // Describes bubble point graph
-	    _describeBubble: _bubbleApiEs62['default'].describeLineByNumberArray
-	});
-
-/***/ },
-/* 10 */
-/***/ function(module, exports, __webpack_require__) {
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	// time series / object base
-
-	var _classesDefault = __webpack_require__(13);
-
-	var _classesDefault2 = _interopRequireDefault(_classesDefault);
-
-	var _bubbleApiEs6 = __webpack_require__(22);
-
-	var _bubbleApiEs62 = _interopRequireDefault(_bubbleApiEs6);
-
-	module.exports = _classesDefault2['default'].extend({
-
-	    componentName: 'bubble.point',
-
-	    // Start of a life cyle
-	    _startCycle: function _startCycle() {
-	        var self = this;
-	        var chart = self.attributes.opts.chart;
-	        var data = self.attributes.data;
-	        var render = self.postRender;
-	        var paths = '';
-	        var scale;
-
-	        chart.type = 'bubble-point';
-	        chart.complex = true;
-	        chart.parentType = 'bubble';
-
-	        // sort data
-	        var ascByDate = function ascByDate(a, b) {
-	            return a.date - b.date;
-	        };
-	        data.sort(ascByDate);
-
-	        return self._lifeCycleManager(data, chart, function (newScale) {
-	            paths = self._describeBubble(data, chart.height, chart.width, newScale);
-	            paths.unshift(self._describeXAxis(chart.height, chart.width, newScale));
-	            return paths;
-	        });
-	    },
-
-	    // Extends default ratio w/ auto scaling
-	    _getRatio: _bubbleApiEs62['default'].getRatioByTimeSeries,
-
-	    // Describes the xAxis for bubble point graph
-	    _describeXAxis: _bubbleApiEs62['default'].describeXAxisForBubbleLine,
-
-	    // Describes bubble point graph
-	    _describeBubble: _bubbleApiEs62['default'].describeLineByObject
 	});
 
 /***/ },
@@ -1370,67 +1382,23 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	// time series / object base
-
-	var _classesDefault = __webpack_require__(13);
-
-	var _classesDefault2 = _interopRequireDefault(_classesDefault);
-
-	var _bubbleApiEs6 = __webpack_require__(22);
-
-	var _bubbleApiEs62 = _interopRequireDefault(_bubbleApiEs6);
-
-	module.exports = _classesDefault2['default'].extend({
-
-	    componentName: 'bubble.scatter',
-
-	    _startCycle: function _startCycle() {
-	        var self = this;
-	        var chart = self.attributes.opts.chart;
-	        var data = self.attributes.data;
-	        var render = self.postRender;
-	        var paths = '';
-	        var scale;
-
-	        chart.type = 'bubble-scattered';
-	        chart.complex = true;
-	        chart.parentType = 'bubble';
-
-	        return self._lifeCycleManager(data, chart, function (newScale) {
-	            return self._describeBubbleChart(data, newScale);
-	        });
-	    },
-
-	    // Describes bubble scattered graph
-	    // Extends default ratio w/ auto scaling
-	    _getRatio: _bubbleApiEs62['default'].getRatioByObject,
-
-	    _describeBubbleChart: _bubbleApiEs62['default'].describeBubbleByObject
-	});
-
-/***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
 	var _path = __webpack_require__(15);
 
 	var _path2 = _interopRequireDefault(_path);
 
-	var _arc = __webpack_require__(18);
+	var _arc = __webpack_require__(19);
 
 	var _arc2 = _interopRequireDefault(_arc);
 
-	var _rect = __webpack_require__(19);
+	var _rect = __webpack_require__(20);
 
 	var _rect2 = _interopRequireDefault(_rect);
 
-	var _composerEs6 = __webpack_require__(23);
+	var _composerEs6 = __webpack_require__(21);
 
 	var _composerEs62 = _interopRequireDefault(_composerEs6);
 
-	var _drawEs6 = __webpack_require__(24);
+	var _drawEs6 = __webpack_require__(22);
 
 	var _drawEs62 = _interopRequireDefault(_drawEs6);
 
@@ -1451,153 +1419,165 @@
 	};
 
 /***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var mixin = module.exports = function (component, obj) {
+	    if (obj instanceof Array) {
+	        for (var i = 0; i < obj.length; i++) {
+	            component = component.extend(obj[i]);
+	        }
+	        return component;
+	    }
+	    return component.extend(obj);
+	};
+
+/***/ },
 /* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Common = __webpack_require__(20);
+	var Common = __webpack_require__(23);
 	var base = module.exports = Common.extend({
 
-	    // Initialize
-	    init: function (node) {
-	      var self = this;
-	      // adding width 100% will allow us to have responsive graphs (in re-sizing)
-	      if (typeof node === 'string') {
-	        if (node[0] === '#') {
-	          self.element = self.make('div',{
-	            id: node.replace(/^#/,''),
-	            width: '100%'
-	          });
-	        } else {
-	          self.element = self.make('div',{
-	            "class": node.replace(/^\./,''),
-	            width: '100%'
-	          });
-	        }
+	  // Initialize
+	  init: function init(node) {
+	    var self = this;
+	    // adding width 100% will allow us to have responsive graphs (in re-sizing)
+	    if (typeof node === 'string') {
+	      if (node[0] === '#') {
+	        self.element = self.make('div', {
+	          id: node.replace(/^#/, ''),
+	          width: '100%'
+	        });
 	      } else {
-	        self.element = '';
+	        self.element = self.make('div', {
+	          'class': node.replace(/^\./, ''),
+	          width: '100%'
+	        });
 	      }
-	      self.token = self._makeToken();
-	      self.attributes = {};
-	      return self;
-	    },
-
-	    // Include missing values
-	    _prepare: function () {
-	        var self = this;
-	        var defaults = {
-	          type: 'chart',
-	          width: '100',
-	          height: '100',
-	          paddingLeft: 0,
-	          paddingRight: 0,
-	          paddingTop: 0,
-	          paddingBottom: 0,
-	          innerPadding: 0,
-	          innerPaddingLeft: 0,
-	          innerPaddingRight: 0,
-	          innerPaddingTop: 0,
-	          innerPaddingBottom: 0,
-	          invert: [],
-	          // spark graph configs
-	          line: true,
-	          fill: true,
-	          scattered: false
-	        };
-	        self._extend(defaults, self.attributes.opts.chart);
-	        self.attributes.opts.chart = defaults;
-	        return self;
-	    },
-
-	    // Public function for user to set & define the graph attributes
-	    attr: function (opts) {
-	        var self = this;
-	        opts = opts || 0;
-	        // if a user does not include opts.chart
-	        if (typeof opts.chart === 'undefined') {
-	          opts = {
-	            chart: opts,
-	            data: opts.data || opts.points
-	          };
-	          delete opts.chart.data;
-	          delete opts.chart.points;
-	        }
-
-	        self.props.data = self.attributes.data = (opts.data || opts.points) || [];
-	        self.props.opts = self.attributes.opts = opts;
-
-	        return self.postRender(self.finalize(self._prepare()
-	            ._startCycle()));
-	    },
-
-	    // Add chart layout property into scale
-	    _addChartLayoutProps: function (scale) {
-	      var height = scale.height;
-	      var width = scale.width;
-	      var paddingTop = scale.paddingTop;
-	      var paddingLeft = scale.paddingLeft;
-	      var paddingRight = scale.paddingRight;
-	      var paddingBottom = scale.paddingBottom;
-
-	      scale.layout = {
-	        x: paddingLeft,
-	        y: paddingTop,
-	        height: height - paddingTop - paddingBottom,
-	        width: width - paddingLeft - paddingRight,
-	        yToPixel: scale.heightRatio || null,
-	        xToPixel: (scale.widthRatio || scale.tickSize) || null
-	      };
-
-	      return null;
-	    },
-
-	    // Wraps content with svg element
-	    finalize: function (content) {
-	      var self = this;
-	      var appendTo = self._append;
-	      var append = prepend = '';
-	      var scale = self.props.scale;
-	      var opts = self.props.opts;
-	      var svg = self.make('svg',{
-	        width: scale.width,
-	        height: scale.height,
-	        viewBox: '0 0 ' + scale.width + ' ' + scale.height
-	      });
-
-	      self._addChartLayoutProps(scale);
-
-	      if (opts.prepend || opts.append) {
-	        var immutableScale = Object.freeze(self._deepCopy(scale));
-	        append = self._getUserContent(opts.append, content, immutableScale) || '';
-	        prepend = self._getUserContent(opts.prepend, content, immutableScale) || '';
-	      }
-	      return appendTo(self.element, appendTo(svg, prepend + content + append));
-	    },
-
-	    // If there is additional content from user, it will retrieve it
-	    _getUserContent: function (fn, content, immutableScale) {
-	      if (!fn) return '';
-
-	      var additionalContent = fn(content, immutableScale) || '';
-
-	      if (typeof additionalContent == 'object') {
-	        additionalContent = additionalContent.stringify();
-	      }
-	      return additionalContent;
+	    } else {
+	      self.element = '';
 	    }
-	});
+	    self.token = self._makeToken();
+	    self.attributes = {};
+	    return self;
+	  },
 
+	  // Include missing values
+	  _prepare: function _prepare() {
+	    var self = this;
+	    var defaults = {
+	      type: 'chart',
+	      width: '100',
+	      height: '100',
+	      paddingLeft: 0,
+	      paddingRight: 0,
+	      paddingTop: 0,
+	      paddingBottom: 0,
+	      innerPadding: 0,
+	      innerPaddingLeft: 0,
+	      innerPaddingRight: 0,
+	      innerPaddingTop: 0,
+	      innerPaddingBottom: 0,
+	      invert: [],
+	      // spark graph configs
+	      line: true,
+	      fill: true,
+	      scattered: false
+	    };
+	    self._extend(defaults, self.attributes.opts.chart);
+	    self.attributes.opts.chart = defaults;
+	    return self;
+	  },
+
+	  // Public function for user to set & define the graph attributes
+	  attr: function attr(opts) {
+	    var self = this;
+	    opts = opts || 0;
+	    // if a user does not include opts.chart
+	    if (typeof opts.chart === 'undefined') {
+	      opts = {
+	        chart: opts,
+	        data: opts.data || opts.points
+	      };
+	      delete opts.chart.data;
+	      delete opts.chart.points;
+	    }
+
+	    self.props.data = self.attributes.data = opts.data || opts.points || [];
+	    self.props.opts = self.attributes.opts = opts;
+
+	    return self.postRender(self.finalize(self._prepare()._startCycle()));
+	  },
+
+	  // Add chart layout property into scale
+	  _addChartLayoutProps: function _addChartLayoutProps(scale) {
+	    var height = scale.height;
+	    var width = scale.width;
+	    var paddingTop = scale.paddingTop;
+	    var paddingLeft = scale.paddingLeft;
+	    var paddingRight = scale.paddingRight;
+	    var paddingBottom = scale.paddingBottom;
+
+	    scale.layout = {
+	      x: paddingLeft,
+	      y: paddingTop,
+	      height: height - paddingTop - paddingBottom,
+	      width: width - paddingLeft - paddingRight,
+	      yToPixel: scale.heightRatio || null,
+	      xToPixel: scale.widthRatio || scale.tickSize || null
+	    };
+
+	    return null;
+	  },
+
+	  // Wraps content with svg element
+	  finalize: function finalize(content) {
+	    var self = this;
+	    var appendTo = self._append;
+	    var append = prepend = '';
+	    var scale = self.props.scale;
+	    var opts = self.props.opts;
+	    var svg = self.make('svg', {
+	      width: scale.width,
+	      height: scale.height,
+	      viewBox: '0 0 ' + scale.width + ' ' + scale.height
+	    });
+
+	    self._addChartLayoutProps(scale);
+
+	    if (opts.prepend || opts.append) {
+	      var immutableScale = Object.freeze(self._deepCopy(scale));
+	      append = self._getUserContent(opts.append, content, immutableScale) || '';
+	      prepend = self._getUserContent(opts.prepend, content, immutableScale) || '';
+	    }
+	    return appendTo(self.element, appendTo(svg, prepend + content + append));
+	  },
+
+	  // If there is additional content from user, it will retrieve it
+	  _getUserContent: function _getUserContent(fn, content, immutableScale) {
+	    if (!fn) return '';
+
+	    var additionalContent = fn(content, immutableScale) || '';
+
+	    if (typeof additionalContent == 'object') {
+	      additionalContent = additionalContent.stringify();
+	    }
+	    return additionalContent;
+	  }
+	});
 
 /***/ },
 /* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* istanbul ignore next */
-	var warn = function (msg) {
+	var warn = function warn(msg) {
 	  console.warn(msg);
 	};
 	/* istanbul ignore next */
 	module.exports = {
-	  label: function () {
+	  label: function label() {
 	    warn("You're attempting to use labels without the `Label` addons.  Check documentation https://github.com/alfredkam/yakojs/blob/master/doc.md");
 	  }
 	};
@@ -1608,7 +1588,7 @@
 
 	// TODO:: shrink the argument
 
-	var api = __webpack_require__(21);
+	var api = __webpack_require__(24);
 
 	var path = module.exports = {
 	    /**
@@ -1621,12 +1601,12 @@
 	     * @return obj              min / max
 	     */
 	    // getLinearScale?
-	    getScale: function (attr) {
+	    getScale: function getScale(attr) {
 	        var data = attr.data || 0;
 	        var scale = api.scale(data);
 	        scale.paddingY = attr.paddingY || 5;
-	        scale.tickSize = api.sigFigs((attr.width / (scale.len - 1)),8);
-	        scale.heightRatio = (attr.height - (scale.paddingY * 2)) / scale.max;
+	        scale.tickSize = api.sigFigs(attr.width / (scale.len - 1), 8);
+	        scale.heightRatio = (attr.height - scale.paddingY * 2) / scale.max;
 	        scale.height = attr.height;
 	        scale.width = attr.width;
 	        scale.innerPadding = attr.innerPadding || 0;
@@ -1636,50 +1616,45 @@
 	    },
 
 	    // Describes an open path
-	    describeAttributeD: function (numArr, paddingLeft, paddingTop, scale, ref) {
-	      var height = scale.height;
-	      var heightRatio = scale.heightRatio;
-	      var tickSize = scale.tickSize;
-	      var hasInverse = scale.hasInverse || {};
-	      var pathToken = '';
+	    describeAttributeD: function describeAttributeD(numArr, paddingLeft, paddingTop, scale, ref) {
+	        var height = scale.height;
+	        var heightRatio = scale.heightRatio;
+	        var tickSize = scale.tickSize;
+	        var hasInverse = scale.hasInverse || {};
+	        var pathToken = '';
 
-	      if (hasInverse.y) {
+	        if (hasInverse.y) {
 	            if (typeof scale.max == 'object') {
-	              max = scale.max[ref];
-	          } else {
-	              max = scale.max;
-	          }
-	      }
+	                max = scale.max[ref];
+	            } else {
+	                max = scale.max;
+	            }
+	        }
 
-	      // Path generator
-	      for (var i = 0; i < numArr.length; i++) {
-	          var pointY = (hasInverse.y ? height - ((max - numArr[i]) * heightRatio) :  (height - (numArr[i] * heightRatio))) - paddingTop - scale.innerPaddingTop;
-	          if (i === 0) {
-	            // X Y
-	              pathToken += 'M ' + (paddingLeft + scale.innerPadding) + ' ' + pointY;
-	          } else {
-	              pathToken += ' L '+ ((tickSize * i) + paddingLeft) + ' ' +  pointY;
-	          }
-	      }
+	        // Path generator
+	        for (var i = 0; i < numArr.length; i++) {
+	            var pointY = (hasInverse.y ? height - (max - numArr[i]) * heightRatio : height - numArr[i] * heightRatio) - paddingTop - scale.innerPaddingTop;
+	            if (i === 0) {
+	                // X Y
+	                pathToken += 'M ' + (paddingLeft + scale.innerPadding) + ' ' + pointY;
+	            } else {
+	                pathToken += ' L ' + (tickSize * i + paddingLeft) + ' ' + pointY;
+	            }
+	        }
 
-	      // Eliminates the error calls when attributiting this to the svg path
-	      if (pathToken === '') {
-	        pathToken = 'M 0 0';
-	      }
+	        // Eliminates the error calls when attributiting this to the svg path
+	        if (pathToken === '') {
+	            pathToken = 'M 0 0';
+	        }
 
-	      return pathToken;
+	        return pathToken;
 	    },
 
 	    // Describes the path to close the open path
-	    describeCloseAttributeD: function (numArr, paddingLeft, paddingTop, scale, ref) {
-	      var height = scale.height;
-	      var heightRatio = scale.heightRatio;
-	      return [
-	              'V',(height - paddingTop),
-	              'H', paddingLeft,
-	              'L', paddingLeft + scale.innerPadding,
-	              (height - (numArr[0] * heightRatio) - paddingTop - scale.innerPaddingTop)
-	            ].join(" ");
+	    describeCloseAttributeD: function describeCloseAttributeD(numArr, paddingLeft, paddingTop, scale, ref) {
+	        var height = scale.height;
+	        var heightRatio = scale.heightRatio;
+	        return ['V', height - paddingTop, 'H', paddingLeft, 'L', paddingLeft + scale.innerPadding, height - numArr[0] * heightRatio - paddingTop - scale.innerPaddingTop].join(' ');
 	    },
 
 	    /**
@@ -1688,7 +1663,7 @@
 	     * @param  {[array]} numberArray an array of numbers
 	     * @return {[string]}            string that descibes attributeD
 	     */
-	    getOpenPath: function (scale, numberArray) {
+	    getOpenPath: function getOpenPath(scale, numberArray) {
 	        return path.describeAttributeD(numberArray, 0, scale.paddingY, scale);
 	    },
 
@@ -1698,31 +1673,29 @@
 	     * @param  {[array]} numberArray an array of numbers
 	     * @return {[string]}            string that descibes attributeD
 	     */
-	    getClosedPath: function(scale, numberArray) {
-	        return path.describeAttributeD(numberArray, 0, scale.paddingY, scale) +
-	          path.describeCloseAttributeD(numberArray, 0, scale.paddingY, scale);
+	    getClosedPath: function getClosedPath(scale, numberArray) {
+	        return path.describeAttributeD(numberArray, 0, scale.paddingY, scale) + path.describeCloseAttributeD(numberArray, 0, scale.paddingY, scale);
 	    },
 
-	    beginPath: function () {
+	    beginPath: function beginPath() {
 	        var self = this;
-	        var d = "";
+	        var d = '';
 	        self.moveTo = function (x, y) {
-	            d += "M" + x + " " + y;
+	            d += 'M' + x + ' ' + y;
 	            return self;
 	        };
 
 	        self.lineTo = function (x, y) {
-	            d += "L" + x + " " + y;
+	            d += 'L' + x + ' ' + y;
 	            return self;
 	        };
 
 	        self.endPath = function () {
-	          return d;
+	            return d;
 	        };
 	        return self;
 	    }
 	};
-
 
 /***/ },
 /* 16 */
@@ -1730,7 +1703,7 @@
 
 	// Describes scattered graph
 	var api = module.exports = {
-	  describeScatter: function(data, numArr, paddingLeft, paddingTop, scale, ref) {
+	  describeScatter: function describeScatter(data, numArr, paddingLeft, paddingTop, scale, ref) {
 	    var height = scale.height;
 	    var heightRatio = scale.heightRatio;
 	    var self = this;
@@ -1745,31 +1718,31 @@
 
 	    for (var i = 0; i < numArr.length; i++) {
 	      paths.push(self.make('circle', {
-	        cx: i === 0 ? (i + scale.innerPadding + paddingLeft) : ((tickSize * i) + paddingLeft),
-	        cy: (height - (numArr[i] * heightRatio) - paddingTop - scale.innerPaddingTop),
+	        cx: i === 0 ? i + scale.innerPadding + paddingLeft : tickSize * i + paddingLeft,
+	        cy: height - numArr[i] * heightRatio - paddingTop - scale.innerPaddingTop,
 	        r: radius,
 	        stroke: strokeColor,
 	        'stroke-width': strokeWidth,
 	        fill: fill
 	      }, {
-	        _ref : ref
+	        _ref: ref
 	      }));
 	    }
 	    return paths;
 	  }
-	}
+	};
 
 /***/ },
 /* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Base = __webpack_require__(13);
-	var arc = __webpack_require__(18);
+	var arc = __webpack_require__(19);
 
 	module.exports = Base.extend({
 
 	    // Parent generator that manages the svg
-	    _startCycle: function (){
+	    _startCycle: function _startCycle() {
 	        var self = this;
 	        var chart = self.attributes.opts.chart;
 	        var data = self.attributes.data;
@@ -1780,7 +1753,7 @@
 	    },
 
 	    // Extends _defineBaseScaleProperties in lib/base/common.js
-	    _defineBaseScaleProperties: function (data, chart) {
+	    _defineBaseScaleProperties: function _defineBaseScaleProperties(data, chart) {
 	        var self = this;
 	        var scale = {
 	            // Converts nums to relative => total sum equals 1
@@ -1803,550 +1776,13 @@
 	     * [_describePath super class]
 	     * @return {[type]} [empty string]
 	     */
-	    _describePath: function () {
+	    _describePath: function _describePath() {
 	        return '';
 	    }
 	});
 
-
 /***/ },
 /* 18 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var arc = module.exports = {
-
-	    // snippet from http://stackoverflow.com/questions/5736398/how-to-calculate-the-svg-path-for-an-arc-of-a-circle
-	    // calculates the polar to cartesian coordinates
-	    polarToCartesian: function (centerX, centerY, radius, angleInDegrees) {
-	      var angleInRadians = (angleInDegrees-90) * Math.PI / 180.0;
-
-	      return {
-	        x: centerX + (radius * Math.cos(angleInRadians)),
-	        y: centerY + (radius * Math.sin(angleInRadians))
-	      };
-	    },
-
-	    // describes an arc
-	    describeArc: function (centerX, centerY, radius, startAngle, endAngle){
-	        if (startAngle == 0 && endAngle == 360) {
-	            // Alt solution http://stackoverflow.com/questions/5737975/circle-drawing-with-svgs-arc-path/10477334#10477334
-	            // return [
-	            //     "M", radius * 2, radius,
-	            //     "a", radius, radius, 0, 1, 0, radius*2, 0,
-	            //     "a", radius, radius, 0, 1, 0, -radius * 2, 0
-	            // ].join(" ");
-	            startAngle = 1;
-	        }
-	        var start = arc.polarToCartesian(centerX, centerY, radius, endAngle);
-	        var end = arc.polarToCartesian(centerX, centerY, radius, startAngle);
-	        var arcSweep = endAngle - startAngle <= 180 ? "0" : "1";
-
-	        return [
-	            "M", start.x, start.y,
-	            "A", radius, radius, 0, arcSweep, 0, end.x, end.y
-	        ].join(" ");
-	    },
-
-	    describePie: function (centerX, centerY, radius, startAngle, endAngle) {
-	        return arc.describeArc(centerX, centerY, radius, startAngle, endAngle) + ' L' + centerX + ' ' + centerY;
-	    }
-	};
-
-
-/***/ },
-/* 19 */
-/***/ function(module, exports, __webpack_require__) {
-
-
-
-/***/ },
-/* 20 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(25);
-	var Class = __webpack_require__(26);
-	var Errors = __webpack_require__(14);
-	var api = __webpack_require__(21);
-
-	var isArray = function (obj) {
-	    return obj instanceof Array;
-	};
-	/**
-	 * deep extend object or json properties
-	 * @param  {object} object to extend
-	 * @param  {object} object
-	 * @return {object} global function object
-	 */
-	module.exports = Class.extend({
-
-	  // default
-	  init: function () {
-	    return this;
-	  },
-
-	  // data properties
-	  props: {},
-
-	  // accepts a N * 1 array
-	  // finds total sum then creates a relative measure base on total sum
-	  _dataSetRelativeToTotal: api.dataSetRelativeToTotal,
-
-	  // random color generator
-	  _randomColor: function () {
-	    return '#'+Math.floor(Math.random()*16777215).toString(16);
-	  },
-
-	  // appends the elements
-	  // accepts multiple child
-	  _append: function (parent, childs) {
-	    if (parent === '') return childs;
-	    if (!isArray(childs)) {
-	      childs = [childs];
-	    }
-	    return parent.replace(/(.*)(<\/.*>$)/g, function (match, p1, p2) {
-	        return p1 + childs.join("") + p2;
-	    });
-	  },
-
-	  // alternate to one level deep
-	  make: function (tagName, attribute, dataAttribute, content) {
-	    var el = '<' + tagName;
-
-	    if (tagName === 'svg') {
-	        el += ' version="1.1" xmlns="http://www.w3.org/2000/svg"';
-	    }
-	    el += this._makePairs(attribute);
-	    el += this._makePairs('data', dataAttribute);
-	    return el += '>' + (content || content === 0 ? content : '') + '</'+tagName+'>';
-	  },
-
-	  // Deep copies an object
-	  // TODO:: improve this
-	  _deepCopy: function (objToCopy) {
-	    return JSON.parse(JSON.stringify(objToCopy));
-	  },
-
-	  /**
-	   * A super class calls right before return the svg content to the user
-	   */
-	  postRender: function (svgContent) {
-	    return svgContent;
-	  },
-
-	  /**
-	   * [_isArray check if variable is an array]
-	   * @param  any type
-	   * @return {Boolean}   true if its an array
-	   */
-	  _isArray: isArray,
-
-	  // Default ratio
-	  _getRatio: function (scale) {
-	    scale.heightRatio = scale.height - (scale.paddingTop + scale.paddingBottom) / scale.max;
-	  },
-
-	  /**
-	   * [_defineBaseScaleProperties defines the common scale properties]
-	   * @param  {[obj]} data  [raw data set from user]
-	   * @param  {[obj]} chart [chart properties passed by the user]
-	   * @return {[obj]}       [return an obj that describes the scale base on the data & chart properties]
-	   */
-	  _defineBaseScaleProperties: function (data, chart) {
-	    var self = this;
-	    var opts = this.attributes.opts;
-	    var chart = opts.chart;
-	    var xAxis = chart.xAxis || opts.xAxis;
-	    var yAxis = chart.yAxis || opts.yAxis;
-	    var scale = self._scale(data, chart);
-	    self._extend(scale, chart);
-	    scale._data = data;
-	    // Acceptable inverse flags to inverse the data set
-	    var inverseList = {
-	        'x': 'x',
-	        'y': 'y'
-	    };
-
-	    var inverse = {};
-	    if (scale.invert) {
-	      for (var x in scale.invert) {
-	            if (inverseList[scale.inverse[x]]) {
-	                inverse[inverseList[scale.inverse[x]]] = true;
-	            }
-	        }
-	    }
-	    scale.hasInverse = inverse;
-
-	    if ((chart.type != 'bubble-point') && (yAxis || xAxis)) {
-	      self._getExternalProps(scale, yAxis, xAxis);
-	      if (!self.describeYAxis) {
-	        Errors.label();
-	      }
-	    }
-	    self._getRatio(scale);
-	    self.props.scale = scale;
-	    return scale;
-	  },
-
-	  /**
-	   * base on the feedback and mange the render of the life cycle
-	   * it passes a immutable obj to preRender and audits the user feedback
-	   */
-	  // TODO:: Rename lifeCycleManager, incorrect term usage
-	  _lifeCycleManager: function (data, chart, describe) {
-	    var self = this;
-	    var scale = self._defineBaseScaleProperties(data, chart);
-	    // check if there is any external steps needed to be done
-	    if (self._call) {
-	      self._call(scale);
-	    }
-	    // make the obj's shallow properties immutable
-	    // we can know if we want to skip the entire process to speed up the computation
-	    var properties = (self.preRender ? self.preRender(Object.freeze(self._deepCopy(scale))) : 0);
-
-	    // properties we will except
-	    // - append
-	    // - prepend
-	    var paths = properties.prepend ? properties.prepend : [];
-	    paths = paths.concat(describe(scale));
-	    paths = paths.concat(properties.append ? properties.append : []);
-	    return paths;
-	    // return summary
-	  },
-
-	  // only supports 1 level deep
-	  _makePairs: function (prefix, json) {
-	    if (!prefix) return '';
-
-	    if (arguments.length < 2) {
-	      json = prefix;
-	      prefix = '';
-	    } else {
-	      prefix += '-';
-	    }
-
-	    if (!json) return '';
-
-	    var keys = Object.keys(json), len = keys.length;
-	    var str = '';
-	    while (len--) {
-	      str += ' ' + prefix + keys[len] + '="' + json[keys[len]] + '"';
-	    }
-	    return str;
-	  },
-
-	  // deep extend
-	  _extend: function (attr, json) {
-	    var self = this;
-	    if (!json || !attr) return;
-
-	    var k = Object.keys(json), len = k.length;
-	    while(len--) {
-	        if (typeof json[k[len]] !== 'object' || isArray(json[k[len]])) {
-	            attr[k[len]] = json[k[len]];
-	        } else {    //it has child objects, copy them too.
-	            if (!attr[k[len]]) {
-	                attr[k[len]] = {};
-	            }
-	            self._extend(attr[k[len]], json[k[len]]);
-	        }
-	    }
-	    return this;
-	  },
-
-	  isFn: function (object) {
-	    return !!(object && object.constructor && object.call && object.apply);
-	  },
-
-	  _makeToken: function () {
-	    return Math.random().toString(36).substr(2);
-	  },
-
-	  //sig fig rounding
-	  _sigFigs: api.sigFigs,
-
-	  _getSplits: api.getSplits,
-
-	  // find min max between multiple rows of data sets
-	  // also handles the scale needed to work with multi axis
-	  _scale: api.scale
-	});
-
-
-/***/ },
-/* 21 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var asc = function (a,b) { return a - b; };
-
-	var api = module.exports = {
-
-	  sigFigs: function (n, sig) {
-	      var mult = Math.pow(10,
-	          sig - Math.floor(Math.log(n) / Math.LN10) - 1);
-	      return Math.round(n * mult) / mult;
-	  },
-
-	  // accepts a N * 1 array
-	  // finds total sum then creates a relative measure base on total sum
-	  dataSetRelativeToTotal: function (data) {
-	    var total = data.reduce(function (a, b) {
-	      return a + b;
-	    });
-	    return data.map(function (num) {
-	      return num / total;
-	    });
-	  },
-
-	  // calculates the number of yAxis sections base on the maxium value
-	  getSplits: function (value) {
-	      var set = {};
-	      value = Math.ceil(value, 0); // make sure its a whole number
-	      if (value === 0) return { max : 2, splits: 2};
-
-	      var supportedBorders = [3,2,5];
-	      var digitLen = value.toString().length;
-	      var ceil = splits = 0;
-
-	      // now search for the best for number of borders
-	      var checkIfSatisfy = function (v) {
-	        for (var i = 0; i < 3; i++) {
-	          if (v % supportedBorders[i] === 0)
-	            return supportedBorders[i];
-	        }
-	        return 0;
-	      };
-
-	      var auditSplits = function (v) {
-	        var leftInt = parseInt(v.toString()[0]);
-	        if (leftInt == 1) return 2;
-	        return checkIfSatisfy(leftInt);
-	      };
-
-	      if (digitLen > 2) {
-	        ceil = Math.ceil10(value, digitLen - 1);
-	        splits = auditSplits(ceil);
-	        if (!splits) {
-	          ceil += Math.pow(10, digitLen - 1);
-	          splits = auditSplits(ceil);
-	        }
-	      } else if (digitLen == 2) {
-	        // double digit
-	        ceil = value.toString();
-	        if (ceil[1] <= 5 && (ceil[0] == 1 || ceil[0] == 2 || ceil[0] == 5 || ceil[0] == 7) && ceil[1] != 0) {
-	          ceil = parseInt(ceil[0] + "5");
-	        } else {
-	          ceil = Math.ceil10(value, 1);
-	          ceil = ceil == 70 ? 75 : ceil;
-	        }
-	        splits = checkIfSatisfy(ceil);
-	      } else {
-	        // single digit
-	        ceil = value;
-	        splits = checkIfSatisfy(ceil);
-	        if (ceil == 5 || ceil == 3 || ceil == 2) {
-	          splits = 1;
-	        }
-	        if (!splits) {
-	          ceil += 1;
-	          splits = auditSplits(ceil);
-	        }
-	      }
-
-	      return {
-	        max: ceil,
-	        splits: splits
-	      };
-	  },
-
-	  getScaleForMulti: function(data, rows, len) {
-	    // across multi set
-	    // each set of data needs ot have thier own individual min / max
-	    var ySecs = {};
-	    var min = [];
-	    var max = [];
-
-	    for (var i = 0; i < rows; i++) {
-	      temp = data[i].slice(0).sort(asc);
-	      min[i] = temp[0];
-	      ans = api.getSplits(temp[len - 1]);
-	      max[i] = ans.max;
-	      ySecs[i] = ans.splits;
-	      // delete temp;
-	    }
-
-	    return {
-	      min: min,
-	      max: max,
-	      ySecs: ySecs
-	    };
-	  },
-
-	  // data reduced base by column to find a new combined min / max
-	  getStackedScale: function (data, rows, len, yAxis, min, max) {
-	    var maxSet = [];
-	    var ySecs = 0;
-
-	    for (var i = 0; i < len; i++) {
-	      var rowTotal = 0;
-	      for (var j = 0; j < rows; j++) {
-	          rowTotal += data[j][i];
-	      }
-	      maxSet.push(rowTotal);
-	      max = max < rowTotal ? rowTotal : max;
-	      min = min > rowTotal ? rowTotal : min;
-	    }
-
-	    if (yAxis) {
-	      ans = api.getSplits(max);
-	      max = ans.max;
-	      ySecs = ans.splits;
-	    }
-
-	    return {
-	      min : min,
-	      max: max,
-	      ySecs: ySecs,
-	      maxSet: maxSet
-	    };
-	  },
-
-	  // for bubble and need to find min / max across the x, y , z axis
-	  getBubbleScatterScale: function (data, rows, len, yAxis) {
-	    var ySecs = 0;
-	    var min = [];
-	    var max = [];
-
-	    for (var x = 0; x < 3; x++) {
-	      min[x] = Number.MAX_VALUE;
-	      max[x] = 0;
-	    }
-
-	    for (var i = 0; i < len; i++) {
-	      for (var j = 0; j < rows; j++) {
-	        for (var c = 0; c < 3; c++) {
-	          max[c] = max[c] < data[j][i][c] ? data[j][i][c] : max[c];
-	          min[c] = min[c] > data[j][i][c] ? data[j][i][c] : min[c];
-	        }
-	      }
-	    }
-
-	    if (yAxis) {
-	      ans = api.getSplits(max[1]);
-	      max[1] = ans.max;
-	      ySecs = ans.splits;
-	    }
-
-	    return {
-	       min : min,
-	       max : max,
-	       ySecs: ySecs
-	    };
-	  },
-
-	  // find min / max across the entire data set
-	  getSimpleScale: function (data, rows, len, yAxis, min, max) {
-	    var ySecs = 0;
-
-	    for (var i = 0; i < rows; i++) {
-	      temp = data[i].slice(0).sort(asc);
-	      min = min > temp[0] ? temp[0] : min;
-	      max = max < temp[len - 1] ? temp[len - 1] : max;
-	      // delete temp;
-	    }
-
-	    if (yAxis) {
-	      ans = api.getSplits(max);
-	      max = ans.max;
-	      ySecs = ans.splits;
-	    }
-
-	    return {
-	       min: min,
-	       max: max,
-	       ySecs: ySecs
-	    };
-	  },
-
-	  // find min max between multiple rows of data sets
-	  // also handles the scale needed to work with multi axis
-	  scale: function (data, opts) {
-	      opts = opts || 0;
-	      data = typeof data[0] === 'object' ? data : [data];
-	      var max = 0;
-	      var yAxis = opts.yAxis || (opts.chart ? opts.chart.yAxis : 0);
-	      var min = Number.MAX_VALUE;
-	      var maxSet = [];
-	      var temp;
-	      var ans;
-	      var self = this;
-	      var ySecs = 0;
-	      var getSplits = api.getSplits;
-	      var color = [];
-
-
-	      // change up the structure if the data set is an object
-	      if (data[0].data || (data[0].data == 0)) {
-	        temp = [];
-	        for (var x = 0; x < data.length; x++) {
-	          temp.push(data[x].data);
-	          color.push(data[x].strokeColor);
-	        }
-	        if (opts.complex) {
-	          data = [temp];
-	        } else {
-	          data = temp;
-	        }
-	      }
-
-	      var rows = data.length;
-	      var len = data[0].length;
-
-	      if (yAxis && yAxis.multi) {
-
-	        var result = api.getScaleForMulti(data, rows, len);
-	        min = result.min;
-	        max = result.max;
-	        ySecs = result.ySecs;
-
-	      } else if (opts.stack) {
-
-	        var result = api.getStackedScale(data, rows, len, yAxis, min, max);
-	        min = result.min;
-	        max = result.max;
-	        ySecs = result.ySecs;
-	        maxSet= result.maxSet;
-
-	      } else if (opts.type == 'bubble-scattered') {
-
-	        var result = api.getBubbleScatterScale(data, rows, len, yAxis);
-	        min = result.min;
-	        max = result.max;
-	        ySecs = result.ySecs;
-
-	      } else {
-
-	        var result = api.getSimpleScale(data, rows, len, yAxis, min, max);
-	        min = result.min;
-	        max = result.max;
-	        ySecs = result.ySecs;
-
-	      }
-
-	      return {
-	          min: min,
-	          max: max,
-	          maxSet: maxSet,
-	          len: len,
-	          rows: rows,
-	          ySecs: ySecs,
-	          color: color
-	      };
-	  }
-	};
-
-
-/***/ },
-/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// TODO:: Consolidate code
@@ -2644,7 +2080,53 @@
 	};
 
 /***/ },
-/* 23 */
+/* 19 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var arc = module.exports = {
+
+	    // snippet from http://stackoverflow.com/questions/5736398/how-to-calculate-the-svg-path-for-an-arc-of-a-circle
+	    // calculates the polar to cartesian coordinates
+	    polarToCartesian: function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
+	        var angleInRadians = (angleInDegrees - 90) * Math.PI / 180;
+
+	        return {
+	            x: centerX + radius * Math.cos(angleInRadians),
+	            y: centerY + radius * Math.sin(angleInRadians)
+	        };
+	    },
+
+	    // describes an arc
+	    describeArc: function describeArc(centerX, centerY, radius, startAngle, endAngle) {
+	        if (startAngle == 0 && endAngle == 360) {
+	            // Alt solution http://stackoverflow.com/questions/5737975/circle-drawing-with-svgs-arc-path/10477334#10477334
+	            // return [
+	            //     "M", radius * 2, radius,
+	            //     "a", radius, radius, 0, 1, 0, radius*2, 0,
+	            //     "a", radius, radius, 0, 1, 0, -radius * 2, 0
+	            // ].join(" ");
+	            startAngle = 1;
+	        }
+	        var start = arc.polarToCartesian(centerX, centerY, radius, endAngle);
+	        var end = arc.polarToCartesian(centerX, centerY, radius, startAngle);
+	        var arcSweep = endAngle - startAngle <= 180 ? "0" : "1";
+
+	        return ["M", start.x, start.y, "A", radius, radius, 0, arcSweep, 0, end.x, end.y].join(" ");
+	    },
+
+	    describePie: function describePie(centerX, centerY, radius, startAngle, endAngle) {
+	        return arc.describeArc(centerX, centerY, radius, startAngle, endAngle) + " L" + centerX + " " + centerY;
+	    }
+	};
+
+/***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+
+
+/***/ },
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var composer = module.exports = {
@@ -2696,7 +2178,7 @@
 	};
 
 /***/ },
-/* 24 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2705,11 +2187,11 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var _composerEs6 = __webpack_require__(23);
+	var _composerEs6 = __webpack_require__(21);
 
 	var _composerEs62 = _interopRequireDefault(_composerEs6);
 
-	var _utilsExtend = __webpack_require__(27);
+	var _utilsExtend = __webpack_require__(25);
 
 	var _utilsExtend2 = _interopRequireDefault(_utilsExtend);
 
@@ -2815,7 +2297,512 @@
 	module.exports = Draw;
 
 /***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(26);
+	var Class = __webpack_require__(27);
+	var Errors = __webpack_require__(14);
+	var api = __webpack_require__(24);
+
+	var isArray = function isArray(obj) {
+	  return obj instanceof Array;
+	};
+	/**
+	 * deep extend object or json properties
+	 * @param  {object} object to extend
+	 * @param  {object} object
+	 * @return {object} global function object
+	 */
+	module.exports = Class.extend({
+
+	  // default
+	  init: function init() {
+	    return this;
+	  },
+
+	  // data properties
+	  props: {},
+
+	  // accepts a N * 1 array
+	  // finds total sum then creates a relative measure base on total sum
+	  _dataSetRelativeToTotal: api.dataSetRelativeToTotal,
+
+	  // random color generator
+	  _randomColor: function _randomColor() {
+	    return '#' + Math.floor(Math.random() * 16777215).toString(16);
+	  },
+
+	  // appends the elements
+	  // accepts multiple child
+	  _append: function _append(parent, childs) {
+	    if (parent === '') return childs;
+	    if (!isArray(childs)) {
+	      childs = [childs];
+	    }
+	    return parent.replace(/(.*)(<\/.*>$)/g, function (match, p1, p2) {
+	      return p1 + childs.join('') + p2;
+	    });
+	  },
+
+	  // alternate to one level deep
+	  make: function make(tagName, attribute, dataAttribute, content) {
+	    var el = '<' + tagName;
+
+	    if (tagName === 'svg') {
+	      el += ' version="1.1" xmlns="http://www.w3.org/2000/svg"';
+	    }
+	    el += this._makePairs(attribute);
+	    el += this._makePairs('data', dataAttribute);
+	    return el += '>' + (content || content === 0 ? content : '') + '</' + tagName + '>';
+	  },
+
+	  // Deep copies an object
+	  // TODO:: improve this
+	  _deepCopy: function _deepCopy(objToCopy) {
+	    return JSON.parse(JSON.stringify(objToCopy));
+	  },
+
+	  /**
+	   * A super class calls right before return the svg content to the user
+	   */
+	  postRender: function postRender(svgContent) {
+	    return svgContent;
+	  },
+
+	  /**
+	   * [_isArray check if variable is an array]
+	   * @param  any type
+	   * @return {Boolean}   true if its an array
+	   */
+	  _isArray: isArray,
+
+	  // Default ratio
+	  _getRatio: function _getRatio(scale) {
+	    scale.heightRatio = scale.height - (scale.paddingTop + scale.paddingBottom) / scale.max;
+	  },
+
+	  /**
+	   * [_defineBaseScaleProperties defines the common scale properties]
+	   * @param  {[obj]} data  [raw data set from user]
+	   * @param  {[obj]} chart [chart properties passed by the user]
+	   * @return {[obj]}       [return an obj that describes the scale base on the data & chart properties]
+	   */
+	  _defineBaseScaleProperties: function _defineBaseScaleProperties(data, chart) {
+	    var self = this;
+	    var opts = this.attributes.opts;
+	    var chart = opts.chart;
+	    var xAxis = chart.xAxis || opts.xAxis;
+	    var yAxis = chart.yAxis || opts.yAxis;
+	    var scale = self._scale(data, chart);
+	    self._extend(scale, chart);
+	    scale._data = data;
+	    // Acceptable inverse flags to inverse the data set
+	    var inverseList = {
+	      'x': 'x',
+	      'y': 'y'
+	    };
+
+	    var inverse = {};
+	    if (scale.invert) {
+	      for (var x in scale.invert) {
+	        if (inverseList[scale.inverse[x]]) {
+	          inverse[inverseList[scale.inverse[x]]] = true;
+	        }
+	      }
+	    }
+	    scale.hasInverse = inverse;
+
+	    if (chart.type != 'bubble-point' && (yAxis || xAxis)) {
+	      self._getExternalProps(scale, yAxis, xAxis);
+	      if (!self.describeYAxis) {
+	        Errors.label();
+	      }
+	    }
+	    self._getRatio(scale);
+	    self.props.scale = scale;
+	    return scale;
+	  },
+
+	  /**
+	   * base on the feedback and mange the render of the life cycle
+	   * it passes a immutable obj to preRender and audits the user feedback
+	   */
+	  // TODO:: Rename lifeCycleManager, incorrect term usage
+	  _lifeCycleManager: function _lifeCycleManager(data, chart, describe) {
+	    var self = this;
+	    var scale = self._defineBaseScaleProperties(data, chart);
+	    // check if there is any external steps needed to be done
+	    if (self._call) {
+	      self._call(scale);
+	    }
+	    // make the obj's shallow properties immutable
+	    // we can know if we want to skip the entire process to speed up the computation
+	    var properties = self.preRender ? self.preRender(Object.freeze(self._deepCopy(scale))) : 0;
+
+	    // properties we will except
+	    // - append
+	    // - prepend
+	    var paths = properties.prepend ? properties.prepend : [];
+	    paths = paths.concat(describe(scale));
+	    paths = paths.concat(properties.append ? properties.append : []);
+	    return paths;
+	    // return summary
+	  },
+
+	  // only supports 1 level deep
+	  _makePairs: function _makePairs(prefix, json) {
+	    if (!prefix) return '';
+
+	    if (arguments.length < 2) {
+	      json = prefix;
+	      prefix = '';
+	    } else {
+	      prefix += '-';
+	    }
+
+	    if (!json) return '';
+
+	    var keys = Object.keys(json),
+	        len = keys.length;
+	    var str = '';
+	    while (len--) {
+	      str += ' ' + prefix + keys[len] + '="' + json[keys[len]] + '"';
+	    }
+	    return str;
+	  },
+
+	  // deep extend
+	  _extend: function _extend(attr, json) {
+	    var self = this;
+	    if (!json || !attr) return;
+
+	    var k = Object.keys(json),
+	        len = k.length;
+	    while (len--) {
+	      if (typeof json[k[len]] !== 'object' || isArray(json[k[len]])) {
+	        attr[k[len]] = json[k[len]];
+	      } else {
+	        //it has child objects, copy them too.
+	        if (!attr[k[len]]) {
+	          attr[k[len]] = {};
+	        }
+	        self._extend(attr[k[len]], json[k[len]]);
+	      }
+	    }
+	    return this;
+	  },
+
+	  isFn: function isFn(object) {
+	    return !!(object && object.constructor && object.call && object.apply);
+	  },
+
+	  _makeToken: function _makeToken() {
+	    return Math.random().toString(36).substr(2);
+	  },
+
+	  //sig fig rounding
+	  _sigFigs: api.sigFigs,
+
+	  _getSplits: api.getSplits,
+
+	  // find min max between multiple rows of data sets
+	  // also handles the scale needed to work with multi axis
+	  _scale: api.scale
+	});
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var asc = function asc(a, b) {
+	  return a - b;
+	};
+
+	var api = module.exports = {
+
+	  sigFigs: function sigFigs(n, sig) {
+	    var mult = Math.pow(10, sig - Math.floor(Math.log(n) / Math.LN10) - 1);
+	    return Math.round(n * mult) / mult;
+	  },
+
+	  // accepts a N * 1 array
+	  // finds total sum then creates a relative measure base on total sum
+	  dataSetRelativeToTotal: function dataSetRelativeToTotal(data) {
+	    var total = data.reduce(function (a, b) {
+	      return a + b;
+	    });
+	    return data.map(function (num) {
+	      return num / total;
+	    });
+	  },
+
+	  // calculates the number of yAxis sections base on the maxium value
+	  getSplits: function getSplits(value) {
+	    var set = {};
+	    value = Math.ceil(value, 0); // make sure its a whole number
+	    if (value === 0) return { max: 2, splits: 2 };
+
+	    var supportedBorders = [3, 2, 5];
+	    var digitLen = value.toString().length;
+	    var ceil = splits = 0;
+
+	    // now search for the best for number of borders
+	    var checkIfSatisfy = function checkIfSatisfy(v) {
+	      for (var i = 0; i < 3; i++) {
+	        if (v % supportedBorders[i] === 0) return supportedBorders[i];
+	      }
+	      return 0;
+	    };
+
+	    var auditSplits = function auditSplits(v) {
+	      var leftInt = parseInt(v.toString()[0]);
+	      if (leftInt == 1) return 2;
+	      return checkIfSatisfy(leftInt);
+	    };
+
+	    if (digitLen > 2) {
+	      ceil = Math.ceil10(value, digitLen - 1);
+	      splits = auditSplits(ceil);
+	      if (!splits) {
+	        ceil += Math.pow(10, digitLen - 1);
+	        splits = auditSplits(ceil);
+	      }
+	    } else if (digitLen == 2) {
+	      // double digit
+	      ceil = value.toString();
+	      if (ceil[1] <= 5 && (ceil[0] == 1 || ceil[0] == 2 || ceil[0] == 5 || ceil[0] == 7) && ceil[1] != 0) {
+	        ceil = parseInt(ceil[0] + '5');
+	      } else {
+	        ceil = Math.ceil10(value, 1);
+	        ceil = ceil == 70 ? 75 : ceil;
+	      }
+	      splits = checkIfSatisfy(ceil);
+	    } else {
+	      // single digit
+	      ceil = value;
+	      splits = checkIfSatisfy(ceil);
+	      if (ceil == 5 || ceil == 3 || ceil == 2) {
+	        splits = 1;
+	      }
+	      if (!splits) {
+	        ceil += 1;
+	        splits = auditSplits(ceil);
+	      }
+	    }
+
+	    return {
+	      max: ceil,
+	      splits: splits
+	    };
+	  },
+
+	  getScaleForMulti: function getScaleForMulti(data, rows, len) {
+	    // across multi set
+	    // each set of data needs ot have thier own individual min / max
+	    var ySecs = {};
+	    var min = [];
+	    var max = [];
+
+	    for (var i = 0; i < rows; i++) {
+	      temp = data[i].slice(0).sort(asc);
+	      min[i] = temp[0];
+	      ans = api.getSplits(temp[len - 1]);
+	      max[i] = ans.max;
+	      ySecs[i] = ans.splits;
+	      // delete temp;
+	    }
+
+	    return {
+	      min: min,
+	      max: max,
+	      ySecs: ySecs
+	    };
+	  },
+
+	  // data reduced base by column to find a new combined min / max
+	  getStackedScale: function getStackedScale(data, rows, len, yAxis, min, max) {
+	    var maxSet = [];
+	    var ySecs = 0;
+
+	    for (var i = 0; i < len; i++) {
+	      var rowTotal = 0;
+	      for (var j = 0; j < rows; j++) {
+	        rowTotal += data[j][i];
+	      }
+	      maxSet.push(rowTotal);
+	      max = max < rowTotal ? rowTotal : max;
+	      min = min > rowTotal ? rowTotal : min;
+	    }
+
+	    if (yAxis) {
+	      ans = api.getSplits(max);
+	      max = ans.max;
+	      ySecs = ans.splits;
+	    }
+
+	    return {
+	      min: min,
+	      max: max,
+	      ySecs: ySecs,
+	      maxSet: maxSet
+	    };
+	  },
+
+	  // for bubble and need to find min / max across the x, y , z axis
+	  getBubbleScatterScale: function getBubbleScatterScale(data, rows, len, yAxis) {
+	    var ySecs = 0;
+	    var min = [];
+	    var max = [];
+
+	    for (var x = 0; x < 3; x++) {
+	      min[x] = Number.MAX_VALUE;
+	      max[x] = 0;
+	    }
+
+	    for (var i = 0; i < len; i++) {
+	      for (var j = 0; j < rows; j++) {
+	        for (var c = 0; c < 3; c++) {
+	          max[c] = max[c] < data[j][i][c] ? data[j][i][c] : max[c];
+	          min[c] = min[c] > data[j][i][c] ? data[j][i][c] : min[c];
+	        }
+	      }
+	    }
+
+	    if (yAxis) {
+	      ans = api.getSplits(max[1]);
+	      max[1] = ans.max;
+	      ySecs = ans.splits;
+	    }
+
+	    return {
+	      min: min,
+	      max: max,
+	      ySecs: ySecs
+	    };
+	  },
+
+	  // find min / max across the entire data set
+	  getSimpleScale: function getSimpleScale(data, rows, len, yAxis, min, max) {
+	    var ySecs = 0;
+
+	    for (var i = 0; i < rows; i++) {
+	      temp = data[i].slice(0).sort(asc);
+	      min = min > temp[0] ? temp[0] : min;
+	      max = max < temp[len - 1] ? temp[len - 1] : max;
+	      // delete temp;
+	    }
+
+	    if (yAxis) {
+	      ans = api.getSplits(max);
+	      max = ans.max;
+	      ySecs = ans.splits;
+	    }
+
+	    return {
+	      min: min,
+	      max: max,
+	      ySecs: ySecs
+	    };
+	  },
+
+	  // find min max between multiple rows of data sets
+	  // also handles the scale needed to work with multi axis
+	  scale: function scale(data, opts) {
+	    opts = opts || 0;
+	    data = typeof data[0] === 'object' ? data : [data];
+	    var max = 0;
+	    var yAxis = opts.yAxis || (opts.chart ? opts.chart.yAxis : 0);
+	    var min = Number.MAX_VALUE;
+	    var maxSet = [];
+	    var temp;
+	    var ans;
+	    var self = this;
+	    var ySecs = 0;
+	    var getSplits = api.getSplits;
+	    var color = [];
+
+	    // change up the structure if the data set is an object
+	    if (data[0].data || data[0].data == 0) {
+	      temp = [];
+	      for (var x = 0; x < data.length; x++) {
+	        temp.push(data[x].data);
+	        color.push(data[x].strokeColor);
+	      }
+	      if (opts.complex) {
+	        data = [temp];
+	      } else {
+	        data = temp;
+	      }
+	    }
+
+	    var rows = data.length;
+	    var len = data[0].length;
+
+	    if (yAxis && yAxis.multi) {
+
+	      var result = api.getScaleForMulti(data, rows, len);
+	      min = result.min;
+	      max = result.max;
+	      ySecs = result.ySecs;
+	    } else if (opts.stack) {
+
+	      var result = api.getStackedScale(data, rows, len, yAxis, min, max);
+	      min = result.min;
+	      max = result.max;
+	      ySecs = result.ySecs;
+	      maxSet = result.maxSet;
+	    } else if (opts.type == 'bubble-scattered') {
+
+	      var result = api.getBubbleScatterScale(data, rows, len, yAxis);
+	      min = result.min;
+	      max = result.max;
+	      ySecs = result.ySecs;
+	    } else {
+
+	      var result = api.getSimpleScale(data, rows, len, yAxis, min, max);
+	      min = result.min;
+	      max = result.max;
+	      ySecs = result.ySecs;
+	    }
+
+	    return {
+	      min: min,
+	      max: max,
+	      maxSet: maxSet,
+	      len: len,
+	      rows: rows,
+	      ySecs: ySecs,
+	      color: color
+	    };
+	  }
+	};
+
+/***/ },
 /* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Extend property
+	 */
+	var isArray = function isArray(obj) {
+	  return obj instanceof Array;
+	};
+	var extend = module.exports = function (props) {
+	  var self = this;
+	  if (arguments.length > 1) {
+	    self = arguments[0];
+	    props = arguments[1];
+	  }
+	  var keys = Object.keys(props);
+	  for (var i = 0; i < keys.length; i++) {
+	    self[keys[i]] = props[keys[i]];
+	  }
+	  return self;
+	};
+
+/***/ },
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2840,33 +2827,32 @@
 	    }
 	    // Shift
 	    value = value.toString().split('e');
-	    value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+	    value = Math[type](+(value[0] + 'e' + (value[1] ? +value[1] - exp : -exp)));
 	    // Shift back
 	    value = value.toString().split('e');
-	    return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
+	    return +(value[0] + 'e' + (value[1] ? +value[1] + exp : exp));
 	}
 	// Decimal round
 	if (!Math.round10) {
-	    Math.round10 = function(value, exp) {
+	    Math.round10 = function (value, exp) {
 	        return decimalAdjust('round', value, exp);
 	    };
 	}
 	// Decimal floor
 	if (!Math.floor10) {
-	    Math.floor10 = function(value, exp) {
+	    Math.floor10 = function (value, exp) {
 	        return decimalAdjust('floor', value, exp);
 	    };
 	}
 	// Decimal ceil
 	if (!Math.ceil10) {
-	    Math.ceil10 = function(value, exp) {
+	    Math.ceil10 = function (value, exp) {
 	        return decimalAdjust('ceil', value, exp);
 	    };
 	}
 
-
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2897,21 +2883,20 @@
 	  for (var name in properties) {
 	    // Check if we're overwriting an existing function.
 	    var property = properties[name];
-	    prototype[name] = isFunction(property) && isFunction(_super[name]) && hasSuper(property) ?
-	      (function createMethod(name, fn) {
-	        return function method() {
-	          var tmp = this._super;
+	    prototype[name] = isFunction(property) && isFunction(_super[name]) && hasSuper(property) ? (function createMethod(name, fn) {
+	      return function method() {
+	        var tmp = this._super;
 
-	          // Add a new ._super() method that is the same method but on the super-class.
-	          this._super = _super[name];
+	        // Add a new ._super() method that is the same method but on the super-class.
+	        this._super = _super[name];
 
-	          // The method only needs to be bound temporarily, so remove it when we're done executing.
-	          var ret = fn.apply(this, arguments);
-	          this._super = tmp;
+	        // The method only needs to be bound temporarily, so remove it when we're done executing.
+	        var ret = fn.apply(this, arguments);
+	        this._super = tmp;
 
-	          return ret;
-	        };
-	      })(name, property) : property;
+	        return ret;
+	      };
+	    })(name, property) : property;
 	  }
 
 	  // The dummy class constructor.
@@ -2932,31 +2917,6 @@
 
 	  return Class;
 	};
-
-/***/ },
-/* 27 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Extend property
-	 */
-	 var isArray = function (obj) {
-	     return obj instanceof Array;
-	 };
-	var extend = module.exports = function (props) {
-	  var self = this;
-	  if (arguments.length > 1) {
-	    self = arguments[0];
-	    props = arguments[1];
-	  }
-	  var keys = Object.keys(props);
-	  for (var i = 0;i < keys.length; i++) {
-	    self[keys[i]] = props[keys[i]];
-	  }
-	  return self;
-	};
-
-
 
 /***/ }
 /******/ ])

@@ -59,7 +59,7 @@ module.exports = Base.extend({
   componentName: 'line',
 
   // Find min max in time series data
-  _scale: function _scale(content, opts) {
+  _scale: function (content, opts) {
     content = content[0];
     opts = opts || 0;
     var chart = opts.chart || opts;
@@ -77,9 +77,7 @@ module.exports = Base.extend({
     var data = content.data;
     var key;
 
-    var ascByKey = function ascByKey(a, b) {
-      return parseInt(a[key]) - parseInt(b[key]);
-    };
+    var ascByKey = function (a,b) { return parseInt(a[key]) - parseInt(b[key]); };
     var labels = Object.keys(content.labels);
     var rows = labels.length;
     var len = data.length;
@@ -140,20 +138,20 @@ module.exports = Base.extend({
     }
 
     return {
-      min: min,
-      max: max,
-      len: len,
-      rows: rows,
-      ySecs: ySecs,
-      labels: labels,
-      pHeight: pHeight,
-      pWidth: pWidth,
-      heightRatio: heightRatio,
-      color: colors
+        min: min,
+        max: max,
+        len: len,
+        rows: rows,
+        ySecs: ySecs,
+        labels: labels,
+        pHeight: pHeight,
+        pWidth: pWidth,
+        heightRatio: heightRatio,
+        color: colors
     };
   },
 
-  _startCycle: function _startCycle() {
+  _startCycle: function () {
     var self = this;
     var data = self.attributes.data;
     var opts = self.attributes.opts;
@@ -165,34 +163,39 @@ module.exports = Base.extend({
       data = [data];
     }
     return self._lifeCycleManager(data, chart, function (scale) {
-      return self._describeSeries(data[0], scale.paddingLeft, scale.paddingTop, scale);
+        return self._describeSeries(data[0], scale.paddingLeft, scale.paddingTop, scale);
     });
   },
 
   // Extends default getRatio in lib/base/common.js
-  _getRatio: function _getRatio(scale) {
+  _getRatio: function (scale) {
     var self = this;
     scale.type = 'timeSeries';
 
     var max = scale._data[0].data[scale.len - 1].timestamp;
-    scale.xAxis.maxUTC = max = new Date(max).getTime();
+    scale.xAxis.maxUTC = max = (new Date(max)).getTime();
     var min = scale.xAxis.minUTC || 0;
     if (!min) {
       min = scale._data[0].data[0].timestamp;
-      scale.xAxis.minUTC = min = new Date(min).getTime();
+      scale.xAxis.minUTC = min = (new Date(min)).getTime();
     }
 
     // Need to calculate a tickSize relative to time
     // Javascript MIN_VALUE is 5e-324, so should be fine
-    scale.tickSize = self._sigFigs(scale.pWidth / (max - min), 8);
+    scale.tickSize = self._sigFigs((scale.pWidth / (max - min)),8);
   },
 
   // Describes the path to close the open path
-  _describeCloseAttributeD: function _describeCloseAttributeD(point, height, heightRatio, paddingLeft, paddingTop) {
-    return ['V', height - paddingTop, 'H', paddingLeft, 'L', paddingLeft, height - point * heightRatio - paddingTop].join(' ');
+  _describeCloseAttributeD: function (point, height, heightRatio, paddingLeft, paddingTop) {
+    return [
+            'V',(height - paddingTop),
+            'H', paddingLeft,
+            'L', paddingLeft,
+            (height - (point * heightRatio) - paddingTop)
+          ].join(" ");
   },
 
-  _describePathAndCircle: function _describePathAndCircle(dataObj, labels, paddingLeft, paddingTop, scale, isScattered, isLine, isFill) {
+  _describePathAndCircle: function (dataObj, labels, paddingLeft, paddingTop, scale, isScattered, isLine, isFill) {
     var height = scale.height;
     var heightRatio = {};
     var tickSize = scale.tickSize;
@@ -213,14 +216,14 @@ module.exports = Base.extend({
       } else {
         heightRatio[x] = scale.heightRatio;
       }
-      item.strokeColor = item.strokeColor || self._randomColor();
+      item.strokeColor  = item.strokeColor || self._randomColor();
     }
 
     // The length of the data obj
     for (var i = 0; i < dataObj.length; i++) {
       // The number of items to include
-      var timestamp = new Date(dataObj[i].timestamp).getTime();
-      var position = (timestamp - minUTC) * tickSize;
+      var timestamp = (new Date(dataObj[i].timestamp)).getTime();
+      var position = (timestamp - minUTC)  * tickSize;
 
       for (var row = 0; row < rows; row++) {
         var point = dataObj[i][items[row]] || 0;
@@ -231,9 +234,9 @@ module.exports = Base.extend({
               entryPoints[row] = point;
             }
             // X Y
-            pathTokens[row] = 'M ' + paddingLeft + ' ' + (height - point * heightRatio[row] - paddingTop);
+            pathTokens[row] = 'M ' + paddingLeft + ' '+ (height - (point * heightRatio[row]) - paddingTop);
           } else {
-            pathTokens[row] += ' L ' + (position + paddingLeft) + ' ' + (height - point * heightRatio[row] - paddingTop);
+            pathTokens[row] += ' L '+ (position + paddingLeft) + ' ' + (height - (point * heightRatio[row]) - paddingTop);
           }
         }
 
@@ -243,39 +246,39 @@ module.exports = Base.extend({
           var strokeColor = item.scattered.strokeColor || item.strokeColor;
           paths.push(self.make('circle', {
             cx: position + paddingLeft,
-            cy: height - point * heightRatio[row] - paddingTop,
+            cy: (height - (point * heightRatio[row]) - paddingTop),
             r: item.scattered.radius || '3',
             stroke: strokeColor,
             'stroke-width': item.scattered.strokeWidth || '3',
             fill: 'white'
           }, {
-            _ref: row
+            _ref : row
           }));
         }
       }
     }
     for (var c = 0; c < rows; c++) {
       var item = labels[items[c]];
-      paths.unshift(self.make('path', {
-        d: pathTokens[c],
-        stroke: item.strokeColor,
-        'stroke-width': item.strokeWidth || '3',
-        'stroke-linejoin': 'round',
-        'stroke-linecap': 'round',
-        fill: 'none'
-      }, {
-        _ref: c
-      }));
-      if (isFill && item.fill) {
-        paths.push(self.make('path', {
-          d: pathTokens[c] + self._describeCloseAttributeD(entryPoints[c], height, heightRatio[c], paddingLeft, paddingTop),
+      paths.unshift(self.make('path',{
+          d: pathTokens[c],
           stroke: item.strokeColor,
           'stroke-width': item.strokeWidth || '3',
           'stroke-linejoin': 'round',
           'stroke-linecap': 'round',
-          fill: item.fill
-        }, {
+          fill: 'none'
+      },{
           _ref: c
+      }));
+      if (isFill && item.fill) {
+        paths.push(self.make('path',{
+            d: pathTokens[c] + self._describeCloseAttributeD(entryPoints[c], height, heightRatio[c], paddingLeft, paddingTop),
+            stroke: item.strokeColor,
+            'stroke-width': item.strokeWidth || '3',
+            'stroke-linejoin': 'round',
+            'stroke-linecap': 'round',
+            fill: item.fill
+        },{
+            _ref: c
         }));
       }
     }
@@ -283,7 +286,7 @@ module.exports = Base.extend({
   },
 
   // Svg path builder
-  _describeSeries: function _describeSeries(data, paddingLeft, paddingTop, scale) {
+  _describeSeries: function (data, paddingLeft, paddingTop, scale) {
     var self = this;
     var paths = self._describePathAndCircle(data.data, data.labels, paddingLeft, paddingTop, scale, scale.scattered, scale.line, scale.fill);
     return paths;

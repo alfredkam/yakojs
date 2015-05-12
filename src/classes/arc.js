@@ -4,7 +4,7 @@ var arc = require('../svg/arc');
 module.exports = Base.extend({
 
     // Parent generator that manages the svg
-    _startCycle: function _startCycle() {
+    _startCycle: function (){
         var self = this;
         var chart = self.attributes.opts.chart;
         var data = self.attributes.data;
@@ -15,7 +15,7 @@ module.exports = Base.extend({
     },
 
     // Extends _defineBaseScaleProperties in lib/base/common.js
-    _defineBaseScaleProperties: function _defineBaseScaleProperties(data, chart) {
+    _defineBaseScaleProperties: function (data, chart) {
         var self = this;
         var scale = {
             // Converts nums to relative => total sum equals 1
@@ -38,7 +38,7 @@ module.exports = Base.extend({
      * [_describePath super class]
      * @return {[type]} [empty string]
      */
-    _describePath: function _describePath() {
+    _describePath: function () {
         return '';
     }
 });

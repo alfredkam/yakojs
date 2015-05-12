@@ -4,7 +4,7 @@ var bar = module.exports = Base.extend({
 
     componentName: 'bar',
 
-    _startCycle: function _startCycle() {
+    _startCycle: function () {
         var data = this.attributes.data;
         var self = this;
         var chart = this.attributes.opts.chart;
@@ -16,7 +16,7 @@ var bar = module.exports = Base.extend({
     },
 
     // Describes the svg that builds out the bar
-    _describeBar: function _describeBar(data, scale) {
+    _describeBar: function (data, scale) {
         if (!data.length) return '';
         // TODO:: need to account paddings for labels
         // Wrap in array for consistency
@@ -37,25 +37,25 @@ var bar = module.exports = Base.extend({
                 var yAxis = height - relativeMax + scale.paddingTop;
                 var total = 0;
                 for (var j = 0; j < rows; j++) {
-                    paths.push(this.make('rect', {
-                        x: tickSize * i + tickSize / 4 + scale.paddingLeft,
+                    paths.push(this.make('rect',{
+                        x: tickSize * i + (tickSize / 4) + scale.paddingLeft,
                         y: yAxis,
                         width: tickSize / rows,
-                        height: data[j].data[i] / scale.maxSet[i] * relativeMax,
+                        height: (data[j].data[i] / scale.maxSet[i] * relativeMax),
                         fill: data[j].fill || this._randomColor()
                     }));
-                    yAxis += data[j].data[i] / scale.maxSet[i] * relativeMax;
+                    yAxis += (data[j].data[i] / scale.maxSet[i] * relativeMax);
                 }
             } else {
                 // Side by side
-                var x = tickSize * i + tickSize / 4 + scale.paddingLeft;
+                var x = tickSize * i + (tickSize / 4) + scale.paddingLeft;
                 for (var j = 0; j < rows; j++) {
-                    x += tickSize / (rows + 1) * j;
+                    x += tickSize / (rows+1)* j;
                     var relativeMax = height * data[j].data[i] / scale.max;
-                    paths.push(this.make('rect', {
+                    paths.push(this.make('rect',{
                         x: x,
                         y: height - relativeMax + scale.paddingTop,
-                        width: tickSize / (rows + 1),
+                        width: tickSize / (rows+1),
                         height: relativeMax,
                         fill: data[j].fill || this._randomColor()
                     }));
@@ -63,4 +63,5 @@ var bar = module.exports = Base.extend({
             }
         }
         return paths;
-    } });
+    },
+});

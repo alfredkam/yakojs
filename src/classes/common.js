@@ -3,8 +3,8 @@ var Class = require('./class');
 var Errors = require('../utils/error');
 var api = require('../components/api');
 
-var isArray = function isArray(obj) {
-  return obj instanceof Array;
+var isArray = function (obj) {
+    return obj instanceof Array;
 };
 /**
  * deep extend object or json properties
@@ -15,7 +15,7 @@ var isArray = function isArray(obj) {
 module.exports = Class.extend({
 
   // default
-  init: function init() {
+  init: function () {
     return this;
   },
 
@@ -27,44 +27,44 @@ module.exports = Class.extend({
   _dataSetRelativeToTotal: api.dataSetRelativeToTotal,
 
   // random color generator
-  _randomColor: function _randomColor() {
-    return '#' + Math.floor(Math.random() * 16777215).toString(16);
+  _randomColor: function () {
+    return '#'+Math.floor(Math.random()*16777215).toString(16);
   },
 
   // appends the elements
   // accepts multiple child
-  _append: function _append(parent, childs) {
+  _append: function (parent, childs) {
     if (parent === '') return childs;
     if (!isArray(childs)) {
       childs = [childs];
     }
     return parent.replace(/(.*)(<\/.*>$)/g, function (match, p1, p2) {
-      return p1 + childs.join('') + p2;
+        return p1 + childs.join("") + p2;
     });
   },
 
   // alternate to one level deep
-  make: function make(tagName, attribute, dataAttribute, content) {
+  make: function (tagName, attribute, dataAttribute, content) {
     var el = '<' + tagName;
 
     if (tagName === 'svg') {
-      el += ' version="1.1" xmlns="http://www.w3.org/2000/svg"';
+        el += ' version="1.1" xmlns="http://www.w3.org/2000/svg"';
     }
     el += this._makePairs(attribute);
     el += this._makePairs('data', dataAttribute);
-    return el += '>' + (content || content === 0 ? content : '') + '</' + tagName + '>';
+    return el += '>' + (content || content === 0 ? content : '') + '</'+tagName+'>';
   },
 
   // Deep copies an object
   // TODO:: improve this
-  _deepCopy: function _deepCopy(objToCopy) {
+  _deepCopy: function (objToCopy) {
     return JSON.parse(JSON.stringify(objToCopy));
   },
 
   /**
    * A super class calls right before return the svg content to the user
    */
-  postRender: function postRender(svgContent) {
+  postRender: function (svgContent) {
     return svgContent;
   },
 
@@ -76,7 +76,7 @@ module.exports = Class.extend({
   _isArray: isArray,
 
   // Default ratio
-  _getRatio: function _getRatio(scale) {
+  _getRatio: function (scale) {
     scale.heightRatio = scale.height - (scale.paddingTop + scale.paddingBottom) / scale.max;
   },
 
@@ -86,7 +86,7 @@ module.exports = Class.extend({
    * @param  {[obj]} chart [chart properties passed by the user]
    * @return {[obj]}       [return an obj that describes the scale base on the data & chart properties]
    */
-  _defineBaseScaleProperties: function _defineBaseScaleProperties(data, chart) {
+  _defineBaseScaleProperties: function (data, chart) {
     var self = this;
     var opts = this.attributes.opts;
     var chart = opts.chart;
@@ -97,21 +97,21 @@ module.exports = Class.extend({
     scale._data = data;
     // Acceptable inverse flags to inverse the data set
     var inverseList = {
-      'x': 'x',
-      'y': 'y'
+        'x': 'x',
+        'y': 'y'
     };
 
     var inverse = {};
     if (scale.invert) {
       for (var x in scale.invert) {
-        if (inverseList[scale.inverse[x]]) {
-          inverse[inverseList[scale.inverse[x]]] = true;
+            if (inverseList[scale.inverse[x]]) {
+                inverse[inverseList[scale.inverse[x]]] = true;
+            }
         }
-      }
     }
     scale.hasInverse = inverse;
 
-    if (chart.type != 'bubble-point' && (yAxis || xAxis)) {
+    if ((chart.type != 'bubble-point') && (yAxis || xAxis)) {
       self._getExternalProps(scale, yAxis, xAxis);
       if (!self.describeYAxis) {
         Errors.label();
@@ -127,7 +127,7 @@ module.exports = Class.extend({
    * it passes a immutable obj to preRender and audits the user feedback
    */
   // TODO:: Rename lifeCycleManager, incorrect term usage
-  _lifeCycleManager: function _lifeCycleManager(data, chart, describe) {
+  _lifeCycleManager: function (data, chart, describe) {
     var self = this;
     var scale = self._defineBaseScaleProperties(data, chart);
     // check if there is any external steps needed to be done
@@ -136,7 +136,7 @@ module.exports = Class.extend({
     }
     // make the obj's shallow properties immutable
     // we can know if we want to skip the entire process to speed up the computation
-    var properties = self.preRender ? self.preRender(Object.freeze(self._deepCopy(scale))) : 0;
+    var properties = (self.preRender ? self.preRender(Object.freeze(self._deepCopy(scale))) : 0);
 
     // properties we will except
     // - append
@@ -149,7 +149,7 @@ module.exports = Class.extend({
   },
 
   // only supports 1 level deep
-  _makePairs: function _makePairs(prefix, json) {
+  _makePairs: function (prefix, json) {
     if (!prefix) return '';
 
     if (arguments.length < 2) {
@@ -161,8 +161,7 @@ module.exports = Class.extend({
 
     if (!json) return '';
 
-    var keys = Object.keys(json),
-        len = keys.length;
+    var keys = Object.keys(json), len = keys.length;
     var str = '';
     while (len--) {
       str += ' ' + prefix + keys[len] + '="' + json[keys[len]] + '"';
@@ -171,31 +170,29 @@ module.exports = Class.extend({
   },
 
   // deep extend
-  _extend: function _extend(attr, json) {
+  _extend: function (attr, json) {
     var self = this;
     if (!json || !attr) return;
 
-    var k = Object.keys(json),
-        len = k.length;
-    while (len--) {
-      if (typeof json[k[len]] !== 'object' || isArray(json[k[len]])) {
-        attr[k[len]] = json[k[len]];
-      } else {
-        //it has child objects, copy them too.
-        if (!attr[k[len]]) {
-          attr[k[len]] = {};
+    var k = Object.keys(json), len = k.length;
+    while(len--) {
+        if (typeof json[k[len]] !== 'object' || isArray(json[k[len]])) {
+            attr[k[len]] = json[k[len]];
+        } else {    //it has child objects, copy them too.
+            if (!attr[k[len]]) {
+                attr[k[len]] = {};
+            }
+            self._extend(attr[k[len]], json[k[len]]);
         }
-        self._extend(attr[k[len]], json[k[len]]);
-      }
     }
     return this;
   },
 
-  isFn: function isFn(object) {
+  isFn: function (object) {
     return !!(object && object.constructor && object.call && object.apply);
   },
 
-  _makeToken: function _makeToken() {
+  _makeToken: function () {
     return Math.random().toString(36).substr(2);
   },
 

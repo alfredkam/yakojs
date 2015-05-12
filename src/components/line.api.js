@@ -1,6 +1,6 @@
 // Describes scattered graph
 var api = module.exports = {
-  describeScatter: function describeScatter(data, numArr, paddingLeft, paddingTop, scale, ref) {
+  describeScatter: function(data, numArr, paddingLeft, paddingTop, scale, ref) {
     var height = scale.height;
     var heightRatio = scale.heightRatio;
     var self = this;
@@ -15,16 +15,16 @@ var api = module.exports = {
 
     for (var i = 0; i < numArr.length; i++) {
       paths.push(self.make('circle', {
-        cx: i === 0 ? i + scale.innerPadding + paddingLeft : tickSize * i + paddingLeft,
-        cy: height - numArr[i] * heightRatio - paddingTop - scale.innerPaddingTop,
+        cx: i === 0 ? (i + scale.innerPadding + paddingLeft) : ((tickSize * i) + paddingLeft),
+        cy: (height - (numArr[i] * heightRatio) - paddingTop - scale.innerPaddingTop),
         r: radius,
         stroke: strokeColor,
         'stroke-width': strokeWidth,
         fill: fill
       }, {
-        _ref: ref
+        _ref : ref
       }));
     }
     return paths;
   }
-};
+}

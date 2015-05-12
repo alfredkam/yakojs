@@ -8,12 +8,12 @@ var sparkLine = require('./lib/components/spark');
 var pie = require('./lib/components/pie');
 var donut = require('./lib/components/donut');
 var bar = require('./lib/components/bar');
-var bubble = require('./lib/components/bubble.es6');
-var svg = require('./lib/svg/svg.es6');
+var bubble = require('./lib/components/bubble');
+var svg = require('./lib/svg/svg');
 var mixin = require('./lib/utils/mixin');
 // time series / object base
-var bubblePoint = require('./lib/components/bubble.point.es6');
-var bubbleScatter = require('./lib/components/bubble.scatter.es6');
+var bubblePoint = require('./lib/components/bubble.point');
+var bubbleScatter = require('./lib/components/bubble.scatter');
 var line = require('./lib/components/line');
 
 var initialize = function (component, obj) {

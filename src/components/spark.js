@@ -11,7 +11,7 @@ var spark = module.exports = Base.extend({
    * The parent generator that manages the svg generation
    * @return {object} global function object
    */
-  _startCycle: function _startCycle() {
+  _startCycle: function () {
     var self = this;
     var data = self.attributes.data;
     var opts = self.attributes.opts;
@@ -35,20 +35,22 @@ var spark = module.exports = Base.extend({
     }
 
     return self._lifeCycleManager(data, chart, function (scale) {
-      for (var x = 0; x < scale.rows; x++) {
-        if (yAxis && yAxis.multi) {
-          scale.heightRatio = scale.pHeight / scale.max[x];
+        for (var x = 0; x < scale.rows; x++) {
+            if (yAxis && yAxis.multi) {
+              scale.heightRatio = scale.pHeight / scale.max[x];
+            }
+            var g = self.make('g');
+            // pass in a ref for event look up, here `ref` is x
+            paths.push(
+              append(g, self._describePath(data[x], scale.paddingLeft, scale.paddingTop, scale, x))
+            );
         }
-        var g = self.make('g');
-        // pass in a ref for event look up, here `ref` is x
-        paths.push(append(g, self._describePath(data[x], scale.paddingLeft, scale.paddingTop, scale, x)));
-      }
-      return paths;
+        return paths;
     });
   },
 
   // Extends default getRatio in lib/base/common.js
-  _getRatio: function _getRatio(scale) {
+  _getRatio: function (scale) {
     var self = this;
     var data = self.attributes.data;
 
@@ -80,26 +82,26 @@ var spark = module.exports = Base.extend({
     scale.pHeight = scale.height - scale.paddingTop - scale.paddingBottom - scale.innerPaddingTop - scale.innerPaddingBottom;
     scale.pWidth = scale.width - scale.paddingLeft - scale.paddingRight - scale.innerPadding;
     scale.heightRatio = scale.pHeight / scale.max;
-    scale.tickSize = self._sigFigs(scale.pWidth / (scale.len - 1), 8);
+    scale.tickSize = self._sigFigs((scale.pWidth / (scale.len - 1)),8);
   },
 
   // Describes scattered graph
   _describeScatteredGraph: api.describeScatter,
 
   // Svg path builder
-  _describePath: function _describePath(data, paddingLeft, paddingTop, scale, ref) {
+  _describePath : function (data, paddingLeft, paddingTop, scale, ref) {
     ref = ref || 0;
     var self = this;
     var pathToken = svgPath.describeAttributeD(data.data, paddingLeft, paddingTop, scale, ref);
-    var pathNode = self.make('path', {
-      d: pathToken,
-      stroke: data.strokeColor || self._randomColor(),
-      'stroke-width': data.strokeWidth || '3',
-      'stroke-linejoin': 'round',
-      'stroke-linecap': 'round',
-      fill: 'none'
-    }, {
-      _ref: ref
+    var pathNode = self.make('path',{
+        d: pathToken,
+        stroke: data.strokeColor || self._randomColor(),
+        'stroke-width': data.strokeWidth || '3',
+        'stroke-linejoin': 'round',
+        'stroke-linecap': 'round',
+        fill: 'none'
+    },{
+        _ref: ref
     });
     var paths = [];
 
@@ -110,7 +112,8 @@ var spark = module.exports = Base.extend({
         'stroke-width': '2',
         'stroke-linejoin': 'round',
         'stroke-linecap': 'round',
-        fill: data.fill }, {
+        fill: data.fill,
+      },{
         _ref: ref
       }));
     }
