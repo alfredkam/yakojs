@@ -1,58 +1,76 @@
-import composer from './composer';
+import composer from './composer.es6';
 import extend from '../utils/extend';
 
-module.exports = {
+class Draw {
 
-    props: {},
+    constructor () {
+        var self = this;
+        //self = {};
+        return this;
+    }
 
-    getCurrentNode (node = null) {
+
+    getNode (node = null) {
         var parent = null;
         var self = this;
         if (!node) {
-            node = self.props;
-        }
-        if (node.children) {
-            var len = node.children.length;
-            parent = node;
-            node = node.children[len - 1];
-            if (node.children) {
-                var { node, parent } = self.getCurrentNode(node);
-            }
+            node = self;
         }
         return { node, parent };
-    },
+    }
 
     create (svgElement) {
         var self = this;
-        self.props.element = svgElement;
+        self.element = svgElement;
         return self;
-    },
+    }
 
     append (svgElement) {
         var self = this;
-        var { node } = self.getCurrentNode();
+        var { node } = self.getNode();
         node.children = node.children || [];
 
         if (Array.isArray(svgElement)) {
-            node.push(svgElement);
+            node.children.push(svgElement);
         } else {
-            node.children.push({
-                element: svgElement
-            });
+            var svg = new Draw();
+            svgElement = svg.create(svgElement);
+            node.children.push(svgElement);
         }
-        return self;
-    },
+        return svgElement;
+    }
 
     attr (attrName, property) {
       var self = this;
-      var { node } = self.getCurrentNode();
-      node.attr = node.attr || {};
+      var { node } = self.getNode();
+      node.attrs = node.attrs || {};
 
       if (typeof attrName == 'object') {
-        extend(node.attr, attrName);
+        extend(node.attrs, attrName);
       } else {
-       node.attr[attrName] = property;
+       node.attrs[attrName] = property;
       }
       return self;
     }
+
+    forEach (fn) {
+      var self = this;
+      var { node } = self.getNode();
+      var children = node.children || [];
+      children.forEach(fn);
+      return self;
+    }
+
+    stringify () {
+      var self = this;
+      var { node } = self.getNode();
+
+      var childContent = (node.children || []).map(function (svgObj) {
+        return svgObj.stringify();
+      });
+
+      return composer.make(node.element, node.attrs, {}, childContent.join(""));
+    }
 }
+
+module.exports = Draw;

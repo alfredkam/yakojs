@@ -38,7 +38,7 @@ var composer = module.exports = {
         el += ' version="1.1" xmlns="http://www.w3.org/2000/svg"';
     }
     el += composer.makePairs(attribute);
-    el += composer._makePairs('data', dataAttribute);
+    el += composer.makePairs('data', dataAttribute);
     return el += '>' + (content || content === 0 ? content : '') + '</'+tagName+'>';
   },
 

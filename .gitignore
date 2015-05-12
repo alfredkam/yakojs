@@ -9,4 +9,3 @@ app.js
 npm-debug.log
 testData/
 testData.json
-dist/

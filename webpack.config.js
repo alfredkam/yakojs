@@ -6,7 +6,7 @@ module.exports = {
   context : __dirname,
 
   entry : {
-      yako : './index'
+      yako : './build-tools/expose.build'
   },
 
   output : {
@@ -21,10 +21,13 @@ module.exports = {
 
   module: {
     loaders: [
-      {test: /\.jsx$/, loaders: ['react-hot', 'jsx-loader?harmony']},
       {
-        test: /\.es6$/,
-        loader: 'babel-loader?blacklist=strict'
+        test: /\.jsx$/,
+        loaders: ['jsx-loader?harmony']
+      },
+      {
+          test: /\.es6$/,
+          loader: 'babel-loader?blacklist=strict'
       },
 
       // allow less files to load urls pointing to font assets

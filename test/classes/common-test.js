@@ -1,8 +1,8 @@
 var chai = require('chai');
 var expect = chai.expect;
-var Common = require('../../lib/base/common');
+var Common = require('../../lib/classes/common');
 
-describe('lib/base/common', function () {
+describe('lib/classes/common', function () {
     var common;
     before(function () {
         common = new Common();
@@ -13,19 +13,19 @@ describe('lib/base/common', function () {
             .to.be.an.instanceof(Common);
     });
 
-    it('append as string', function () {
+    it('_append as string', function () {
         var child = '<g>123</g>';
         var parent = '<svg></svg>';
         var expected = '<svg><g>123</g></svg>';
-        expect(common.append(parent, child))
+        expect(common._append(parent, child))
             .to.equal(expected);
     });
 
-    it('append as [string array]', function () {
+    it('_append as [string array]', function () {
         var childs = ['<g>123</g>','<g>123</g>'];
         var parent = '<svg></svg>';
         var expected = '<svg><g>123</g><g>123</g></svg>';
-        var result = common.append(parent, childs);
+        var result = common._append(parent, childs);
         expect(result)
             .to.equal(expected);
     });
@@ -273,15 +273,9 @@ describe('lib/base/common', function () {
         var result = common._scale(set, {yAxis: { multi : true}});
 
         expect(result.min)
-            .to.deep.equal({
-                0: 0,
-                1: 5
-            });
+            .to.deep.equal([0,5]);
         expect(result.max)
-            .to.deep.equal({
-                0: 4,
-                1: 9
-            });
+            .to.deep.equal([4,9]);
         expect(result.len)
             .to.equal(5);
         expect(result.rows)
@@ -316,10 +310,10 @@ describe('lib/base/common', function () {
         var result = common._scale(set, {type: 'bubble-scattered'});
 
         expect(result.max)
-            .to.deep.equal({ '0': 9, '1': 10, '2': 11 });
+            .to.deep.equal([ 9, 10, 11 ]);
 
         expect(result.min)
-            .to.deep.equal({ '0': 0, '1': 1, '2': 2 });
+            .to.deep.equal([0, 1, 2]);
 
         expect(result.len)
             .to.equal(5);

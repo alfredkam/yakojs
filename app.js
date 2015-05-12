@@ -1,10 +1,11 @@
 require("babel-core/register")({
   blacklist: ["strict"],
-  ignore: 'node_modules',
+  only: /(lib|addons)/,
   extensions: [".es6"]
 });
 
 var yako = require('./index');
+var svg = yako.svg;
 var timeSeries = yako.timeSeries;
 var spark = yako.spark;
 var pie = yako.pie;
@@ -200,6 +201,14 @@ while (amount--) {
     },
     title: 'just a test',
     points: set,
+    append: function (svgString, scale) {
+        var item = svg.create("g");
+        item.append("g").attr({
+            'class' : 'test',
+            'works' : 'work work'
+        });
+        item.append("g");
+    }
   });
 
   nodes += sparkInstance.attr({

@@ -1,16 +1,15 @@
 {
   "name": "yako",
-  "version": "0.3.29",
+  "version": "0.4.0",
   "description": "A minimal and light weight graph",
   "repository": {
     "type": "git",
     "url": "https://github.com/alfredkam/yakojs.git"
   },
   "scripts": {
-    "test": "./node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha test -- --recursive",
-    "coveralls": "./node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha test -- --recursive --report loconly -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
-    "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --hot",
-    "pack": "webpack --config ./build-tools/demo.config.js -p && webpack --config ./build-tools/example.config.js -p && webpack --config ./build-tools/expose.config.js && webpack --config ./build-tools/expose.min.config.js -p && webpack --config ./build-tools/addons.expose.config.js && webpack --config ./build-tools/addons.expose.min.config.js -p"
+    "test": "./node_modules/babel/bin/babel-node -r ./node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha test -- --recursive",
+    "start": "node app",
+    "coveralls": "./node_modules/babel/bin/babel-node -r ./node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha test -- --recursive --report loconly -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
   "keywords": [
     "graph",
@@ -41,6 +40,7 @@
     "chai": "^2.0.0",
     "coveralls": "^2.11.2",
     "es6-loader": "^0.2.0",
+    "eslint": "^0.21.0",
     "expose-loader": "^0.6.0",
     "file-loader": "^0.8.1",
     "gulp": "^3.8.11",
@@ -48,7 +48,7 @@
     "gulp-nodemon": "^2.0.3",
     "gulp-plumber": "^1.0.0",
     "gulp-webpack": "^1.4.0",
-    "istanbul": "^0.3.5",
+    "istanbul": "^0.3.14",
     "jsx-loader": "^0.12.2",
     "jymin": "^0.4.1",
     "less": "^2.4.0",

@@ -162,7 +162,7 @@ while (amount--) {
     chart: {
       width: 300,
       height: 100,
-      maxRadius: '10'
+      maxRadius: 100
       // additional options
       // strokes: [],
       // fills: []

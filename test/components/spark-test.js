@@ -1,6 +1,6 @@
 var chai = require('chai');
 var expect = chai.expect;
-var SparkLine = require('../lib/spark');
+var SparkLine = require('../../lib/components/spark');
 
 describe('lib/spark', function () {
     var spark;
