@@ -1,5 +1,6 @@
 var composer = module.exports = {
-  makePairs: function (prefix, json) {
+
+  makePairs (prefix, json) {
     if (!prefix) return '';
 
     if (arguments.length < 2) {
@@ -19,7 +20,7 @@ var composer = module.exports = {
     return str;
   },
 
-  append: function (parent, childs) {
+  append (parent, childs) {
     if (parent === '') return childs;
     if (!isArray(childs)) {
       childs = [childs];
@@ -30,7 +31,7 @@ var composer = module.exports = {
   },
 
   // alternate to one level deep
-  make: function (tagName, attribute, dataAttribute, content) {
+  make (tagName, attribute, dataAttribute, content) {
     var el = '<' + tagName;
 
     if (tagName === 'svg') {
@@ -39,5 +40,9 @@ var composer = module.exports = {
     el += composer.makePairs(attribute);
     el += composer._makePairs('data', dataAttribute);
     return el += '>' + (content || content === 0 ? content : '') + '</'+tagName+'>';
+  },
+
+  stringify () {
+
   }
 };

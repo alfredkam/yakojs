@@ -91,7 +91,8 @@ spark().attr({
     line: true,                  // Override to disable the line to be drawn
     fill: true,                  // Defaults is true, override to disable fill
                                  // Say if you want to only have scattered graph, you will set line & fill properties to false
-    scattered: false             // Override to enable scattered
+    scattered: false,            // Override to enable scattered
+    invert: ['y']                // Optionally if want to invert the data set
 
     /* Padding options for the chart */
     paddingLeft: 0, 
