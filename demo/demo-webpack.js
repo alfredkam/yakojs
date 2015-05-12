@@ -1,4 +1,4 @@
-var yako = require('../index/addons');
+var yako = require('../addons');
 var Label = yako.addons.Label;
 var spark = yako.spark;
 var pie = yako.pie;
@@ -162,7 +162,7 @@ while (amount--) {
     chart: {
       width: 300,
       height: 100,
-      maxRadius: '10'
+      maxRadius: 100
       // additional options
       // strokes: [],
       // fills: []

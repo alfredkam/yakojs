@@ -75,9 +75,14 @@ var set2 = [
   }
 ];
 
-
+var handler = new Events();
 var node = '<div class="graph">' + spark({
-    mixin: [Label]
+    mixin: [Label],
+    _call: function (scale) {
+      
+      handler.setProps(scale, this.attributes.data);
+      // self.props.events.setProps(scale, this.attributes.data);
+    },
 }).attr({
     chart: {
         width: 1200,
@@ -124,7 +129,7 @@ var node = '<div class="graph">' + spark({
             // same representation is also used for `dateTimeLabelFormat`
             // s - seconds
             // m - minutes
-            // h - hours
+            // h - hoursp
             // D - days
             // M - months
             // Y - years
@@ -142,5 +147,11 @@ var node = '<div class="graph">' + spark({
     data: set2
 }) + "</div>";
 
-
+handler.on = {
+    'svg:mouseMove': function (e, props) {
+        var pos = handler.getToolTipPosition(props);
+        console.log('relative tooltip position', pos);
+    }
+};
 document.getElementsByTagName("body")[0].innerHTML = node;
+handler.listen(document.getElementsByClassName("graph")[0]);

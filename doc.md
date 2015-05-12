@@ -1,12 +1,12 @@
 ##Content
- - [General Usage](#Usage)
+- [General Usage](#Usage)
   - [Spark Graph Attributes](#spark-graph-attributes)
   - [Pie Chart Attributes](#pie-chart-attributes)
   - [Donut Chart Attributes](#donut-chart-attributes)
   - [Bubble Point Graph Attributes (for a horizontal line time series representation)](#bubble-point-graph-attributes-for-a-horizontal-line-time-series-representation)
   - [Bubble Graph Attributes ( for representing a cohort)](#bubble-graph-attributes--for-representing-a-cohort)
   - [Bar Graph Attributes](#bar-graph-attributes)
-
+- [Time Series] (#time-series--consumable-objects) 
 - [API & Mixin](#api--mixin)
 - [SVG API](#svg-api)
 - [Addons](#addons)
@@ -46,7 +46,7 @@ var pie = yako.pie;         // Pie chart
 ```javascript
 var set = [
   {
-    data: [214,3423],             // An array with numbers
+    points: [214,3423],             // An array with numbers
 
     /* Optional parameters */
     strokeColor: "rgb(200,94,54)",// Controls the stroke color. 
@@ -63,7 +63,7 @@ var set = [
     }
   },
   {
-    data: [13414,243243],         // An array with numbers
+    points: [13414,243243],         // An array with numbers
 
     /* Optional parameters */
     strokeColor: "#333",          // Controls the stroke color. if its not provided, it will randomly generate a color
@@ -91,7 +91,8 @@ spark().attr({
     line: true,                  // Override to disable the line to be drawn
     fill: true,                  // Defaults is true, override to disable fill
                                  // Say if you want to only have scattered graph, you will set line & fill properties to false
-    scattered: false             // Override to enable scattered
+    scattered: false,            // Override to enable scattered
+    invert: ['y']                // Optionally if want to invert the data set
 
     /* Padding options for the chart */
     paddingLeft: 0, 
@@ -99,7 +100,7 @@ spark().attr({
     paddingTop: 0,
     paddingBottom: 0
   },
-  data: set                      // Accepts an array or json obj
+  points: set                      // Accepts an array or json obj
 });
 ```
 
@@ -125,7 +126,7 @@ pie('.graph').attr({
     paddingTop: 0,
     paddingBottom: 0
   },
-  data: set
+  points: set
 });
 ```
 
@@ -153,7 +154,7 @@ donut('.graph').attr({
     paddingTop: 0,
     paddingBottom: 0
   },
-  data: set
+  points: set
 });
 
 /* Default outerRadius & innerRadius base on chart attributes */
@@ -194,7 +195,7 @@ bubble('.graph').attr({
     paddingTop: 0,
     paddingBottom: 0
   },
-  data: set
+  points: set
 });
 // default maxRadius base on chart attributes
 var maxRadius =  chart.maxRadius || (chart.height < chart.width ? chart.height : chart.width) / 3;
@@ -219,7 +220,7 @@ bubble('.graph').attr({
     /* Options for the circle */
     maxRadius: 10,            // Overrides default & sets a cap for a max radius for the bubble
     fill: ['#000'],           // Sets the default fill color
-    fills: ['#333','#334']    // This will override the fill color and matches with the adjacent dataset
+    fills: ['#333','#334'],   // This will override the fill color and matches with the adjacent dataset
                               // Note: if fill / fills are not provided - it will randomly generate a color
 
     /* Padding options for the chart */
@@ -228,7 +229,7 @@ bubble('.graph').attr({
     paddingTop: 0,
     paddingBottom: 0
   },
-  data: set
+  points: set
 });
 
 /* Default maxRadius base on chart attributes */
@@ -255,11 +256,78 @@ bar('.graph').attr({
     /* Optional parameters */
     stack: true               // This will enable stack graph
   },
-  data: set
+  points: set
 });
 ```
 
+##Time Series & Consumable Objects
+Yako provides a set of api for time series and consumable objects.  It can be access through ```var yako = require('yako').timeSeries```.
 
+###Line
+Yako's line chart consumes object as data and auto fills.
+
+###Bubble Line (Bubble Point)
+A time series graph and uses bubble to represent a sample size happening a cross a series.
+```javascript
+var bubblePoint = requrie('yako').timeSeries.bubble.point
+
+bubblePoint().attr({
+  // Width & height controls the svg view box
+  width: 1200,
+  height: 100,
+  points: self.props.set,
+  /* Optional parameters */
+  /* Options for the straight line */
+  axis: {
+    strokeColor: '#000',              // sets stroke color,
+    strokeWidth: 2
+  },
+  maxRadius: 10,                      // Caps the maxRadius
+  strokeColor: '#000',                // Set default stroke color
+  strokeWidth: 2,                     // Set default stroke width
+  fill: '#333',                       // Sets default fill color
+  startDate: new Date(2015,2,13),     // Sets the default start date
+  endDate: new Date(2015,2,15),       // Sets the default end date
+  /* Data Set */
+  points: [{
+    data: 123,
+    date: new Date(2015,2,14)
+    fill: '#000',
+    /* Optional Params */
+    strokeWidth: 2,
+    strokeColor: '#000'
+    metaData: {}
+  },{
+    ...
+  }]
+});
+
+```
+###Bubble Scatter
+A bubble graph and consumes an object, when including the ```Events``` mixin, it will pass back the object and the meta data.
+```javascript
+var bubblePoint = requrie('yako').timeSeries.bubble.point
+
+bubbleScatter().attr({
+  width: 1200,
+  height: 100,
+  /* Optional parameters */
+  maxRadius: 10,                        // Caps the maxRadius
+  fill: '#000',                         // Sets the default fill color
+  invert : ['x', 'y'],                 // If need to invert the x or y cords
+  /* Data Set */
+  points: [{
+    data: [0,1,3],
+    fill: '#000',
+    /* Optional Params */
+    strokeWidth: 2,
+    strokeColor: '#000'
+    metaData: {}
+  },{
+    ...
+  }]
+});
+```
 ##API & Mixin
 Instances of the graph component are created internally, and each component could be re-used subsequently.  Once you've picked your entry point, you could access the component api. Within each component, you could access your component with ```javascript this```
 ```javascript
@@ -278,8 +346,7 @@ var instance = spark({
 });
 
 var result = instance.attr({
-  chart: { ... },
-  data: [ ... ]
+  ...
 })
 ```
 
@@ -327,7 +394,7 @@ var svg = require('yako').svg;
 Returns the scale for the path and returns min, height, interval, heightRatio, height, width in json object.  Expects attr to contain
 ```javascript
 attr = {
-  data: [
+  points: [
           [1,2,3,4],
           [34,6,6,7]
         ],            // An N * M array or a single N * 1 array, eg [1,23,4,5]
@@ -423,6 +490,14 @@ NOTE:: <br>
 When labeling is enabled for ```xAxis``` the default ```paddingTop``` & ```paddingBottom``` is 30 in px;
 When labeling is enabled for ```yAxis``` the default ```paddingLeft``` & ```paddingRight``` is 20 in px;
 
+###Events (draft)
+Yako provides an Event addon that will let you hook into your Yako graphs.
+
+```javascript
+var Events = require('yako/addons/Events');
+
+```
+
 ###ReturnAsObject
 A plugin to return a dom like object representation
 ```javascript
@@ -436,7 +511,7 @@ spark({
   chart: {
     ...
   },
-  data: [ ... ]
+  points: [ ... ]
 });
 
 ```
@@ -534,7 +609,7 @@ React.render(
     events={events} />,
 document.getElementsByTagName('body')[0]);
 ```
-Notice when your registering an event, you would register with ```container``` or ```svg element``` in the combination of ```event name```.
+Notice when your registering an event, you would register with ```container``` or ```svg element``` in the combination of ```event name```.  Here ```container``` is the wrapper that contains the svg elements.
 
 List of supported events:
 
