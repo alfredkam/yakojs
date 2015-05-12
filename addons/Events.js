@@ -21,7 +21,7 @@ var shortHandBindFilterDefinitions = {
 
 var ignore = function () {};
 
-var Class = require('../lib/base/class');
+var Class = require('../lib/classes/class');
 module.exports = Class.extend({
   // A list of tagName w/ event combination in key - value format for fast filtering. Hydrate from `hydrate` function
   _events: {},
@@ -176,7 +176,7 @@ module.exports = Class.extend({
         //     value: data[column]
         //   }
         // };
-        
+
         var column = ((target.dataset || '').c || target.getAttribute('data-c'));
         var point = data[column] || 0;
         var tickSize = scale.tickSize;
@@ -200,7 +200,7 @@ module.exports = Class.extend({
           }
         }
       } else {
-        
+
         var row = ((target.dataset || '').r || target.getAttribute('data-r'));
         var column = ((target.dataset || '').c || target.getAttribute('data-c'));
         if (!row && !column) {
