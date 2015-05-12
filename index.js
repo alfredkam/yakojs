@@ -25,7 +25,7 @@ var initialize = function (component, obj) {
 
 module.exports = {
   name: 'yakojs',
-  VERSION: '0.4.0',
+  VERSION: '0.4.1',
   spark: function (opts) {
     return initialize(sparkLine, opts);
   },
