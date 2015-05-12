@@ -53,7 +53,7 @@ gulp.task('minify:addons', function () {
   var webpackConfig = require('./webpack.config.js');
   _.assign(webpackConfig, {
     entry: {
-      'yako.addons': './build-tools/addons.expose.build'
+      'yako.addons.min': './build-tools/addons.expose.build'
     },
     plugins: [
       new webpack.NoErrorsPlugin(),
