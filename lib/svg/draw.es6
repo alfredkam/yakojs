@@ -1,4 +1,4 @@
-import composer from './composer';
+import composer from './composer.es6';
 import extend from '../utils/extend';
 
 class Draw {

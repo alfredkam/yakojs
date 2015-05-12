@@ -3,7 +3,6 @@
   MIT LICENSE
   Alfred Kam (@alfredkam)
 */
-//require('babel-core/register').transform('core', { blacklist: ["strict"] });
 
 var sparkLine = require('./lib/components/spark');
 var pie = require('./lib/components/pie');
