@@ -1,5 +1,7 @@
 import composer from './composer';
-module.exports () {
+import extend from '../utils/extend';
+
+module.exports = {
 
     props: {},
 
@@ -14,7 +16,7 @@ module.exports () {
             parent = node;
             node = node.children[len - 1];
             if (node.children) {
-                { node, parent } = self.getCurrentNode(node);
+                var { node, parent } = self.getCurrentNode(node);
             }
         }
         return { node, parent };
@@ -31,7 +33,7 @@ module.exports () {
         var { node } = self.getCurrentNode();
         node.children = node.children || [];
 
-        if (typeof svgElement == 'object') {
+        if (Array.isArray(svgElement)) {
             node.push(svgElement);
         } else {
             node.children.push({
@@ -42,10 +44,15 @@ module.exports () {
     },
 
     attr (attrName, property) {
-        var self = this;
-        var { node } = self.getCurrentNode();
-        node.attr = node.attr || {};
-        node.attr[attrName] = property;
-        return self;
-    },
+      var self = this;
+      var { node } = self.getCurrentNode();
+      node.attr = node.attr || {};
+
+      if (typeof attrName == 'object') {
+        extend(node.attr, attrName);
+      } else {
+       node.attr[attrName] = property;
+      }
+      return self;
+    }
 }

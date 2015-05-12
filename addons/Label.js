@@ -1,4 +1,5 @@
 var label = module.exports = {
+
     // Applies the label prior to the graph is generate
     preRender: function (immutableScale) {
         var self = this;
@@ -19,6 +20,7 @@ var label = module.exports = {
             prepend: paths
         };
     },
+
     // Applies the external props to scale
     // TODO:: Allow proper padding adjustment for single / multi axis
     _getExternalProps: function (scale, yAxis, xAxis) {
@@ -49,6 +51,7 @@ var label = module.exports = {
         }
       }
     },
+
     // TODO:: Support custom targets
     // Describes the lable for y axis
     describeYAxis: function (scale, opts) {
@@ -101,10 +104,11 @@ var label = module.exports = {
               'opacity': '1',
               'stroke-linecap': 'round'
             }));
-            axis.push(self.append(g, labels));
+            axis.push(self._append(g, labels));
         }
         return axis;
     },
+
     // TODO:: support custom format
     // Describes the label for x axis
     // For simplicity lets only consider dateTime format atm
@@ -118,7 +122,7 @@ var label = module.exports = {
         var paddingY = scale.paddingY ? scale.paddingY * 2 - 8 : (scale.paddingTop + scale.paddingBottom) - 8;
         var yAxis = partialHeight + paddingY;
         var form = opts.format == 'dateTime' ? true : false;
-     
+
         if (form) {
             // Get UTC time stamp multiplexer
             var tick = opts.interval;
@@ -174,8 +178,9 @@ var label = module.exports = {
           'stroke-linecap': 'round'
         }));
 
-        return [self.append(g, labels)];
+        return [self._append(g, labels)];
     },
+
     // Determines the utc multiplier
     _utcMultiplier: function(tick) {
         var mili = 1e3,
@@ -201,6 +206,7 @@ var label = module.exports = {
 
         return multiplier;
     },
+
     // Formats the time stamp
     // TODO:: Create a template to speed up the computation
     _formatTimeStamp: function (str, time) {
