@@ -1,8 +1,8 @@
 var chai = require('chai');
 var expect = chai.expect;
-var Arc = require('../../lib/base/arc');
+var Arc = require('../../lib/classes/arc');
 
-describe('/lib/base/arc', function () {
+describe('/lib/classes/arc', function () {
     var arc;
     before(function () {
         arc = new Arc();
