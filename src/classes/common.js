@@ -104,8 +104,8 @@ module.exports = Class.extend({
     var inverse = {};
     if (scale.invert) {
       for (var x in scale.invert) {
-            if (inverseList[scale.inverse[x]]) {
-                inverse[inverseList[scale.inverse[x]]] = true;
+        if (inverseList[scale.inveinvert[x]]) {
+              inverse[inverseList[scale.invert[x]]] = true;
             }
         }
     }
