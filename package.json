@@ -1,6 +1,6 @@
 {
   "name": "yako",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "A minimal and light weight graph",
   "repository": {
     "type": "git",
@@ -10,8 +10,7 @@
     "test": "./node_modules/babel/bin/babel-node -r ./node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha test -- --recursive",
     "start": "node app",
     "coveralls": "./node_modules/babel/bin/babel-node -r ./node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha test -- --recursive --report loconly -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
-    "pack": "gulp build && gulp pack",
-    "prepublish": "gulp build && gulp pack"
+    "pack": "gulp build && gulp pack"
   },
   "keywords": [
     "graph",
