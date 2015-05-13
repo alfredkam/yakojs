@@ -124,7 +124,6 @@ gulp.task("build", function () {
   .pipe(gulp.dest("lib"));
 });
 
-
 gulp.task('pack', ['pack:lite', 'minify:lite', 'pack:addons', 'minify:addons', 'pack:demo', 'pack:example']);
 
 gulp.task('dev', function () {

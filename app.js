@@ -4,7 +4,8 @@ require("babel-core/register")({
   extensions: [".es6"]
 });
 
-var yako = require('./index');
+var yako = require('./src/index');
+//var yako = require('./index');
 var svg = yako.svg;
 var timeSeries = yako.timeSeries;
 var spark = yako.spark;

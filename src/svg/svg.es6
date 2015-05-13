@@ -1,8 +1,8 @@
 import path from './path';
 import arc from './arc';
 import rect from './rect';
-import composer from './composer.es6';
-import Draw from './draw.es6';
+import composer from './composer';
+import Draw from './draw';
 
 module.exports = {
 

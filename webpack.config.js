@@ -32,7 +32,9 @@ module.exports = {
 
       // allow less files to load urls pointing to font assets
       // @TODO: figure out why this is necessary and do it better
-      {test: /\.(woff|ttf|eot|svg)$/, loader: 'file-loader' }
+      {
+          test: /\.(woff|ttf|eot|svg)$/, loader: 'file-loader'
+      }
     ]
   }
 };
