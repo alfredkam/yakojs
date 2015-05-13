@@ -55,7 +55,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "3bf94f08ee08214964c7";
+/******/ 	var hotCurrentHash = "5db3b5e2dc5c111e20e7";
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = [];
 /******/ 	
@@ -1292,7 +1292,7 @@
 
 	var _classesDefault2 = _interopRequireDefault(_classesDefault);
 
-	var _bubbleApi = __webpack_require__(26);
+	var _bubbleApi = __webpack_require__(22);
 
 	var _bubbleApi2 = _interopRequireDefault(_bubbleApi);
 
@@ -1347,19 +1347,19 @@
 
 	var _path2 = _interopRequireDefault(_path);
 
-	var _arc = __webpack_require__(22);
+	var _arc = __webpack_require__(23);
 
 	var _arc2 = _interopRequireDefault(_arc);
 
-	var _rect = __webpack_require__(23);
+	var _rect = __webpack_require__(24);
 
 	var _rect2 = _interopRequireDefault(_rect);
 
-	var _composer = __webpack_require__(24);
+	var _composer = __webpack_require__(25);
 
 	var _composer2 = _interopRequireDefault(_composer);
 
-	var _draw = __webpack_require__(25);
+	var _draw = __webpack_require__(26);
 
 	var _draw2 = _interopRequireDefault(_draw);
 
@@ -1405,7 +1405,7 @@
 
 	var _classesDefault2 = _interopRequireDefault(_classesDefault);
 
-	var _bubbleApi = __webpack_require__(26);
+	var _bubbleApi = __webpack_require__(22);
 
 	var _bubbleApi2 = _interopRequireDefault(_bubbleApi);
 
@@ -1461,7 +1461,7 @@
 
 	var _classesDefault2 = _interopRequireDefault(_classesDefault);
 
-	var _bubbleApi = __webpack_require__(26);
+	var _bubbleApi = __webpack_require__(22);
 
 	var _bubbleApi2 = _interopRequireDefault(_bubbleApi);
 
@@ -2094,7 +2094,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var Base = __webpack_require__(17);
-	var arc = __webpack_require__(22);
+	var arc = __webpack_require__(23);
 
 	module.exports = Base.extend({
 
@@ -2142,222 +2142,6 @@
 
 /***/ },
 /* 22 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var arc = module.exports = {
-
-	    // snippet from http://stackoverflow.com/questions/5736398/how-to-calculate-the-svg-path-for-an-arc-of-a-circle
-	    // calculates the polar to cartesian coordinates
-	    polarToCartesian: function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
-	        var angleInRadians = (angleInDegrees - 90) * Math.PI / 180;
-
-	        return {
-	            x: centerX + radius * Math.cos(angleInRadians),
-	            y: centerY + radius * Math.sin(angleInRadians)
-	        };
-	    },
-
-	    // describes an arc
-	    describeArc: function describeArc(centerX, centerY, radius, startAngle, endAngle) {
-	        if (startAngle == 0 && endAngle == 360) {
-	            // Alt solution http://stackoverflow.com/questions/5737975/circle-drawing-with-svgs-arc-path/10477334#10477334
-	            // return [
-	            //     "M", radius * 2, radius,
-	            //     "a", radius, radius, 0, 1, 0, radius*2, 0,
-	            //     "a", radius, radius, 0, 1, 0, -radius * 2, 0
-	            // ].join(" ");
-	            startAngle = 1;
-	        }
-	        var start = arc.polarToCartesian(centerX, centerY, radius, endAngle);
-	        var end = arc.polarToCartesian(centerX, centerY, radius, startAngle);
-	        var arcSweep = endAngle - startAngle <= 180 ? "0" : "1";
-
-	        return ["M", start.x, start.y, "A", radius, radius, 0, arcSweep, 0, end.x, end.y].join(" ");
-	    },
-
-	    describePie: function describePie(centerX, centerY, radius, startAngle, endAngle) {
-	        return arc.describeArc(centerX, centerY, radius, startAngle, endAngle) + " L" + centerX + " " + centerY;
-	    }
-	};
-
-/***/ },
-/* 23 */
-/***/ function(module, exports, __webpack_require__) {
-
-
-
-/***/ },
-/* 24 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var composer = module.exports = {
-
-	  makePairs: function makePairs(prefix, json) {
-	    if (!prefix) return '';
-
-	    if (arguments.length < 2) {
-	      json = prefix;
-	      prefix = '';
-	    } else {
-	      prefix += '-';
-	    }
-
-	    if (!json) return '';
-
-	    var keys = Object.keys(json),
-	        len = keys.length;
-	    var str = '';
-	    while (len--) {
-	      str += ' ' + prefix + keys[len] + '="' + json[keys[len]] + '"';
-	    }
-	    return str;
-	  },
-
-	  append: function append(parent, childs) {
-	    if (parent === '') return childs;
-	    if (!isArray(childs)) {
-	      childs = [childs];
-	    }
-	    return parent.replace(/(.*)(<\/.*>$)/g, function (match, p1, p2) {
-	      return p1 + childs.join('') + p2;
-	    });
-	  },
-
-	  // alternate to one level deep
-	  make: function make(tagName, attribute, dataAttribute, content) {
-	    var el = '<' + tagName;
-
-	    if (tagName === 'svg') {
-	      el += ' version="1.1" xmlns="http://www.w3.org/2000/svg"';
-	    }
-	    el += composer.makePairs(attribute);
-	    el += composer.makePairs('data', dataAttribute);
-	    return el += '>' + (content || content === 0 ? content : '') + '</' + tagName + '>';
-	  },
-
-	  stringify: function stringify() {}
-	};
-
-/***/ },
-/* 25 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-	var _composer = __webpack_require__(24);
-
-	var _composer2 = _interopRequireDefault(_composer);
-
-	var _utilsExtend = __webpack_require__(29);
-
-	var _utilsExtend2 = _interopRequireDefault(_utilsExtend);
-
-	var Draw = (function () {
-	    function Draw() {
-	        _classCallCheck(this, Draw);
-
-	        var self = this;
-	        return this;
-	    }
-
-	    _createClass(Draw, [{
-	        key: 'getNode',
-	        value: function getNode() {
-	            var node = arguments[0] === undefined ? null : arguments[0];
-
-	            var parent = null;
-	            var self = this;
-	            if (!node) {
-	                node = self;
-	            }
-	            return { node: node, parent: parent };
-	        }
-	    }, {
-	        key: 'create',
-	        value: function create(svgElement) {
-	            var self = this;
-	            self.element = svgElement;
-	            return self;
-	        }
-	    }, {
-	        key: 'append',
-	        value: function append(svgElement) {
-	            var self = this;
-
-	            var _self$getNode = self.getNode();
-
-	            var node = _self$getNode.node;
-
-	            node.children = node.children || [];
-
-	            if (Array.isArray(svgElement)) {
-	                node.children.push(svgElement);
-	            } else {
-	                var svg = new Draw();
-	                svgElement = svg.create(svgElement);
-	                node.children.push(svgElement);
-	            }
-	            return svgElement;
-	        }
-	    }, {
-	        key: 'attr',
-	        value: function attr(attrName, property) {
-	            var self = this;
-
-	            var _self$getNode2 = self.getNode();
-
-	            var node = _self$getNode2.node;
-
-	            node.attrs = node.attrs || {};
-
-	            if (typeof attrName == 'object') {
-	                (0, _utilsExtend2['default'])(node.attrs, attrName);
-	            } else {
-	                node.attrs[attrName] = property;
-	            }
-	            return self;
-	        }
-	    }, {
-	        key: 'forEach',
-	        value: function forEach(fn) {
-	            var self = this;
-
-	            var _self$getNode3 = self.getNode();
-
-	            var node = _self$getNode3.node;
-
-	            var children = node.children || [];
-	            children.forEach(fn);
-	            return self;
-	        }
-	    }, {
-	        key: 'stringify',
-	        value: function stringify() {
-	            var self = this;
-
-	            var _self$getNode4 = self.getNode();
-
-	            var node = _self$getNode4.node;
-
-	            var childContent = (node.children || []).map(function (svgObj) {
-	                return svgObj.stringify();
-	            });
-
-	            return _composer2['default'].make(node.element, node.attrs, {}, childContent.join(''));
-	        }
-	    }]);
-
-	    return Draw;
-	})();
-
-	module.exports = Draw;
-
-/***/ },
-/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// TODO:: Consolidate code
@@ -2653,6 +2437,222 @@
 	        scale.tickSize = (width - scale.paddingLeft - scale.paddingRight) / tickLen;
 	    }
 	};
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var arc = module.exports = {
+
+	    // snippet from http://stackoverflow.com/questions/5736398/how-to-calculate-the-svg-path-for-an-arc-of-a-circle
+	    // calculates the polar to cartesian coordinates
+	    polarToCartesian: function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
+	        var angleInRadians = (angleInDegrees - 90) * Math.PI / 180;
+
+	        return {
+	            x: centerX + radius * Math.cos(angleInRadians),
+	            y: centerY + radius * Math.sin(angleInRadians)
+	        };
+	    },
+
+	    // describes an arc
+	    describeArc: function describeArc(centerX, centerY, radius, startAngle, endAngle) {
+	        if (startAngle == 0 && endAngle == 360) {
+	            // Alt solution http://stackoverflow.com/questions/5737975/circle-drawing-with-svgs-arc-path/10477334#10477334
+	            // return [
+	            //     "M", radius * 2, radius,
+	            //     "a", radius, radius, 0, 1, 0, radius*2, 0,
+	            //     "a", radius, radius, 0, 1, 0, -radius * 2, 0
+	            // ].join(" ");
+	            startAngle = 1;
+	        }
+	        var start = arc.polarToCartesian(centerX, centerY, radius, endAngle);
+	        var end = arc.polarToCartesian(centerX, centerY, radius, startAngle);
+	        var arcSweep = endAngle - startAngle <= 180 ? "0" : "1";
+
+	        return ["M", start.x, start.y, "A", radius, radius, 0, arcSweep, 0, end.x, end.y].join(" ");
+	    },
+
+	    describePie: function describePie(centerX, centerY, radius, startAngle, endAngle) {
+	        return arc.describeArc(centerX, centerY, radius, startAngle, endAngle) + " L" + centerX + " " + centerY;
+	    }
+	};
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var composer = module.exports = {
+
+	  makePairs: function makePairs(prefix, json) {
+	    if (!prefix) return '';
+
+	    if (arguments.length < 2) {
+	      json = prefix;
+	      prefix = '';
+	    } else {
+	      prefix += '-';
+	    }
+
+	    if (!json) return '';
+
+	    var keys = Object.keys(json),
+	        len = keys.length;
+	    var str = '';
+	    while (len--) {
+	      str += ' ' + prefix + keys[len] + '="' + json[keys[len]] + '"';
+	    }
+	    return str;
+	  },
+
+	  append: function append(parent, childs) {
+	    if (parent === '') return childs;
+	    if (!isArray(childs)) {
+	      childs = [childs];
+	    }
+	    return parent.replace(/(.*)(<\/.*>$)/g, function (match, p1, p2) {
+	      return p1 + childs.join('') + p2;
+	    });
+	  },
+
+	  // alternate to one level deep
+	  make: function make(tagName, attribute, dataAttribute, content) {
+	    var el = '<' + tagName;
+
+	    if (tagName === 'svg') {
+	      el += ' version="1.1" xmlns="http://www.w3.org/2000/svg"';
+	    }
+	    el += composer.makePairs(attribute);
+	    el += composer.makePairs('data', dataAttribute);
+	    return el += '>' + (content || content === 0 ? content : '') + '</' + tagName + '>';
+	  },
+
+	  stringify: function stringify() {}
+	};
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	var _composer = __webpack_require__(25);
+
+	var _composer2 = _interopRequireDefault(_composer);
+
+	var _utilsExtend = __webpack_require__(29);
+
+	var _utilsExtend2 = _interopRequireDefault(_utilsExtend);
+
+	var Draw = (function () {
+	    function Draw() {
+	        _classCallCheck(this, Draw);
+
+	        var self = this;
+	        return this;
+	    }
+
+	    _createClass(Draw, [{
+	        key: 'getNode',
+	        value: function getNode() {
+	            var node = arguments[0] === undefined ? null : arguments[0];
+
+	            var parent = null;
+	            var self = this;
+	            if (!node) {
+	                node = self;
+	            }
+	            return { node: node, parent: parent };
+	        }
+	    }, {
+	        key: 'create',
+	        value: function create(svgElement) {
+	            var self = this;
+	            self.element = svgElement;
+	            return self;
+	        }
+	    }, {
+	        key: 'append',
+	        value: function append(svgElement) {
+	            var self = this;
+
+	            var _self$getNode = self.getNode();
+
+	            var node = _self$getNode.node;
+
+	            node.children = node.children || [];
+
+	            if (Array.isArray(svgElement)) {
+	                node.children.push(svgElement);
+	            } else {
+	                var svg = new Draw();
+	                svgElement = svg.create(svgElement);
+	                node.children.push(svgElement);
+	            }
+	            return svgElement;
+	        }
+	    }, {
+	        key: 'attr',
+	        value: function attr(attrName, property) {
+	            var self = this;
+
+	            var _self$getNode2 = self.getNode();
+
+	            var node = _self$getNode2.node;
+
+	            node.attrs = node.attrs || {};
+
+	            if (typeof attrName == 'object') {
+	                (0, _utilsExtend2['default'])(node.attrs, attrName);
+	            } else {
+	                node.attrs[attrName] = property;
+	            }
+	            return self;
+	        }
+	    }, {
+	        key: 'forEach',
+	        value: function forEach(fn) {
+	            var self = this;
+
+	            var _self$getNode3 = self.getNode();
+
+	            var node = _self$getNode3.node;
+
+	            var children = node.children || [];
+	            children.forEach(fn);
+	            return self;
+	        }
+	    }, {
+	        key: 'stringify',
+	        value: function stringify() {
+	            var self = this;
+
+	            var _self$getNode4 = self.getNode();
+
+	            var node = _self$getNode4.node;
+
+	            var childContent = (node.children || []).map(function (svgObj) {
+	                return svgObj.stringify();
+	            });
+
+	            return _composer2['default'].make(node.element, node.attrs, {}, childContent.join(''));
+	        }
+	    }]);
+
+	    return Draw;
+	})();
+
+	module.exports = Draw;
 
 /***/ },
 /* 27 */
