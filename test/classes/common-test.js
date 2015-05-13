@@ -1,8 +1,8 @@
 var chai = require('chai');
 var expect = chai.expect;
-var Common = require('../../lib/classes/common');
+var Common = require('../../src/classes/common');
 
-describe('lib/classes/common', function () {
+describe('src/classes/common', function () {
     var common;
     before(function () {
         common = new Common();
@@ -42,7 +42,8 @@ describe('lib/classes/common', function () {
                       0.15384615384615385,
                       0.17307692307692307,
                       0.19230769230769232 ];
-        expect(common._dataSetRelativeToTotal(x))
+        var total = common._sumOfData(x);
+        expect(common._dataSetRelativeToTotal(x, total))
             .that.is.an('array')
             .that.deep.equals(expected);
     });

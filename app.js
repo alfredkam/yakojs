@@ -1,10 +1,11 @@
 require("babel-core/register")({
   blacklist: ["strict"],
-  only: /(lib|addons)/,
+  only: /(src|addons)/,
   extensions: [".es6"]
 });
 
-var yako = require('./index');
+//var yako = require('./index')
+var yako = require('./src/index');
 var svg = yako.svg;
 var timeSeries = yako.timeSeries;
 var spark = yako.spark;
@@ -267,6 +268,20 @@ while (amount--) {
     },
     title: 'just a test',
     data: dataSet4
+  });
+
+  nodes += donut('.graph').attr({
+    chart: {
+      width: 300,
+      height: 100,
+      innerRadius: 40,
+      outerRadius: 50
+      // addtional options
+      // strokes: [],
+      // fills: []
+    },
+    title: 'just a test',
+    data: [0,0]
   });
 
   nodes += pie('.graph').attr({

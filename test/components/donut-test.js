@@ -1,8 +1,8 @@
 var chai = require('chai');
 var expect = chai.expect;
-var donutChart = require('../../lib/components/donut');
+var donutChart = require('../../src/components/donut');
 
-describe('lib/donut', function () {
+describe('src/donut', function () {
     var donut;
     before(function () {
         donut = new donutChart();

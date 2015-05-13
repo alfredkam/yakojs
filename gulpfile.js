@@ -43,7 +43,7 @@ gulp.task('pack:addons', function () {
     }
   });
 
-  return gulp.src('./index')
+  return gulp.src('./addons/index')
     .pipe(plugins.plumber())
     .pipe(gWebpack(webpackConfig, webpack))
     .pipe(gulp.dest('dist'));
@@ -65,7 +65,7 @@ gulp.task('minify:addons', function () {
     ]
   });
 
-  return gulp.src('./index')
+  return gulp.src('./addons/index')
     .pipe(plugins.plumber())
     .pipe(gWebpack(webpackConfig, webpack))
     .pipe(gulp.dest('dist'));
@@ -123,7 +123,6 @@ gulp.task("build", function () {
   }))
   .pipe(gulp.dest("lib"));
 });
-
 
 gulp.task('pack', ['pack:lite', 'minify:lite', 'pack:addons', 'minify:addons', 'pack:demo', 'pack:example']);
 

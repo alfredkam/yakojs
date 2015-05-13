@@ -2,7 +2,7 @@ var arcBase = require('../classes/arc');
 var pie = module.exports = arcBase.extend({
 
     componentName: 'donut',
-    
+
     /**
      * [_describePath genereates the paths for each pie segment]
      * @param  {[int]} radius [circumfrance]
@@ -20,6 +20,11 @@ var pie = module.exports = arcBase.extend({
         var strokes = chart.strokeColors || 0;
         var centerY = chart.height / 2;
         var centerX = chart.width / 2;
+
+        //if (chart.total == 0) {
+          //console.log(chart);
+          //chart.relativeDataSet = [1];
+        //}
 
         for (var i = 0; i < data.length; i++) {
             var endAngle = startAngle +  360 * data[i];

@@ -1,7 +1,7 @@
-describe('/lib/classes/arc', function () {
+describe('/src/classes/arc', function () {
     var chai = require('chai');
     var expect = chai.expect;
-    var Arc = require('../../lib/classes/arc');
+    var Arc = require('../../src/classes/arc');
     var arc;
     var scale;
 

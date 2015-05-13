@@ -38,8 +38,11 @@ var ToolTip = React.createClass({
         html = 'point at value : ' + JSON.stringify(content.exactPoint);
       }
     }
+    var style = {
+      color: 'red'
+    }
     return (
-      <div>
+      <div style={style}>
         {html}
       </div>
     );
@@ -98,7 +101,7 @@ module.exports = React.createClass({
       fill: '#000',             // Sets the default fill color
 
       /* Padding options for the chart */
-      paddingLeft: 0, 
+      paddingLeft: 0,
       paddingRight: 0,
       paddingTop: 0,
       paddingBottom: 0
@@ -118,7 +121,7 @@ module.exports = React.createClass({
 
     var self = this;
      return (
-      <Bubble 
+      <Bubble
         chart={chart}
         events={self.events}
         toolTip={toolTip}

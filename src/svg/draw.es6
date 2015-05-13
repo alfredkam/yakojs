@@ -1,14 +1,12 @@
-import composer from './composer.es6';
+import composer from './composer';
 import extend from '../utils/extend';
 
 class Draw {
 
     constructor () {
         var self = this;
-        //self = {};
         return this;
     }
-
 
     getNode (node = null) {
         var parent = null;

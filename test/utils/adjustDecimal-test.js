@@ -1,8 +1,8 @@
 var chai = require('chai');
 var expect = chai.expect;
-require('../../lib/utils/adjustDecimal');
+require('../../src/utils/adjustDecimal');
 
-describe('lib/utils/math', function () {
+describe('src/utils/math', function () {
     it('should be able to round10', function () {
         expect(Math.round10(120.002, 2))
             .to.be.equal(100);

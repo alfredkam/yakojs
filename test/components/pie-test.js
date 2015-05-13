@@ -1,8 +1,8 @@
 var chai = require('chai');
 var expect = chai.expect;
-var pieChart = require('../../lib/components/pie');
+var pieChart = require('../../src/components/pie');
 
-describe('lib/pie', function () {
+describe('src/pie', function () {
     var pie;
     before(function () {
         pie = new pieChart();

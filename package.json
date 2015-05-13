@@ -1,6 +1,6 @@
 {
   "name": "yako",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "A minimal and light weight graph",
   "repository": {
     "type": "git",
@@ -9,7 +9,8 @@
   "scripts": {
     "test": "./node_modules/babel/bin/babel-node -r ./node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha test -- --recursive",
     "start": "node app",
-    "coveralls": "./node_modules/babel/bin/babel-node -r ./node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha test -- --recursive --report loconly -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
+    "coveralls": "./node_modules/babel/bin/babel-node -r ./node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha test -- --recursive --report loconly -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
+    "pack": "gulp build && gulp pack"
   },
   "keywords": [
     "graph",
@@ -34,8 +35,8 @@
   "readmeFilename": "README.md",
   "devDependencies": {
     "autoprefixer-loader": "^1.2.0",
-    "babel": "^5.2.17",
-    "babel-core": "^5.2.17",
+    "babel": "^5.3.3",
+    "babel-core": "^5.3.3",
     "babel-loader": "^5.0.0",
     "chai": "^2.0.0",
     "coveralls": "^2.11.2",

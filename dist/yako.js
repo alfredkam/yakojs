@@ -55,7 +55,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "f6ce31212b82275afb4f";
+/******/ 	var hotCurrentHash = "fbf48402a03e7c68b389";
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = [];
 /******/ 	
@@ -556,68 +556,117 @@
 	  Alfred Kam (@alfredkam)
 	*/
 
-	var sparkLine = __webpack_require__(3);
-	var pie = __webpack_require__(4);
-	var donut = __webpack_require__(5);
-	var bar = __webpack_require__(6);
-	var bubble = __webpack_require__(7);
-	var svg = __webpack_require__(11);
-	var mixin = __webpack_require__(12);
-	// time series / object base
-	var bubblePoint = __webpack_require__(8);
-	var bubbleScatter = __webpack_require__(9);
-	var line = __webpack_require__(10);
-
-	var initialize = function (component, obj) {
-	  if (typeof obj === 'object') {
-	    return new (obj.mixin ? mixin(mixin(component, obj.mixin), obj) : mixin(component, obj))();
-	  }
-	  return new component(obj);
-	};
-
-	module.exports = {
-	  name: 'yakojs',
-	  VERSION: '0.4.0',
-	  spark: function (opts) {
-	    return initialize(sparkLine, opts);
-	  },
-	  pie: function (opts) {
-	    return initialize(pie, opts);
-	  },
-	  donut: function (opts) {
-	    return initialize(donut, opts);
-	  },
-	  bubble: function (opts) {
-	    return initialize(bubble, opts);
-	  },
-	  bar: function (opts) {
-	    return initialize(bar, opts);
-	  },
-	  svg: svg,
-	  timeSeries: {
-	    bubble: {
-	      point: function (opts) {
-	        return initialize(bubblePoint, opts);
-	      },
-	      scatter: function (opts) {
-	        return initialize(bubbleScatter, opts);
-	      }
-	    },
-	    line: function (opts) {
-	      return initialize(line, opts);
-	    }
-	  }
-	};
+	module.exports = __webpack_require__(3);
 
 
 /***/ },
 /* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(13);
-	var Errors = __webpack_require__(14);
-	var svgPath = __webpack_require__(15);
-	var api = __webpack_require__(16);
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	/*
+	  Copyright 2015
+	  MIT LICENSE
+	  Alfred Kam (@alfredkam)
+	*/
+
+	var _componentsSpark = __webpack_require__(4);
+
+	var _componentsSpark2 = _interopRequireDefault(_componentsSpark);
+
+	var _componentsPie = __webpack_require__(5);
+
+	var _componentsPie2 = _interopRequireDefault(_componentsPie);
+
+	var _componentsDonut = __webpack_require__(6);
+
+	var _componentsDonut2 = _interopRequireDefault(_componentsDonut);
+
+	var _componentsBar = __webpack_require__(7);
+
+	var _componentsBar2 = _interopRequireDefault(_componentsBar);
+
+	var _componentsBubble = __webpack_require__(8);
+
+	var _componentsBubble2 = _interopRequireDefault(_componentsBubble);
+
+	var _svgSvg = __webpack_require__(9);
+
+	var _svgSvg2 = _interopRequireDefault(_svgSvg);
+
+	var _utilsMixin = __webpack_require__(10);
+
+	var _utilsMixin2 = _interopRequireDefault(_utilsMixin);
+
+	// time series / object base
+
+	var _componentsBubblePoint = __webpack_require__(11);
+
+	var _componentsBubblePoint2 = _interopRequireDefault(_componentsBubblePoint);
+
+	var _componentsBubbleScatter = __webpack_require__(12);
+
+	var _componentsBubbleScatter2 = _interopRequireDefault(_componentsBubbleScatter);
+
+	var _componentsLine = __webpack_require__(13);
+
+	var _componentsLine2 = _interopRequireDefault(_componentsLine);
+
+	var initialize = function initialize(component, obj) {
+	  if (typeof obj === 'object') {
+	    return new (obj.mixin ? (0, _utilsMixin2['default'])((0, _utilsMixin2['default'])(component, obj.mixin), obj) : (0, _utilsMixin2['default'])(component, obj))();
+	  }
+	  return new component(obj);
+	};
+
+	exports['default'] = {
+	  name: 'yakojs',
+	  VERSION: '0.4.2',
+	  spark: function spark(opts) {
+	    return initialize(_componentsSpark2['default'], opts);
+	  },
+	  pie: function pie(opts) {
+	    return initialize(_componentsPie2['default'], opts);
+	  },
+	  donut: function donut(opts) {
+	    return initialize(_componentsDonut2['default'], opts);
+	  },
+	  bubble: function bubble(opts) {
+	    return initialize(_componentsBubble2['default'], opts);
+	  },
+	  bar: function bar(opts) {
+	    return initialize(_componentsBar2['default'], opts);
+	  },
+	  svg: _svgSvg2['default'],
+	  timeSeries: {
+	    bubble: {
+	      point: function point(opts) {
+	        return initialize(_componentsBubblePoint2['default'], opts);
+	      },
+	      scatter: function scatter(opts) {
+	        return initialize(_componentsBubbleScatter2['default'], opts);
+	      }
+	    },
+	    line: function line(opts) {
+	      return initialize(_componentsLine2['default'], opts);
+	    }
+	  }
+	};
+	module.exports = exports['default'];
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Base = __webpack_require__(14);
+	var Errors = __webpack_require__(15);
+	var svgPath = __webpack_require__(16);
+	var api = __webpack_require__(17);
 
 	var spark = module.exports = Base.extend({
 
@@ -744,10 +793,10 @@
 	});
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arcBase = __webpack_require__(17);
+	var arcBase = __webpack_require__(18);
 	var pie = module.exports = arcBase.extend({
 
 	    componentName: 'pie',
@@ -767,6 +816,7 @@
 	        var strokes = chart.strokeColors || 0;
 	        var centerX = chart.width / 2;
 	        var centerY = chart.height / 2;
+
 	        for (var i = 0; i < data.length; i++) {
 	            var endAngle = startAngle + 360 * data[i];
 	            paths.push(this.make('path', {
@@ -783,10 +833,10 @@
 	});
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arcBase = __webpack_require__(17);
+	var arcBase = __webpack_require__(18);
 	var pie = module.exports = arcBase.extend({
 
 	    componentName: 'donut',
@@ -808,6 +858,11 @@
 	        var strokes = chart.strokeColors || 0;
 	        var centerY = chart.height / 2;
 	        var centerX = chart.width / 2;
+
+	        //if (chart.total == 0) {
+	        //console.log(chart);
+	        //chart.relativeDataSet = [1];
+	        //}
 
 	        for (var i = 0; i < data.length; i++) {
 	            var endAngle = startAngle + 360 * data[i];
@@ -853,10 +908,10 @@
 	});
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(13);
+	var Base = __webpack_require__(14);
 
 	var bar = module.exports = Base.extend({
 
@@ -924,20 +979,20 @@
 	    } });
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 	/* Entry Points */
 
-	var _classesDefault = __webpack_require__(13);
+	var _classesDefault = __webpack_require__(14);
 
 	var _classesDefault2 = _interopRequireDefault(_classesDefault);
 
-	var _bubbleApiEs6 = __webpack_require__(18);
+	var _bubbleApi = __webpack_require__(19);
 
-	var _bubbleApiEs62 = _interopRequireDefault(_bubbleApiEs6);
+	var _bubbleApi2 = _interopRequireDefault(_bubbleApi);
 
 	module.exports = _classesDefault2['default'].extend({
 
@@ -968,33 +1023,89 @@
 	    },
 
 	    // Extends default ratio w/ auto scaling
-	    _getRatio: _bubbleApiEs62['default'].getRatioByNumberArray,
+	    _getRatio: _bubbleApi2['default'].getRatioByNumberArray,
 
 	    // Describes bubble scattered graph
-	    _describeBubbleChart: _bubbleApiEs62['default'].describeBubbleByNumberArray,
+	    _describeBubbleChart: _bubbleApi2['default'].describeBubbleByNumberArray,
 
 	    // Describes the xAxis for bubble point graph
-	    _describeXAxis: _bubbleApiEs62['default'].describeXAxisForBubbleLine,
+	    _describeXAxis: _bubbleApi2['default'].describeXAxisForBubbleLine,
 
 	    // Describes bubble point graph
-	    _describeBubble: _bubbleApiEs62['default'].describeLineByNumberArray
+	    _describeBubble: _bubbleApi2['default'].describeLineByNumberArray
 	});
 
 /***/ },
-/* 8 */
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _path = __webpack_require__(16);
+
+	var _path2 = _interopRequireDefault(_path);
+
+	var _arc = __webpack_require__(20);
+
+	var _arc2 = _interopRequireDefault(_arc);
+
+	var _rect = __webpack_require__(21);
+
+	var _rect2 = _interopRequireDefault(_rect);
+
+	var _composer = __webpack_require__(22);
+
+	var _composer2 = _interopRequireDefault(_composer);
+
+	var _draw = __webpack_require__(23);
+
+	var _draw2 = _interopRequireDefault(_draw);
+
+	module.exports = {
+
+	    path: _path2['default'],
+
+	    arc: _arc2['default'],
+
+	    rect: _rect2['default'],
+
+	    composer: _composer2['default'],
+
+	    create: function create(svgElement) {
+	        var instance = new _draw2['default']();
+	        return instance.create(svgElement);
+	    }
+	};
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var mixin = module.exports = function (component, obj) {
+	    if (obj instanceof Array) {
+	        for (var i = 0; i < obj.length; i++) {
+	            component = component.extend(obj[i]);
+	        }
+	        return component;
+	    }
+	    return component.extend(obj);
+	};
+
+/***/ },
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 	// time series / object base
 
-	var _classesDefault = __webpack_require__(13);
+	var _classesDefault = __webpack_require__(14);
 
 	var _classesDefault2 = _interopRequireDefault(_classesDefault);
 
-	var _bubbleApiEs6 = __webpack_require__(18);
+	var _bubbleApi = __webpack_require__(19);
 
-	var _bubbleApiEs62 = _interopRequireDefault(_bubbleApiEs6);
+	var _bubbleApi2 = _interopRequireDefault(_bubbleApi);
 
 	module.exports = _classesDefault2['default'].extend({
 
@@ -1027,30 +1138,30 @@
 	    },
 
 	    // Extends default ratio w/ auto scaling
-	    _getRatio: _bubbleApiEs62['default'].getRatioByTimeSeries,
+	    _getRatio: _bubbleApi2['default'].getRatioByTimeSeries,
 
 	    // Describes the xAxis for bubble point graph
-	    _describeXAxis: _bubbleApiEs62['default'].describeXAxisForBubbleLine,
+	    _describeXAxis: _bubbleApi2['default'].describeXAxisForBubbleLine,
 
 	    // Describes bubble point graph
-	    _describeBubble: _bubbleApiEs62['default'].describeLineByObject
+	    _describeBubble: _bubbleApi2['default'].describeLineByObject
 	});
 
 /***/ },
-/* 9 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 	// time series / object base
 
-	var _classesDefault = __webpack_require__(13);
+	var _classesDefault = __webpack_require__(14);
 
 	var _classesDefault2 = _interopRequireDefault(_classesDefault);
 
-	var _bubbleApiEs6 = __webpack_require__(18);
+	var _bubbleApi = __webpack_require__(19);
 
-	var _bubbleApiEs62 = _interopRequireDefault(_bubbleApiEs6);
+	var _bubbleApi2 = _interopRequireDefault(_bubbleApi);
 
 	module.exports = _classesDefault2['default'].extend({
 
@@ -1075,13 +1186,13 @@
 
 	    // Describes bubble scattered graph
 	    // Extends default ratio w/ auto scaling
-	    _getRatio: _bubbleApiEs62['default'].getRatioByObject,
+	    _getRatio: _bubbleApi2['default'].getRatioByObject,
 
-	    _describeBubbleChart: _bubbleApiEs62['default'].describeBubbleByObject
+	    _describeBubbleChart: _bubbleApi2['default'].describeBubbleByObject
 	});
 
 /***/ },
-/* 10 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1137,8 +1248,8 @@
 	  });
 	*/
 
-	var api = __webpack_require__(16);
-	var Base = __webpack_require__(13);
+	var api = __webpack_require__(17);
+	var Base = __webpack_require__(14);
 
 	module.exports = Base.extend({
 
@@ -1377,66 +1488,10 @@
 	});
 
 /***/ },
-/* 11 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	var _path = __webpack_require__(15);
-
-	var _path2 = _interopRequireDefault(_path);
-
-	var _arc = __webpack_require__(19);
-
-	var _arc2 = _interopRequireDefault(_arc);
-
-	var _rect = __webpack_require__(20);
-
-	var _rect2 = _interopRequireDefault(_rect);
-
-	var _composerEs6 = __webpack_require__(21);
-
-	var _composerEs62 = _interopRequireDefault(_composerEs6);
-
-	var _drawEs6 = __webpack_require__(22);
-
-	var _drawEs62 = _interopRequireDefault(_drawEs6);
-
-	module.exports = {
-
-	    path: _path2['default'],
-
-	    arc: _arc2['default'],
-
-	    rect: _rect2['default'],
-
-	    composer: _composerEs62['default'],
-
-	    create: function create(svgElement) {
-	        var instance = new _drawEs62['default']();
-	        return instance.create(svgElement);
-	    }
-	};
-
-/***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var mixin = module.exports = function (component, obj) {
-	    if (obj instanceof Array) {
-	        for (var i = 0; i < obj.length; i++) {
-	            component = component.extend(obj[i]);
-	        }
-	        return component;
-	    }
-	    return component.extend(obj);
-	};
-
-/***/ },
-/* 13 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Common = __webpack_require__(23);
+	var Common = __webpack_require__(24);
 	var base = module.exports = Common.extend({
 
 	  // Initialize
@@ -1568,7 +1623,7 @@
 	});
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* istanbul ignore next */
@@ -1583,12 +1638,12 @@
 	};
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// TODO:: shrink the argument
 
-	var api = __webpack_require__(24);
+	var api = __webpack_require__(25);
 
 	var path = module.exports = {
 	    /**
@@ -1698,7 +1753,7 @@
 	};
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Describes scattered graph
@@ -1733,11 +1788,11 @@
 	};
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(13);
-	var arc = __webpack_require__(19);
+	var Base = __webpack_require__(14);
+	var arc = __webpack_require__(20);
 
 	module.exports = Base.extend({
 
@@ -1755,9 +1810,11 @@
 	    // Extends _defineBaseScaleProperties in lib/base/common.js
 	    _defineBaseScaleProperties: function _defineBaseScaleProperties(data, chart) {
 	        var self = this;
+	        var total = self._sumOfData(data);
 	        var scale = {
+	            total: total,
 	            // Converts nums to relative => total sum equals 1
-	            relativeDataSet: self._dataSetRelativeToTotal(data),
+	            relativeDataSet: self._dataSetRelativeToTotal(data, total),
 	            // Find the max width & height
 	            outerRadius: chart.outerRadius || (chart.height < chart.width ? chart.height : chart.width) / 2
 	        };
@@ -1782,7 +1839,7 @@
 	});
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// TODO:: Consolidate code
@@ -2080,7 +2137,7 @@
 	};
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arc = module.exports = {
@@ -2120,13 +2177,13 @@
 	};
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var composer = module.exports = {
@@ -2178,7 +2235,7 @@
 	};
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2187,11 +2244,11 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var _composerEs6 = __webpack_require__(21);
+	var _composer = __webpack_require__(22);
 
-	var _composerEs62 = _interopRequireDefault(_composerEs6);
+	var _composer2 = _interopRequireDefault(_composer);
 
-	var _utilsExtend = __webpack_require__(25);
+	var _utilsExtend = __webpack_require__(26);
 
 	var _utilsExtend2 = _interopRequireDefault(_utilsExtend);
 
@@ -2200,7 +2257,6 @@
 	        _classCallCheck(this, Draw);
 
 	        var self = this;
-	        //self = {};
 	        return this;
 	    }
 
@@ -2255,7 +2311,7 @@
 	            node.attrs = node.attrs || {};
 
 	            if (typeof attrName == 'object') {
-	                _utilsExtend2['default'](node.attrs, attrName);
+	                (0, _utilsExtend2['default'])(node.attrs, attrName);
 	            } else {
 	                node.attrs[attrName] = property;
 	            }
@@ -2287,7 +2343,7 @@
 	                return svgObj.stringify();
 	            });
 
-	            return _composerEs62['default'].make(node.element, node.attrs, {}, childContent.join(''));
+	            return _composer2['default'].make(node.element, node.attrs, {}, childContent.join(''));
 	        }
 	    }]);
 
@@ -2297,13 +2353,13 @@
 	module.exports = Draw;
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(26);
-	var Class = __webpack_require__(27);
-	var Errors = __webpack_require__(14);
-	var api = __webpack_require__(24);
+	__webpack_require__(27);
+	var Class = __webpack_require__(28);
+	var Errors = __webpack_require__(15);
+	var api = __webpack_require__(25);
 
 	var isArray = function isArray(obj) {
 	  return obj instanceof Array;
@@ -2323,6 +2379,8 @@
 
 	  // data properties
 	  props: {},
+
+	  _sumOfData: api.sumOfData,
 
 	  // accepts a N * 1 array
 	  // finds total sum then creates a relative measure base on total sum
@@ -2406,8 +2464,8 @@
 	    var inverse = {};
 	    if (scale.invert) {
 	      for (var x in scale.invert) {
-	        if (inverseList[scale.inverse[x]]) {
-	          inverse[inverseList[scale.inverse[x]]] = true;
+	        if (inverseList[scale.inveinvert[x]]) {
+	          inverse[inverseList[scale.invert[x]]] = true;
 	        }
 	      }
 	    }
@@ -2512,7 +2570,7 @@
 	});
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var asc = function asc(a, b) {
@@ -2526,12 +2584,16 @@
 	    return Math.round(n * mult) / mult;
 	  },
 
-	  // accepts a N * 1 array
-	  // finds total sum then creates a relative measure base on total sum
-	  dataSetRelativeToTotal: function dataSetRelativeToTotal(data) {
-	    var total = data.reduce(function (a, b) {
+	  // Returns sum of data set
+	  sumOfData: function sumOfData(data) {
+	    return data.reduce(function (a, b) {
 	      return a + b;
 	    });
+	  },
+
+	  // accepts a N * 1 array
+	  // finds total sum then creates a relative measure base on total sum
+	  dataSetRelativeToTotal: function dataSetRelativeToTotal(data, total) {
 	    return data.map(function (num) {
 	      return num / total;
 	    });
@@ -2779,7 +2841,7 @@
 	};
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2802,7 +2864,7 @@
 	};
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2852,7 +2914,7 @@
 	}
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**

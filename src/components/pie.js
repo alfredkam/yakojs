@@ -18,6 +18,7 @@ var pie = module.exports = arcBase.extend({
         var strokes = chart.strokeColors || 0;
         var centerX = chart.width / 2;
         var centerY = chart.height / 2;
+
         for (var i = 0; i < data.length; i++) {
             var endAngle = startAngle + 360 * data[i];
             paths.push(this.make('path',{

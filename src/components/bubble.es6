@@ -1,6 +1,6 @@
 /* Entry Points */
 import Base from '../classes/default';
-import api from './bubble.api.es6';
+import api from './bubble.api';
 
 module.exports = Base.extend({
 
