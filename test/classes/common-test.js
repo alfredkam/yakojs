@@ -1,8 +1,8 @@
 var chai = require('chai');
 var expect = chai.expect;
-var Common = require('../../lib/classes/common');
+var Common = require('../../src/classes/common');
 
-describe('lib/classes/common', function () {
+describe('src/classes/common', function () {
     var common;
     before(function () {
         common = new Common();

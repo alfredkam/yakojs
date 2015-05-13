@@ -1,8 +1,8 @@
 var chai = require('chai');
 var expect = chai.expect;
-var bubbleChart = require('../../lib/components/bubble');
+var bubbleChart = require('../../src/components/bubble');
 
-describe('/lib/bubble', function () {
+describe('/src/bubble', function () {
     var bubble;
     before(function () {
         bubble = new bubbleChart();

@@ -1,6 +1,6 @@
 require("babel-core/register")({
   blacklist: ["strict"],
-  only: /(lib|addons)/,
+  only: /(src|addons)/,
   extensions: [".es6"]
 });
 

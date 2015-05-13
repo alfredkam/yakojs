@@ -1,8 +1,8 @@
 var chai = require('chai');
 var expect = chai.expect;
-var barGraph = require('../../lib/components/bar');
+var barGraph = require('../../src/components/bar');
 
-describe('lib/bar', function () {
+describe('src/bar', function () {
     var bar;
     before(function () {
         bar = new barGraph();

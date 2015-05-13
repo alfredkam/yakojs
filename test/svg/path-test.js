@@ -1,8 +1,8 @@
 var chai = require('chai');
 var expect = chai.expect;
-var path = require('../../lib/svg/path');
+var path = require('../../src/svg/path');
 
-describe('lib/svg/path', function () {
+describe('src/svg/path', function () {
     var attr = {};
     before(function () {
         attr = {
