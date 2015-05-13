@@ -5,10 +5,8 @@ class Draw {
 
     constructor () {
         var self = this;
-        //self = {};
         return this;
     }
-
 
     getNode (node = null) {
         var parent = null;

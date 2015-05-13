@@ -22,6 +22,8 @@ module.exports = Class.extend({
   // data properties
   props: {},
 
+  _sumOfData: api.sumOfData,
+
   // accepts a N * 1 array
   // finds total sum then creates a relative measure base on total sum
   _dataSetRelativeToTotal: api.dataSetRelativeToTotal,
