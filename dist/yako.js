@@ -55,7 +55,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "078fdfc5cfedc3f4ee8e";
+/******/ 	var hotCurrentHash = "c8afb222fd574b6dcac8";
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = [];
 /******/ 	
@@ -663,10 +663,10 @@
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(15);
-	var Errors = __webpack_require__(22);
-	var svgPath = __webpack_require__(17);
-	var api = __webpack_require__(23);
+	var Base = __webpack_require__(14);
+	var Errors = __webpack_require__(15);
+	var svgPath = __webpack_require__(16);
+	var api = __webpack_require__(17);
 
 	var spark = module.exports = Base.extend({
 
@@ -796,7 +796,7 @@
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arcBase = __webpack_require__(14);
+	var arcBase = __webpack_require__(18);
 	var pie = module.exports = arcBase.extend({
 
 	    componentName: 'pie',
@@ -836,7 +836,7 @@
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arcBase = __webpack_require__(14);
+	var arcBase = __webpack_require__(18);
 	var pie = module.exports = arcBase.extend({
 
 	    componentName: 'donut',
@@ -911,7 +911,7 @@
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(15);
+	var Base = __webpack_require__(14);
 
 	var bar = module.exports = Base.extend({
 
@@ -986,11 +986,11 @@
 
 	/* Entry Points */
 
-	var _classesDefault = __webpack_require__(15);
+	var _classesDefault = __webpack_require__(14);
 
 	var _classesDefault2 = _interopRequireDefault(_classesDefault);
 
-	var _bubbleApi = __webpack_require__(16);
+	var _bubbleApi = __webpack_require__(19);
 
 	var _bubbleApi2 = _interopRequireDefault(_bubbleApi);
 
@@ -1041,23 +1041,23 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _path = __webpack_require__(17);
+	var _path = __webpack_require__(16);
 
 	var _path2 = _interopRequireDefault(_path);
 
-	var _arc = __webpack_require__(18);
+	var _arc = __webpack_require__(20);
 
 	var _arc2 = _interopRequireDefault(_arc);
 
-	var _rect = __webpack_require__(19);
+	var _rect = __webpack_require__(21);
 
 	var _rect2 = _interopRequireDefault(_rect);
 
-	var _composer = __webpack_require__(20);
+	var _composer = __webpack_require__(22);
 
 	var _composer2 = _interopRequireDefault(_composer);
 
-	var _draw = __webpack_require__(21);
+	var _draw = __webpack_require__(23);
 
 	var _draw2 = _interopRequireDefault(_draw);
 
@@ -1099,11 +1099,11 @@
 
 	// time series / object base
 
-	var _classesDefault = __webpack_require__(15);
+	var _classesDefault = __webpack_require__(14);
 
 	var _classesDefault2 = _interopRequireDefault(_classesDefault);
 
-	var _bubbleApi = __webpack_require__(16);
+	var _bubbleApi = __webpack_require__(19);
 
 	var _bubbleApi2 = _interopRequireDefault(_bubbleApi);
 
@@ -1155,11 +1155,11 @@
 
 	// time series / object base
 
-	var _classesDefault = __webpack_require__(15);
+	var _classesDefault = __webpack_require__(14);
 
 	var _classesDefault2 = _interopRequireDefault(_classesDefault);
 
-	var _bubbleApi = __webpack_require__(16);
+	var _bubbleApi = __webpack_require__(19);
 
 	var _bubbleApi2 = _interopRequireDefault(_bubbleApi);
 
@@ -1248,8 +1248,8 @@
 	  });
 	*/
 
-	var api = __webpack_require__(23);
-	var Base = __webpack_require__(15);
+	var api = __webpack_require__(17);
+	var Base = __webpack_require__(14);
 
 	module.exports = Base.extend({
 
@@ -1491,58 +1491,7 @@
 /* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(15);
-	var arc = __webpack_require__(18);
-
-	module.exports = Base.extend({
-
-	    // Parent generator that manages the svg
-	    _startCycle: function _startCycle() {
-	        var self = this;
-	        var chart = self.attributes.opts.chart;
-	        var data = self.attributes.data;
-
-	        return self._lifeCycleManager(data, chart, function (scale) {
-	            return self._describePath(scale.outerRadius, scale.relativeDataSet, scale);
-	        });
-	    },
-
-	    // Extends _defineBaseScaleProperties in lib/base/common.js
-	    _defineBaseScaleProperties: function _defineBaseScaleProperties(data, chart) {
-	        var self = this;
-	        var total = self._sumOfData(data);
-	        var scale = {
-	            total: total,
-	            // Converts nums to relative => total sum equals 1
-	            relativeDataSet: self._dataSetRelativeToTotal(data, total),
-	            // Find the max width & height
-	            outerRadius: chart.outerRadius || (chart.height < chart.width ? chart.height : chart.width) / 2
-	        };
-
-	        self._extend(scale, chart);
-	        return scale;
-	    },
-
-	    _polarToCartesian: arc.polarToCartesian,
-
-	    _describeArc: arc.describeArc,
-
-	    _describePie: arc.describePie,
-
-	    /**
-	     * [_describePath super class]
-	     * @return {[type]} [empty string]
-	     */
-	    _describePath: function _describePath() {
-	        return '';
-	    }
-	});
-
-/***/ },
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Common = __webpack_require__(24);
+	var Common = __webpack_require__(25);
 	var base = module.exports = Common.extend({
 
 	  // Initialize
@@ -1674,7 +1623,223 @@
 	});
 
 /***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* istanbul ignore next */
+	var warn = function warn(msg) {
+	  console.warn(msg);
+	};
+	/* istanbul ignore next */
+	module.exports = {
+	  label: function label() {
+	    warn("You're attempting to use labels without the `Label` addons.  Check documentation https://github.com/alfredkam/yakojs/blob/master/doc.md");
+	  }
+	};
+
+/***/ },
 /* 16 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// TODO:: shrink the argument
+
+	var api = __webpack_require__(24);
+
+	var path = module.exports = {
+	    /**
+	     * scale describe the min max
+	     * @param  attr: {
+	     *                  data : an N * M array,
+	     *                  height: chart height,
+	     *                  width: chart width
+	     *             }
+	     * @return obj              min / max
+	     */
+	    // getLinearScale?
+	    getScale: function getScale(attr) {
+	        var data = attr.data || 0;
+	        var scale = api.scale(data);
+	        scale.paddingY = attr.paddingY || 5;
+	        scale.tickSize = api.sigFigs(attr.width / (scale.len - 1), 8);
+	        scale.heightRatio = (attr.height - scale.paddingY * 2) / scale.max;
+	        scale.height = attr.height;
+	        scale.width = attr.width;
+	        scale.innerPadding = attr.innerPadding || 0;
+	        scale.innerPaddingTop = attr.innerPaddingTop || 0;
+	        scale.innerPaddingBottom = attr.innerPaddingBottom || 0;
+	        return scale;
+	    },
+
+	    // Describes an open path
+	    describeAttributeD: function describeAttributeD(numArr, paddingLeft, paddingTop, scale, ref) {
+	        var height = scale.height;
+	        var heightRatio = scale.heightRatio;
+	        var tickSize = scale.tickSize;
+	        var hasInverse = scale.hasInverse || {};
+	        var pathToken = '';
+
+	        if (hasInverse.y) {
+	            if (typeof scale.max == 'object') {
+	                max = scale.max[ref];
+	            } else {
+	                max = scale.max;
+	            }
+	        }
+
+	        // Path generator
+	        for (var i = 0; i < numArr.length; i++) {
+	            var pointY = (hasInverse.y ? height - (max - numArr[i]) * heightRatio : height - numArr[i] * heightRatio) - paddingTop - scale.innerPaddingTop;
+	            if (i === 0) {
+	                // X Y
+	                pathToken += 'M ' + (paddingLeft + scale.innerPadding) + ' ' + pointY;
+	            } else {
+	                pathToken += ' L ' + (tickSize * i + paddingLeft) + ' ' + pointY;
+	            }
+	        }
+
+	        // Eliminates the error calls when attributiting this to the svg path
+	        if (pathToken === '') {
+	            pathToken = 'M 0 0';
+	        }
+
+	        return pathToken;
+	    },
+
+	    // Describes the path to close the open path
+	    describeCloseAttributeD: function describeCloseAttributeD(numArr, paddingLeft, paddingTop, scale, ref) {
+	        var height = scale.height;
+	        var heightRatio = scale.heightRatio;
+	        return ['V', height - paddingTop, 'H', paddingLeft, 'L', paddingLeft + scale.innerPadding, height - numArr[0] * heightRatio - paddingTop - scale.innerPaddingTop].join(' ');
+	    },
+
+	    /**
+	     * getOpenPath describes the open path with the given set
+	     * @param  {[obj]} scale         contains min, max, interval, heightRatio, height, width
+	     * @param  {[array]} numberArray an array of numbers
+	     * @return {[string]}            string that descibes attributeD
+	     */
+	    getOpenPath: function getOpenPath(scale, numberArray) {
+	        return path.describeAttributeD(numberArray, 0, scale.paddingY, scale);
+	    },
+
+	    /**
+	     * getClosedPath describes the closed path with the given set
+	     * @param  {[obj]} scale         contains min, max, interval, heightRatio, height, width
+	     * @param  {[array]} numberArray an array of numbers
+	     * @return {[string]}            string that descibes attributeD
+	     */
+	    getClosedPath: function getClosedPath(scale, numberArray) {
+	        return path.describeAttributeD(numberArray, 0, scale.paddingY, scale) + path.describeCloseAttributeD(numberArray, 0, scale.paddingY, scale);
+	    },
+
+	    beginPath: function beginPath() {
+	        var self = this;
+	        var d = '';
+	        self.moveTo = function (x, y) {
+	            d += 'M' + x + ' ' + y;
+	            return self;
+	        };
+
+	        self.lineTo = function (x, y) {
+	            d += 'L' + x + ' ' + y;
+	            return self;
+	        };
+
+	        self.endPath = function () {
+	            return d;
+	        };
+	        return self;
+	    }
+	};
+
+/***/ },
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// Describes scattered graph
+	var api = module.exports = {
+	  describeScatter: function describeScatter(data, numArr, paddingLeft, paddingTop, scale, ref) {
+	    var height = scale.height;
+	    var heightRatio = scale.heightRatio;
+	    var self = this;
+	    var tickSize = scale.tickSize;
+	    var scattered = data.scattered || 0;
+	    var strokeWidth = scattered.strokeWidth || 2;
+	    var strokeColor = scattered.strokeColor || self._randomColor();
+	    var radius = scattered.radius || 2;
+	    var fill = scattered.fill || 'white';
+	    var paths = [];
+	    ref = ref || 0;
+
+	    for (var i = 0; i < numArr.length; i++) {
+	      paths.push(self.make('circle', {
+	        cx: i === 0 ? i + scale.innerPadding + paddingLeft : tickSize * i + paddingLeft,
+	        cy: height - numArr[i] * heightRatio - paddingTop - scale.innerPaddingTop,
+	        r: radius,
+	        stroke: strokeColor,
+	        'stroke-width': strokeWidth,
+	        fill: fill
+	      }, {
+	        _ref: ref
+	      }));
+	    }
+	    return paths;
+	  }
+	};
+
+/***/ },
+/* 18 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Base = __webpack_require__(14);
+	var arc = __webpack_require__(20);
+
+	module.exports = Base.extend({
+
+	    // Parent generator that manages the svg
+	    _startCycle: function _startCycle() {
+	        var self = this;
+	        var chart = self.attributes.opts.chart;
+	        var data = self.attributes.data;
+
+	        return self._lifeCycleManager(data, chart, function (scale) {
+	            return self._describePath(scale.outerRadius, scale.relativeDataSet, scale);
+	        });
+	    },
+
+	    // Extends _defineBaseScaleProperties in lib/base/common.js
+	    _defineBaseScaleProperties: function _defineBaseScaleProperties(data, chart) {
+	        var self = this;
+	        var total = self._sumOfData(data);
+	        var scale = {
+	            total: total,
+	            // Converts nums to relative => total sum equals 1
+	            relativeDataSet: self._dataSetRelativeToTotal(data, total),
+	            // Find the max width & height
+	            outerRadius: chart.outerRadius || (chart.height < chart.width ? chart.height : chart.width) / 2
+	        };
+
+	        self._extend(scale, chart);
+	        return scale;
+	    },
+
+	    _polarToCartesian: arc.polarToCartesian,
+
+	    _describeArc: arc.describeArc,
+
+	    _describePie: arc.describePie,
+
+	    /**
+	     * [_describePath super class]
+	     * @return {[type]} [empty string]
+	     */
+	    _describePath: function _describePath() {
+	        return '';
+	    }
+	});
+
+/***/ },
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// TODO:: Consolidate code
@@ -1972,122 +2137,7 @@
 	};
 
 /***/ },
-/* 17 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// TODO:: shrink the argument
-
-	var api = __webpack_require__(25);
-
-	var path = module.exports = {
-	    /**
-	     * scale describe the min max
-	     * @param  attr: {
-	     *                  data : an N * M array,
-	     *                  height: chart height,
-	     *                  width: chart width
-	     *             }
-	     * @return obj              min / max
-	     */
-	    // getLinearScale?
-	    getScale: function getScale(attr) {
-	        var data = attr.data || 0;
-	        var scale = api.scale(data);
-	        scale.paddingY = attr.paddingY || 5;
-	        scale.tickSize = api.sigFigs(attr.width / (scale.len - 1), 8);
-	        scale.heightRatio = (attr.height - scale.paddingY * 2) / scale.max;
-	        scale.height = attr.height;
-	        scale.width = attr.width;
-	        scale.innerPadding = attr.innerPadding || 0;
-	        scale.innerPaddingTop = attr.innerPaddingTop || 0;
-	        scale.innerPaddingBottom = attr.innerPaddingBottom || 0;
-	        return scale;
-	    },
-
-	    // Describes an open path
-	    describeAttributeD: function describeAttributeD(numArr, paddingLeft, paddingTop, scale, ref) {
-	        var height = scale.height;
-	        var heightRatio = scale.heightRatio;
-	        var tickSize = scale.tickSize;
-	        var hasInverse = scale.hasInverse || {};
-	        var pathToken = '';
-
-	        if (hasInverse.y) {
-	            if (typeof scale.max == 'object') {
-	                max = scale.max[ref];
-	            } else {
-	                max = scale.max;
-	            }
-	        }
-
-	        // Path generator
-	        for (var i = 0; i < numArr.length; i++) {
-	            var pointY = (hasInverse.y ? height - (max - numArr[i]) * heightRatio : height - numArr[i] * heightRatio) - paddingTop - scale.innerPaddingTop;
-	            if (i === 0) {
-	                // X Y
-	                pathToken += 'M ' + (paddingLeft + scale.innerPadding) + ' ' + pointY;
-	            } else {
-	                pathToken += ' L ' + (tickSize * i + paddingLeft) + ' ' + pointY;
-	            }
-	        }
-
-	        // Eliminates the error calls when attributiting this to the svg path
-	        if (pathToken === '') {
-	            pathToken = 'M 0 0';
-	        }
-
-	        return pathToken;
-	    },
-
-	    // Describes the path to close the open path
-	    describeCloseAttributeD: function describeCloseAttributeD(numArr, paddingLeft, paddingTop, scale, ref) {
-	        var height = scale.height;
-	        var heightRatio = scale.heightRatio;
-	        return ['V', height - paddingTop, 'H', paddingLeft, 'L', paddingLeft + scale.innerPadding, height - numArr[0] * heightRatio - paddingTop - scale.innerPaddingTop].join(' ');
-	    },
-
-	    /**
-	     * getOpenPath describes the open path with the given set
-	     * @param  {[obj]} scale         contains min, max, interval, heightRatio, height, width
-	     * @param  {[array]} numberArray an array of numbers
-	     * @return {[string]}            string that descibes attributeD
-	     */
-	    getOpenPath: function getOpenPath(scale, numberArray) {
-	        return path.describeAttributeD(numberArray, 0, scale.paddingY, scale);
-	    },
-
-	    /**
-	     * getClosedPath describes the closed path with the given set
-	     * @param  {[obj]} scale         contains min, max, interval, heightRatio, height, width
-	     * @param  {[array]} numberArray an array of numbers
-	     * @return {[string]}            string that descibes attributeD
-	     */
-	    getClosedPath: function getClosedPath(scale, numberArray) {
-	        return path.describeAttributeD(numberArray, 0, scale.paddingY, scale) + path.describeCloseAttributeD(numberArray, 0, scale.paddingY, scale);
-	    },
-
-	    beginPath: function beginPath() {
-	        var self = this;
-	        var d = '';
-	        self.moveTo = function (x, y) {
-	            d += 'M' + x + ' ' + y;
-	            return self;
-	        };
-
-	        self.lineTo = function (x, y) {
-	            d += 'L' + x + ' ' + y;
-	            return self;
-	        };
-
-	        self.endPath = function () {
-	            return d;
-	        };
-	        return self;
-	    }
-	};
-
-/***/ },
-/* 18 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arc = module.exports = {
@@ -2127,13 +2177,13 @@
 	};
 
 /***/ },
-/* 19 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 
 
 /***/ },
-/* 20 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var composer = module.exports = {
@@ -2185,7 +2235,7 @@
 	};
 
 /***/ },
-/* 21 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2194,7 +2244,7 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var _composer = __webpack_require__(20);
+	var _composer = __webpack_require__(22);
 
 	var _composer2 = _interopRequireDefault(_composer);
 
@@ -2303,274 +2353,7 @@
 	module.exports = Draw;
 
 /***/ },
-/* 22 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* istanbul ignore next */
-	var warn = function warn(msg) {
-	  console.warn(msg);
-	};
-	/* istanbul ignore next */
-	module.exports = {
-	  label: function label() {
-	    warn("You're attempting to use labels without the `Label` addons.  Check documentation https://github.com/alfredkam/yakojs/blob/master/doc.md");
-	  }
-	};
-
-/***/ },
-/* 23 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// Describes scattered graph
-	var api = module.exports = {
-	  describeScatter: function describeScatter(data, numArr, paddingLeft, paddingTop, scale, ref) {
-	    var height = scale.height;
-	    var heightRatio = scale.heightRatio;
-	    var self = this;
-	    var tickSize = scale.tickSize;
-	    var scattered = data.scattered || 0;
-	    var strokeWidth = scattered.strokeWidth || 2;
-	    var strokeColor = scattered.strokeColor || self._randomColor();
-	    var radius = scattered.radius || 2;
-	    var fill = scattered.fill || 'white';
-	    var paths = [];
-	    ref = ref || 0;
-
-	    for (var i = 0; i < numArr.length; i++) {
-	      paths.push(self.make('circle', {
-	        cx: i === 0 ? i + scale.innerPadding + paddingLeft : tickSize * i + paddingLeft,
-	        cy: height - numArr[i] * heightRatio - paddingTop - scale.innerPaddingTop,
-	        r: radius,
-	        stroke: strokeColor,
-	        'stroke-width': strokeWidth,
-	        fill: fill
-	      }, {
-	        _ref: ref
-	      }));
-	    }
-	    return paths;
-	  }
-	};
-
-/***/ },
 /* 24 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(27);
-	var Class = __webpack_require__(28);
-	var Errors = __webpack_require__(22);
-	var api = __webpack_require__(25);
-
-	var isArray = function isArray(obj) {
-	  return obj instanceof Array;
-	};
-	/**
-	 * deep extend object or json properties
-	 * @param  {object} object to extend
-	 * @param  {object} object
-	 * @return {object} global function object
-	 */
-	module.exports = Class.extend({
-
-	  // default
-	  init: function init() {
-	    return this;
-	  },
-
-	  // data properties
-	  props: {},
-
-	  _sumOfData: api.sumOfData,
-
-	  // accepts a N * 1 array
-	  // finds total sum then creates a relative measure base on total sum
-	  _dataSetRelativeToTotal: api.dataSetRelativeToTotal,
-
-	  // random color generator
-	  _randomColor: function _randomColor() {
-	    return '#' + Math.floor(Math.random() * 16777215).toString(16);
-	  },
-
-	  // appends the elements
-	  // accepts multiple child
-	  _append: function _append(parent, childs) {
-	    if (parent === '') return childs;
-	    if (!isArray(childs)) {
-	      childs = [childs];
-	    }
-	    return parent.replace(/(.*)(<\/.*>$)/g, function (match, p1, p2) {
-	      return p1 + childs.join('') + p2;
-	    });
-	  },
-
-	  // alternate to one level deep
-	  make: function make(tagName, attribute, dataAttribute, content) {
-	    var el = '<' + tagName;
-
-	    if (tagName === 'svg') {
-	      el += ' version="1.1" xmlns="http://www.w3.org/2000/svg"';
-	    }
-	    el += this._makePairs(attribute);
-	    el += this._makePairs('data', dataAttribute);
-	    return el += '>' + (content || content === 0 ? content : '') + '</' + tagName + '>';
-	  },
-
-	  // Deep copies an object
-	  // TODO:: improve this
-	  _deepCopy: function _deepCopy(objToCopy) {
-	    return JSON.parse(JSON.stringify(objToCopy));
-	  },
-
-	  /**
-	   * A super class calls right before return the svg content to the user
-	   */
-	  postRender: function postRender(svgContent) {
-	    return svgContent;
-	  },
-
-	  /**
-	   * [_isArray check if variable is an array]
-	   * @param  any type
-	   * @return {Boolean}   true if its an array
-	   */
-	  _isArray: isArray,
-
-	  // Default ratio
-	  _getRatio: function _getRatio(scale) {
-	    scale.heightRatio = scale.height - (scale.paddingTop + scale.paddingBottom) / scale.max;
-	  },
-
-	  /**
-	   * [_defineBaseScaleProperties defines the common scale properties]
-	   * @param  {[obj]} data  [raw data set from user]
-	   * @param  {[obj]} chart [chart properties passed by the user]
-	   * @return {[obj]}       [return an obj that describes the scale base on the data & chart properties]
-	   */
-	  _defineBaseScaleProperties: function _defineBaseScaleProperties(data, chart) {
-	    var self = this;
-	    var opts = this.attributes.opts;
-	    var chart = opts.chart;
-	    var xAxis = chart.xAxis || opts.xAxis;
-	    var yAxis = chart.yAxis || opts.yAxis;
-	    var scale = self._scale(data, chart);
-	    self._extend(scale, chart);
-	    scale._data = data;
-	    // Acceptable inverse flags to inverse the data set
-	    var inverseList = {
-	      'x': 'x',
-	      'y': 'y'
-	    };
-
-	    var inverse = {};
-	    if (scale.invert) {
-	      for (var x in scale.invert) {
-	        if (inverseList[scale.inveinvert[x]]) {
-	          inverse[inverseList[scale.invert[x]]] = true;
-	        }
-	      }
-	    }
-	    scale.hasInverse = inverse;
-
-	    if (chart.type != 'bubble-point' && (yAxis || xAxis)) {
-	      self._getExternalProps(scale, yAxis, xAxis);
-	      if (!self.describeYAxis) {
-	        Errors.label();
-	      }
-	    }
-	    self._getRatio(scale);
-	    self.props.scale = scale;
-	    return scale;
-	  },
-
-	  /**
-	   * base on the feedback and mange the render of the life cycle
-	   * it passes a immutable obj to preRender and audits the user feedback
-	   */
-	  // TODO:: Rename lifeCycleManager, incorrect term usage
-	  _lifeCycleManager: function _lifeCycleManager(data, chart, describe) {
-	    var self = this;
-	    var scale = self._defineBaseScaleProperties(data, chart);
-	    // check if there is any external steps needed to be done
-	    if (self._call) {
-	      self._call(scale);
-	    }
-	    // make the obj's shallow properties immutable
-	    // we can know if we want to skip the entire process to speed up the computation
-	    var properties = self.preRender ? self.preRender(Object.freeze(self._deepCopy(scale))) : 0;
-
-	    // properties we will except
-	    // - append
-	    // - prepend
-	    var paths = properties.prepend ? properties.prepend : [];
-	    paths = paths.concat(describe(scale));
-	    paths = paths.concat(properties.append ? properties.append : []);
-	    return paths;
-	    // return summary
-	  },
-
-	  // only supports 1 level deep
-	  _makePairs: function _makePairs(prefix, json) {
-	    if (!prefix) return '';
-
-	    if (arguments.length < 2) {
-	      json = prefix;
-	      prefix = '';
-	    } else {
-	      prefix += '-';
-	    }
-
-	    if (!json) return '';
-
-	    var keys = Object.keys(json),
-	        len = keys.length;
-	    var str = '';
-	    while (len--) {
-	      str += ' ' + prefix + keys[len] + '="' + json[keys[len]] + '"';
-	    }
-	    return str;
-	  },
-
-	  // deep extend
-	  _extend: function _extend(attr, json) {
-	    var self = this;
-	    if (!json || !attr) return;
-
-	    var k = Object.keys(json),
-	        len = k.length;
-	    while (len--) {
-	      if (typeof json[k[len]] !== 'object' || isArray(json[k[len]])) {
-	        attr[k[len]] = json[k[len]];
-	      } else {
-	        //it has child objects, copy them too.
-	        if (!attr[k[len]]) {
-	          attr[k[len]] = {};
-	        }
-	        self._extend(attr[k[len]], json[k[len]]);
-	      }
-	    }
-	    return this;
-	  },
-
-	  isFn: function isFn(object) {
-	    return !!(object && object.constructor && object.call && object.apply);
-	  },
-
-	  _makeToken: function _makeToken() {
-	    return Math.random().toString(36).substr(2);
-	  },
-
-	  //sig fig rounding
-	  _sigFigs: api.sigFigs,
-
-	  _getSplits: api.getSplits,
-
-	  // find min max between multiple rows of data sets
-	  // also handles the scale needed to work with multi axis
-	  _scale: api.scale
-	});
-
-/***/ },
-/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var asc = function asc(a, b) {
@@ -2839,6 +2622,223 @@
 	    };
 	  }
 	};
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(27);
+	var Class = __webpack_require__(28);
+	var Errors = __webpack_require__(15);
+	var api = __webpack_require__(24);
+
+	var isArray = function isArray(obj) {
+	  return obj instanceof Array;
+	};
+	/**
+	 * deep extend object or json properties
+	 * @param  {object} object to extend
+	 * @param  {object} object
+	 * @return {object} global function object
+	 */
+	module.exports = Class.extend({
+
+	  // default
+	  init: function init() {
+	    return this;
+	  },
+
+	  // data properties
+	  props: {},
+
+	  _sumOfData: api.sumOfData,
+
+	  // accepts a N * 1 array
+	  // finds total sum then creates a relative measure base on total sum
+	  _dataSetRelativeToTotal: api.dataSetRelativeToTotal,
+
+	  // random color generator
+	  _randomColor: function _randomColor() {
+	    return '#' + Math.floor(Math.random() * 16777215).toString(16);
+	  },
+
+	  // appends the elements
+	  // accepts multiple child
+	  _append: function _append(parent, childs) {
+	    if (parent === '') return childs;
+	    if (!isArray(childs)) {
+	      childs = [childs];
+	    }
+	    return parent.replace(/(.*)(<\/.*>$)/g, function (match, p1, p2) {
+	      return p1 + childs.join('') + p2;
+	    });
+	  },
+
+	  // alternate to one level deep
+	  make: function make(tagName, attribute, dataAttribute, content) {
+	    var el = '<' + tagName;
+
+	    if (tagName === 'svg') {
+	      el += ' version="1.1" xmlns="http://www.w3.org/2000/svg"';
+	    }
+	    el += this._makePairs(attribute);
+	    el += this._makePairs('data', dataAttribute);
+	    return el += '>' + (content || content === 0 ? content : '') + '</' + tagName + '>';
+	  },
+
+	  // Deep copies an object
+	  // TODO:: improve this
+	  _deepCopy: function _deepCopy(objToCopy) {
+	    return JSON.parse(JSON.stringify(objToCopy));
+	  },
+
+	  /**
+	   * A super class calls right before return the svg content to the user
+	   */
+	  postRender: function postRender(svgContent) {
+	    return svgContent;
+	  },
+
+	  /**
+	   * [_isArray check if variable is an array]
+	   * @param  any type
+	   * @return {Boolean}   true if its an array
+	   */
+	  _isArray: isArray,
+
+	  // Default ratio
+	  _getRatio: function _getRatio(scale) {
+	    scale.heightRatio = scale.height - (scale.paddingTop + scale.paddingBottom) / scale.max;
+	  },
+
+	  /**
+	   * [_defineBaseScaleProperties defines the common scale properties]
+	   * @param  {[obj]} data  [raw data set from user]
+	   * @param  {[obj]} chart [chart properties passed by the user]
+	   * @return {[obj]}       [return an obj that describes the scale base on the data & chart properties]
+	   */
+	  _defineBaseScaleProperties: function _defineBaseScaleProperties(data, chart) {
+	    var self = this;
+	    var opts = this.attributes.opts;
+	    var chart = opts.chart;
+	    var xAxis = chart.xAxis || opts.xAxis;
+	    var yAxis = chart.yAxis || opts.yAxis;
+	    var scale = self._scale(data, chart);
+	    self._extend(scale, chart);
+	    scale._data = data;
+	    // Acceptable inverse flags to inverse the data set
+	    var inverseList = {
+	      'x': 'x',
+	      'y': 'y'
+	    };
+
+	    var inverse = {};
+	    if (scale.invert) {
+	      for (var x in scale.invert) {
+	        if (inverseList[scale.inveinvert[x]]) {
+	          inverse[inverseList[scale.invert[x]]] = true;
+	        }
+	      }
+	    }
+	    scale.hasInverse = inverse;
+
+	    if (chart.type != 'bubble-point' && (yAxis || xAxis)) {
+	      self._getExternalProps(scale, yAxis, xAxis);
+	      if (!self.describeYAxis) {
+	        Errors.label();
+	      }
+	    }
+	    self._getRatio(scale);
+	    self.props.scale = scale;
+	    return scale;
+	  },
+
+	  /**
+	   * base on the feedback and mange the render of the life cycle
+	   * it passes a immutable obj to preRender and audits the user feedback
+	   */
+	  // TODO:: Rename lifeCycleManager, incorrect term usage
+	  _lifeCycleManager: function _lifeCycleManager(data, chart, describe) {
+	    var self = this;
+	    var scale = self._defineBaseScaleProperties(data, chart);
+	    // check if there is any external steps needed to be done
+	    if (self._call) {
+	      self._call(scale);
+	    }
+	    // make the obj's shallow properties immutable
+	    // we can know if we want to skip the entire process to speed up the computation
+	    var properties = self.preRender ? self.preRender(Object.freeze(self._deepCopy(scale))) : 0;
+
+	    // properties we will except
+	    // - append
+	    // - prepend
+	    var paths = properties.prepend ? properties.prepend : [];
+	    paths = paths.concat(describe(scale));
+	    paths = paths.concat(properties.append ? properties.append : []);
+	    return paths;
+	    // return summary
+	  },
+
+	  // only supports 1 level deep
+	  _makePairs: function _makePairs(prefix, json) {
+	    if (!prefix) return '';
+
+	    if (arguments.length < 2) {
+	      json = prefix;
+	      prefix = '';
+	    } else {
+	      prefix += '-';
+	    }
+
+	    if (!json) return '';
+
+	    var keys = Object.keys(json),
+	        len = keys.length;
+	    var str = '';
+	    while (len--) {
+	      str += ' ' + prefix + keys[len] + '="' + json[keys[len]] + '"';
+	    }
+	    return str;
+	  },
+
+	  // deep extend
+	  _extend: function _extend(attr, json) {
+	    var self = this;
+	    if (!json || !attr) return;
+
+	    var k = Object.keys(json),
+	        len = k.length;
+	    while (len--) {
+	      if (typeof json[k[len]] !== 'object' || isArray(json[k[len]])) {
+	        attr[k[len]] = json[k[len]];
+	      } else {
+	        //it has child objects, copy them too.
+	        if (!attr[k[len]]) {
+	          attr[k[len]] = {};
+	        }
+	        self._extend(attr[k[len]], json[k[len]]);
+	      }
+	    }
+	    return this;
+	  },
+
+	  isFn: function isFn(object) {
+	    return !!(object && object.constructor && object.call && object.apply);
+	  },
+
+	  _makeToken: function _makeToken() {
+	    return Math.random().toString(36).substr(2);
+	  },
+
+	  //sig fig rounding
+	  _sigFigs: api.sigFigs,
+
+	  _getSplits: api.getSplits,
+
+	  // find min max between multiple rows of data sets
+	  // also handles the scale needed to work with multi axis
+	  _scale: api.scale
+	});
 
 /***/ },
 /* 26 */
