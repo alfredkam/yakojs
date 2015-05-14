@@ -106,7 +106,7 @@ module.exports = Class.extend({
     var inverse = {};
     if (scale.invert) {
       for (var x in scale.invert) {
-        if (inverseList[scale.inveinvert[x]]) {
+        if (inverseList[scale.invert[x]]) {
               inverse[inverseList[scale.invert[x]]] = true;
             }
         }

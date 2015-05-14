@@ -5,7 +5,7 @@ var _ = require('lodash');
 var gWebpack = plugins.webpack;
 
 gulp.task('pack:lite', function () {
-  var webpackConfig = require('./webpack.config.js');
+  var webpackConfig = _.clone(require('./webpack.config.js'));
 
   return gulp.src('./index')
     .pipe(plugins.plumber())
@@ -14,7 +14,7 @@ gulp.task('pack:lite', function () {
 });
 
 gulp.task('minify:lite', function () {
-  var webpackConfig = require('./webpack.config.js');
+  var webpackConfig = _.clone(require('./webpack.config.js'));
   _.assign(webpackConfig, {
     entry: {
       'yako.min': './build-tools/expose.build'
@@ -36,7 +36,7 @@ gulp.task('minify:lite', function () {
 });
 
 gulp.task('pack:addons', function () {
-  var webpackConfig = require('./webpack.config.js');
+  var webpackConfig = _.clone(require('./webpack.config.js'));
   _.assign(webpackConfig, {
     entry: {
       'yako.addons': './build-tools/addons.expose.build'
@@ -50,7 +50,7 @@ gulp.task('pack:addons', function () {
 });
 
 gulp.task('minify:addons', function () {
-  var webpackConfig = require('./webpack.config.js');
+  var webpackConfig = _.clone(require('./webpack.config.js'));
   _.assign(webpackConfig, {
     entry: {
       'yako.addons.min': './build-tools/addons.expose.build'
@@ -72,7 +72,7 @@ gulp.task('minify:addons', function () {
 });
 
 gulp.task('pack:demo', function () {
-  var webpackConfig = require('./webpack.config.js');
+  var webpackConfig = _.clone(require('./webpack.config.js'));
   _.assign(webpackConfig, {
     entry: {
       'bundle': './demo/demo-webpack'
@@ -94,7 +94,7 @@ gulp.task('pack:demo', function () {
 });
 
 gulp.task('pack:example', function () {
-  var webpackConfig = require('./webpack.config.js');
+  var webpackConfig = _.clone(require('./webpack.config.js'));
   _.assign(webpackConfig, {
     entry: {
       'bundle': './demo/example-webpack'
