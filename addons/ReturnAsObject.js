@@ -8,7 +8,7 @@ var isArray = function (obj) {
 };
 
 var obj = module.exports = {
-    // Extends default make from lib/base/common.js
+    // Extends default make from lib/classes/common.js
     make: function (tagName, attribute, dataAttribute, content){
         var json = {};
         json[tagName] = attribute;

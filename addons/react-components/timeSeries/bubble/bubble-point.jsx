@@ -12,7 +12,7 @@ var Bubble = React.createClass({
     ],
     render: function () {
       var self = this;
-      var bubblePoint = require('../../../../time-series').bubble.point;
+      var bubblePoint = require('../../../../index').timeSeries.bubble.point;
       var chart = self.props.chart || {};
       var svg = bubblePoint({
           _call: function (scale) {

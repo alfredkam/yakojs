@@ -1,7 +1,13 @@
-var util = require('util');
+require("babel-core/register")({
+  blacklist: ["strict"],
+  only: /(src|addons)/,
+  extensions: [".es6"]
+});
 
-var yako = require('./index');
-var timeSeries = require('./time-series');
+//var yako = require('./index')
+var yako = require('./src/index');
+var svg = yako.svg;
+var timeSeries = yako.timeSeries;
 var spark = yako.spark;
 var pie = yako.pie;
 var donut = yako.donut;
@@ -13,7 +19,6 @@ var bubblePointComplex = timeSeries.bubble.point;
 var http = require('http');
 var express = require('express');
 var app = express();
-var fs = require('fs');
 
 var Label = require('./addons/Label');
 
@@ -142,7 +147,8 @@ while (amount--) {
       strokeColor: '#000',                // sets stroke color,
       strokeWidth: 2
     },
-    maxRadius: 10,                      // Overrides default & sets a cap for a max radius for the bubble
+    minRadius: 5,
+    maxRadius: 15,                      // Overrides default & sets a cap for a max radius for the bubble
     strokeColor: '#000',                // Set default stroke color
     strokeWidth: 2,                     // Set default stroke width
     fill: '#333',                       // Sets default fill color
@@ -178,7 +184,7 @@ while (amount--) {
 
 
   var sparkInstance = spark('.graph');
-  
+
   nodes += sparkInstance.attr({
     chart : {
       width: 300,
@@ -186,6 +192,24 @@ while (amount--) {
     },
     title: 'just a test',
     points: set
+  });
+
+  nodes += spark('.graph').attr({
+    chart : {
+      width: 300,
+      height: 100,
+      inverse: ["y"]
+    },
+    title: 'just a test',
+    points: set,
+    append: function (svgString, scale) {
+        var item = svg.create("g");
+        item.append("g").attr({
+            'class' : 'test',
+            'works' : 'work work'
+        });
+        item.append("g");
+    }
   });
 
   nodes += sparkInstance.attr({
@@ -244,6 +268,20 @@ while (amount--) {
     },
     title: 'just a test',
     data: dataSet4
+  });
+
+  nodes += donut('.graph').attr({
+    chart: {
+      width: 300,
+      height: 100,
+      innerRadius: 40,
+      outerRadius: 50
+      // addtional options
+      // strokes: [],
+      // fills: []
+    },
+    title: 'just a test',
+    data: [0,0]
   });
 
   nodes += pie('.graph').attr({
@@ -314,7 +352,7 @@ while (amount--) {
     title: 'just a test',
     data: bubbleSet
   });
-  
+
   nodes += bar('.graph').attr({
     chart : {
       stack: true,
@@ -326,7 +364,7 @@ while (amount--) {
     title: 'just a test',
     data: set
   });
-  
+
   nodes += bar('.graph').attr({
     chart : {
       width: 300,
@@ -517,9 +555,9 @@ console.log('Took ' + diff + 'ms to generate ' + (nOfGraphs * kind + oddKinds) +
 nodes = '<div>' + 'Took ' + diff + 'ms to generate ' + (nOfGraphs * kind + oddKinds) + ' graphs with '+ dataPoints + ' different data points avg of ' + (diff/((nOfGraphs*kind)+oddKinds)) + 'ms' + '</div>' + nodes;
 
 // test optimization => round all numbers to 1 decimal place
-nodes = nodes.replace(/([0-9]+\.[0-9]+)/g, function (match, p1) {
-  return Math.round10(p1, -1);
-});
+//nodes = nodes.replace(/([0-9]+\.[0-9]+)/g, function (match, p1) {
+  //return Math.round10(p1, -1);
+//});
 
 var str = '<html><head>'+
 "<link href='http://fonts.googleapis.com/css?family=Open+Sans:300,600' rel='stylesheet' type='text/css'>"+

@@ -12,7 +12,7 @@ This library also works great with webpack & react w/ [prepared react graph comp
 
 Documentation [https://github.com/alfredkam/yakojs/blob/master/doc.md](https://github.com/alfredkam/yakojs/blob/master/doc.md)
 
-Demo [http://alfredkam.com/yakojs](http://alfredkam.com/yakojs) or ```node app.js``` and visit ```http://localhost:3000```
+Demo [http://alfredkam.com/yakojs](http://alfredkam.com/yakojs) or ```gulp dev``` and visit ```http://localhost:3000```
 
 Supports Chrome, Firefox, Safari, and IE 9+;
 
@@ -24,28 +24,31 @@ Supports Chrome, Firefox, Safari, and IE 9+;
 ```bower install yako```
 
 ### API Ready
- * [x] Simple Graphs
-  - Spark / Scattered / Line / Area Graphs
+- Simple Graphs
+  - Spark 
+    - Scattered
+    - Line
+    - Area Graphs
   - Pie Charts
   - Donut Charts
-  - Bubble Point Chart for Time Flow Representation (Represents actions across a period of time)
+  - Bubble Point (Bubble Line) Chart for Time Flow Representation (Represents actions across a period of time)
   - Bubble Graph  (Represents a cohort / segment activty)
   - Bar Graphs (stack & non stack)
- * [x] MixIn / Inheritance
- * [x] Multi axis for spark graphs
- * [x] Labels
-  - Bar graph
-  - Spark Graph
-  - Bubble Graph
- * [x] Programmatic point of access (Only Avaliable for React)
- * [x] Events & Emitters (Only Avaliable for React)
+- MixIn / Inheritance
+- Multi axis for spark graphs
+- Labels
+    - Bar graph
+    - Spark Graph
+    - Bubble Graph
+- Programmatic point of access (Only Avaliable for React)
+- Events & Emitters (Only Avaliable for React)
 
 ### Road Map
- * [ ] Complex Graphs
+- Complex Graphs
   - eg. time series w/ auto fill
- * [ ] Expose math functions
- * [ ] Bring svg to live
- * [ ] Real time graphs
+- Expose math functions
+- Bring svg to live
+- Real time graphs
 
 
 ### How to run unit test

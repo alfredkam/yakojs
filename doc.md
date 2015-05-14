@@ -91,7 +91,8 @@ spark().attr({
     line: true,                  // Override to disable the line to be drawn
     fill: true,                  // Defaults is true, override to disable fill
                                  // Say if you want to only have scattered graph, you will set line & fill properties to false
-    scattered: false             // Override to enable scattered
+    scattered: false,            // Override to enable scattered
+    invert: ['y']                // Optionally if want to invert the data set
 
     /* Padding options for the chart */
     paddingLeft: 0, 
@@ -313,7 +314,7 @@ bubbleScatter().attr({
   /* Optional parameters */
   maxRadius: 10,                        // Caps the maxRadius
   fill: '#000',                         // Sets the default fill color
-  inverse : ['x', 'y'],                 // If need to inverse the x or y cords
+  invert : ['x', 'y'],                 // If need to invert the x or y cords
   /* Data Set */
   points: [{
     data: [0,1,3],

@@ -21,7 +21,7 @@ var shortHandBindFilterDefinitions = {
 
 var ignore = function () {};
 
-var Class = require('../lib/base/class');
+var Class = require('../lib/classes/class');
 module.exports = Class.extend({
   // A list of tagName w/ event combination in key - value format for fast filtering. Hydrate from `hydrate` function
   _events: {},
@@ -131,7 +131,7 @@ module.exports = Class.extend({
       var scale = props.scale;
       var data = props.data;
       // if out of quadrant should return
-      var quadrantX = (eX - scale.paddingLeft + (scale.tickSize / 2)) / (scale.tickSize * scale.len);
+      var quadrantX = (eX - scale.paddingLeft - scale.innerPaddingLeft + (scale.tickSize / 2)) / (scale.tickSize * scale.len);
       quadrantX = Math.floor(quadrantX * scale.len);
 
       var properties = {
@@ -176,11 +176,14 @@ module.exports = Class.extend({
         //     value: data[column]
         //   }
         // };
-        
+
         var column = ((target.dataset || '').c || target.getAttribute('data-c'));
         var point = data[column] || 0;
         var tickSize = scale.tickSize;
-        var startTick = scale.startTick;  
+        var startTick = scale.startTick;
+        var minRadius = scale.minRadius || 0;
+        var radius = (scale.maxRadius - minRadius) * point.data / scale.max;
+        radius = radius ? radius + minRadius : 0;
         return {
           scale: scale,
           _segmentXRef: column,
@@ -192,21 +195,24 @@ module.exports = Class.extend({
             eY : eY,
             eX : eX,
             cY : scale.height / 2,
-            cX : ((point.date.getTime() - startTick) * tickSize) + scale.paddingLeft,
-            r : scale.maxRadius * point.data / scale.max 
+            cX : ((point.date.getTime() - startTick) * tickSize) + scale.paddingLeft + scale.innerPaddingLeft,
+            r : radius
           }
         }
       } else {
-        
+
         var row = ((target.dataset || '').r || target.getAttribute('data-r'));
         var column = ((target.dataset || '').c || target.getAttribute('data-c'));
         if (!row && !column) {
           return {
             _scale: scale
-          }
+          };
         }
         if (scale.complex) {
           var point = data[column].data;
+          var minRadius = scale.minRadius || 0;
+          var radius = (scale.maxRadius - minRadius) * (point[2]/scale.max[2])
+          radius = radius ? radius + minRadius : 0;
           return {
             _scale: scale,
             exactPoint: {
@@ -218,9 +224,9 @@ module.exports = Class.extend({
               },
               eY: eY,
               eX: eX,
-              cX: scale.hasInverse.x ? (point[0] * scale.widthRatio) + scale.paddingLeft : scale.width - (point[0] * scale.widthRatio) - scale.paddingLeft,
-              cY: scale.hasInverse.y ? scale.paddingTop + (point[1] * scale.heightRatio) : scale.height - (point[1] * scale.heightRatio) - scale.paddingTop,
-              r: scale.maxRadius * (point[2]/scale.max[2])
+              cX: scale.hasInverse.x ? (point[0] * scale.widthRatio) + scale.paddingLeft + scale.innerPaddingLeft : scale.width - (point[0] * scale.widthRatio) - scale.paddingLeft - scale.innerPaddingLeft,
+              cY: scale.hasInverse.y ? scale.paddingTop + scale.innerPaddingTop + (point[1] * scale.heightRatio) : scale.height - (point[1] * scale.heightRatio) - scale.paddingTop - scale.innerPaddingTop,
+              r: radius
             }
           };
         }
@@ -263,7 +269,7 @@ module.exports = Class.extend({
       var self = this;
       var scale = props._scale;
       var offsetY = -20;
-      var left = (scale.tickSize * props._segmentXRef) + scale.paddingLeft;
+      var left = (scale.tickSize * props._segmentXRef) + scale.paddingLeft + scale.innerPaddingLeft;
       var values = [];
       var maxOfSet = 0;
       var max = 0;
@@ -297,13 +303,13 @@ module.exports = Class.extend({
       // var top = midPoint * scale.heightRatio + scale.paddingTop;
 
       var maxPoint = maxOfSet - max;
-      var top = maxPoint * scale.heightRatio + scale.paddingTop + offsetY;
+      var top = maxPoint * scale.heightRatio + scale.paddingTop + scale.innerPaddingTop + offsetY;
 
       // check if we are displaying on the rightside
       if (scale.len - 1 == props._segmentXRef) {
        return {
          top: top,
-         right: scale.paddingRight
+         right: scale.paddingRight + scale.innerPaddingRight
        };
       }
       return {
@@ -314,26 +320,31 @@ module.exports = Class.extend({
     bubble: function (props) {
       var scale = props._scale;
       var data = scale._data;
+      var minRadius = scale.minRadius || 0;
       if (scale.type == 'bubble-point') {
-        var left = (scale.tickSize * props._segmentXRef) + scale.paddingLeft;
+        var left = (scale.tickSize * props._segmentXRef) + scale.paddingLeft + scale.innerPaddingLeft;
         var centerY = scale.height / 2;
         var maxRadius = scale.bubble ? scale.bubble.maxRadius : scale.maxRadius;
-        var top = centerY - (maxRadius * data[props._segmentXRef] / scale.max) - 30;
+        var radius = (maxRadius - minRadius) * data[props._segmentXRef] / scale.max;
+        radius = radius ? radius + minRadius : 0;
+        var top = centerY - radius - 30;
       } else {
         if (!props.exactPoint) {
           return {};
         }
+
         var point = props.exactPoint.data.meta;
-        var left = scale.width - (point[0] * scale.widthRatio) - scale.paddingLeft;
-        var radius = scale.maxRadius * point[2]/ scale.max[2];
-        var top = scale.height - (point[1] * scale.heightRatio) - scale.paddingTop;
+        var left = scale.width - (point[0] * scale.widthRatio) - scale.paddingLeft - scale.innerPaddingLeft;
+        var radius = (scale.maxRadius - minRadius) * point[2]/ scale.max[2];
+        radius = radius ? radius + minRadius : 0;
+        var top = scale.height - (point[1] * scale.heightRatio) - scale.paddingTop - scale.innerPaddingTop;
         top -= (radius + 20);
       }
 
       if (scale.len - 1 == props._segmentXRef) {
        return {
          top: top,
-         right: scale.paddingRight
+         right: scale.paddingRight + scale.innerPaddingRight
        };
       }
       return {

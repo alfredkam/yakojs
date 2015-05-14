@@ -1,8 +1,8 @@
 var chai = require('chai');
 var expect = chai.expect;
-var arc = require('../../lib/svg/arc');
+var arc = require('../../src/svg/arc');
 
-describe('lib/svg/arc', function () {
+describe('src/svg/arc', function () {
     it('polarToCartesian should return proper polar to cartesian coordinates', function () {
         var result = arc.polarToCartesian(50, 50, 25, 50);
         expect(result)
