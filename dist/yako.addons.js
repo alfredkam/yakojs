@@ -55,7 +55,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "a6202447b6d140dae971";
+/******/ 	var hotCurrentHash = "ccb7b46e0258c174c710";
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = [];
 /******/ 	
@@ -928,7 +928,7 @@
 
 	exports['default'] = {
 	  name: 'yakojs',
-	  VERSION: '0.4.3',
+	  VERSION: '0.4.4',
 	  spark: function spark(opts) {
 	    return initialize(_componentsSpark2['default'], opts);
 	  },

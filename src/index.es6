@@ -25,7 +25,7 @@ var initialize = (component, obj) => {
 
 export default {
   name: 'yakojs',
-  VERSION: '0.4.4',
+  VERSION: '0.4.5',
   spark (opts) {
     return initialize(sparkLine, opts);
   },
