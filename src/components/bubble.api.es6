@@ -1,14 +1,14 @@
 // TODO:: Consolidate code
 module.exports = {
 
-    getConfigForScatterTimeSeries: function (chart) {
+    getConfigForScatterTimeSeries (chart) {
         chart.type = 'bubble-scattered';
         chart.complex = true;
         chart.parentType = 'bubble';
         return chart;
     },
 
-    getConfigForLine: function (chart) {
+    getConfigForLine (chart) {
         chart.type = 'bubble-point';
         chart.complex = true;
         chart.parentType = 'bubble';
@@ -17,7 +17,7 @@ module.exports = {
 
     // TODO::  Should refer to a function in path to build this
     // Describes the xAxis for bubble point graph
-    describeXAxisForBubbleLine: function (height, width, chart) {
+    describeXAxisForBubbleLine (height, width, chart) {
         // Note:: chart.xAxis is the old format
         var config = chart.axis || chart.xAxis;
         var centerY = height / 2;
@@ -63,14 +63,9 @@ module.exports = {
         return paths;
     },
 
-    describeBubbleByNumberArray: function(data, scale) {
-        var height = scale.height;
-        var width = scale.width;
-        var heightRatio = scale.heightRatio;
-        var widthRatio = scale.widthRatio;
+    describeBubbleByNumberArray (data, scale) {
+        var { height, width, heightRatio, widthRatio, len, max } = scale;
         var self = this;
-        var len = scale.len;
-        var max = scale.max;
         var fills = scale.fills || 0;
         var paths = [];
         var refs;
@@ -223,7 +218,7 @@ module.exports = {
         var minRadius = scale.minRadius = scale.minRadius || 0;
 
         // Check if the start date is defined, if not defined using first element in array
-        scale.startTick = startTick = (scale.startDate || data[0].date).getTime();
+        scale.startTick = startTick = ((scale.startDate || data[0].date) || 0).getTime();
         scale.endTick = endTick = (scale.endDate || data[len - 1].date).getTime();
         var tickLen = endTick - startTick;
         tickLen = (tickLen == 0 ? 1000 : tickLen);
