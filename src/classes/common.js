@@ -6,6 +6,11 @@ var api = require('../components/api');
 var isArray = function (obj) {
     return obj instanceof Array;
 };
+
+var inverseList = {
+    'x': 'x',
+    'y': 'y'
+};
 /**
  * deep extend object or json properties
  * @param  {object} object to extend
@@ -82,6 +87,20 @@ module.exports = Class.extend({
     scale.heightRatio = scale.height - (scale.paddingTop + scale.paddingBottom) / scale.max;
   },
 
+  // Gets invert chart props defined by user
+  _getInvertProps: function (scale) {
+    // Acceptable inverse flags to inverse the data set
+    var inverse = {};
+    if (scale.invert) {
+      for (var x in scale.invert) {
+        if (inverseList[scale.invert[x]]) {
+              inverse[inverseList[scale.invert[x]]] = true;
+            }
+        }
+    }
+    scale.hasInverse = inverse;
+  },
+
   /**
    * [_defineBaseScaleProperties defines the common scale properties]
    * @param  {[obj]} data  [raw data set from user]
@@ -97,21 +116,7 @@ module.exports = Class.extend({
     var scale = self._scale(data, chart);
     self._extend(scale, chart);
     scale._data = data;
-    // Acceptable inverse flags to inverse the data set
-    var inverseList = {
-        'x': 'x',
-        'y': 'y'
-    };
-
-    var inverse = {};
-    if (scale.invert) {
-      for (var x in scale.invert) {
-        if (inverseList[scale.invert[x]]) {
-              inverse[inverseList[scale.invert[x]]] = true;
-            }
-        }
-    }
-    scale.hasInverse = inverse;
+    self._getInvertProps(scale);
 
     if ((chart.type != 'bubble-point') && (yAxis || xAxis)) {
       self._getExternalProps(scale, yAxis, xAxis);

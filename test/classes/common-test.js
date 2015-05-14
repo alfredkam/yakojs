@@ -30,7 +30,24 @@ describe('src/classes/common', function () {
             .to.equal(expected);
     });
 
-    it('_dataSetRelativeToTotal should combine and create a relative measure base on total', function () {
+    it('_getInvertProps should return an accepted scale', function () {
+      var scale = {
+        invert: ['y']
+      };
+      common._getInvertProps(scale);
+      expect(scale.hasInverse)
+        .to.deep.equal({
+          y: true
+        });
+    });
+
+    it('_sumOfData should return the total sum of dataset', function () {
+        var x = [0,1,2,4,5,6,7,8,9,10];
+        var total = common._sumOfData(x);
+        expect(total).to.equal(52);
+    });
+
+    it('_dataSetRelativeToTotal should create a relative measure base on total', function () {
         var x = [0,1,2,4,5,6,7,8,9,10];
         var expected = [ 0,
                       0.019230769230769232,
