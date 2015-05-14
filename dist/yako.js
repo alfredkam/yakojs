@@ -55,7 +55,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "fbf48402a03e7c68b389";
+/******/ 	var hotCurrentHash = "e32d90fd22ea59a93a32";
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = [];
 /******/ 	
@@ -619,14 +619,14 @@
 
 	var initialize = function initialize(component, obj) {
 	  if (typeof obj === 'object') {
-	    return new (obj.mixin ? (0, _utilsMixin2['default'])((0, _utilsMixin2['default'])(component, obj.mixin), obj) : (0, _utilsMixin2['default'])(component, obj))();
+	    return new (obj.mixin ? _utilsMixin2['default'](_utilsMixin2['default'](component, obj.mixin), obj) : _utilsMixin2['default'](component, obj))();
 	  }
 	  return new component(obj);
 	};
 
 	exports['default'] = {
 	  name: 'yakojs',
-	  VERSION: '0.4.2',
+	  VERSION: '0.4.3',
 	  spark: function spark(opts) {
 	    return initialize(_componentsSpark2['default'], opts);
 	  },
@@ -816,21 +816,44 @@
 	        var strokes = chart.strokeColors || 0;
 	        var centerX = chart.width / 2;
 	        var centerY = chart.height / 2;
+	        var self = this;
+
+	        if (chart.total == 0) {
+	            return self.make('path', {
+	                'stroke-linecap': 'round',
+	                'stroke-linejoin': 'round',
+	                stroke: strokes[i] || (chart.strokeColor || self._randomColor()),
+	                fill: 'transparent',
+	                d: self._describeEmptyPie(centerX, centerY, radius)
+	            });
+	        }
 
 	        for (var i = 0; i < data.length; i++) {
 	            var endAngle = startAngle + 360 * data[i];
-	            paths.push(this.make('path', {
+	            paths.push(self.make('path', {
 	                'stroke-linecap': 'round',
 	                'stroke-linejoin': 'round',
-	                stroke: strokes[i] || (chart.strokeColor || this._randomColor()),
-	                d: this._describePie(centerX, centerY, radius, startAngle, endAngle),
-	                fill: fills[i] || this._randomColor()
+	                stroke: strokes[i] || (chart.strokeColor || self._randomColor()),
+	                d: self._describePie(centerX, centerY, radius, startAngle, endAngle),
+	                fill: fills[i] || self._randomColor()
 	            }));
 	            startAngle = endAngle;
 	        }
 	        return paths;
-	    }
-	});
+	    },
+
+	    /**
+	     * [_describeEmptyPie describes a full pie using paths]
+	     * @param  {Number} x           [x cordinates]
+	     * @param  {Number} y           [y cordinates]
+	     * @param  {Number} R           [outer radius]
+	     */
+	    _describeEmptyPie: function _describeEmptyPie(x, y, R) {
+	        var y1 = y + R;
+	        var y2 = y + r;
+	        var path = 'M' + x + ' ' + y1 + 'A' + R + ' ' + R + ' 0 1 1 ' + (x + 0.001) + ' ' + y1; // Outer circle
+	        return path;
+	    } });
 
 /***/ },
 /* 6 */
@@ -858,26 +881,48 @@
 	        var strokes = chart.strokeColors || 0;
 	        var centerY = chart.height / 2;
 	        var centerX = chart.width / 2;
+	        var self = this;
 
-	        //if (chart.total == 0) {
-	        //console.log(chart);
-	        //chart.relativeDataSet = [1];
-	        //}
+	        if (chart.total == 0) {
+	            return self.make('path', {
+	                'stroke-linecap': 'round',
+	                'stroke-linejoin': 'round',
+	                stroke: strokes[i] || (chart.strokeColor || self._randomColor()),
+	                fill: 'transparent',
+	                d: self._describeDonutRing(centerX, centerY, innerRadius, outerRadius)
+	            });
+	        }
 
 	        for (var i = 0; i < data.length; i++) {
 	            var endAngle = startAngle + 360 * data[i];
-	            paths.push(this.make('path', {
+	            paths.push(self.make('path', {
 	                'stroke-linecap': 'round',
 	                'stroke-linejoin': 'round',
-	                stroke: strokes[i] || (chart.strokeColor || this._randomColor()),
-	                fill: fills[i] || this._randomColor(),
-	                d: this._describeDonut(centerX, centerY, outerRadius, innerRadius, startAngle, endAngle)
+	                stroke: strokes[i] || (chart.strokeColor || self._randomColor()),
+	                fill: fills[i] || self._randomColor(),
+	                d: self._describeDonut(centerX, centerY, outerRadius, innerRadius, startAngle, endAngle)
 	            }));
 	            startAngle = endAngle;
 	        }
 
 	        return paths;
 	    },
+
+	    /**
+	     * [_describeDonutRing describes donut ring path]
+	     * @param  {Number} x           [x cordinates]
+	     * @param  {Number} y           [y cordinates]
+	     * @param  {Number} R           [outer radius]
+	     * @param  {Number} r           [inner radius]
+	     */
+	    _describeDonutRing: function _describeDonutRing(x, y, r, R) {
+	        var y1 = y + R;
+	        var y2 = y + r;
+	        var path = 'M' + x + ' ' + y1 + 'A' + R + ' ' + R + ' 0 1 1 ' + (x + 0.001) + ' ' + y1; // Outer circle
+	        path += 'M' + x + ' ' + y2 + 'A' + r + ' ' + r + ' 0 1 0 ' + (x - 0.001) + ' ' + y2; // Inner Circle
+	        return path;
+	    },
+
 	    /**
 	     * [_describeDonut describes donut path]
 	     * @param  {Number} x           [x cordinates]
@@ -893,6 +938,7 @@
 	        if (startAngle == 0 && endAngle == 360) {
 	            startAngle = 1;
 	        };
+
 	        var outerArc = {
 	            start: this._polarToCartesian(x, y, outerRadius, endAngle),
 	            end: this._polarToCartesian(x, y, outerRadius, startAngle)
@@ -1922,9 +1968,10 @@
 	        var width = scale.width;
 	        var heightRatio = scale.heightRatio;
 	        var widthRatio = scale.widthRatio;
-	        var self = this;
 	        var len = scale.len;
 	        var max = scale.max;
+
+	        var self = this;
 	        var fills = scale.fills || 0;
 	        var paths = [];
 	        var refs;
@@ -2113,7 +2160,7 @@
 	        var minRadius = scale.minRadius = scale.minRadius || 0;
 
 	        // Check if the start date is defined, if not defined using first element in array
-	        scale.startTick = startTick = (scale.startDate || data[0].date).getTime();
+	        scale.startTick = startTick = (scale.startDate || data[0].date || 0).getTime();
 	        scale.endTick = endTick = (scale.endDate || data[len - 1].date).getTime();
 	        var tickLen = endTick - startTick;
 	        tickLen = tickLen == 0 ? 1000 : tickLen;
@@ -2311,7 +2358,7 @@
 	            node.attrs = node.attrs || {};
 
 	            if (typeof attrName == 'object') {
-	                (0, _utilsExtend2['default'])(node.attrs, attrName);
+	                _utilsExtend2['default'](node.attrs, attrName);
 	            } else {
 	                node.attrs[attrName] = property;
 	            }
@@ -2464,7 +2511,7 @@
 	    var inverse = {};
 	    if (scale.invert) {
 	      for (var x in scale.invert) {
-	        if (inverseList[scale.inveinvert[x]]) {
+	        if (inverseList[scale.invert[x]]) {
 	          inverse[inverseList[scale.invert[x]]] = true;
 	        }
 	      }

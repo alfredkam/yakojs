@@ -555,16 +555,13 @@ console.log('Took ' + diff + 'ms to generate ' + (nOfGraphs * kind + oddKinds) +
 nodes = '<div>' + 'Took ' + diff + 'ms to generate ' + (nOfGraphs * kind + oddKinds) + ' graphs with '+ dataPoints + ' different data points avg of ' + (diff/((nOfGraphs*kind)+oddKinds)) + 'ms' + '</div>' + nodes;
 
 // test optimization => round all numbers to 1 decimal place
-nodes = nodes.replace(/([0-9]+\.[0-9]+)/g, function (match, p1) {
-  return Math.round10(p1, -1);
-});
+//nodes = nodes.replace(/([0-9]+\.[0-9]+)/g, function (match, p1) {
+  //return Math.round10(p1, -1);
+//});
 
 var str = '<html><head>'+
 "<link href='http://fonts.googleapis.com/css?family=Open+Sans:300,600' rel='stylesheet' type='text/css'>"+
 '</head><body>' + nodes + '</body><style>.graph {display:inline-block;}</style></html>';
-
-//var body = document.getElementsByTagName('body')[0];
-//body.innerHTML = nodes;
 
 
 var proxy = http.createServer(function (req, res) {
