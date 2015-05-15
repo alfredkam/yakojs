@@ -282,6 +282,7 @@ bubblePoint().attr({
     strokeColor: '#000',              // sets stroke color,
     strokeWidth: 2
   },
+  autoFit: false,                     // Will equally space the data base on the length of data
   maxRadius: 10,                      // Caps the maxRadius
   strokeColor: '#000',                // Set default stroke color
   strokeWidth: 2,                     // Set default stroke width
