@@ -119,7 +119,7 @@ module.exports = {
             };
         }
 
-        if (autoFit) {
+        if (autoFit == false) {
           cx = (i * tickSize) + scale.paddingLeft;
         } else {
           cx = ((point.date.getTime() - startTick) * tickSize) + scale.paddingLeft;
@@ -223,7 +223,7 @@ module.exports = {
 
   // Extends default ratio w/ auto scaling for Bubble point
   getRatioByTimeSeries: function (scale) {
-    var { _data, height, width, len, paddingTop, paddingLeft, paddingRight, paddingBottom, axis } = scale;
+    var { autoFit, _data, height, width, len, paddingTop, paddingLeft, paddingRight, paddingBottom, axis } = scale;
     var data = _data;
     scale.axis = axis || {};
     var maxRadius = scale.maxRadius = parseInt(scale.maxRadius) || maxRadius;
@@ -232,7 +232,7 @@ module.exports = {
 
 
     // Check if the start date is defined, if not defined using first element in array
-    if (scale.autoFit) {
+    if (autoFit == false) {
       startTick = 0;
       endTick = len - 1;
     } else {

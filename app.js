@@ -193,7 +193,7 @@ while (amount--) {
       strokeColor: '#000',                // sets stroke color,
       strokeWidth: 2
     },
-    autoFit: true,
+    autoFit: false,
     minRadius: 5,
     maxRadius: 15,                      // Overrides default & sets a cap for a max radius for the bubble
     strokeColor: '#000',                // Set default stroke color
