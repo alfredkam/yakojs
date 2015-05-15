@@ -24,7 +24,7 @@ var Label = require('./addons/Label');
 
 // TODO:: fix edge case of 1 data Point
 var dataPoints = 30;
-var nOfGraphs = 14;
+var nOfGraphs = 17;
 var kind = 11;
 var oddKinds = 4;
 var amount = nOfGraphs;
@@ -182,6 +182,52 @@ while (amount--) {
     paddingBottom: 0,
   }) + "</div>";
 
+  nodes += "</div><div class='graph'>" + bubblePointComplex().attr({
+    // Width & height controls the svg view box
+    width: 300,
+    height: 100,
+
+    /* Optional parameters */
+    /* Options for the straight line */
+    axis: {
+      strokeColor: '#000',                // sets stroke color,
+      strokeWidth: 2
+    },
+    autoFit: false,
+    minRadius: 5,
+    maxRadius: 15,                      // Overrides default & sets a cap for a max radius for the bubble
+    strokeColor: '#000',                // Set default stroke color
+    strokeWidth: 2,                     // Set default stroke width
+    fill: '#333',                       // Sets default fill color
+    // startDate: 1418885572796,
+    // endDate: 1439253572796,
+    // points: [
+    // {
+    //   date: new Date(2015,2,1),
+    //   data: 300,
+    //   fill : '#000'
+    //   // meta: Object
+    // },
+    // {
+    //   date: new Date(2015, 4, 30),
+    //   data: 150,
+    //   fill : '#000'
+    //   // meta: Object
+    // },
+    // {
+    //   date: new Date(2015, 9, 30),
+    //   data: 200,
+    //   fill : '#000'
+    //   // meta: Object
+    // }],
+    points: samplePoints,
+
+    /* Padding options for the chart */
+    paddingLeft: 0,
+    paddingRight: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
+  }) + "</div>";
 
   var sparkInstance = spark('.graph');
 
@@ -555,16 +601,13 @@ console.log('Took ' + diff + 'ms to generate ' + (nOfGraphs * kind + oddKinds) +
 nodes = '<div>' + 'Took ' + diff + 'ms to generate ' + (nOfGraphs * kind + oddKinds) + ' graphs with '+ dataPoints + ' different data points avg of ' + (diff/((nOfGraphs*kind)+oddKinds)) + 'ms' + '</div>' + nodes;
 
 // test optimization => round all numbers to 1 decimal place
-nodes = nodes.replace(/([0-9]+\.[0-9]+)/g, function (match, p1) {
-  return Math.round10(p1, -1);
-});
+//nodes = nodes.replace(/([0-9]+\.[0-9]+)/g, function (match, p1) {
+  //return Math.round10(p1, -1);
+//});
 
 var str = '<html><head>'+
 "<link href='http://fonts.googleapis.com/css?family=Open+Sans:300,600' rel='stylesheet' type='text/css'>"+
 '</head><body>' + nodes + '</body><style>.graph {display:inline-block;}</style></html>';
-
-//var body = document.getElementsByTagName('body')[0];
-//body.innerHTML = nodes;
 
 
 var proxy = http.createServer(function (req, res) {

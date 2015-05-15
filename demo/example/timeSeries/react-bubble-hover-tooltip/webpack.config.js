@@ -16,7 +16,7 @@ module.exports = {
   module: {
     loaders: [
       {test: /\.jsx$/, loaders: ['react-hot', 'jsx-loader?harmony']},
-      {test: /\.es6\.js$/, loader: 'es6-loader'},
+      {test: /\.es6\.js$/, loader: 'babel-loader'},
 
       // compile and include less files
       {test: /\.less$/, loader: 'style-loader!css-loader!autoprefixer-loader!less-loader'},

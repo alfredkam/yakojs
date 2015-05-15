@@ -1,4 +1,8 @@
-var composer = module.exports = {
+var isArray = function (obj) {
+    return obj instanceof Array;
+};
+
+var composer = {
 
   makePairs (prefix, json) {
     if (!prefix) return '';
@@ -40,9 +44,7 @@ var composer = module.exports = {
     el += composer.makePairs(attribute);
     el += composer.makePairs('data', dataAttribute);
     return el += '>' + (content || content === 0 ? content : '') + '</'+tagName+'>';
-  },
-
-  stringify () {
-
   }
 };
+
+export default composer;

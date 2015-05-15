@@ -1,10 +1,17 @@
 require('../utils/adjustDecimal');
+var randomColor = require('../utils/randomColor');
 var Class = require('./class');
 var Errors = require('../utils/error');
 var api = require('../components/api');
+var composer = require('../svg/composer');
 
 var isArray = function (obj) {
     return obj instanceof Array;
+};
+
+var inverseList = {
+    'x': 'x',
+    'y': 'y'
 };
 /**
  * deep extend object or json properties
@@ -29,33 +36,14 @@ module.exports = Class.extend({
   _dataSetRelativeToTotal: api.dataSetRelativeToTotal,
 
   // random color generator
-  _randomColor: function () {
-    return '#'+Math.floor(Math.random()*16777215).toString(16);
-  },
+  _randomColor: randomColor,
 
   // appends the elements
   // accepts multiple child
-  _append: function (parent, childs) {
-    if (parent === '') return childs;
-    if (!isArray(childs)) {
-      childs = [childs];
-    }
-    return parent.replace(/(.*)(<\/.*>$)/g, function (match, p1, p2) {
-        return p1 + childs.join("") + p2;
-    });
-  },
+  _append: composer.append,
 
   // alternate to one level deep
-  make: function (tagName, attribute, dataAttribute, content) {
-    var el = '<' + tagName;
-
-    if (tagName === 'svg') {
-        el += ' version="1.1" xmlns="http://www.w3.org/2000/svg"';
-    }
-    el += this._makePairs(attribute);
-    el += this._makePairs('data', dataAttribute);
-    return el += '>' + (content || content === 0 ? content : '') + '</'+tagName+'>';
-  },
+  make: composer.make,
 
   // Deep copies an object
   // TODO:: improve this
@@ -82,6 +70,20 @@ module.exports = Class.extend({
     scale.heightRatio = scale.height - (scale.paddingTop + scale.paddingBottom) / scale.max;
   },
 
+  // Gets invert chart props defined by user
+  _getInvertProps: function (scale) {
+    // Acceptable inverse flags to inverse the data set
+    var inverse = {};
+    if (scale.invert) {
+      for (var x in scale.invert) {
+        if (inverseList[scale.invert[x]]) {
+              inverse[inverseList[scale.invert[x]]] = true;
+            }
+        }
+    }
+    scale.hasInverse = inverse;
+  },
+
   /**
    * [_defineBaseScaleProperties defines the common scale properties]
    * @param  {[obj]} data  [raw data set from user]
@@ -97,21 +99,7 @@ module.exports = Class.extend({
     var scale = self._scale(data, chart);
     self._extend(scale, chart);
     scale._data = data;
-    // Acceptable inverse flags to inverse the data set
-    var inverseList = {
-        'x': 'x',
-        'y': 'y'
-    };
-
-    var inverse = {};
-    if (scale.invert) {
-      for (var x in scale.invert) {
-        if (inverseList[scale.invert[x]]) {
-              inverse[inverseList[scale.invert[x]]] = true;
-            }
-        }
-    }
-    scale.hasInverse = inverse;
+    self._getInvertProps(scale);
 
     if ((chart.type != 'bubble-point') && (yAxis || xAxis)) {
       self._getExternalProps(scale, yAxis, xAxis);
@@ -132,6 +120,7 @@ module.exports = Class.extend({
   _lifeCycleManager: function (data, chart, describe) {
     var self = this;
     var scale = self._defineBaseScaleProperties(data, chart);
+    scale.componentName = self.componentName;
     // check if there is any external steps needed to be done
     if (self._call) {
       self._call(scale);
@@ -151,25 +140,7 @@ module.exports = Class.extend({
   },
 
   // only supports 1 level deep
-  _makePairs: function (prefix, json) {
-    if (!prefix) return '';
-
-    if (arguments.length < 2) {
-      json = prefix;
-      prefix = '';
-    } else {
-      prefix += '-';
-    }
-
-    if (!json) return '';
-
-    var keys = Object.keys(json), len = keys.length;
-    var str = '';
-    while (len--) {
-      str += ' ' + prefix + keys[len] + '="' + json[keys[len]] + '"';
-    }
-    return str;
-  },
+  _makePairs: composer.makePairs,
 
   // deep extend
   _extend: function (attr, json) {

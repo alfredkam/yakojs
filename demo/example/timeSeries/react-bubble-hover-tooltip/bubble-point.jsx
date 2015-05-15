@@ -19,7 +19,7 @@ var ToolTip = React.createClass({
      *     data      : {
                 x : Number (eg. time),
                 y : Number (sample size),
-                meta : {} 
+                meta : {}
            },
      *     eY        : mouse event y,
      *     eX        : mouse event x,
@@ -91,6 +91,7 @@ module.exports = React.createClass({
       width: 1200,
       height: 100,
       points: self.props.set,
+      autoFit: false,
       /* Optional parameters */
       /* Options for the straight line */
       axis: {
@@ -117,7 +118,7 @@ module.exports = React.createClass({
 
     var self = this;
      return (
-      <Bubble 
+      <Bubble
         chart={chart}
         events={self.events}
         toolTip={toolTip}

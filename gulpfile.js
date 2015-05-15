@@ -124,6 +124,13 @@ gulp.task("build", function () {
   .pipe(gulp.dest("lib"));
 });
 
+gulp.task("clean:build", function (cb) {
+  var del = require('del');
+  del([
+    'lib/'
+  ], cb);
+});
+
 gulp.task('pack', ['pack:lite', 'minify:lite', 'pack:addons', 'minify:addons', 'pack:demo', 'pack:example']);
 
 gulp.task('dev', function () {

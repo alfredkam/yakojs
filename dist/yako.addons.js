@@ -55,7 +55,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "8c28dfc45a611fa4b0b8";
+/******/ 	var hotCurrentHash = "a6c497327b9851b9ee3d";
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = [];
 /******/ 	
@@ -928,7 +928,7 @@
 
 	exports['default'] = {
 	  name: 'yakojs',
-	  VERSION: '0.4.2',
+	  VERSION: '0.4.7',
 	  spark: function spark(opts) {
 	    return initialize(_componentsSpark2['default'], opts);
 	  },
@@ -1118,21 +1118,44 @@
 	        var strokes = chart.strokeColors || 0;
 	        var centerX = chart.width / 2;
 	        var centerY = chart.height / 2;
+	        var self = this;
+
+	        if (chart.total == 0) {
+	            return self.make('path', {
+	                'stroke-linecap': 'round',
+	                'stroke-linejoin': 'round',
+	                stroke: strokes[i] || (chart.strokeColor || self._randomColor()),
+	                fill: 'transparent',
+	                d: self._describeEmptyPie(centerX, centerY, radius)
+	            });
+	        }
 
 	        for (var i = 0; i < data.length; i++) {
 	            var endAngle = startAngle + 360 * data[i];
-	            paths.push(this.make('path', {
+	            paths.push(self.make('path', {
 	                'stroke-linecap': 'round',
 	                'stroke-linejoin': 'round',
-	                stroke: strokes[i] || (chart.strokeColor || this._randomColor()),
-	                d: this._describePie(centerX, centerY, radius, startAngle, endAngle),
-	                fill: fills[i] || this._randomColor()
+	                stroke: strokes[i] || (chart.strokeColor || self._randomColor()),
+	                d: self._describePie(centerX, centerY, radius, startAngle, endAngle),
+	                fill: fills[i] || self._randomColor()
 	            }));
 	            startAngle = endAngle;
 	        }
 	        return paths;
-	    }
-	});
+	    },
+
+	    /**
+	     * [_describeEmptyPie describes a full pie using paths]
+	     * @param  {Number} x           [x cordinates]
+	     * @param  {Number} y           [y cordinates]
+	     * @param  {Number} R           [outer radius]
+	     */
+	    _describeEmptyPie: function _describeEmptyPie(x, y, R) {
+	        var y1 = y + R;
+	        var y2 = y + r;
+	        var path = 'M' + x + ' ' + y1 + 'A' + R + ' ' + R + ' 0 1 1 ' + (x + 0.001) + ' ' + y1; // Outer circle
+	        return path;
+	    } });
 
 /***/ },
 /* 9 */
@@ -1160,26 +1183,48 @@
 	        var strokes = chart.strokeColors || 0;
 	        var centerY = chart.height / 2;
 	        var centerX = chart.width / 2;
+	        var self = this;
 
-	        //if (chart.total == 0) {
-	        //console.log(chart);
-	        //chart.relativeDataSet = [1];
-	        //}
+	        if (chart.total == 0) {
+	            return self.make('path', {
+	                'stroke-linecap': 'round',
+	                'stroke-linejoin': 'round',
+	                stroke: strokes[i] || (chart.strokeColor || self._randomColor()),
+	                fill: 'transparent',
+	                d: self._describeDonutRing(centerX, centerY, innerRadius, outerRadius)
+	            });
+	        }
 
 	        for (var i = 0; i < data.length; i++) {
 	            var endAngle = startAngle + 360 * data[i];
-	            paths.push(this.make('path', {
+	            paths.push(self.make('path', {
 	                'stroke-linecap': 'round',
 	                'stroke-linejoin': 'round',
-	                stroke: strokes[i] || (chart.strokeColor || this._randomColor()),
-	                fill: fills[i] || this._randomColor(),
-	                d: this._describeDonut(centerX, centerY, outerRadius, innerRadius, startAngle, endAngle)
+	                stroke: strokes[i] || (chart.strokeColor || self._randomColor()),
+	                fill: fills[i] || self._randomColor(),
+	                d: self._describeDonut(centerX, centerY, outerRadius, innerRadius, startAngle, endAngle)
 	            }));
 	            startAngle = endAngle;
 	        }
 
 	        return paths;
 	    },
+
+	    /**
+	     * [_describeDonutRing describes donut ring path]
+	     * @param  {Number} x           [x cordinates]
+	     * @param  {Number} y           [y cordinates]
+	     * @param  {Number} R           [outer radius]
+	     * @param  {Number} r           [inner radius]
+	     */
+	    _describeDonutRing: function _describeDonutRing(x, y, r, R) {
+	        var y1 = y + R;
+	        var y2 = y + r;
+	        var path = 'M' + x + ' ' + y1 + 'A' + R + ' ' + R + ' 0 1 1 ' + (x + 0.001) + ' ' + y1; // Outer circle
+	        path += 'M' + x + ' ' + y2 + 'A' + r + ' ' + r + ' 0 1 0 ' + (x - 0.001) + ' ' + y2; // Inner Circle
+	        return path;
+	    },
+
 	    /**
 	     * [_describeDonut describes donut path]
 	     * @param  {Number} x           [x cordinates]
@@ -1195,6 +1240,7 @@
 	        if (startAngle == 0 && endAngle == 360) {
 	            startAngle = 1;
 	        };
+
 	        var outerArc = {
 	            start: this._polarToCartesian(x, y, outerRadius, endAngle),
 	            end: this._polarToCartesian(x, y, outerRadius, startAngle)
@@ -1446,7 +1492,7 @@
 	    _describeXAxis: _bubbleApi2['default'].describeXAxisForBubbleLine,
 
 	    // Describes bubble point graph
-	    _describeBubble: _bubbleApi2['default'].describeLineByObject
+	    _describeBubble: _bubbleApi2['default'].describeBubbleLineByObject
 	});
 
 /***/ },
@@ -2144,7 +2190,18 @@
 /* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
 	// TODO:: Consolidate code
+
+	var _svgComposer = __webpack_require__(25);
+
+	var _svgComposer2 = _interopRequireDefault(_svgComposer);
+
+	var _utilsRandomColor = __webpack_require__(29);
+
+	var _utilsRandomColor2 = _interopRequireDefault(_utilsRandomColor);
+
 	module.exports = {
 
 	    getConfigForScatterTimeSeries: function getConfigForScatterTimeSeries(chart) {
@@ -2168,7 +2225,7 @@
 	        var config = chart.axis || chart.xAxis;
 	        var centerY = height / 2;
 	        // Self Note:: PaddingLeft / PaddingRight adjustments are taken out
-	        return this.make('path', {
+	        return _svgComposer2['default'].make('path', {
 	            'stroke-linecap': 'round',
 	            'stroke-linejoin': 'round',
 	            'stroke-width': config.strokeWidth || 2,
@@ -2209,11 +2266,11 @@
 	            }
 	            var r = (scale.maxRadius - minRadius) * (point[2] / max[2]);
 	            r = r ? r + minRadius : 0;
-	            paths.push(self.make('circle', {
+	            paths.push(_svgComposer2['default'].make('circle', {
 	                cx: inverse.x ? point[0] * widthRatio + innerPaddingLeft + paddingLeft : width - point[0] * widthRatio - innerPaddingLeft - paddingLeft,
 	                cy: inverse.y ? paddingTop + innerPaddingTop + point[1] * heightRatio : height - point[1] * heightRatio - innerPaddingTop - paddingTop,
 	                r: r,
-	                fill: props.fill || (defaultFill || self._randomColor())
+	                fill: props.fill || (defaultFill || (0, _utilsRandomColor2['default'])())
 	            }, refs));
 	        }
 	        return paths;
@@ -2224,9 +2281,10 @@
 	        var width = scale.width;
 	        var heightRatio = scale.heightRatio;
 	        var widthRatio = scale.widthRatio;
-	        var self = this;
 	        var len = scale.len;
 	        var max = scale.max;
+
+	        var self = this;
 	        var fills = scale.fills || 0;
 	        var paths = [];
 	        var refs;
@@ -2244,19 +2302,22 @@
 	                }
 	                var radius = (scale.maxRadius - minRadius) * (point[2] / max[2]);
 	                radius = radius ? radius + minRadius : 0;
-	                paths.push(self.make('circle', {
+	                paths.push(_svgComposer2['default'].make('circle', {
 	                    cx: width - point[0] * widthRatio - scale.paddingLeft,
 	                    cy: height - point[1] * heightRatio - scale.paddingTop,
 	                    r: scale.maxRadius * (point[2] / max[2]),
-	                    fill: data[r].fill || (fills[i] || self._randomColor())
+	                    fill: data[r].fill || (fills[i] || (0, _utilsRandomColor2['default'])())
 	                }, refs));
 	            }
 	        }
 	        return paths;
 	    },
 
-	    describeLineByObject: function describeLineByObject(data, height, width, scale) {
+	    describeBubbleLineByObject: function describeBubbleLineByObject(data, height, width, scale) {
 	        if (!data) return '';
+	        var paddingLeft = scale.paddingLeft;
+	        var innerPaddingLeft = scale.innerPaddingLeft;
+	        var autoFit = scale.autoFit;
 	        var strokeColors = scale.strokeColors;
 	        var strokeWidths = scale.strokeWidths;
 	        var fill = scale.fill;
@@ -2271,21 +2332,30 @@
 	        var defaultStrokeWidth = strokeWidths || 0;
 	        var defaultFill = scale.fill || 0;
 	        var centerY = height / 2;
-	        var refs;
+	        var refs, cx;
 	        var minRadius = minRadius || 0;
 
 	        for (var i = 0; i < data.length; i++) {
 	            var point = data[i];
+
 	            if (scale.hasEvents) {
 	                // c = columns
 	                refs = {
 	                    c: i
 	                };
 	            }
+
+	            if (autoFit == false) {
+	                cx = i * tickSize + paddingLeft + innerPaddingLeft;
+	            } else {
+	                cx = (point.date.getTime() - startTick) * tickSize + paddingLeft + innerPaddingLeft;
+	            }
+
 	            var r = (maxRadius - minRadius) * point.data / scale.max;
 	            r = r ? r + minRadius : 0;
-	            paths.push(this.make('circle', {
-	                cx: (point.date.getTime() - startTick) * tickSize + scale.paddingLeft,
+
+	            paths.push(_svgComposer2['default'].make('circle', {
+	                cx: cx,
 	                cy: centerY,
 	                r: r,
 	                fill: point.fill || defaultFill,
@@ -2321,12 +2391,12 @@
 	            }
 	            var r = (config.maxRadius - minRadius) * (data[i] / scale.max);
 	            r = r ? r + minRadius : 0;
-	            paths.push(this.make('circle', {
-	                cx: scale.tickSize * i + scale.paddingLeft,
+	            paths.push(_svgComposer2['default'].make('circle', {
+	                cx: scale.tickSize * i + scale.paddingLeft + scale.innerPaddingLeft,
 	                cy: centerY,
 	                r: r,
-	                fill: fills[i] || (config.fill || this._randomColor()),
-	                stroke: strokeColors[i] || (config.strokeColor || this._randomColor()),
+	                fill: fills[i] || (config.fill || (0, _utilsRandomColor2['default'])()),
+	                stroke: strokeColors[i] || (config.strokeColor || (0, _utilsRandomColor2['default'])()),
 	                'stroke-width': strokeWidths[i] || (config.strokeWidth || 2)
 	            }, refs));
 	        }
@@ -2399,6 +2469,7 @@
 
 	    // Extends default ratio w/ auto scaling for Bubble point
 	    getRatioByTimeSeries: function getRatioByTimeSeries(scale) {
+	        var autoFit = scale.autoFit;
 	        var _data = scale._data;
 	        var height = scale.height;
 	        var width = scale.width;
@@ -2413,10 +2484,18 @@
 	        scale.axis = axis || {};
 	        var maxRadius = scale.maxRadius = parseInt(scale.maxRadius) || maxRadius;
 	        var minRadius = scale.minRadius = scale.minRadius || 0;
+	        var startTick, endTick;
 
 	        // Check if the start date is defined, if not defined using first element in array
-	        scale.startTick = startTick = (scale.startDate || data[0].date).getTime();
-	        scale.endTick = endTick = (scale.endDate || data[len - 1].date).getTime();
+	        if (autoFit == false) {
+	            startTick = 0;
+	            endTick = len - 1;
+	        } else {
+	            startTick = (scale.startDate || data[0].date || 0).getTime();
+	            endTick = (scale.endDate || data[len - 1].date).getTime();
+	        }
+	        scale.startTick = startTick;
+	        scale.endTick = endTick;
 	        var tickLen = endTick - startTick;
 	        tickLen = tickLen == 0 ? 1000 : tickLen;
 
@@ -2428,12 +2507,10 @@
 	        firstElementRadius = firstElementRadius ? firstElementRadius + minRadius : 0;
 	        lastElementRadius = lastElementRadius ? lastElementRadius + minRadius : 0;
 
-	        var firstTick = data[0].date.getTime();
-	        var lastTick = data[len - 1].date.getTime();
-	        var firstTickLeftRadius = (firstTick - startTick) * potentialPxTickRatio - firstElementRadius;
-	        var lastTickRightRadius = (lastTick - endTick) * potentialPxTickRatio + lastElementRadius;
-	        scale.paddingLeft = firstTickLeftRadius < 0 ? Math.abs(firstTickLeftRadius) : 0;
-	        scale.paddingRight = lastTickRightRadius > 0 ? lastTickRightRadius : 0;
+	        var startTickLeftRadius = (startTick - startTick) * potentialPxTickRatio - firstElementRadius;
+	        var endTickRightRadius = (endTick - endTick) * potentialPxTickRatio + lastElementRadius;
+	        scale.paddingLeft = startTickLeftRadius < 0 ? Math.abs(startTickLeftRadius) : 0;
+	        scale.paddingRight = endTickRightRadius > 0 ? endTickRightRadius : 0;
 	        scale.tickSize = (width - scale.paddingLeft - scale.paddingRight) / tickLen;
 	    }
 	};
@@ -2488,7 +2565,14 @@
 /* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var composer = module.exports = {
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	var isArray = function isArray(obj) {
+	  return obj instanceof Array;
+	};
+
+	var composer = {
 
 	  makePairs: function makePairs(prefix, json) {
 	    if (!prefix) return '';
@@ -2531,10 +2615,11 @@
 	    el += composer.makePairs(attribute);
 	    el += composer.makePairs('data', dataAttribute);
 	    return el += '>' + (content || content === 0 ? content : '') + '</' + tagName + '>';
-	  },
-
-	  stringify: function stringify() {}
+	  }
 	};
+
+	exports['default'] = composer;
+	module.exports = exports['default'];
 
 /***/ },
 /* 26 */
@@ -2550,7 +2635,7 @@
 
 	var _composer2 = _interopRequireDefault(_composer);
 
-	var _utilsExtend = __webpack_require__(29);
+	var _utilsExtend = __webpack_require__(30);
 
 	var _utilsExtend2 = _interopRequireDefault(_utilsExtend);
 
@@ -2658,13 +2743,20 @@
 /* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(30);
-	var Class = __webpack_require__(31);
+	__webpack_require__(31);
+	var randomColor = __webpack_require__(29);
+	var Class = __webpack_require__(32);
 	var Errors = __webpack_require__(19);
 	var api = __webpack_require__(28);
+	var composer = __webpack_require__(25);
 
 	var isArray = function isArray(obj) {
 	  return obj instanceof Array;
+	};
+
+	var inverseList = {
+	  'x': 'x',
+	  'y': 'y'
 	};
 	/**
 	 * deep extend object or json properties
@@ -2689,33 +2781,14 @@
 	  _dataSetRelativeToTotal: api.dataSetRelativeToTotal,
 
 	  // random color generator
-	  _randomColor: function _randomColor() {
-	    return '#' + Math.floor(Math.random() * 16777215).toString(16);
-	  },
+	  _randomColor: randomColor,
 
 	  // appends the elements
 	  // accepts multiple child
-	  _append: function _append(parent, childs) {
-	    if (parent === '') return childs;
-	    if (!isArray(childs)) {
-	      childs = [childs];
-	    }
-	    return parent.replace(/(.*)(<\/.*>$)/g, function (match, p1, p2) {
-	      return p1 + childs.join('') + p2;
-	    });
-	  },
+	  _append: composer.append,
 
 	  // alternate to one level deep
-	  make: function make(tagName, attribute, dataAttribute, content) {
-	    var el = '<' + tagName;
-
-	    if (tagName === 'svg') {
-	      el += ' version="1.1" xmlns="http://www.w3.org/2000/svg"';
-	    }
-	    el += this._makePairs(attribute);
-	    el += this._makePairs('data', dataAttribute);
-	    return el += '>' + (content || content === 0 ? content : '') + '</' + tagName + '>';
-	  },
+	  make: composer.make,
 
 	  // Deep copies an object
 	  // TODO:: improve this
@@ -2742,6 +2815,20 @@
 	    scale.heightRatio = scale.height - (scale.paddingTop + scale.paddingBottom) / scale.max;
 	  },
 
+	  // Gets invert chart props defined by user
+	  _getInvertProps: function _getInvertProps(scale) {
+	    // Acceptable inverse flags to inverse the data set
+	    var inverse = {};
+	    if (scale.invert) {
+	      for (var x in scale.invert) {
+	        if (inverseList[scale.invert[x]]) {
+	          inverse[inverseList[scale.invert[x]]] = true;
+	        }
+	      }
+	    }
+	    scale.hasInverse = inverse;
+	  },
+
 	  /**
 	   * [_defineBaseScaleProperties defines the common scale properties]
 	   * @param  {[obj]} data  [raw data set from user]
@@ -2757,21 +2844,7 @@
 	    var scale = self._scale(data, chart);
 	    self._extend(scale, chart);
 	    scale._data = data;
-	    // Acceptable inverse flags to inverse the data set
-	    var inverseList = {
-	      'x': 'x',
-	      'y': 'y'
-	    };
-
-	    var inverse = {};
-	    if (scale.invert) {
-	      for (var x in scale.invert) {
-	        if (inverseList[scale.inveinvert[x]]) {
-	          inverse[inverseList[scale.invert[x]]] = true;
-	        }
-	      }
-	    }
-	    scale.hasInverse = inverse;
+	    self._getInvertProps(scale);
 
 	    if (chart.type != 'bubble-point' && (yAxis || xAxis)) {
 	      self._getExternalProps(scale, yAxis, xAxis);
@@ -2792,6 +2865,7 @@
 	  _lifeCycleManager: function _lifeCycleManager(data, chart, describe) {
 	    var self = this;
 	    var scale = self._defineBaseScaleProperties(data, chart);
+	    scale.componentName = self.componentName;
 	    // check if there is any external steps needed to be done
 	    if (self._call) {
 	      self._call(scale);
@@ -2811,26 +2885,7 @@
 	  },
 
 	  // only supports 1 level deep
-	  _makePairs: function _makePairs(prefix, json) {
-	    if (!prefix) return '';
-
-	    if (arguments.length < 2) {
-	      json = prefix;
-	      prefix = '';
-	    } else {
-	      prefix += '-';
-	    }
-
-	    if (!json) return '';
-
-	    var keys = Object.keys(json),
-	        len = keys.length;
-	    var str = '';
-	    while (len--) {
-	      str += ' ' + prefix + keys[len] + '="' + json[keys[len]] + '"';
-	    }
-	    return str;
-	  },
+	  _makePairs: composer.makePairs,
 
 	  // deep extend
 	  _extend: function _extend(attr, json) {
@@ -3146,6 +3201,20 @@
 /* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	exports['default'] = function () {
+	  return '#' + Math.floor(Math.random() * 16777215).toString(16);
+	};
+
+	module.exports = exports['default'];
+
+/***/ },
+/* 30 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/**
 	 * Extend property
 	 */
@@ -3166,7 +3235,7 @@
 	};
 
 /***/ },
-/* 30 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -3216,7 +3285,7 @@
 	}
 
 /***/ },
-/* 31 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
