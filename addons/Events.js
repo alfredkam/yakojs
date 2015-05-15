@@ -186,8 +186,8 @@ module.exports = Class.extend({
         var cx;
         radius = radius ? radius + minRadius : 0;
         if (scale.autoFit == false) {
-          var i = target.getAttribute('data-c');
-          cx = (i * tickSize) + scale.paddingLeft + scale.innerPaddingLeft;
+          var column = ((target.dataset || '').c || target.getAttribute('data-c'));
+          cx = (column * tickSize) + scale.paddingLeft + scale.innerPaddingLeft;
         } else {
           cx = ((point.date.getTime() - startTick) * tickSize) + scale.paddingLeft + scale.innerPaddingLeft;
         }
