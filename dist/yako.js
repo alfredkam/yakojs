@@ -55,7 +55,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "75b9918c146ee5908638";
+/******/ 	var hotCurrentHash = "b0b6b5d4c0efe75f446c";
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = [];
 /******/ 	
@@ -663,10 +663,10 @@
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(15);
-	var Errors = __webpack_require__(16);
-	var svgPath = __webpack_require__(17);
-	var api = __webpack_require__(18);
+	var Base = __webpack_require__(14);
+	var Errors = __webpack_require__(15);
+	var svgPath = __webpack_require__(16);
+	var api = __webpack_require__(17);
 
 	var spark = module.exports = Base.extend({
 
@@ -796,7 +796,7 @@
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arcBase = __webpack_require__(14);
+	var arcBase = __webpack_require__(18);
 	var pie = module.exports = arcBase.extend({
 
 	    componentName: 'pie',
@@ -859,7 +859,7 @@
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arcBase = __webpack_require__(14);
+	var arcBase = __webpack_require__(18);
 	var pie = module.exports = arcBase.extend({
 
 	    componentName: 'donut',
@@ -957,7 +957,7 @@
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(15);
+	var Base = __webpack_require__(14);
 
 	var bar = module.exports = Base.extend({
 
@@ -1032,7 +1032,7 @@
 
 	/* Entry Points */
 
-	var _classesDefault = __webpack_require__(15);
+	var _classesDefault = __webpack_require__(14);
 
 	var _classesDefault2 = _interopRequireDefault(_classesDefault);
 
@@ -1087,7 +1087,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _path = __webpack_require__(17);
+	var _path = __webpack_require__(16);
 
 	var _path2 = _interopRequireDefault(_path);
 
@@ -1145,7 +1145,7 @@
 
 	// time series / object base
 
-	var _classesDefault = __webpack_require__(15);
+	var _classesDefault = __webpack_require__(14);
 
 	var _classesDefault2 = _interopRequireDefault(_classesDefault);
 
@@ -1201,7 +1201,7 @@
 
 	// time series / object base
 
-	var _classesDefault = __webpack_require__(15);
+	var _classesDefault = __webpack_require__(14);
 
 	var _classesDefault2 = _interopRequireDefault(_classesDefault);
 
@@ -1294,8 +1294,8 @@
 	  });
 	*/
 
-	var api = __webpack_require__(18);
-	var Base = __webpack_require__(15);
+	var api = __webpack_require__(17);
+	var Base = __webpack_require__(14);
 
 	module.exports = Base.extend({
 
@@ -1537,57 +1537,6 @@
 /* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(15);
-	var arc = __webpack_require__(20);
-
-	module.exports = Base.extend({
-
-	    // Parent generator that manages the svg
-	    _startCycle: function _startCycle() {
-	        var self = this;
-	        var chart = self.attributes.opts.chart;
-	        var data = self.attributes.data;
-
-	        return self._lifeCycleManager(data, chart, function (scale) {
-	            return self._describePath(scale.outerRadius, scale.relativeDataSet, scale);
-	        });
-	    },
-
-	    // Extends _defineBaseScaleProperties in lib/base/common.js
-	    _defineBaseScaleProperties: function _defineBaseScaleProperties(data, chart) {
-	        var self = this;
-	        var total = self._sumOfData(data);
-	        var scale = {
-	            total: total,
-	            // Converts nums to relative => total sum equals 1
-	            relativeDataSet: self._dataSetRelativeToTotal(data, total),
-	            // Find the max width & height
-	            outerRadius: chart.outerRadius || (chart.height < chart.width ? chart.height : chart.width) / 2
-	        };
-
-	        self._extend(scale, chart);
-	        return scale;
-	    },
-
-	    _polarToCartesian: arc.polarToCartesian,
-
-	    _describeArc: arc.describeArc,
-
-	    _describePie: arc.describePie,
-
-	    /**
-	     * [_describePath super class]
-	     * @return {[type]} [empty string]
-	     */
-	    _describePath: function _describePath() {
-	        return '';
-	    }
-	});
-
-/***/ },
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
 	var Common = __webpack_require__(24);
 	var base = module.exports = Common.extend({
 
@@ -1720,7 +1669,7 @@
 	});
 
 /***/ },
-/* 16 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* istanbul ignore next */
@@ -1735,7 +1684,7 @@
 	};
 
 /***/ },
-/* 17 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// TODO:: shrink the argument
@@ -1850,7 +1799,7 @@
 	};
 
 /***/ },
-/* 18 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Describes scattered graph
@@ -1883,6 +1832,57 @@
 	    return paths;
 	  }
 	};
+
+/***/ },
+/* 18 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Base = __webpack_require__(14);
+	var arc = __webpack_require__(20);
+
+	module.exports = Base.extend({
+
+	    // Parent generator that manages the svg
+	    _startCycle: function _startCycle() {
+	        var self = this;
+	        var chart = self.attributes.opts.chart;
+	        var data = self.attributes.data;
+
+	        return self._lifeCycleManager(data, chart, function (scale) {
+	            return self._describePath(scale.outerRadius, scale.relativeDataSet, scale);
+	        });
+	    },
+
+	    // Extends _defineBaseScaleProperties in lib/base/common.js
+	    _defineBaseScaleProperties: function _defineBaseScaleProperties(data, chart) {
+	        var self = this;
+	        var total = self._sumOfData(data);
+	        var scale = {
+	            total: total,
+	            // Converts nums to relative => total sum equals 1
+	            relativeDataSet: self._dataSetRelativeToTotal(data, total),
+	            // Find the max width & height
+	            outerRadius: chart.outerRadius || (chart.height < chart.width ? chart.height : chart.width) / 2
+	        };
+
+	        self._extend(scale, chart);
+	        return scale;
+	    },
+
+	    _polarToCartesian: arc.polarToCartesian,
+
+	    _describeArc: arc.describeArc,
+
+	    _describePie: arc.describePie,
+
+	    /**
+	     * [_describePath super class]
+	     * @return {[type]} [empty string]
+	     */
+	    _describePath: function _describePath() {
+	        return '';
+	    }
+	});
 
 /***/ },
 /* 19 */
@@ -2442,7 +2442,7 @@
 	__webpack_require__(28);
 	var randomColor = __webpack_require__(26);
 	var Class = __webpack_require__(29);
-	var Errors = __webpack_require__(16);
+	var Errors = __webpack_require__(15);
 	var api = __webpack_require__(25);
 	var composer = __webpack_require__(22);
 

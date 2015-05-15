@@ -120,6 +120,7 @@ module.exports = Class.extend({
   _lifeCycleManager: function (data, chart, describe) {
     var self = this;
     var scale = self._defineBaseScaleProperties(data, chart);
+    scale.componentName = self.componentName;
     // check if there is any external steps needed to be done
     if (self._call) {
       self._call(scale);

@@ -13,7 +13,7 @@ describe('/src/bubble', function () {
     });
 
     it('_getRatio - should describe a ratio for a bubble-scattered', function () {
-        var data = [ { data: 
+        var data = [ { data:
          [ [ 279, 247, 482 ],
            [ 211, 230, 197 ],
            [ 377, 472, 106 ],
@@ -46,7 +46,7 @@ describe('/src/bubble', function () {
            [ 257, 113, 297 ],
         ],
         fill: '#8bff16' },
-      { data: 
+      { data:
          [ [ 312, 286, 288 ],
            [ 77, 133, 294 ],
            [ 318, 459, 338 ],
@@ -161,7 +161,7 @@ describe('/src/bubble', function () {
             height: 100,
             width: 300,
             type: 'bubble-point',
-            _data: 
+            _data:
             [ 483,
              170,
              307,
@@ -217,7 +217,7 @@ describe('/src/bubble', function () {
             height: 100,
             width: 300,
             type: 'bubble-point',
-            _data: 
+            _data:
             [ 483,
             170,
             307,
@@ -275,7 +275,7 @@ describe('/src/bubble', function () {
             height: 100,
             width: 300,
             type: 'bubble-point',
-            _data: 
+            _data:
             [ 483,
              170,
              307,
@@ -313,7 +313,7 @@ describe('/src/bubble', function () {
             });
     });
 
-    it('_describeBubble should describe a bubble point chart', function () {
+    it('_describeBubble should describe a bubble point chart and wthout NaN', function () {
         var data = [ 483,
              170,
              307,
@@ -361,6 +361,10 @@ describe('/src/bubble', function () {
             paddingTop: 0,
             paddingRight: 5.325203252032519,
             paddingLeft: 9.817073170731707,
+            innerPaddingLeft: 0,
+            innerPaddingRight: 0,
+            innerPaddingBottom: 0,
+            innerPaddingTop: 0,
             height: 100,
             width: 300,
             type: 'bubble-point',
@@ -376,7 +380,7 @@ describe('/src/bubble', function () {
     });
 
     it('_describeBubbleChart should describe a scattered bubble graph', function () {
-          var data = [ { data: 
+          var data = [ { data:
            [ [ 279, 247, 482 ],
              [ 211, 230, 197 ],
              [ 377, 472, 106 ],
@@ -409,7 +413,7 @@ describe('/src/bubble', function () {
              [ 257, 113, 297 ],
           ],
           fill: '#8bff16' },
-        { data: 
+        { data:
            [ [ 312, 286, 288 ],
              [ 77, 133, 294 ],
              [ 318, 459, 338 ],
@@ -470,7 +474,7 @@ describe('/src/bubble', function () {
             prefLen: 2,
             widthRatio: 0.48484848484848486,
             heightRatio: 0.12 };
-        
+
         var result = bubble._describeBubbleChart(data, scale);
         expect(result)
             .to.be.a('array')

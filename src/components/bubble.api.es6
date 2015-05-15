@@ -99,7 +99,7 @@ module.exports = {
 
   describeBubbleLineByObject: function (data, height, width, scale) {
     if (!data) return '';
-    var { autoFit, strokeColors, strokeWidths, fill, tickSize, startTick, minRadius, maxRadius } = scale;
+    var { paddingLeft, innerPaddingLeft, autoFit, strokeColors, strokeWidths, fill, tickSize, startTick, minRadius, maxRadius } = scale;
     var dataPoints = data.length;
     var paths = [];
     var defaultStrokeColor = strokeColors || 0;
@@ -120,9 +120,9 @@ module.exports = {
         }
 
         if (autoFit == false) {
-          cx = (i * tickSize) + scale.paddingLeft;
+          cx = (i * tickSize) + paddingLeft + innerPaddingLeft;
         } else {
-          cx = ((point.date.getTime() - startTick) * tickSize) + scale.paddingLeft;
+          cx = ((point.date.getTime() - startTick) * tickSize) + paddingLeft + innerPaddingLeft;
         }
 
         var r = ( maxRadius - minRadius ) * point.data / scale.max;
@@ -163,7 +163,7 @@ module.exports = {
         var r = (config.maxRadius - minRadius) * (data[i] / scale.max);
         r = r ? r + minRadius : 0;
         paths.push(composer.make('circle', {
-            cx: (scale.tickSize * i) + scale.paddingLeft,
+            cx: (scale.tickSize * i) + scale.paddingLeft + scale.innerPaddingLeft,
             cy: centerY,
             r: r,
             fill: fills[i] || (config.fill || randomColor()),

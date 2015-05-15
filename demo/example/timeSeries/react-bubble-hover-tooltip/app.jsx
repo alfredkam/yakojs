@@ -31,21 +31,21 @@ var bubbleSet = dataSet5
 
 var bubblePoint =[
   {
-    date: new Date(2015,2,1),
+//    date: new Date(2015,2,1),
     data: 300,
     fill : '#000',
     meta: {}
     // meta: Object
   },
   {
-    date: new Date(2015, 4, 30),
+    //date: new Date(2015, 4, 30),
     data: 150,
     fill : '#000',
     meta: {}
     // meta: Object
   },
   {
-    date: new Date(2015, 9, 30),
+    //date: new Date(2015, 9, 30),
     data: 200,
     fill : '#000',
      meta: {}
