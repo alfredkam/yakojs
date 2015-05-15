@@ -6,7 +6,6 @@ coverage/
 app.js
 .tmp
 .build
-lib/
 npm-debug.log
 testData/
 testData.json

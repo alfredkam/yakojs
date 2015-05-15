@@ -185,9 +185,10 @@ module.exports = Class.extend({
         var radius = (scale.maxRadius - minRadius) * point.data / scale.max;
         var cx;
         radius = radius ? radius + minRadius : 0;
+
         if (scale.autoFit == false) {
-          var i = target.getAttribute('data-c');
-          cx = (i * tickSize) + scale.paddingLeft + scale.innerPaddingLeft;
+          var column = ((target.dataset || '').c || target.getAttribute('data-c'));
+          cx = (column * tickSize) + scale.paddingLeft + scale.innerPaddingLeft;
         } else {
           cx = ((point.date.getTime() - startTick) * tickSize) + scale.paddingLeft + scale.innerPaddingLeft;
         }
@@ -203,7 +204,7 @@ module.exports = Class.extend({
             eY : eY,
             eX : eX,
             cY : scale.height / 2,
-            cx : cx,
+            cX : cx,
             r : radius
           }
         }
