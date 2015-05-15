@@ -3,6 +3,7 @@ var randomColor = require('../utils/randomColor');
 var Class = require('./class');
 var Errors = require('../utils/error');
 var api = require('../components/api');
+var composer = require('../svg/composer');
 
 var isArray = function (obj) {
     return obj instanceof Array;
@@ -39,27 +40,10 @@ module.exports = Class.extend({
 
   // appends the elements
   // accepts multiple child
-  _append: function (parent, childs) {
-    if (parent === '') return childs;
-    if (!isArray(childs)) {
-      childs = [childs];
-    }
-    return parent.replace(/(.*)(<\/.*>$)/g, function (match, p1, p2) {
-        return p1 + childs.join("") + p2;
-    });
-  },
+  _append: composer.append,
 
   // alternate to one level deep
-  make: function (tagName, attribute, dataAttribute, content) {
-    var el = '<' + tagName;
-
-    if (tagName === 'svg') {
-        el += ' version="1.1" xmlns="http://www.w3.org/2000/svg"';
-    }
-    el += this._makePairs(attribute);
-    el += this._makePairs('data', dataAttribute);
-    return el += '>' + (content || content === 0 ? content : '') + '</'+tagName+'>';
-  },
+  make: composer.make,
 
   // Deep copies an object
   // TODO:: improve this
@@ -155,25 +139,7 @@ module.exports = Class.extend({
   },
 
   // only supports 1 level deep
-  _makePairs: function (prefix, json) {
-    if (!prefix) return '';
-
-    if (arguments.length < 2) {
-      json = prefix;
-      prefix = '';
-    } else {
-      prefix += '-';
-    }
-
-    if (!json) return '';
-
-    var keys = Object.keys(json), len = keys.length;
-    var str = '';
-    while (len--) {
-      str += ' ' + prefix + keys[len] + '="' + json[keys[len]] + '"';
-    }
-    return str;
-  },
+  _makePairs: composer.makePairs,
 
   // deep extend
   _extend: function (attr, json) {

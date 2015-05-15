@@ -111,7 +111,7 @@ describe('bubble.api', function () {
     });
   });
 
-  describe('@describeLineByObject (Bubble point / line)', function () {
+  describe('@describeBubbleLineByObject (Bubble point / line)', function () {
     it('should return a path without NaN', function () {
       var height = 100;
       var width = 300;
@@ -123,13 +123,13 @@ describe('bubble.api', function () {
         data[i].date = new Date(data[i].date);
       }
 
-      var result = bubbleApi.describeLineByObject(data, height, width, scale);
+      var result = bubbleApi.describeBubbleLineByObject(data, height, width, scale);
 
       expect(result)
         .toNotContain('NaN');
     });
   });
-  
+
   describe('@describeLineByNumberArray', function () {
     it('should return a path without NaN', function () {
       var height = 100;
@@ -158,7 +158,7 @@ describe('bubble.api', function () {
     it('should returna a new set of ratios for bubble-point base on the data provided', function () {
       var scale = {"min":22,"max":421,"maxSet":[],"len":5,"rows":1,"ySecs":0,"color":[],"xAxis":{"strokeColor":"#333"},"bubble":{"maxRadius":10,"strokeColor":"red","strokeWidth":"3"},"scattered":false,"fill":true,"line":true,"invert":[],"innerPaddingBottom":0,"innerPaddingTop":0,"innerPaddingRight":0,"innerPaddingLeft":0,"innerPadding":0,"paddingBottom":0,"paddingTop":0,"paddingRight":0,"paddingLeft":0,"height":100,"width":300,"type":"bubble-point","_data":[421,157,22,194,381],"hasInverse":{}};
       var expected = {"min":22,"max":421,"maxSet":[],"len":5,"rows":1,"ySecs":0,"color":[],"xAxis":{"strokeColor":"#333"},"bubble":{"maxRadius":10,"strokeColor":"red","strokeWidth":"3","minRadius":0},"scattered":false,"fill":true,"line":true,"invert":[],"innerPaddingBottom":0,"innerPaddingTop":0,"innerPaddingRight":0,"innerPaddingLeft":0,"innerPadding":0,"paddingBottom":0,"paddingTop":0,"paddingRight":9.049881235154395,"paddingLeft":10,"height":100,"width":300,"type":"bubble-point","_data":[421,157,22,194,381],"hasInverse":{},"tickSize":70.2375296912114};
-      
+
       bubbleApi.getRatioByNumberArray(scale);
       expect(scale)
         .toEqual(expected);

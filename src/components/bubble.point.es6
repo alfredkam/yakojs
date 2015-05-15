@@ -37,5 +37,5 @@ module.exports = Base.extend({
     _describeXAxis: api.describeXAxisForBubbleLine,
 
     // Describes bubble point graph
-    _describeBubble: api.describeLineByObject
+    _describeBubble: api.describeBubbleLineByObject
 });

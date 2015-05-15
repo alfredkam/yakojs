@@ -97,30 +97,39 @@ module.exports = {
     return paths;
   },
 
-  describeLineByObject: function (data, height, width, scale) {
+  describeBubbleLineByObject: function (data, height, width, scale) {
     if (!data) return '';
-    var { strokeColors, strokeWidths, fill, tickSize, startTick, minRadius, maxRadius } = scale;
+    var { autoFit, strokeColors, strokeWidths, fill, tickSize, startTick, minRadius, maxRadius } = scale;
     var dataPoints = data.length;
     var paths = [];
     var defaultStrokeColor = strokeColors || 0;
     var defaultStrokeWidth = strokeWidths || 0;
     var defaultFill = scale.fill || 0;
     var centerY = height / 2;
-    var refs;
+    var refs, cx;
     var minRadius = minRadius || 0;
 
     for (var i = 0; i < data.length; i++) {
         var point = data[i];
+
         if (scale.hasEvents) {
             // c = columns
             refs = {
                 c: i
             };
         }
+
+        if (autoFit) {
+          cx = (i * tickSize) + scale.paddingLeft;
+        } else {
+          cx = ((point.date.getTime() - startTick) * tickSize) + scale.paddingLeft;
+        }
+
         var r = ( maxRadius - minRadius ) * point.data / scale.max;
         r = r ? r + minRadius : 0;
+
         paths.push(composer.make('circle', {
-            cx: ((point.date.getTime() - startTick) * tickSize) + scale.paddingLeft,
+            cx: cx,
             cy: centerY,
             r: r,
             fill: point.fill || defaultFill,
@@ -221,9 +230,17 @@ module.exports = {
     var minRadius = scale.minRadius = scale.minRadius || 0;
     var startTick, endTick;
 
+
     // Check if the start date is defined, if not defined using first element in array
-    scale.startTick = startTick = ((scale.startDate || data[0].date) || 0).getTime();
-    scale.endTick = endTick = (scale.endDate || data[len - 1].date).getTime();
+    if (scale.autoFit) {
+      startTick = 0;
+      endTick = len - 1;
+    } else {
+      startTick = ((scale.startDate || data[0].date) || 0).getTime();
+      endTick = (scale.endDate || data[len - 1].date).getTime();
+    }
+    scale.startTick = startTick;
+    scale.endTick = endTick;
     var tickLen = endTick - startTick;
     tickLen = (tickLen == 0 ? 1000 : tickLen);
 
@@ -235,12 +252,10 @@ module.exports = {
     firstElementRadius = firstElementRadius ? firstElementRadius + minRadius : 0;
     lastElementRadius = lastElementRadius ? lastElementRadius + minRadius : 0;
 
-    var firstTick = data[0].date.getTime();
-    var lastTick = data[len - 1].date.getTime();
-    var firstTickLeftRadius = ((firstTick - startTick) * potentialPxTickRatio) - firstElementRadius;
-    var lastTickRightRadius = ((lastTick - endTick) * potentialPxTickRatio) + lastElementRadius;
-    scale.paddingLeft = firstTickLeftRadius < 0 ? Math.abs(firstTickLeftRadius) : 0;
-    scale.paddingRight = lastTickRightRadius > 0 ? lastTickRightRadius : 0;
+    var startTickLeftRadius = ((startTick - startTick) * potentialPxTickRatio) - firstElementRadius;
+    var endTickRightRadius = ((endTick - endTick) * potentialPxTickRatio) + lastElementRadius;
+    scale.paddingLeft = startTickLeftRadius < 0 ? Math.abs(startTickLeftRadius) : 0;
+    scale.paddingRight = endTickRightRadius > 0 ? endTickRightRadius : 0;
     scale.tickSize = (width - scale.paddingLeft - scale.paddingRight) / (tickLen);
   }
 };
