@@ -204,7 +204,7 @@ module.exports = Class.extend({
             eY : eY,
             eX : eX,
             cY : scale.height / 2,
-            cx : cx,
+            cX : cx,
             r : radius
           }
         }
