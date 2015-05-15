@@ -1,4 +1,5 @@
 require('../utils/adjustDecimal');
+var randomColor = require('../utils/randomColor');
 var Class = require('./class');
 var Errors = require('../utils/error');
 var api = require('../components/api');
@@ -34,9 +35,7 @@ module.exports = Class.extend({
   _dataSetRelativeToTotal: api.dataSetRelativeToTotal,
 
   // random color generator
-  _randomColor: function () {
-    return '#'+Math.floor(Math.random()*16777215).toString(16);
-  },
+  _randomColor: randomColor,
 
   // appends the elements
   // accepts multiple child

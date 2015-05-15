@@ -45,6 +45,7 @@
     "del": "^1.1.1",
     "es6-loader": "^0.2.0",
     "eslint": "^0.21.0",
+    "expect": "^1.6.0",
     "expose-loader": "^0.6.0",
     "file-loader": "^0.8.1",
     "gulp": "^3.8.11",
