@@ -185,6 +185,7 @@ module.exports = Class.extend({
         var radius = (scale.maxRadius - minRadius) * point.data / scale.max;
         var cx;
         radius = radius ? radius + minRadius : 0;
+
         if (scale.autoFit == false) {
           var column = ((target.dataset || '').c || target.getAttribute('data-c'));
           cx = (column * tickSize) + scale.paddingLeft + scale.innerPaddingLeft;
