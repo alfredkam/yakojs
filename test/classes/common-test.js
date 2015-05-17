@@ -303,29 +303,29 @@ describe('src/classes/common', function () {
 
     });
 
-    it('_scale (type: "bubble-scattered") should return the min and max of set', function () {
-        var set = [
-            {
-                data: [
-                    [0,1,2],
-                    [1,2,3],
-                    [2,3,4],
-                    [3,4,5],
-                    [4,5,6]
-                ]
-            },
-            {
-                data: [
-                    [5,6,7],
-                    [6,7,8],
-                    [7,8,9],
-                    [8,9,10],
-                    [9,10,11]
-                ]
-            }
+    it('_scale (type: "bubble.scattered") should return the min and max of set', function () {
+        var dataSet = [
+            [0,1,2],
+            [1,2,3],
+            [2,3,4],
+            [3,4,5],
+            [4,5,6],
+            [5,6,7],
+            [6,7,8],
+            [7,8,9],
+            [8,9,10],
+            [9,10,11]
         ];
 
-        var result = common._scale(set, {type: 'bubble-scattered'});
+        var set = [];
+        for (var i in dataSet) {
+            set.push({
+                data: dataSet[i]
+            });
+        }
+
+        common.componentName = 'bubble.scatter';
+        var result = common._scale(set, {});
 
         expect(result.max)
             .to.deep.equal([ 9, 10, 11 ]);
@@ -334,10 +334,10 @@ describe('src/classes/common', function () {
             .to.deep.equal([0, 1, 2]);
 
         expect(result.len)
-            .to.equal(5);
+            .to.equal(10);
 
         expect(result.rows)
-            .to.equal(2);
+            .to.equal(1);
     });
 
     it('_deepCopy should return a json copy', function () {

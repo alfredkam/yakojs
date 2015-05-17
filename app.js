@@ -97,6 +97,17 @@ while (amount--) {
     }
   ];
 
+  var bubbleSet = [
+    {
+      data: dataSet5,
+      fill: yako.spark()._randomColor()
+    },
+    {
+      data: dataSet6,
+      fill: yako.spark()._randomColor()
+    }
+  ];
+
   nodes += "<div class='graph'>" + bubbleScatter().attr({
     width: 300,
     height: 100,

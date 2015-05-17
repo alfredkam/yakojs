@@ -3,30 +3,6 @@ describe('bubble.api', function () {
   var expect = require('expect');
   var bubbleApi = require('../../src/components/bubble.api.es6');
 
-  describe('@getConfigForScatterTimeSeries', function () {
-    it('should return a config for bubble-scatter', function () {
-      var chart = {};
-      var expected = {
-        type: 'bubble-scattered',
-        complex: true,
-        parentType: 'bubble'
-      };
-      expect(bubbleApi.getConfigForScatterTimeSeries(chart)).toEqual(expected);
-    });
-  });
-
-  describe('@getConfigForLine', function () {
-    it('should return a config for bubble-point', function () {
-      var chart = {};
-      var expected = {
-        type: 'bubble-point',
-        complex: true,
-        parentType: 'bubble'
-      };
-      expect(bubbleApi.getConfigForLine(chart)).toEqual(expected);
-    });
-  });
-
   describe('@describeXAxisForBubbleLine', function () {
     it('should return a horizontal path without NaN', function () {
       var scale =  {
@@ -99,18 +75,6 @@ describe('bubble.api', function () {
     });
   });
 
-  describe('@describeBubbleByNumberArray', function () {
-    it('should return paths without NaN, with data argument as an array of numbers', function () {
-      var data = [{"data":[[159,202,11],[430,506,198],[78,430,419],[203,345,248],[367,285,460]],"fill":"#4d0345"},{"data":[[149,368,426],[117,109,115],[42,272,211],[69,367,508],[103,25,370]],"fill":"#f20c0"}];
-      var scale = {"min":[42,25,11],"max":[430,600,508],"maxSet":[],"len":5,"rows":2,"ySecs":3,"color":[null,null],"maxRadius":10,"yAxis":true,"xAxis":{"format":"custom","labels":["low","high"]},"scattered":false,"fill":true,"line":true,"invert":[],"innerPaddingBottom":0,"innerPaddingTop":0,"innerPaddingRight":0,"innerPaddingLeft":0,"innerPadding":0,"paddingBottom":20,"paddingTop":20,"paddingRight":30,"paddingLeft":30,"height":100,"width":300,"type":"bubble-scattered","_data":[{"data":[[159,202,11],[430,506,198],[78,430,419],[203,345,248],[367,285,460]],"fill":"#4d0345"},{"data":[[149,368,426],[117,109,115],[42,272,211],[69,367,508],[103,25,370]],"fill":"#f20c0"}],"hasInverse":{},"pHeight":60,"pWidth":240,"tickSize":120,"prefLen":2,"widthRatio":0.5581395348837209,"heightRatio":0.1,"minRadius":0};
-      var expected = ["<circle fill=\"#4d0345\" r=\"0.21653543307086615\" cy=\"59.8\" cx=\"181.25581395348837\"></circle>","<circle fill=\"#4d0345\" r=\"3.8976377952755903\" cy=\"29.4\" cx=\"30\"></circle>","<circle fill=\"#4d0345\" r=\"8.248031496062993\" cy=\"37\" cx=\"226.46511627906978\"></circle>","<circle fill=\"#4d0345\" r=\"4.881889763779528\" cy=\"45.5\" cx=\"156.69767441860466\"></circle>","<circle fill=\"#4d0345\" r=\"9.05511811023622\" cy=\"51.5\" cx=\"65.16279069767441\"></circle>","<circle fill=\"#f20c0\" r=\"8.385826771653543\" cy=\"43.199999999999996\" cx=\"186.83720930232556\"></circle>","<circle fill=\"#f20c0\" r=\"2.263779527559055\" cy=\"69.1\" cx=\"204.69767441860466\"></circle>","<circle fill=\"#f20c0\" r=\"4.153543307086614\" cy=\"52.8\" cx=\"246.5581395348837\"></circle>","<circle fill=\"#f20c0\" r=\"10\" cy=\"43.3\" cx=\"231.48837209302326\"></circle>","<circle fill=\"#f20c0\" r=\"7.283464566929134\" cy=\"77.5\" cx=\"212.51162790697674\"></circle>"];
-      var result = bubbleApi.describeBubbleByNumberArray(data, scale);
-
-      expect(result)
-        .toNotContain('NaN');
-    });
-  });
-
   describe('@describeBubbleLineByObject (Bubble point / line)', function () {
     it('should return a path without NaN', function () {
       var height = 100;
@@ -127,41 +91,6 @@ describe('bubble.api', function () {
 
       expect(result)
         .toNotContain('NaN');
-    });
-  });
-
-  describe('@describeLineByNumberArray', function () {
-    it('should return a path without NaN', function () {
-      var height = 100;
-      var width = 300;
-      var data = [296,428,348,100,350];
-      var scale = {"min":100,"max":428,"maxSet":[],"len":5,"rows":1,"ySecs":0,"color":[],"scattered":false,"fill":true,"line":true,"invert":[],"innerPaddingBottom":0,"innerPaddingTop":0,"innerPaddingRight":0,"innerPaddingLeft":0,"innerPadding":0,"paddingBottom":0,"paddingTop":0,"paddingRight":27.258566978193148,"paddingLeft":23.052959501557634,"height":100,"width":300,"type":"bubble-point","_data":[296,428,348,100,350],"hasInverse":{},"bubble":{"maxRadius":33.333333333333336,"minRadius":0},"xAxis":{},"tickSize":62.42211838006231};
-      var expected = ["<circle stroke-width=\"2\" stroke=\"#d71294\" fill=\"#b02876\" r=\"23.052959501557634\" cy=\"50\" cx=\"23.052959501557634\"></circle>","<circle stroke-width=\"2\" stroke=\"#4f9584\" fill=\"#16ceaa\" r=\"33.333333333333336\" cy=\"50\" cx=\"85.47507788161994\"></circle>","<circle stroke-width=\"2\" stroke=\"#f97045\" fill=\"#7c87ee\" r=\"27.102803738317757\" cy=\"50\" cx=\"147.89719626168224\"></circle>","<circle stroke-width=\"2\" stroke=\"#5b8905\" fill=\"#fc55f5\" r=\"7.788161993769471\" cy=\"50\" cx=\"210.31931464174457\"></circle>","<circle stroke-width=\"2\" stroke=\"#d291bc\" fill=\"#1d51f\" r=\"27.258566978193148\" cy=\"50\" cx=\"272.74143302180687\"></circle>"];
-
-      var result = bubbleApi.describeLineByNumberArray(data, height, width, scale);
-
-      expect(result)
-        .toNotContain('NaN');
-    });
-  });
-
-  describe('@getRatioByNumberArray', function () {
-    it('should return a new set of ratios for bubble-scatter base on the data provided', function () {
-      var scale = {"min":[19,17,122],"max":[419,500,458],"maxSet":[],"len":5,"rows":2,"ySecs":5,"color":[null,null],"maxRadius":"10","yAxis":true,"xAxis":{"format":"custom","labels":["low","high"]},"scattered":false,"fill":true,"line":true,"invert":[],"innerPaddingBottom":0,"innerPaddingTop":0,"innerPaddingRight":0,"innerPaddingLeft":0,"innerPadding":0,"paddingBottom":20,"paddingTop":20,"paddingRight":30,"paddingLeft":30,"height":100,"width":300,"type":"bubble-scattered","_data":[{"data":[[152,75,274],[122,267,424],[386,360,458],[44,410,377],[419,260,431]],"fill":"#e6ce4b"},{"data":[[267,490,264],[247,17,334],[332,452,439],[19,322,219],[368,152,122]],"fill":"#b38685"}],"hasInverse":{},"pHeight":60,"pWidth":240,"tickSize":120,"prefLen":2};
-      var expected = {"min":[19,17,122],"max":[419,500,458],"maxSet":[],"len":5,"rows":2,"ySecs":5,"color":[null,null],"maxRadius":10,"yAxis":true,"xAxis":{"format":"custom","labels":["low","high"]},"scattered":false,"fill":true,"line":true,"invert":[],"innerPaddingBottom":0,"innerPaddingTop":0,"innerPaddingRight":0,"innerPaddingLeft":0,"innerPadding":0,"paddingBottom":20,"paddingTop":20,"paddingRight":30,"paddingLeft":30,"height":100,"width":300,"type":"bubble-scattered","_data":[{"data":[[152,75,274],[122,267,424],[386,360,458],[44,410,377],[419,260,431]],"fill":"#e6ce4b"},{"data":[[267,490,264],[247,17,334],[332,452,439],[19,322,219],[368,152,122]],"fill":"#b38685"}],"hasInverse":{},"pHeight":60,"pWidth":240,"tickSize":120,"prefLen":2,"widthRatio":0.5727923627684964,"heightRatio":0.12,"minRadius":0};
-
-      bubbleApi.getRatioByNumberArray(scale);
-      expect(scale)
-        .toEqual(expected);
-    });
-
-    it('should returna a new set of ratios for bubble-point base on the data provided', function () {
-      var scale = {"min":22,"max":421,"maxSet":[],"len":5,"rows":1,"ySecs":0,"color":[],"xAxis":{"strokeColor":"#333"},"bubble":{"maxRadius":10,"strokeColor":"red","strokeWidth":"3"},"scattered":false,"fill":true,"line":true,"invert":[],"innerPaddingBottom":0,"innerPaddingTop":0,"innerPaddingRight":0,"innerPaddingLeft":0,"innerPadding":0,"paddingBottom":0,"paddingTop":0,"paddingRight":0,"paddingLeft":0,"height":100,"width":300,"type":"bubble-point","_data":[421,157,22,194,381],"hasInverse":{}};
-      var expected = {"min":22,"max":421,"maxSet":[],"len":5,"rows":1,"ySecs":0,"color":[],"xAxis":{"strokeColor":"#333"},"bubble":{"maxRadius":10,"strokeColor":"red","strokeWidth":"3","minRadius":0},"scattered":false,"fill":true,"line":true,"invert":[],"innerPaddingBottom":0,"innerPaddingTop":0,"innerPaddingRight":0,"innerPaddingLeft":0,"innerPadding":0,"paddingBottom":0,"paddingTop":0,"paddingRight":9.049881235154395,"paddingLeft":10,"height":100,"width":300,"type":"bubble-point","_data":[421,157,22,194,381],"hasInverse":{},"tickSize":70.2375296912114};
-
-      bubbleApi.getRatioByNumberArray(scale);
-      expect(scale)
-        .toEqual(expected);
     });
   });
 
