@@ -1,6 +1,12 @@
+require("babel-core/register")({
+  blacklist: ["strict"],
+  only: /(src|addons)/,
+  extensions: [".es6"]
+});
+
 var util = require('util');
 
-var yako = require('./index');
+var yako = require('./src/index');
 var lineGraph = yako.line;
 
 var http = require('http');
@@ -51,7 +57,7 @@ for (var i = 0; i < testData.length; i++) {
       // fill: yako.spark()._randomColor()
     };
   }
-
+  
   nodes += "<div id='.graph'>" + lineGraph({
           mixin: [Label]
         }).attr({
@@ -69,13 +75,12 @@ for (var i = 0; i < testData.length; i++) {
             }
           },
           title: 'just a test',
-          data: {
+          points: {
             data: testData[i].content,
             labels: labels
           }
         }) + "</div>";
 }
-
 
 console.log('Took ' + diff + 'ms to generate ' + (nOfGraphs) + ' graphs with avg of ' + (diff/nOfGraphs) + 'ms');
 nodes = '<div>' + 'Took ' + diff + 'ms to generate ' + (nOfGraphs) +' graphs with avg of ' + (diff/nOfGraphs) + 'ms' + '</div>' + nodes;

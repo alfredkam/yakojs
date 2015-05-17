@@ -1,12 +1,12 @@
 ##Content
 - [General Usage](#Usage)
   - [Spark Graph Attributes](#spark-graph-attributes)
+  - [Line Graph Attributes](#line-graph-attributes)
   - [Pie Chart Attributes](#pie-chart-attributes)
   - [Donut Chart Attributes](#donut-chart-attributes)
-  - [Bubble Point Graph Attributes (for a horizontal line time series representation)](#bubble-point-graph-attributes-for-a-horizontal-line-time-series-representation)
-  - [Bubble Graph Attributes ( for representing a cohort)](#bubble-graph-attributes--for-representing-a-cohort)
+  - [Bubble Graph Attributes ( for representing a cohort)](#bubble-graph-attributes)
+  - [Bubble Point Graph Attributes (for a horizontal line time series representation)](#bubble-point-bubble-line-attributes)
   - [Bar Graph Attributes](#bar-graph-attributes)
-- [Time Series] (#time-series--consumable-objects) 
 - [API & Mixin](#api--mixin)
 - [SVG API](#svg-api)
 - [Addons](#addons)
@@ -18,6 +18,7 @@
     - [Pie](#pie)
     - [Donut](#donut)
     - [Bubble](#bubble)
+    - [Bubble Point (line)](#bubble-point-line)
     - [Bar](#bar)
 - [Extend or Modify Library](#extending-or-modify-library)
 
@@ -26,12 +27,14 @@
 ##General Usage
 To use any of the graphs you could access them through these entry points.
 ``` javascript
-var yako = require('yako'); // or window.yako on the browser
-var bar = yako.bar;         // Bar graph
-var bubble = yako.bubble    // Bubble graph
-var donut = yako.donut;     // Donut chart
-var spark = yako.spark;     // Spark graph
-var pie = yako.pie;         // Pie chart
+var yako = require('yako');                // or window.yako on the browser
+var bar = yako.bar;                        // Bar graph
+var bubbleScatter = yako.bubble.scater;    // Bubble (scatter) graph
+var bubblePoint = yako.bubble.point;       // Bubble point (line) graph
+var donut = yako.donut;                    // Donut chart
+var spark = yako.spark;                    // Spark graph
+var line = yako.line;                      // Line graph
+var pie = yako.pie;                        // Pie chart
 ```
 
 ####Initializing
@@ -79,6 +82,7 @@ var set = [
     }
   }
 ];
+
 // Spark accepts multiple data sets
 spark().attr({
   chart : {
@@ -104,6 +108,71 @@ spark().attr({
 });
 ```
 
+####Line Graph Attributes
+Line graph is relatively similar to spark graph, except line graph works with time series data.
+
+```javascript
+var dataPoints = {
+
+  data: [
+    {"labelOne":"951", "labelTwo":"119695", "timestamp":"2014-06-06"},
+    {"labelOne":"912", "labelTwo":"119263", "timestamp":"2014-07-01"}
+  ],
+
+  /* A config for each data's key must be include in labels in order for that data set to be drawn. */
+  labels: {
+            "labelOne": {
+              "strokeColor": "#15b74",  // Set stroke color
+              "strokeWidth": "2",       // Set stroke width
+              "fill": "black"           // Set fill color
+              
+              /* Options for scatter, by including the scatter option - scatter will be enable  */
+              "scattered": {
+                  "strokeWidth": "1",   // Set the scatter's circle stroke width
+                  "radius": "1.5",      // Set the scatter's circle radius
+                  "fill": "red"         // Set the scatter's circle fill color
+              }
+            },
+
+            // 
+            "labelTwo": {
+              "strokeColor": "#2ff158",  // Set stroke color
+              "strokeWidth": "2",       // Set stroke width
+              "fill": "black"           // Set fill color
+
+              /* Options for scatter, by including the scatter option - scatter will be enable  */
+              "scattered": {
+                "strokeWidth": "1",   // Set the scatter's circle stroke width
+                "radius": "1.5",      // Set the scatter's circle radius
+                "fill": "red"         // Set the scatter's circle fill color
+              }
+            }
+          }
+};
+
+line()
+  .attr({
+                               // Width & height controls the svg view box
+  width: 600,                  // Default 200
+  height: 100,                 // Default 100
+
+  /* Optional parameters */
+  stroke: false                // It will disable the stroke from drawn
+  line: true,                  // Override to disable the line to be drawn
+  fill: true,                  // Defaults is true, override to disable fill
+                               // Say if you want to only have scattered graph, you will set line & fill properties to false
+  scattered: false,            // Override to enable scattered
+
+  /* Padding options for the chart */
+  paddingLeft: 0, 
+  paddingRight: 0,
+  paddingTop: 0,
+  paddingBottom: 0
+
+  /* Graph data to be drawn */
+  points: dataPoints 
+});
+```
 ####Pie Chart Attributes
 ```javascript
 var set = [123,1233,1231,123];      // An array of numbers
@@ -163,80 +232,7 @@ var outerRadius = chart.outerRadius || (circumference / 2);
 var innerRadius = chart.innerRadius || (outerRadius / 2);
 ```
 
-####Bubble Point Graph Attributes <i>(for a horizontal line time series representation)</i>
-```javascript
-var set = [];                               // An array of numbers
-bubble('.graph').attr({
-  chart: {
-                                            // Width & height controls the svg view box
-    width: 300,
-    height: 100,
-
-    /* Optional parameters */
-    /* Options for the straight line */
-    xAxis: {
-      strokeColor: '#000',                // sets stroke color,
-      strokeWidth: 2
-    },
-    bubble: {
-      maxRadius: 10,                      // Overrides default & sets a cap for a max radius for the bubble
-      strokeColor: '#000',                // Set default stroke color
-      strokeColors: ['#000', '#1234'],    // This will override the fill color and matches with the adjacent data set
-      strokeWidth: 2,                     // Set default stroke width
-      strokeWidths: [2, 2],               // This will override the stroke width and matches with the adjacent data set
-      fill: '#333',                       // Sets default fill color
-      fills: ['#333','#334']              // This will override the fill color and matches with the adjacent data set
-                                          // Note: if strokeColor / strokeColors / fill / fills are not provided - it will randomly generate a color
-    },
-
-    /* Padding options for the chart */
-    paddingLeft: 0, 
-    paddingRight: 0,
-    paddingTop: 0,
-    paddingBottom: 0
-  },
-  points: set
-});
-// default maxRadius base on chart attributes
-var maxRadius =  chart.maxRadius || (chart.height < chart.width ? chart.height : chart.width) / 3;
-```
-####Bubble Graph Attributes <i>( for representing a cohort)</i>
-```javascript
-var set = [{
-  data: [
-          [0, 1, 2],          // x (xAxis), y (yAxis), z (sample size) 
-          [2, 3, 4]
-  ],
-  fill: '#000'                // Default fill
-}]; 
-bubble('.graph').attr({
-  chart: {
-    type: 'scattered',        // <= This is needed for bubble graph
-                              // Width & height controls the svg view box
-    width: 300,
-    height: 100,
-
-    /* Optional parameters */
-    /* Options for the circle */
-    maxRadius: 10,            // Overrides default & sets a cap for a max radius for the bubble
-    fill: ['#000'],           // Sets the default fill color
-    fills: ['#333','#334'],   // This will override the fill color and matches with the adjacent dataset
-                              // Note: if fill / fills are not provided - it will randomly generate a color
-
-    /* Padding options for the chart */
-    paddingLeft: 0, 
-    paddingRight: 0,
-    paddingTop: 0,
-    paddingBottom: 0
-  },
-  points: set
-});
-
-/* Default maxRadius base on chart attributes */
-var maxRadius =  Math.sqrt(chart.width * chart.height / data.length) / 2;
-```
-
-###Bar Graph Attributes
+####Bar Graph Attributes
 ```javascript
 var set = [
   {
@@ -259,18 +255,51 @@ bar('.graph').attr({
   points: set
 });
 ```
+####Bubble Graph Attributes
+A bubble graph, best use to represnet a cohort's sample size and consumes a data object
 
-##Time Series & Consumable Objects
-Yako provides a set of api for time series and consumable objects.  It can be access through ```var yako = require('yako').timeSeries```.
+```javascript
+var bubblePoint = requrie('yako').bubble.scatter
+var points = [{
+    data: [0,1,3],
+    fill: '#000',
+    /* Optional Params */
+    strokeWidth: 2,
+    strokeColor: '#000'
+    metaData: {}
+  },{
+    ...
+  }];
 
-###Line
-Yako's line chart consumes object as data and auto fills.
+bubbleScatter().attr({
+  width: 1200,
+  height: 100,
+  /* Optional parameters */
+  maxRadius: 10,                        // Caps the maxRadius
+  fill: '#000',                         // Sets the default fill color
+  invert : ['x', 'y'],                 // If need to invert the x or y cords
+  
+  /* Data Set */
+  points: points
+});
+```
 
-###Bubble Line (Bubble Point)
+####Bubble Point (Bubble Line) Attributes
 A time series graph and uses bubble to represent a sample size happening a cross a series.
 ```javascript
-var bubblePoint = requrie('yako').timeSeries.bubble.point
-
+var bubblePoint = requrie('yako').bubble.point
+var points = [{
+    data: 123,
+    date: new Date(2015,2,14)
+    fill: '#000',
+    /* Optional Params */
+    strokeWidth: 2,
+    strokeColor: '#000'
+    metaData: {}
+  },{
+    ...
+  }];
+  
 bubblePoint().attr({
   // Width & height controls the svg view box
   width: 1200,
@@ -289,46 +318,13 @@ bubblePoint().attr({
   fill: '#333',                       // Sets default fill color
   startDate: new Date(2015,2,13),     // Sets the default start date
   endDate: new Date(2015,2,15),       // Sets the default end date
+  
   /* Data Set */
-  points: [{
-    data: 123,
-    date: new Date(2015,2,14)
-    fill: '#000',
-    /* Optional Params */
-    strokeWidth: 2,
-    strokeColor: '#000'
-    metaData: {}
-  },{
-    ...
-  }]
+  points: points
 });
 
 ```
-###Bubble Scatter
-A bubble graph and consumes an object, when including the ```Events``` mixin, it will pass back the object and the meta data.
-```javascript
-var bubblePoint = requrie('yako').timeSeries.bubble.point
 
-bubbleScatter().attr({
-  width: 1200,
-  height: 100,
-  /* Optional parameters */
-  maxRadius: 10,                        // Caps the maxRadius
-  fill: '#000',                         // Sets the default fill color
-  invert : ['x', 'y'],                 // If need to invert the x or y cords
-  /* Data Set */
-  points: [{
-    data: [0,1,3],
-    fill: '#000',
-    /* Optional Params */
-    strokeWidth: 2,
-    strokeColor: '#000'
-    metaData: {}
-  },{
-    ...
-  }]
-});
-```
 ##API & Mixin
 Instances of the graph component are created internally, and each component could be re-used subsequently.  Once you've picked your entry point, you could access the component api. Within each component, you could access your component with ```javascript this```
 ```javascript
@@ -660,7 +656,23 @@ document.getElementsByTagName('body')[0]);
 ###Bubble
 ```javascript
 var yako = require('yako/components');
-var Bubble = yako.components.Bubble;
+var Bubble = yako.components.Bubble.Scatter
+
+/* Assumes the data type & chart configurations from above */
+var data = [
+  {...},
+  {...}
+];
+var chartConfig = {...}
+React.render(
+<Bubble data={data} chart={chartConfig} />,
+document.getElementsByTagName('body')[0]);
+```
+
+###Bubble Point (Line)
+```javascript
+var yako = require('yako/components');
+var Bubble = yako.components.Bubble.Point
 
 /* Assumes the data type & chart configurations from above */
 var data = [
