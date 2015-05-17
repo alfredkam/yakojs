@@ -172,7 +172,6 @@ var api = module.exports = {
   // find min / max across the entire data set
   getSimpleScale: function (data, rows, len, yAxis, min, max) {
     var ySecs = 0;
-
     for (var i = 0; i < rows; i++) {
       temp = data[i].slice(0).sort(asc);
       min = min > temp[0] ? temp[0] : min;
@@ -209,7 +208,6 @@ var api = module.exports = {
       var getSplits = api.getSplits;
       var color = [];
 
-
       // change up the structure if the data set is an object
       if (data[0].data || (data[0].data == 0)) {
         temp = [];
@@ -217,7 +215,8 @@ var api = module.exports = {
           temp.push(data[x].data);
           color.push(data[x].strokeColor);
         }
-        if (opts.complex) {
+
+        if (this.componentName == 'bubble.point' || this.componentName == 'bubble.scatter') {
           data = [temp];
         } else {
           data = temp;
@@ -242,15 +241,13 @@ var api = module.exports = {
         ySecs = result.ySecs;
         maxSet= result.maxSet;
 
-      } else if (opts.type == 'bubble-scattered') {
-
+      } else if (self.componentName == 'bubble.scatter') {
         var result = api.getBubbleScatterScale(data, rows, len, yAxis);
         min = result.min;
         max = result.max;
         ySecs = result.ySecs;
 
       } else {
-
         var result = api.getSimpleScale(data, rows, len, yAxis, min, max);
         min = result.min;
         max = result.max;

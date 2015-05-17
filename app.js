@@ -4,17 +4,16 @@ require("babel-core/register")({
   extensions: [".es6"]
 });
 
-//var yako = require('./index')
+// var yako = require('./index')
 var yako = require('./src/index');
 var svg = yako.svg;
 var timeSeries = yako.timeSeries;
 var spark = yako.spark;
 var pie = yako.pie;
 var donut = yako.donut;
-var bubble = yako.bubble;
+var bubbleScatter = yako.bubble.scatter;
+var bubblePoint = yako.bubble.point;
 var bar = yako.bar;
-var bubbleScatterComplex = timeSeries.bubble.scatter;
-var bubblePointComplex = timeSeries.bubble.point;
 
 var http = require('http');
 var express = require('express');
@@ -24,7 +23,7 @@ var Label = require('./addons/Label');
 
 // TODO:: fix edge case of 1 data Point
 var dataPoints = 30;
-var nOfGraphs = 17;
+var nOfGraphs = 14;
 var kind = 11;
 var oddKinds = 4;
 var amount = nOfGraphs;
@@ -98,18 +97,7 @@ while (amount--) {
     }
   ];
 
-  var bubbleSet = [
-    {
-      data: dataSet5,
-      fill: yako.spark()._randomColor()
-    },
-    {
-      data: dataSet6,
-      fill: yako.spark()._randomColor()
-    }
-  ];
-
-  nodes += "<div class='graph'>" + bubbleScatterComplex().attr({
+  nodes += "<div class='graph'>" + bubbleScatter().attr({
     width: 300,
     height: 100,
     /* Optional parameters */
@@ -136,7 +124,7 @@ while (amount--) {
       samplePoints[i].fill = (samplePoints[i].fill || '').trim();
   }
 
-  nodes += "</div><div class='graph'>" + bubblePointComplex().attr({
+  nodes += "</div><div class='graph'>" + bubblePoint().attr({
     // Width & height controls the svg view box
     width: 300,
     height: 100,
@@ -182,7 +170,7 @@ while (amount--) {
     paddingBottom: 0,
   }) + "</div>";
 
-  nodes += "</div><div class='graph'>" + bubblePointComplex().attr({
+  nodes += "</div><div class='graph'>" + bubblePoint().attr({
     // Width & height controls the svg view box
     width: 300,
     height: 100,
@@ -356,49 +344,6 @@ while (amount--) {
     data: [0, 1]
   });
 
-  nodes += bubble('.graph').attr({
-    chart: {
-      width: 300,
-      height: 100,
-      xAxis: {
-        strokeColor: '#333',
-      },
-      bubble: {
-        maxRadius: 10,
-        strokeColor: 'red',
-        strokeWidth: '3'
-        // additional options
-        // strokes: [],
-        // fills: []
-      }
-    },
-    title: 'just a test',
-    data: dataSet4
-  });
-
-  nodes += bubble('.graph').attr({
-    chart: {
-      width: 300,
-      height: 100
-    },
-    title: 'just a test',
-    data: dataSet4
-  });
-
-  // scattered graph
-  nodes += bubble('.graph').attr({
-    chart: {
-      width: 300,
-      height: 100,
-      maxRadius: '10',
-      type: 'scattered'
-      // additional options
-      // strokes: [],
-    },
-    title: 'just a test',
-    data: bubbleSet
-  });
-
   nodes += bar('.graph').attr({
     chart : {
       stack: true,
@@ -530,26 +475,25 @@ nodes = '<div class=".graph">' + sparkInstance.attr({
 
 
 // *** preRender Test *** //
-nodes = bubble({
+nodes = bubbleScatter({
   mixin: Label,
   postRender: function (context) {
     return "<div class='.graph'>" + context + "</div>";
   }
 }).attr({
-  chart: {
-    width: 300,
-    height: 100,
-    maxRadius: '10',
-    type: 'scattered',
-    paddingLeft: 35,
-    yAxis: true,
-    xAxis: {
-      format : 'custom',
-      labels : ['low', 'high']
-    }
-  },
-  title: 'just a test',
-  data: bubbleSet
+  width: 300,
+  height: 100,
+  /* Optional parameters */
+  /* Options for the circle */
+  maxRadius: 10,            // Overrides default & sets a cap for a max radius for the bubble
+  fill: '#000',             // Sets the default fill color
+  inverse: [],
+  /* Padding options for the chart */
+  paddingLeft: 0,
+  paddingRight: 0,
+  paddingTop: 0,
+  paddingBottom: 0,
+  points: dataSet7
 }) + bar({
   mixin: Label,
   postRender: function (context) {

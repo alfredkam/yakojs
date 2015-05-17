@@ -1,4 +1,4 @@
-// time series / object base
+// Supports time series & object base
 import Base from '../classes/default';
 import api from './bubble.api';
 
@@ -11,17 +11,13 @@ module.exports = Base.extend({
         var self = this;
         var chart = self.attributes.opts.chart;
         var data = self.attributes.data;
-        var render = self.postRender;
         var paths = '';
-        var scale;
 
-        chart.type = 'bubble-point';
-        chart.complex = true;
-        chart.parentType = 'bubble';
-
-        // sort data
-        var ascByDate = function (a,b) { return a.date - b.date;};
-        data.sort(ascByDate);
+        // Sort the data by date
+        if (chart.autoFit != false) {
+            var ascByDate = function (a,b) { return a.date - b.date;};
+            data.sort(ascByDate);
+        }
 
         return self._lifeCycleManager(data, chart, function (newScale) {
             paths = self._describeBubble(data, chart.height, chart.width, newScale);
