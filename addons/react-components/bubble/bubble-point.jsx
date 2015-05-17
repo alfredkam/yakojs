@@ -1,9 +1,36 @@
-var React = require('react');
-var Bubble = require('./event-ready/bubble-event');
-var EventsClass = require('../Events');
-var Legend = require('./legend');
+var React = require('react/addons');
+var EventsClass = require('../../Events');
 var cssPrefix = ['Moz','Webkit','ms','O'];
+var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+var GraphPureRenderMixin = require('../utils/GraphPureRenderMixin');
 
+/* Bubble Component */
+var Bubble = React.createClass({
+    mixin: [
+      PureRenderMixin,
+      GraphPureRenderMixin
+    ],
+    render: function () {
+      var self = this;
+      var bubblePoint = require('../../../index').bubble.point;
+      var chart = self.props.chart || {};
+      var svg = bubblePoint({
+          _call: function (scale) {
+            scale.hasEvents = true;
+            scale.parentType = 'bubble';
+            self.props.events.setProps(scale, this.attributes.data);
+          }
+        }).attr(chart);
+      return React.createElement("span", {
+        dangerouslySetInnerHTML: {
+          __html: svg
+        }
+      });
+    }
+});
+
+// TODO:: Decouple tooltip logics
+/* EventHandling Component */
 module.exports = React.createClass({
     _eventData: {},
     eventsHandler: '',
@@ -32,48 +59,21 @@ module.exports = React.createClass({
       var chart = self.props.chart || {};
       var content = [];
       var style = {
-        // height: chart.height || 100,
         width: chart.width || 200,
         position: 'relative'
       };
       props.style = style;
-      // default tool tip settings
-      var toolTipSettings = {
-        shouldShow: true,
-        content: 'test',
-        className: '',
-        offsetBottom: 20,
-        position: {x: 0, y: 0}
-      };
 
       var userDefinedToolTip = self.props.toolTip || {};
       var Legend = self.props.legend || 0;
       var ToolTipReactElement = userDefinedToolTip.reactElement || 0;
+      var CustomComponent = self.props.customComponent || 0;
 
       if (ToolTipReactElement) {
-        var position = Events.getToolTipPosition(self._eventData) || {};
-
-        var toolTipStyle = {
-          position: 'absolute',
-          transform: 'translate(' + (position.hasOwnProperty('left') ? position.left : 0) + 'px,' + position.top + 'px)',
-          visibility: userDefinedToolTip.shouldShow ? 'visible' : 'hidden',
-          top: 0
-        };
-
-        for (var i = 0; i < cssPrefix.length; i++) {
-          toolTipStyle[cssPrefix[i] + 'Transform'] = toolTipStyle.transform;
-        }
-
-        if (position.hasOwnProperty('left')) {
-          toolTipStyle.left = 0;
-        } else {
-          toolTipStyle.right = position.right;
-        }
-
-        content.push(<span style={toolTipStyle}>
-            <ToolTipReactElement
-              content={self._eventData} />
-          </span>);
+        content.push(
+          <ToolTipReactElement
+            content={self._eventData} />
+        );
       }
 
       content.push(<Bubble
@@ -83,6 +83,10 @@ module.exports = React.createClass({
 
       if (Legend){
         content.push(<Legend />);
+      }
+
+      if (CustomComponent) {
+        content = content.concat(CustomComponent);
       }
 
       var factory = React.createFactory("div");

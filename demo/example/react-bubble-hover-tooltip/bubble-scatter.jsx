@@ -3,7 +3,7 @@
  */
 var React = require('react');
 var yako = require('../../../components');
-var Bubble = yako.components.Bubble;
+var Bubble = yako.components.Bubble.Scatter;
 var PureRenderMixin = React.addons.PureRenderMixin;
 
 /* Tool Tip Component */
@@ -15,15 +15,18 @@ var ToolTip = React.createClass({
     /**
      * You would expect this.props.content to include
      * {
-     *   points : [             // values unders X segment
-     *     {
-     *       label    : String, // data label
-     *       value    : Number  // value at X segment
-     *     }
-     *   ],
      *   exactPoint : { // only included if hovered on a path / circle
-     *     label      : String, // data label,
-     *     value      : Number  // value at X segment on a path
+     *     data      : {
+                x : Number,
+                y : Number,
+                z : Number,
+                meta: {}
+           },
+     *     eY        : mouse event y,
+     *     eX        : mouse event x,
+     *     cY        : center y of the bubble that is relative to the chart
+     *     cX        : center x of the bubble that is relative to the chart
+     *     r         : radius of the bubble
      *   },
      *   _segmentXRef : Number, // reference to X segment
      *   _data        : Object, // reference to user data
@@ -32,11 +35,14 @@ var ToolTip = React.createClass({
      */
     if (Object.keys(content).length !== 0) {
       if (content.exactPoint) {
-        html = 'point at value : ' + content.exactPoint.value.join(",");
+        html = 'point at value : ' + JSON.stringify(content.exactPoint);
       }
     }
+    var style = {
+      position: 'absolute'
+    };
     return (
-      <div>
+      <div style={style}>
         {html}
       </div>
     );
@@ -64,7 +70,6 @@ module.exports = React.createClass({
   },
   componentWillMount: function () {
     var onActivity = function (e, props) {
-      console.log(props);
       self.setState({
         shouldShow: true
       });
@@ -87,20 +92,16 @@ module.exports = React.createClass({
   render: function () {
     var self = this;
     var chart = {
-      type: 'scattered',        // <= This is needed for bubble graph
-                                // Width & height controls the svg view box
       width: 1200,
       height: 100,
-
+      points: self.props.set,
       /* Optional parameters */
       /* Options for the circle */
       maxRadius: 10,            // Overrides default & sets a cap for a max radius for the bubble
-      fill: ['#000'],           // Sets the default fill color
-      fills: ['#333','#334'],   // This will override the fill color and matches with the adjacent dataset
-                                // Note: if fill / fills are not provided - it will randomly generate a color
+      fill: '#000',             // Sets the default fill color
 
       /* Padding options for the chart */
-      paddingLeft: 0, 
+      paddingLeft: 0,
       paddingRight: 0,
       paddingTop: 0,
       paddingBottom: 0
@@ -120,9 +121,8 @@ module.exports = React.createClass({
 
     var self = this;
      return (
-      <Bubble 
-        chart={chart} 
-        data={self.props.set}
+      <Bubble
+        chart={chart}
         events={self.events}
         toolTip={toolTip}
         legend={legend} />

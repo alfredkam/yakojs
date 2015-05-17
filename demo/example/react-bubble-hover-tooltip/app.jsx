@@ -13,13 +13,13 @@ for (var i=0;i < dataPoints;i++) {
 
 for (var i = 0; i < dataPoints; i++) {
   var temp = [];
-  var temp2 = [];
   for (var j = 0; j < 3; j++) {
     temp.push(Math.floor((Math.random() * 500) + 10));
-    temp2.push(Math.floor((Math.random() * 500) + 10));
   }
-  dataSet5.push(temp);
-  dataSet6.push(temp2);
+  dataSet5.push({
+    data: temp,
+    meta: {}
+  });
 }
 
 var strokColorFirst = 'red';
@@ -27,20 +27,34 @@ var strokeColorSecond = 'blue';
 var strokeColorThird = 'pink';
 var strokeColorFourth = 'green';
 
-var bubbleSet = [
+var bubbleSet = dataSet5
+
+var bubblePoint =[
   {
-    data: dataSet5,
-    fill: strokColorFirst
+//    date: new Date(2015,2,1),
+    data: 300,
+    fill : '#000',
+    meta: {}
+    // meta: Object
   },
   {
-    data: dataSet6,
-    fill: strokeColorSecond
-  }
-];
+    //date: new Date(2015, 4, 30),
+    data: 150,
+    fill : '#000',
+    meta: {}
+    // meta: Object
+  },
+  {
+    //date: new Date(2015, 9, 30),
+    data: 200,
+    fill : '#000',
+     meta: {}
+    // meta: Object
+  }];
 
 React.render(
   <div>
-    <BubblePoint set={dataSet} />
+    <BubblePoint set={bubblePoint} />
     <BubbleScatter set={bubbleSet}/>
   </div>,
   document.getElementsByTagName('body')[0]);

@@ -3,7 +3,7 @@ An example of the code usage could be found here that takes full advantage of to
 ###Usage
 In terminal run
 ```bash
-../../../node_modules/webpack-dev-server/bin/webpack-dev-server.js --hot
+../../../../node_modules/webpack-dev-server/bin/webpack-dev-server.js --hot
 ```
 or
 ```bash

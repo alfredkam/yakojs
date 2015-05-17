@@ -1,10 +1,10 @@
 var React = require('react/addons');
-var EventsClass = require('../../../Events');
+var EventsClass = require('../../Events');
 var cssPrefix = ['Moz','Webkit','ms','O'];
 var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
-var GraphPureRenderMixin = require('../../utils/GraphPureRenderMixin');
-/* Bubble Component */
+var GraphPureRenderMixin = require('../utils/GraphPureRenderMixin');
 
+/* Bubble Component */
 var Bubble = React.createClass({
     mixin: [
       PureRenderMixin,
@@ -12,7 +12,7 @@ var Bubble = React.createClass({
     ],
     render: function () {
       var self = this;
-      var bubblePoint = require('../../../../index').timeSeries.bubble.point;
+      var bubblePoint = require('../../../index').bubble.scatter;
       var chart = self.props.chart || {};
       var svg = bubblePoint({
           _call: function (scale) {
@@ -28,14 +28,19 @@ var Bubble = React.createClass({
       });
     }
 });
+
 // TODO:: Decouple tooltip logics
 /* EventHandling Component */
 module.exports = React.createClass({
+
     _eventData: {},
+
     eventsHandler: '',
+
     setScale: function (scale) {
       this._scale = scale;
     },
+
     // base
     componentWillMount: function () {
       var self = this;
@@ -45,12 +50,14 @@ module.exports = React.createClass({
       Events.on = userEvents.on || {};
       Events.hydrate();
     },
+
     triggers: function (e) {
       var self = this;
       this.eventsHandler._associateTriggers(e, function (props) {
         self._eventData = props;
       });
     },
+
     render: function () {
       var self = this;
       var Events = this.eventsHandler;
@@ -58,19 +65,10 @@ module.exports = React.createClass({
       var chart = self.props.chart || {};
       var content = [];
       var style = {
-        // height: chart.height || 100,
         width: chart.width || 200,
         position: 'relative'
       };
       props.style = style;
-      // default tool tip settings
-      var toolTipSettings = {
-        shouldShow: true,
-        content: 'test',
-        className: '',
-        offsetBottom: 20,
-        position: {x: 0, y: 0}
-      };
 
       var userDefinedToolTip = self.props.toolTip || {};
       var Legend = self.props.legend || 0;
@@ -78,29 +76,10 @@ module.exports = React.createClass({
       var CustomComponent = self.props.customComponent || 0;
 
       if (ToolTipReactElement) {
-        var position = Events.getToolTipPosition(self._eventData) || {};
-
-        var toolTipStyle = {
-          position: 'absolute',
-          transform: 'translate(' + (position.hasOwnProperty('left') ? position.left : 0) + 'px,' + position.top + 'px)',
-          visibility: userDefinedToolTip.shouldShow ? 'visible' : 'hidden',
-          top: 0
-        };
-
-        for (var i = 0; i < cssPrefix.length; i++) {
-          toolTipStyle[cssPrefix[i] + 'Transform'] = toolTipStyle.transform;
-        }
-
-        if (position.hasOwnProperty('left')) {
-          toolTipStyle.left = 0;
-        } else {
-          toolTipStyle.right = position.right;
-        }
-
-        content.push(<span style={toolTipStyle}>
+        content.push(
             <ToolTipReactElement
               content={self._eventData} />
-          </span>);
+          );
       }
 
       content.push(<Bubble
@@ -117,6 +96,7 @@ module.exports = React.createClass({
       }
 
       var factory = React.createFactory("div");
+
       return factory(props,
         content
       );

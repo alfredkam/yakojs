@@ -1,11 +1,7 @@
 var util = require('util');
 
 var yako = require('./index');
-var spark = yako.spark;
-var pie = yako.pie;
-var donut = yako.donut;
-var bubble = yako.bubble;
-var bar = yako.bar;
+var lineGraph = yako.line;
 
 var http = require('http');
 var express = require('express');
@@ -13,7 +9,6 @@ var app = express();
 var fs = require('fs');
 
 var Label = require('./addons/Label');
-var TimeSeriesTickFitting = require('./addons/TimeSeriesTickFitting');
 var testData = {};
 try {
   testData = require('./testData/testData.json');
@@ -57,8 +52,8 @@ for (var i = 0; i < testData.length; i++) {
     };
   }
 
-  nodes += "<div id='.graph'>" + spark({
-          mixin: [TimeSeriesTickFitting, Label]
+  nodes += "<div id='.graph'>" + lineGraph({
+          mixin: [Label]
         }).attr({
           chart : {
             width: 600,
