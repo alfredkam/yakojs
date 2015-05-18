@@ -25,6 +25,7 @@ module.exports = {
         test: /\.jsx$/,
         loaders: ['jsx-loader?harmony']
       },
+
       {
           test: /\.es6$/,
           loader: 'babel-loader?blacklist=strict'

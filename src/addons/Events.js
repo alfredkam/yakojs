@@ -17,9 +17,9 @@ var shortHandBindFilterDefinitions = {
   'doubleClick': ['onDoubleClick']
 };
 var ignore = function () {};
-var Class = require('../lib/classes/class');
+var Class = require('../classes/class');
 var eventFeedback  = require('./Events.feedback');
-var error = require('../lib/utils/error');
+var error = require('../utils/error');
 
 module.exports = Class.extend({
 

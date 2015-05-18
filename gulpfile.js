@@ -117,7 +117,7 @@ gulp.task('pack:example', function () {
 
 gulp.task("build", function () {
   var babel = plugins.babel;
-  return gulp.src(["src/**/*.js","src/**/*.es6"])
+  return gulp.src(["src/**/*.js", "src/**/*.es6", "src/**/*.jsx"])
   .pipe(babel({
     blacklist: ["strict"]
   }))
