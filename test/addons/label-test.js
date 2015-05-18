@@ -1,7 +1,7 @@
 describe('addons/Label', function () {
   var chai = require('chai');
   var expect = chai.expect;
-  var Label = require('../../addons/Label');
+  var Label = require('../../src/addons/Label');
   var _ = require('lodash');
 
   var label;
