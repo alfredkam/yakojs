@@ -26,7 +26,7 @@ export default {
 
   name: 'yakojs',
 
-  VERSION: '0.4.11',
+  VERSION: '0.5.0',
 
   spark (opts) {
     return initialize(sparkLine, opts);
