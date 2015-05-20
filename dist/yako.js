@@ -55,7 +55,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "3dd423e584d40946693e";
+/******/ 	var hotCurrentHash = "feb221054434180d21af";
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = [];
 /******/ 	
@@ -626,7 +626,7 @@
 
 	exports['default'] = {
 	  name: 'yakojs',
-	  VERSION: '0.4.9',
+	  VERSION: '0.4.10',
 	  spark: function spark(opts) {
 	    return initialize(_componentsSpark2['default'], opts);
 	  },
@@ -2376,13 +2376,13 @@
 	            node.children = node.children || [];
 
 	            if (Array.isArray(svgElement)) {
-	                node.children.push(svgElement);
+	                node.children = node.children.concat(svgElement);
 	            } else {
 	                var svg = new Draw();
 	                svgElement = svg.create(svgElement);
 	                node.children.push(svgElement);
 	            }
-	            return svgElement;
+	            return self;
 	        }
 	    }, {
 	        key: 'attr',
