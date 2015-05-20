@@ -55,7 +55,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "c6f396e0441de90255eb";
+/******/ 	var hotCurrentHash = "cc967996bf25de0eb53a";
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = [];
 /******/ 	
@@ -928,7 +928,7 @@
 
 	exports['default'] = {
 	  name: 'yakojs',
-	  VERSION: '0.4.10',
+	  VERSION: '0.4.11',
 	  spark: function spark(opts) {
 	    return initialize(_componentsSpark2['default'], opts);
 	  },
@@ -1889,6 +1889,7 @@
 	      scattered: false
 	    };
 	    self._extend(defaults, self.attributes.opts.chart);
+	    self._extend(self.attributes.opts, defaults);
 	    self.attributes.opts.chart = defaults;
 	    return self;
 	  },
