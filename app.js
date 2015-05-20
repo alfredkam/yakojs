@@ -313,15 +313,13 @@ while (amount--) {
   });
 
   nodes += pie('.graph').attr({
-    chart: {
       width: 300,
       height: 100,
       // additional options
       // strokes: [],
       // fills: []
-    },
     title: 'just a test',
-    data: dataSet4
+    points: dataSet4
   });
 
   nodes += donut('.graph').attr({
@@ -335,7 +333,7 @@ while (amount--) {
       // fills: []
     },
     title: 'just a test',
-    data: dataSet4
+    points: dataSet4
   });
 
   nodes += donut('.graph').attr({

@@ -100,7 +100,7 @@ var base = module.exports = Common.extend({
       var self = this;
       var appendTo = self._append;
       var append = prepend = '';
-      var scale = self.props.scale;
+      var scale = (self.props.scale || self.props.opts);
       var opts = self.props.opts;
       var svg = self.make('svg',{
         width: scale.width,
