@@ -29,13 +29,13 @@ class Draw {
         node.children = node.children || [];
 
         if (Array.isArray(svgElement)) {
-            node.children.push(svgElement);
+          node.children = node.children.concat(svgElement);
         } else {
             var svg = new Draw();
             svgElement = svg.create(svgElement);
             node.children.push(svgElement);
         }
-        return svgElement;
+        return self;
     }
 
     attr (attrName, property) {
@@ -62,7 +62,6 @@ class Draw {
     stringify () {
       var self = this;
       var { node } = self.getNode();
-
       var childContent = (node.children || []).map(function (svgObj) {
         return svgObj.stringify();
       });
