@@ -48,6 +48,7 @@ var base = module.exports = Common.extend({
           scattered: false
         };
         self._extend(defaults, self.attributes.opts.chart);
+        self._extend(self.attributes.opts, defaults);
         self.attributes.opts.chart = defaults;
         return self;
     },
