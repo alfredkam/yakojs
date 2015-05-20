@@ -85,25 +85,23 @@ var set = [
 
 // Spark accepts multiple data sets
 spark().attr({
-  chart : {
-                                 // Width & height controls the svg view box
-    width: 300,                  // Default 200
-    height: 100,                 // Default 100
+                               // Width & height controls the svg view box
+  width: 300,                  // Default 200
+  height: 100,                 // Default 100
 
-    /* Optional parameters */
-    stroke: false                // It will disable the stroke from drawn
-    line: true,                  // Override to disable the line to be drawn
-    fill: true,                  // Defaults is true, override to disable fill
-                                 // Say if you want to only have scattered graph, you will set line & fill properties to false
-    scattered: false,            // Override to enable scattered
-    invert: ['y']                // Optionally if want to invert the data set
+  /* Optional parameters */
+  stroke: false                // It will disable the stroke from drawn
+  line: true,                  // Override to disable the line to be drawn
+  fill: true,                  // Defaults is true, override to disable fill
+                               // Say if you want to only have scattered graph, you will set line & fill properties to false
+  scattered: false,            // Override to enable scattered
+  invert: ['y']                // Optionally if want to invert the data set
 
-    /* Padding options for the chart */
-    paddingLeft: 0, 
-    paddingRight: 0,
-    paddingTop: 0,
-    paddingBottom: 0
-  },
+  /* Padding options for the chart */
+  paddingLeft: 0, 
+  paddingRight: 0,
+  paddingTop: 0,
+  paddingBottom: 0,
   points: set                      // Accepts an array or json obj
 });
 ```
@@ -150,8 +148,7 @@ var dataPoints = {
           }
 };
 
-line()
-  .attr({
+line().attr({
                                // Width & height controls the svg view box
   width: 600,                  // Default 200
   height: 100,                 // Default 100
@@ -167,7 +164,7 @@ line()
   paddingLeft: 0, 
   paddingRight: 0,
   paddingTop: 0,
-  paddingBottom: 0
+  paddingBottom: 0,
 
   /* Graph data to be drawn */
   points: dataPoints 
@@ -177,24 +174,22 @@ line()
 ```javascript
 var set = [123,1233,1231,123];      // An array of numbers
 pie('.graph').attr({
-  chart: {
-                                    // Width & height controls the svg view box
-    width: 300,
-    height: 100,
+                                  // Width & height controls the svg view box
+  width: 300,
+  height: 100,
 
-    /* Optional parameters */
-    strokeColor: '#000',            // Sets default stroke color
-    strokeColors: ["#333","#444"],  // This will override the default 
-                                    // Stroke color and matches with the adjacent data set
-    fills: ['#123',"#555"]          // This will by matching with the adjacent data set
-                                    // Note: if strokeColor / strokeColors / 
-                                    // Fills are not provided - it will randomly generate a color
-    /* Padding options for the chart */
-    paddingLeft: 0, 
-    paddingRight: 0,
-    paddingTop: 0,
-    paddingBottom: 0
-  },
+  /* Optional parameters */
+  strokeColor: '#000',            // Sets default stroke color
+  strokeColors: ["#333","#444"],  // This will override the default 
+                                  // Stroke color and matches with the adjacent data set
+  fills: ['#123',"#555"]          // This will by matching with the adjacent data set
+                                  // Note: if strokeColor / strokeColors / 
+                                  // Fills are not provided - it will randomly generate a color
+  /* Padding options for the chart */
+  paddingLeft: 0, 
+  paddingRight: 0,
+  paddingTop: 0,
+  paddingBottom: 0,
   points: set
 });
 ```
@@ -203,26 +198,24 @@ pie('.graph').attr({
 ```javascript
 var set = [];                           // An array of numbers
 donut('.graph').attr({
-  chart: {
-                                        // Width & height controls the svg view box
-    width: 300,
-    height: 100,
+                                      // Width & height controls the svg view box
+  width: 300,
+  height: 100,
 
-    /* optional parameters */
-    outerRadius: 100,                   // Overrides default & sets the outerRadius of the donut
-    innerRadius: 25,                    // Overrides the default & controls the innerRadius of the donut
-    strokeColor: '#000',                // Sets default stroke color
-    strokeColors: ["#f0f","#000",...],  // This will override the default 
-                                        // Stroke color and matches with the adjacent data set
-    fills: ["#f0f","#000",...]          // This will by matching with the adjacent data set
-                                        // Note: if strokeColor / strokeColors / fills are not provided - it will randomly generate a color
+  /* optional parameters */
+  outerRadius: 100,                   // Overrides default & sets the outerRadius of the donut
+  innerRadius: 25,                    // Overrides the default & controls the innerRadius of the donut
+  strokeColor: '#000',                // Sets default stroke color
+  strokeColors: ["#f0f","#000",...],  // This will override the default 
+                                      // Stroke color and matches with the adjacent data set
+  fills: ["#f0f","#000",...]          // This will by matching with the adjacent data set
+                                      // Note: if strokeColor / strokeColors / fills are not provided - it will randomly generate a color
 
-    /* Padding options for the chart */
-    paddingLeft: 0, 
-    paddingRight: 0,
-    paddingTop: 0,
-    paddingBottom: 0
-  },
+  /* Padding options for the chart */
+  paddingLeft: 0, 
+  paddingRight: 0,
+  paddingTop: 0,
+  paddingBottom: 0,
   points: set
 });
 
@@ -245,13 +238,11 @@ var set = [
   }
 ];
 bar('.graph').attr({
-  chart : {
-    width: 300,
-    height: 100,
+  width: 300,
+  height: 100,
 
-    /* Optional parameters */
-    stack: true               // This will enable stack graph
-  },
+  /* Optional parameters */
+  stack: true,               // This will enable stack graph
   points: set
 });
 ```
@@ -602,7 +593,6 @@ var events = {
 
 React.render(
   <Spark
-    data={data}
     attr={chartConfig}
     events={events} />,
 document.getElementsByTagName('body')[0]);
