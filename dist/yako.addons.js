@@ -55,7 +55,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "fad4b522b212d34d40d4";
+/******/ 	var hotCurrentHash = "cc967996bf25de0eb53a";
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = [];
 /******/ 	
@@ -928,7 +928,7 @@
 
 	exports['default'] = {
 	  name: 'yakojs',
-	  VERSION: '0.4.9',
+	  VERSION: '0.4.11',
 	  spark: function spark(opts) {
 	    return initialize(_componentsSpark2['default'], opts);
 	  },
@@ -1889,6 +1889,7 @@
 	      scattered: false
 	    };
 	    self._extend(defaults, self.attributes.opts.chart);
+	    self._extend(self.attributes.opts, defaults);
 	    self.attributes.opts.chart = defaults;
 	    return self;
 	  },
@@ -2678,13 +2679,13 @@
 	            node.children = node.children || [];
 
 	            if (Array.isArray(svgElement)) {
-	                node.children.push(svgElement);
+	                node.children = node.children.concat(svgElement);
 	            } else {
 	                var svg = new Draw();
 	                svgElement = svg.create(svgElement);
 	                node.children.push(svgElement);
 	            }
-	            return svgElement;
+	            return self;
 	        }
 	    }, {
 	        key: 'attr',

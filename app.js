@@ -124,26 +124,26 @@ while (amount--) {
     paddingBottom: 0,
     },
  points: dataSet7,
-    prepend: function (svgString, scale) {
-      var layout = scale.layout;
-      var lines = [svg.create('line').attr({
-        x1: 0,
-        x2: layout.width,
-        y1: Math.floor(layout.height / 3),
-        y2: Math.floor(layout.height / 3)
-      }),
-      svg.create('line').attr({
-        x1: 0,
-        x2: layout.width,
-        y1: Math.floor(2 * layout.height / 3),
-        y2: Math.floor(2 * layout.height / 3)
-      })
-      ]
+    //prepend: function (svgString, scale) {
+      //var layout = scale.layout;
+      //var lines = [svg.create('line').attr({
+        //x1: 0,
+        //x2: layout.width,
+        //y1: Math.floor(layout.height / 3),
+        //y2: Math.floor(layout.height / 3)
+      //}),
+      //svg.create('line').attr({
+        //x1: 0,
+        //x2: layout.width,
+        //y1: Math.floor(2 * layout.height / 3),
+        //y2: Math.floor(2 * layout.height / 3)
+      //})
+      //]
 
-      var grouping = svg.create('g').append(lines);
-      console.log('grouping', grouping.stringify());
-      return grouping;
-    }
+      //var grouping = svg.create('g').append(lines);
+      //console.log('grouping', grouping.stringify());
+      //return grouping;
+    //}
 
   });
 
