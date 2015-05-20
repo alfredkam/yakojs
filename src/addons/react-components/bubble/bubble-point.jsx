@@ -13,14 +13,14 @@ var Bubble = React.createClass({
     render: function () {
       var self = this;
       var bubblePoint = require('../../../index').bubble.point;
-      var chart = self.props.chart || {};
+      var attr = self.props.attr || {};
       var svg = bubblePoint({
           _call: function (scale) {
             scale.hasEvents = true;
             scale.parentType = 'bubble';
             self.props.events.setProps(scale, this.attributes.data);
           }
-        }).attr(chart);
+      }).attr(attr);
       return React.createElement("span", {
         dangerouslySetInnerHTML: {
           __html: svg
@@ -56,10 +56,10 @@ module.exports = React.createClass({
       var self = this;
       var Events = this.eventsHandler;
       var props = Events._toRegister;
-      var chart = self.props.chart || {};
+      var attr = self.props.attr || {};
       var content = [];
       var style = {
-        width: chart.width || 200,
+        width: attr.width || 200,
         position: 'relative'
       };
       props.style = style;
@@ -78,8 +78,7 @@ module.exports = React.createClass({
 
       content.push(<Bubble
             events={self.eventsHandler}
-            chart={chart}
-            data = {self.props.data} />);
+            attr={ attr } />);
 
       if (Legend){
         content.push(<Legend />);

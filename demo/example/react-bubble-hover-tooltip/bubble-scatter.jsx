@@ -63,11 +63,13 @@ var Legend = React.createClass({
 
 /* Graph Component */
 module.exports = React.createClass({
+
   getInitialState: function () {
     return {
       shouldShow: false,
     };
   },
+
   componentWillMount: function () {
     var onActivity = function (e, props) {
       self.setState({
@@ -89,9 +91,10 @@ module.exports = React.createClass({
       }
     };
   },
+
   render: function () {
     var self = this;
-    var chart = {
+    var attr = {
       width: 1200,
       height: 100,
       points: self.props.set,
@@ -116,13 +119,13 @@ module.exports = React.createClass({
       toolTip = {
         shouldShow: self.state.shouldShow,
         reactElement: ToolTip
-      }
+      };
     }
 
     var self = this;
      return (
       <Bubble
-        chart={chart}
+        attr = { attr }
         events={self.events}
         toolTip={toolTip}
         legend={legend} />

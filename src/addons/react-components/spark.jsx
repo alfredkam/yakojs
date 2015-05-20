@@ -29,11 +29,11 @@ module.exports = React.createClass({
       var self = this;
       var Events = this.eventsHandler;
       var props = Events._toRegister;
-      var chart = self.props.chart || {};
+      var attr = self.props.attr || {};
       var content = [];
       var style = {
         // height: chart.height || 100,
-        width: chart.width || 200,
+        width: attr.width || 200,
         position: 'relative'
       };
       props.style = style;
@@ -77,9 +77,8 @@ module.exports = React.createClass({
       }
 
       content.push(<Spark
-            events={self.eventsHandler}
-            chart={chart}
-            data = {self.props.data} />);
+            attr={attr}
+            events={self.eventsHandler} />);
 
       if (Legend){
         content.push(<Legend />);

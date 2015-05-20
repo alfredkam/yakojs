@@ -547,8 +547,9 @@ var data = [
   {...}
 ];
 var chartConfig = {...}
+chartConfig.points = data;
 React.render(
-<Spark data={data} chart={chartConfig} />,
+<Spark attr={chartConfig} />,
 document.getElementsByTagName('body')[0]);
 ```
 ###Spark with Events in react
@@ -602,7 +603,7 @@ var events = {
 React.render(
   <Spark
     data={data}
-    chart={chartConfig}
+    attr={chartConfig}
     events={events} />,
 document.getElementsByTagName('body')[0]);
 ```
@@ -632,8 +633,9 @@ var data = [
   {...}
 ];
 var chartConfig = {...}
+chartConfig.points = data;
 React.render(
-<Pie data={data} chart={chartConfig} />,
+<Pie attr={chartConfig} />,
 document.getElementsByTagName('body')[0]);
 ```
 
@@ -648,8 +650,9 @@ var data = [
   {...}
 ];
 var chartConfig = {...}
+chartConfig.points = data;
 React.render(
-<Donut data={data} chart={chartConfig} />,
+<Donut attr={chartConfig} />,
 document.getElementsByTagName('body')[0]);
 ```
 
@@ -664,8 +667,9 @@ var data = [
   {...}
 ];
 var chartConfig = {...}
+chartConfig.points = data;
 React.render(
-<Bubble data={data} chart={chartConfig} />,
+<Bubble attr={chartConfig} />,
 document.getElementsByTagName('body')[0]);
 ```
 
@@ -680,8 +684,9 @@ var data = [
   {...}
 ];
 var chartConfig = {...}
+chartConfig.points = data;
 React.render(
-<Bubble data={data} chart={chartConfig} />,
+<Bubble attr={chartConfig} />,
 document.getElementsByTagName('body')[0]);
 ```
 
@@ -696,8 +701,9 @@ var data = [
   {...}
 ];
 var chartConfig = {...}
+chartConfig.points = data;
 React.render(
-<Bar data={data} chart={chartConfig} />,
+<Bar attr={chartConfig} />,
 document.getElementsByTagName('body')[0]);
 ```
 

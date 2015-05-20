@@ -5,10 +5,8 @@ module.exports = React.createClass({
     render: function () {
       var self = this;
       var svg = donut()
-        .attr({
-            'chart': self.props.chart,
-            'data' : self.props.data
-        });
+        .attr(self.props.attr);
+
       return (
         <div dangerouslySetInnerHTML={{__html: svg}} />
       )
