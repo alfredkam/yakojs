@@ -55,7 +55,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "6226ffe52f9cda5edf0e";
+/******/ 	var hotCurrentHash = "7296c9e79872cbc44b39";
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = [];
 /******/ 	
@@ -591,29 +591,25 @@
 
 	var _componentsBar2 = _interopRequireDefault(_componentsBar);
 
-	var _componentsBubble = __webpack_require__(8);
-
-	var _componentsBubble2 = _interopRequireDefault(_componentsBubble);
-
-	var _svgSvg = __webpack_require__(9);
+	var _svgSvg = __webpack_require__(8);
 
 	var _svgSvg2 = _interopRequireDefault(_svgSvg);
 
-	var _utilsMixin = __webpack_require__(10);
+	var _utilsMixin = __webpack_require__(9);
 
 	var _utilsMixin2 = _interopRequireDefault(_utilsMixin);
 
 	// time series / object base
 
-	var _componentsBubblePoint = __webpack_require__(11);
+	var _componentsBubblePoint = __webpack_require__(10);
 
 	var _componentsBubblePoint2 = _interopRequireDefault(_componentsBubblePoint);
 
-	var _componentsBubbleScatter = __webpack_require__(12);
+	var _componentsBubbleScatter = __webpack_require__(11);
 
 	var _componentsBubbleScatter2 = _interopRequireDefault(_componentsBubbleScatter);
 
-	var _componentsLine = __webpack_require__(13);
+	var _componentsLine = __webpack_require__(12);
 
 	var _componentsLine2 = _interopRequireDefault(_componentsLine);
 
@@ -625,37 +621,43 @@
 	};
 
 	exports['default'] = {
+
 	  name: 'yakojs',
-	  VERSION: '0.4.11',
+
+	  VERSION: '0.5.0',
+
 	  spark: function spark(opts) {
 	    return initialize(_componentsSpark2['default'], opts);
 	  },
+
+	  line: function line(opts) {
+	    return initialize(_componentsLine2['default'], opts);
+	  },
+
 	  pie: function pie(opts) {
 	    return initialize(_componentsPie2['default'], opts);
 	  },
+
 	  donut: function donut(opts) {
 	    return initialize(_componentsDonut2['default'], opts);
 	  },
-	  bubble: function bubble(opts) {
-	    return initialize(_componentsBubble2['default'], opts);
-	  },
+
 	  bar: function bar(opts) {
 	    return initialize(_componentsBar2['default'], opts);
 	  },
-	  svg: _svgSvg2['default'],
-	  timeSeries: {
-	    bubble: {
-	      point: function point(opts) {
-	        return initialize(_componentsBubblePoint2['default'], opts);
-	      },
-	      scatter: function scatter(opts) {
-	        return initialize(_componentsBubbleScatter2['default'], opts);
-	      }
+
+	  bubble: {
+
+	    point: function point(opts) {
+	      return initialize(_componentsBubblePoint2['default'], opts);
 	    },
-	    line: function line(opts) {
-	      return initialize(_componentsLine2['default'], opts);
+
+	    scatter: function scatter(opts) {
+	      return initialize(_componentsBubbleScatter2['default'], opts);
 	    }
-	  }
+	  },
+
+	  svg: _svgSvg2['default']
 	};
 	module.exports = exports['default'];
 
@@ -663,10 +665,10 @@
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(14);
-	var Errors = __webpack_require__(16);
-	var svgPath = __webpack_require__(17);
-	var api = __webpack_require__(18);
+	var Base = __webpack_require__(13);
+	var Errors = __webpack_require__(14);
+	var svgPath = __webpack_require__(15);
+	var api = __webpack_require__(16);
 
 	var spark = module.exports = Base.extend({
 
@@ -796,7 +798,7 @@
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arcBase = __webpack_require__(15);
+	var arcBase = __webpack_require__(17);
 	var pie = module.exports = arcBase.extend({
 
 	    componentName: 'pie',
@@ -859,7 +861,7 @@
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arcBase = __webpack_require__(15);
+	var arcBase = __webpack_require__(17);
 	var pie = module.exports = arcBase.extend({
 
 	    componentName: 'donut',
@@ -957,7 +959,7 @@
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(14);
+	var Base = __webpack_require__(13);
 
 	var bar = module.exports = Base.extend({
 
@@ -1030,80 +1032,23 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	/* Entry Points */
-
-	var _classesDefault = __webpack_require__(14);
-
-	var _classesDefault2 = _interopRequireDefault(_classesDefault);
-
-	var _bubbleApi = __webpack_require__(19);
-
-	var _bubbleApi2 = _interopRequireDefault(_bubbleApi);
-
-	module.exports = _classesDefault2['default'].extend({
-
-	    componentName: 'bubble',
-
-	    // Start of a life cyle
-	    _startCycle: function _startCycle() {
-	        var self = this;
-	        var chart = self.attributes.opts.chart;
-	        var data = self.attributes.data;
-	        var render = self.postRender;
-	        var paths = '';
-	        var scale;
-
-	        if (chart.type == 'scattered') {
-	            chart.type = 'bubble-scattered';
-	            return self._lifeCycleManager(data, chart, function (newScale) {
-	                return self._describeBubbleChart(data, newScale);
-	            });
-	        } else {
-	            chart.type = 'bubble-point';
-	            return self._lifeCycleManager(data, chart, function (newScale) {
-	                paths = self._describeBubble(data, chart.height, chart.width, newScale);
-	                paths.unshift(self._describeXAxis(chart.height, chart.width, newScale));
-	                return paths;
-	            });
-	        }
-	    },
-
-	    // Extends default ratio w/ auto scaling
-	    _getRatio: _bubbleApi2['default'].getRatioByNumberArray,
-
-	    // Describes bubble scattered graph
-	    _describeBubbleChart: _bubbleApi2['default'].describeBubbleByNumberArray,
-
-	    // Describes the xAxis for bubble point graph
-	    _describeXAxis: _bubbleApi2['default'].describeXAxisForBubbleLine,
-
-	    // Describes bubble point graph
-	    _describeBubble: _bubbleApi2['default'].describeLineByNumberArray
-	});
-
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	var _path = __webpack_require__(17);
+	var _path = __webpack_require__(15);
 
 	var _path2 = _interopRequireDefault(_path);
 
-	var _arc = __webpack_require__(20);
+	var _arc = __webpack_require__(18);
 
 	var _arc2 = _interopRequireDefault(_arc);
 
-	var _rect = __webpack_require__(21);
+	var _rect = __webpack_require__(19);
 
 	var _rect2 = _interopRequireDefault(_rect);
 
-	var _composer = __webpack_require__(22);
+	var _composer = __webpack_require__(20);
 
 	var _composer2 = _interopRequireDefault(_composer);
 
-	var _draw = __webpack_require__(23);
+	var _draw = __webpack_require__(21);
 
 	var _draw2 = _interopRequireDefault(_draw);
 
@@ -1124,7 +1069,7 @@
 	};
 
 /***/ },
-/* 10 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var mixin = module.exports = function (component, obj) {
@@ -1138,18 +1083,18 @@
 	};
 
 /***/ },
-/* 11 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	// time series / object base
+	// Supports time series & object base
 
-	var _classesDefault = __webpack_require__(14);
+	var _classesDefault = __webpack_require__(13);
 
 	var _classesDefault2 = _interopRequireDefault(_classesDefault);
 
-	var _bubbleApi = __webpack_require__(19);
+	var _bubbleApi = __webpack_require__(22);
 
 	var _bubbleApi2 = _interopRequireDefault(_bubbleApi);
 
@@ -1162,19 +1107,15 @@
 	        var self = this;
 	        var chart = self.attributes.opts.chart;
 	        var data = self.attributes.data;
-	        var render = self.postRender;
 	        var paths = '';
-	        var scale;
 
-	        chart.type = 'bubble-point';
-	        chart.complex = true;
-	        chart.parentType = 'bubble';
-
-	        // sort data
-	        var ascByDate = function ascByDate(a, b) {
-	            return a.date - b.date;
-	        };
-	        data.sort(ascByDate);
+	        // Sort the data by date
+	        if (chart.autoFit != false) {
+	            var ascByDate = function ascByDate(a, b) {
+	                return a.date - b.date;
+	            };
+	            data.sort(ascByDate);
+	        }
 
 	        return self._lifeCycleManager(data, chart, function (newScale) {
 	            paths = self._describeBubble(data, chart.height, chart.width, newScale);
@@ -1194,18 +1135,18 @@
 	});
 
 /***/ },
-/* 12 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	// time series / object base
+	// Object base
 
-	var _classesDefault = __webpack_require__(14);
+	var _classesDefault = __webpack_require__(13);
 
 	var _classesDefault2 = _interopRequireDefault(_classesDefault);
 
-	var _bubbleApi = __webpack_require__(19);
+	var _bubbleApi = __webpack_require__(22);
 
 	var _bubbleApi2 = _interopRequireDefault(_bubbleApi);
 
@@ -1217,13 +1158,6 @@
 	        var self = this;
 	        var chart = self.attributes.opts.chart;
 	        var data = self.attributes.data;
-	        var render = self.postRender;
-	        var paths = '';
-	        var scale;
-
-	        chart.type = 'bubble-scattered';
-	        chart.complex = true;
-	        chart.parentType = 'bubble';
 
 	        return self._lifeCycleManager(data, chart, function (newScale) {
 	            return self._describeBubbleChart(data, newScale);
@@ -1238,7 +1172,7 @@
 	});
 
 /***/ },
-/* 13 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1294,8 +1228,8 @@
 	  });
 	*/
 
-	var api = __webpack_require__(18);
-	var Base = __webpack_require__(14);
+	var api = __webpack_require__(16);
+	var Base = __webpack_require__(13);
 
 	module.exports = Base.extend({
 
@@ -1534,10 +1468,10 @@
 	});
 
 /***/ },
-/* 14 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Common = __webpack_require__(24);
+	var Common = __webpack_require__(23);
 	var base = module.exports = Common.extend({
 
 	  // Initialize
@@ -1638,7 +1572,7 @@
 	    var self = this;
 	    var appendTo = self._append;
 	    var append = prepend = '';
-	    var scale = self.props.scale;
+	    var scale = self.props.scale || self.props.opts;
 	    var opts = self.props.opts;
 	    var svg = self.make('svg', {
 	      width: scale.width,
@@ -1670,78 +1604,33 @@
 	});
 
 /***/ },
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Base = __webpack_require__(14);
-	var arc = __webpack_require__(20);
-
-	module.exports = Base.extend({
-
-	    // Parent generator that manages the svg
-	    _startCycle: function _startCycle() {
-	        var self = this;
-	        var chart = self.attributes.opts.chart;
-	        var data = self.attributes.data;
-
-	        return self._lifeCycleManager(data, chart, function (scale) {
-	            return self._describePath(scale.outerRadius, scale.relativeDataSet, scale);
-	        });
-	    },
-
-	    // Extends _defineBaseScaleProperties in lib/base/common.js
-	    _defineBaseScaleProperties: function _defineBaseScaleProperties(data, chart) {
-	        var self = this;
-	        var total = self._sumOfData(data);
-	        var scale = {
-	            total: total,
-	            // Converts nums to relative => total sum equals 1
-	            relativeDataSet: self._dataSetRelativeToTotal(data, total),
-	            // Find the max width & height
-	            outerRadius: chart.outerRadius || (chart.height < chart.width ? chart.height : chart.width) / 2
-	        };
-
-	        self._extend(scale, chart);
-	        return scale;
-	    },
-
-	    _polarToCartesian: arc.polarToCartesian,
-
-	    _describeArc: arc.describeArc,
-
-	    _describePie: arc.describePie,
-
-	    /**
-	     * [_describePath super class]
-	     * @return {[type]} [empty string]
-	     */
-	    _describePath: function _describePath() {
-	        return '';
-	    }
-	});
-
-/***/ },
-/* 16 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* istanbul ignore next */
 	var warn = function warn(msg) {
 	  console.warn(msg);
 	};
+
 	/* istanbul ignore next */
 	module.exports = {
+
 	  label: function label() {
 	    warn("You're attempting to use labels without the `Label` addons.  Check documentation https://github.com/alfredkam/yakojs/blob/master/doc.md");
+	  },
+
+	  eventFeedback: function eventFeedback(componentName) {
+	    warn("No event feedback associated with chart component " + componentName);
 	  }
 	};
 
 /***/ },
-/* 17 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// TODO:: shrink the argument
 
-	var api = __webpack_require__(25);
+	var api = __webpack_require__(24);
 
 	var path = module.exports = {
 	    /**
@@ -1851,7 +1740,7 @@
 	};
 
 /***/ },
-/* 18 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Describes scattered graph
@@ -1886,336 +1775,58 @@
 	};
 
 /***/ },
-/* 19 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	var Base = __webpack_require__(13);
+	var arc = __webpack_require__(18);
 
-	// TODO:: Consolidate code
+	module.exports = Base.extend({
 
-	var _svgComposer = __webpack_require__(22);
+	    // Parent generator that manages the svg
+	    _startCycle: function _startCycle() {
+	        var self = this;
+	        var chart = self.attributes.opts.chart;
+	        var data = self.attributes.data;
 
-	var _svgComposer2 = _interopRequireDefault(_svgComposer);
-
-	var _utilsRandomColor = __webpack_require__(26);
-
-	var _utilsRandomColor2 = _interopRequireDefault(_utilsRandomColor);
-
-	module.exports = {
-
-	    getConfigForScatterTimeSeries: function getConfigForScatterTimeSeries(chart) {
-	        chart.type = 'bubble-scattered';
-	        chart.complex = true;
-	        chart.parentType = 'bubble';
-	        return chart;
-	    },
-
-	    getConfigForLine: function getConfigForLine(chart) {
-	        chart.type = 'bubble-point';
-	        chart.complex = true;
-	        chart.parentType = 'bubble';
-	        return chart;
-	    },
-
-	    // TODO::  Should refer to a function in path to build this
-	    // Describes the xAxis for bubble point graph
-	    describeXAxisForBubbleLine: function describeXAxisForBubbleLine(height, width, chart) {
-	        // Note:: chart.xAxis is the old format
-	        var config = chart.axis || chart.xAxis;
-	        var centerY = height / 2;
-	        // Self Note:: PaddingLeft / PaddingRight adjustments are taken out
-	        return _svgComposer2['default'].make('path', {
-	            'stroke-linecap': 'round',
-	            'stroke-linejoin': 'round',
-	            'stroke-width': config.strokeWidth || 2,
-	            stroke: config.strokeColor || 'transparent',
-	            d: 'M' + chart.paddingLeft + ' ' + centerY + ' H' + width
+	        return self._lifeCycleManager(data, chart, function (scale) {
+	            return self._describePath(scale.outerRadius, scale.relativeDataSet, scale);
 	        });
 	    },
 
-	    describeBubbleByObject: function describeBubbleByObject(data, scale) {
-	        var height = scale.height;
-	        var width = scale.width;
-	        var heightRatio = scale.heightRatio;
-	        var widthRatio = scale.widthRatio;
-	        var len = scale.len;
-	        var max = scale.max;
-	        var innerPaddingLeft = scale.innerPaddingLeft;
-	        var paddingLeft = scale.paddingLeft;
-	        var innerPaddingTop = scale.innerPaddingTop;
-	        var paddingTop = scale.paddingTop;
-
+	    // Extends _defineBaseScaleProperties in lib/base/common.js
+	    _defineBaseScaleProperties: function _defineBaseScaleProperties(data, chart) {
 	        var self = this;
-	        var defaultFill = scale.fill || 0;
-	        var defaultStrokeColor = scale.strokeColor || 0;
-	        var defaultStrokeWidth = scale.strokeWidth || 0;
-	        var paths = [];
-	        var refs;
-	        var minRadius = scale.minRadius || 0;
-	        var inverse = scale.hasInverse;
+	        var total = self._sumOfData(data);
+	        var scale = {
+	            total: total,
+	            // Converts nums to relative => total sum equals 1
+	            relativeDataSet: self._dataSetRelativeToTotal(data, total),
+	            // Find the max width & height
+	            outerRadius: chart.outerRadius || (chart.height < chart.width ? chart.height : chart.width) / 2
+	        };
 
-	        for (var i = 0; i < len; i++) {
-	            var props = data[i];
-	            var point = props.data;
-	            if (scale.hasEvents) {
-	                // c = column for reference
-	                refs = {
-	                    c: i
-	                };
-	            }
-	            var r = (scale.maxRadius - minRadius) * (point[2] / max[2]);
-	            r = r ? r + minRadius : 0;
-	            paths.push(_svgComposer2['default'].make('circle', {
-	                cx: inverse.x ? point[0] * widthRatio + innerPaddingLeft + paddingLeft : width - point[0] * widthRatio - innerPaddingLeft - paddingLeft,
-	                cy: inverse.y ? paddingTop + innerPaddingTop + point[1] * heightRatio : height - point[1] * heightRatio - innerPaddingTop - paddingTop,
-	                r: r,
-	                fill: props.fill || (defaultFill || (0, _utilsRandomColor2['default'])())
-	            }, refs));
-	        }
-	        return paths;
+	        self._extend(scale, chart);
+	        return scale;
 	    },
 
-	    describeBubbleByNumberArray: function describeBubbleByNumberArray(data, scale) {
-	        var height = scale.height;
-	        var width = scale.width;
-	        var heightRatio = scale.heightRatio;
-	        var widthRatio = scale.widthRatio;
-	        var len = scale.len;
-	        var max = scale.max;
+	    _polarToCartesian: arc.polarToCartesian,
 
-	        var self = this;
-	        var fills = scale.fills || 0;
-	        var paths = [];
-	        var refs;
-	        var minRadius = scale.minRadius || 0;
+	    _describeArc: arc.describeArc,
 
-	        for (var r = 0; r < scale.rows; r++) {
-	            for (var i = 0; i < len; i++) {
-	                var point = data[r].data[i];
-	                if (scale.hasEvents) {
-	                    // r = row, c = column for reference
-	                    refs = {
-	                        r: r,
-	                        c: i
-	                    };
-	                }
-	                var radius = (scale.maxRadius - minRadius) * (point[2] / max[2]);
-	                radius = radius ? radius + minRadius : 0;
-	                paths.push(_svgComposer2['default'].make('circle', {
-	                    cx: width - point[0] * widthRatio - scale.paddingLeft,
-	                    cy: height - point[1] * heightRatio - scale.paddingTop,
-	                    r: scale.maxRadius * (point[2] / max[2]),
-	                    fill: data[r].fill || (fills[i] || (0, _utilsRandomColor2['default'])())
-	                }, refs));
-	            }
-	        }
-	        return paths;
-	    },
+	    _describePie: arc.describePie,
 
-	    describeBubbleLineByObject: function describeBubbleLineByObject(data, height, width, scale) {
-	        if (!data) return '';
-	        var paddingLeft = scale.paddingLeft;
-	        var innerPaddingLeft = scale.innerPaddingLeft;
-	        var autoFit = scale.autoFit;
-	        var strokeColors = scale.strokeColors;
-	        var strokeWidths = scale.strokeWidths;
-	        var fill = scale.fill;
-	        var tickSize = scale.tickSize;
-	        var startTick = scale.startTick;
-	        var minRadius = scale.minRadius;
-	        var maxRadius = scale.maxRadius;
-
-	        var dataPoints = data.length;
-	        var paths = [];
-	        var defaultStrokeColor = strokeColors || 0;
-	        var defaultStrokeWidth = strokeWidths || 0;
-	        var defaultFill = scale.fill || 0;
-	        var centerY = height / 2;
-	        var refs, cx;
-	        var minRadius = minRadius || 0;
-
-	        for (var i = 0; i < data.length; i++) {
-	            var point = data[i];
-
-	            if (scale.hasEvents) {
-	                // c = columns
-	                refs = {
-	                    c: i
-	                };
-	            }
-
-	            if (autoFit == false) {
-	                cx = i * tickSize + paddingLeft + innerPaddingLeft;
-	            } else {
-	                cx = (point.date.getTime() - startTick) * tickSize + paddingLeft + innerPaddingLeft;
-	            }
-
-	            var r = (maxRadius - minRadius) * point.data / scale.max;
-	            r = r ? r + minRadius : 0;
-
-	            paths.push(_svgComposer2['default'].make('circle', {
-	                cx: cx,
-	                cy: centerY,
-	                r: r,
-	                fill: point.fill || defaultFill,
-	                stroke: point.strokeColor || (defaultStrokeColor || 'transparent'),
-	                'stroke-width': point.strokeWidth || (defaultStrokeWidth || 0)
-	            }, refs));
-	        }
-	        return paths;
-	    },
-
-	    describeLineByNumberArray: function describeLineByNumberArray(data, height, width, scale) {
-	        if (!data) return '';
-	        var config = scale.bubble;
-	        var dataPoints = data.length;
-	        var paths = [];
-	        var fills = config.fills || 0;
-	        var strokeColor = config.strokeColor;
-	        var strokeWidths = config.strokeWidths;
-	        var minRadius = config.minRadius;
-
-	        var minRadius = minRadius || 0;
-	        var strokeColors = strokeColors || 0;
-	        var strokeWidths = strokeWidths || 0;
-	        var centerY = height / 2;
-	        var refs;
-
-	        for (var i = 0; i < data.length; i++) {
-	            if (scale.hasEvents) {
-	                // c = columns
-	                refs = {
-	                    c: i
-	                };
-	            }
-	            var r = (config.maxRadius - minRadius) * (data[i] / scale.max);
-	            r = r ? r + minRadius : 0;
-	            paths.push(_svgComposer2['default'].make('circle', {
-	                cx: scale.tickSize * i + scale.paddingLeft + scale.innerPaddingLeft,
-	                cy: centerY,
-	                r: r,
-	                fill: fills[i] || (config.fill || (0, _utilsRandomColor2['default'])()),
-	                stroke: strokeColors[i] || (config.strokeColor || (0, _utilsRandomColor2['default'])()),
-	                'stroke-width': strokeWidths[i] || (config.strokeWidth || 2)
-	            }, refs));
-	        }
-	        return paths;
-	    },
-
-	    getRatioByNumberArray: function getRatioByNumberArray(scale) {
-	        var _data = scale._data;
-	        var height = scale.height;
-	        var width = scale.width;
-	        var len = scale.len;
-	        var paddingTop = scale.paddingTop;
-	        var paddingLeft = scale.paddingLeft;
-	        var paddingRight = scale.paddingRight;
-	        var paddingBottom = scale.paddingBottom;
-
-	        var data = _data;
-	        var maxRadius = (height < width ? height : width) / 3;
-
-	        if (scale.type && scale.type == 'bubble-scattered') {
-	            // Bubble as a scattered graph
-	            maxRadius = scale.maxRadius = parseInt(scale.maxRadius) || Math.sqrt(width * height / len) / 2;
-	            scale.paddingLeft = paddingLeft < maxRadius ? maxRadius : paddingLeft;
-	            scale.paddingRight = paddingRight < maxRadius ? maxRadius : paddingRight;
-	            scale.paddingTop = paddingTop < maxRadius ? maxRadius : paddingTop;
-	            scale.paddingBottom = paddingBottom < maxRadius ? maxRadius : paddingBottom;
-	            scale.widthRatio = (width - scale.paddingLeft - scale.paddingRight) / scale.max[0];
-	            scale.heightRatio = (height - scale.paddingTop - scale.paddingBottom) / scale.max[1];
-	            scale.minRadius = scale.minRadius || 0;
-	        } else {
-	            // Bubble line (point) graph
-	            scale.bubble = scale.bubble || {};
-	            scale.xAxis = scale.xAxis || {};
-	            maxRadius = scale.bubble.maxRadius = parseInt(scale.bubble.maxRadius) || maxRadius;
-	            scale.bubble.minRadius = scale.bubble.minRadius || 0;
-	            // Figure out the maxRadius & paddings, maxRadius is a guide line
-	            var tickLen = len - 1 == 0 ? 1 : len - 1;
-	            var tickSize = (width - scale.paddingLeft - scale.paddingRight) / tickLen;
-	            scale.bubble.maxRadius = tickSize < maxRadius ? tickSize + scale.paddingLeft : maxRadius;
-	            scale.paddingLeft = scale.paddingLeft || scale.bubble.maxRadius * (data[0] / scale.max);
-	            scale.paddingRight = scale.paddingRight || scale.bubble.maxRadius * (data[len - 1] / scale.max);
-	            scale.tickSize = (width - scale.paddingLeft - scale.paddingRight) / tickLen;
-	        }
-	    },
-
-	    // Extends default ratio w/ auto scaling for Bubble Scatter
-	    getRatioByObject: function getRatioByObject(scale) {
-	        var _data = scale._data;
-	        var height = scale.height;
-	        var width = scale.width;
-	        var len = scale.len;
-	        var innerPaddingLeft = scale.innerPaddingLeft;
-	        var innerPaddingTop = scale.innerPaddingTop;
-	        var innerPaddingRight = scale.innerPaddingRight;
-	        var innerPaddingBottom = scale.innerPaddingBottom;
-	        var minRadius = scale.minRadius;
-
-	        var data = _data;
-	        // bubble as a scattered graph
-	        var maxRadius = scale.maxRadius = parseInt(scale.maxRadius) || Math.sqrt(width * height / len) / 2;
-	        scale.minRadius = minRadius || 0;
-
-	        scale.innerPaddingLeft = innerPaddingLeft < maxRadius ? maxRadius : innerPaddingLeft;
-	        scale.innerPaddingRight = innerPaddingRight < maxRadius ? maxRadius : innerPaddingRight;
-	        scale.innerPaddingTop = innerPaddingTop < maxRadius ? maxRadius : innerPaddingTop;
-	        scale.innerPaddingBottom = innerPaddingBottom < maxRadius ? maxRadius : innerPaddingBottom;
-	        scale.widthRatio = (width - scale.innerPaddingLeft - scale.innerPaddingRight) / scale.max[0];
-	        scale.heightRatio = (height - scale.innerPaddingTop - scale.innerPaddingBottom) / scale.max[1];
-	    },
-
-	    // Extends default ratio w/ auto scaling for Bubble point
-	    getRatioByTimeSeries: function getRatioByTimeSeries(scale) {
-	        var autoFit = scale.autoFit;
-	        var _data = scale._data;
-	        var height = scale.height;
-	        var width = scale.width;
-	        var len = scale.len;
-	        var paddingTop = scale.paddingTop;
-	        var paddingLeft = scale.paddingLeft;
-	        var paddingRight = scale.paddingRight;
-	        var paddingBottom = scale.paddingBottom;
-	        var axis = scale.axis;
-
-	        var data = _data;
-	        scale.axis = axis || {};
-	        var maxRadius = scale.maxRadius = parseInt(scale.maxRadius) || maxRadius;
-	        var minRadius = scale.minRadius = scale.minRadius || 0;
-	        var startTick, endTick;
-
-	        // Check if the start date is defined, if not defined using first element in array
-	        if (autoFit == false) {
-	            startTick = 0;
-	            endTick = len - 1;
-	        } else {
-	            startTick = (scale.startDate || data[0].date || 0).getTime();
-	            endTick = (scale.endDate || data[len - 1].date).getTime();
-	        }
-	        scale.startTick = startTick;
-	        scale.endTick = endTick;
-	        var tickLen = endTick - startTick;
-	        tickLen = tickLen == 0 ? 1000 : tickLen;
-
-	        var potentialPxTickRatio = width / tickLen;
-
-	        var firstElementRadius = (maxRadius - minRadius) * data[0].data / scale.max;
-	        var lastElementRadius = (maxRadius - minRadius) * data[len - 1].data / scale.max;
-
-	        firstElementRadius = firstElementRadius ? firstElementRadius + minRadius : 0;
-	        lastElementRadius = lastElementRadius ? lastElementRadius + minRadius : 0;
-
-	        var startTickLeftRadius = (startTick - startTick) * potentialPxTickRatio - firstElementRadius;
-	        var endTickRightRadius = (endTick - endTick) * potentialPxTickRatio + lastElementRadius;
-	        scale.paddingLeft = startTickLeftRadius < 0 ? Math.abs(startTickLeftRadius) : 0;
-	        scale.paddingRight = endTickRightRadius > 0 ? endTickRightRadius : 0;
-	        scale.tickSize = (width - scale.paddingLeft - scale.paddingRight) / tickLen;
+	    /**
+	     * [_describePath super class]
+	     * @return {[type]} [empty string]
+	     */
+	    _describePath: function _describePath() {
+	        return '';
 	    }
-	};
+	});
 
 /***/ },
-/* 20 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arc = module.exports = {
@@ -2255,13 +1866,13 @@
 	};
 
 /***/ },
-/* 21 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 
 
 /***/ },
-/* 22 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	Object.defineProperty(exports, '__esModule', {
@@ -2321,7 +1932,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 23 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2330,11 +1941,11 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var _composer = __webpack_require__(22);
+	var _composer = __webpack_require__(20);
 
 	var _composer2 = _interopRequireDefault(_composer);
 
-	var _utilsExtend = __webpack_require__(27);
+	var _utilsExtend = __webpack_require__(25);
 
 	var _utilsExtend2 = _interopRequireDefault(_utilsExtend);
 
@@ -2439,15 +2050,221 @@
 	module.exports = Draw;
 
 /***/ },
-/* 24 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(28);
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	// TODO:: Consolidate code
+
+	var _svgComposer = __webpack_require__(20);
+
+	var _svgComposer2 = _interopRequireDefault(_svgComposer);
+
+	var _utilsRandomColor = __webpack_require__(26);
+
+	var _utilsRandomColor2 = _interopRequireDefault(_utilsRandomColor);
+
+	module.exports = {
+
+	  // TODO::  Should refer to a function in path to build this
+	  // Describes the xAxis for bubble point graph
+	  describeXAxisForBubbleLine: function describeXAxisForBubbleLine(height, width, chart) {
+	    // Note:: chart.xAxis is the old format
+	    var config = chart.axis || chart.xAxis;
+	    var centerY = height / 2;
+
+	    // Self Note:: PaddingLeft / PaddingRight adjustments are taken out
+	    return _svgComposer2['default'].make('path', {
+	      'stroke-linecap': 'round',
+	      'stroke-linejoin': 'round',
+	      'stroke-width': config.strokeWidth || 2,
+	      stroke: config.strokeColor || 'transparent',
+	      d: 'M' + chart.paddingLeft + ' ' + centerY + ' H' + width
+	    });
+	  },
+
+	  describeBubbleByObject: function describeBubbleByObject(data, scale) {
+	    var height = scale.height;
+	    var width = scale.width;
+	    var heightRatio = scale.heightRatio;
+	    var widthRatio = scale.widthRatio;
+	    var len = scale.len;
+	    var max = scale.max;
+	    var innerPaddingLeft = scale.innerPaddingLeft;
+	    var paddingLeft = scale.paddingLeft;
+	    var innerPaddingTop = scale.innerPaddingTop;
+	    var paddingTop = scale.paddingTop;
+
+	    var self = this;
+	    var defaultFill = scale.fill || 0;
+	    var defaultStrokeColor = scale.strokeColor || 0;
+	    var defaultStrokeWidth = scale.strokeWidth || 0;
+	    var paths = [];
+	    var refs;
+	    var minRadius = scale.minRadius || 0;
+	    var inverse = scale.hasInverse;
+
+	    for (var i = 0; i < len; i++) {
+	      var props = data[i];
+	      var point = props.data;
+
+	      if (scale.hasEvents) {
+	        // c = column for reference
+	        refs = {
+	          c: i
+	        };
+	      }
+
+	      var r = (scale.maxRadius - minRadius) * (point[2] / max[2]);
+	      r = r ? r + minRadius : 0;
+	      paths.push(_svgComposer2['default'].make('circle', {
+	        cx: inverse.x ? point[0] * widthRatio + innerPaddingLeft + paddingLeft : width - point[0] * widthRatio - innerPaddingLeft - paddingLeft,
+	        cy: inverse.y ? paddingTop + innerPaddingTop + point[1] * heightRatio : height - point[1] * heightRatio - innerPaddingTop - paddingTop,
+	        r: r,
+	        fill: props.fill || (defaultFill || (0, _utilsRandomColor2['default'])())
+	      }, refs));
+	    }
+	    return paths;
+	  },
+
+	  describeBubbleLineByObject: function describeBubbleLineByObject(data, height, width, scale) {
+	    if (!data) return '';
+	    var paddingLeft = scale.paddingLeft;
+	    var innerPaddingLeft = scale.innerPaddingLeft;
+	    var autoFit = scale.autoFit;
+	    var strokeColors = scale.strokeColors;
+	    var strokeWidths = scale.strokeWidths;
+	    var fill = scale.fill;
+	    var tickSize = scale.tickSize;
+	    var startTick = scale.startTick;
+	    var minRadius = scale.minRadius;
+	    var maxRadius = scale.maxRadius;
+
+	    var dataPoints = data.length;
+	    var paths = [];
+	    var defaultStrokeColor = strokeColors || 0;
+	    var defaultStrokeWidth = strokeWidths || 0;
+	    var defaultFill = scale.fill || 0;
+	    var centerY = height / 2;
+	    var refs, cx;
+	    var minRadius = minRadius || 0;
+
+	    for (var i = 0; i < data.length; i++) {
+	      var point = data[i];
+
+	      if (scale.hasEvents) {
+	        // c = columns
+	        refs = {
+	          c: i
+	        };
+	      }
+
+	      if (autoFit == false) {
+	        cx = i * tickSize + paddingLeft + innerPaddingLeft;
+	      } else {
+	        cx = (point.date.getTime() - startTick) * tickSize + paddingLeft + innerPaddingLeft;
+	      }
+
+	      var r = (maxRadius - minRadius) * point.data / scale.max;
+	      r = r ? r + minRadius : 0;
+
+	      paths.push(_svgComposer2['default'].make('circle', {
+	        cx: cx,
+	        cy: centerY,
+	        r: r,
+	        fill: point.fill || defaultFill,
+	        stroke: point.strokeColor || (defaultStrokeColor || 'transparent'),
+	        'stroke-width': point.strokeWidth || (defaultStrokeWidth || 0)
+	      }, refs));
+	    }
+	    return paths;
+	  },
+
+	  // Extends default ratio w/ auto scaling for Bubble Scatter
+	  getRatioByObject: function getRatioByObject(scale) {
+	    var _data = scale._data;
+	    var height = scale.height;
+	    var width = scale.width;
+	    var len = scale.len;
+	    var innerPaddingLeft = scale.innerPaddingLeft;
+	    var innerPaddingTop = scale.innerPaddingTop;
+	    var innerPaddingRight = scale.innerPaddingRight;
+	    var innerPaddingBottom = scale.innerPaddingBottom;
+	    var minRadius = scale.minRadius;
+
+	    var data = _data;
+	    // bubble as a scattered graph
+
+	    var maxRadius = scale.maxRadius = parseInt(scale.maxRadius) || Math.sqrt(width * height / len) / 2;
+	    scale.minRadius = minRadius || 0;
+	    scale.innerPaddingLeft = innerPaddingLeft < maxRadius ? maxRadius : innerPaddingLeft;
+	    scale.innerPaddingRight = innerPaddingRight < maxRadius ? maxRadius : innerPaddingRight;
+	    scale.innerPaddingTop = innerPaddingTop < maxRadius ? maxRadius : innerPaddingTop;
+	    scale.innerPaddingBottom = innerPaddingBottom < maxRadius ? maxRadius : innerPaddingBottom;
+	    scale.widthRatio = (width - scale.innerPaddingLeft - scale.innerPaddingRight) / scale.max[0];
+	    scale.heightRatio = (height - scale.innerPaddingTop - scale.innerPaddingBottom) / scale.max[1];
+	  },
+
+	  // Extends default ratio w/ auto scaling for Bubble point
+	  getRatioByTimeSeries: function getRatioByTimeSeries(scale) {
+	    var autoFit = scale.autoFit;
+	    var _data = scale._data;
+	    var height = scale.height;
+	    var width = scale.width;
+	    var len = scale.len;
+	    var paddingTop = scale.paddingTop;
+	    var paddingLeft = scale.paddingLeft;
+	    var paddingRight = scale.paddingRight;
+	    var paddingBottom = scale.paddingBottom;
+	    var axis = scale.axis;
+
+	    var data = _data;
+	    scale.axis = axis || {};
+	    var maxRadius = scale.maxRadius = parseInt(scale.maxRadius) || maxRadius;
+	    var minRadius = scale.minRadius = scale.minRadius || 0;
+	    var startTick, endTick;
+
+	    // Check if the start date is defined, if not defined using first element in array
+	    if (autoFit == false) {
+	      startTick = 0;
+	      endTick = len - 1;
+	    } else {
+	      startTick = (scale.startDate || data[0].date || 0).getTime();
+	      endTick = (scale.endDate || data[len - 1].date).getTime();
+	    }
+
+	    scale.startTick = startTick;
+	    scale.endTick = endTick;
+	    var tickLen = endTick - startTick;
+	    tickLen = tickLen == 0 ? 1000 : tickLen;
+
+	    var potentialPxTickRatio = width / tickLen;
+
+	    var firstElementRadius = (maxRadius - minRadius) * data[0].data / scale.max;
+	    var lastElementRadius = (maxRadius - minRadius) * data[len - 1].data / scale.max;
+
+	    firstElementRadius = firstElementRadius ? firstElementRadius + minRadius : 0;
+	    lastElementRadius = lastElementRadius ? lastElementRadius + minRadius : 0;
+
+	    var startTickLeftRadius = (startTick - startTick) * potentialPxTickRatio - firstElementRadius;
+	    var endTickRightRadius = (endTick - endTick) * potentialPxTickRatio + lastElementRadius;
+	    scale.paddingLeft = startTickLeftRadius < 0 ? Math.abs(startTickLeftRadius) : 0;
+	    scale.paddingRight = endTickRightRadius > 0 ? endTickRightRadius : 0;
+	    scale.tickSize = (width - scale.paddingLeft - scale.paddingRight) / tickLen;
+	  }
+	};
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(27);
 	var randomColor = __webpack_require__(26);
-	var Class = __webpack_require__(29);
-	var Errors = __webpack_require__(16);
-	var api = __webpack_require__(25);
-	var composer = __webpack_require__(22);
+	var Class = __webpack_require__(28);
+	var Errors = __webpack_require__(14);
+	var api = __webpack_require__(24);
+	var composer = __webpack_require__(20);
 
 	var isArray = function isArray(obj) {
 	  return obj instanceof Array;
@@ -2626,7 +2443,7 @@
 	});
 
 /***/ },
-/* 25 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var asc = function asc(a, b) {
@@ -2803,7 +2620,6 @@
 	  // find min / max across the entire data set
 	  getSimpleScale: function getSimpleScale(data, rows, len, yAxis, min, max) {
 	    var ySecs = 0;
-
 	    for (var i = 0; i < rows; i++) {
 	      temp = data[i].slice(0).sort(asc);
 	      min = min > temp[0] ? temp[0] : min;
@@ -2847,7 +2663,8 @@
 	        temp.push(data[x].data);
 	        color.push(data[x].strokeColor);
 	      }
-	      if (opts.complex) {
+
+	      if (this.componentName == 'bubble.point' || this.componentName == 'bubble.scatter') {
 	        data = [temp];
 	      } else {
 	        data = temp;
@@ -2870,14 +2687,12 @@
 	      max = result.max;
 	      ySecs = result.ySecs;
 	      maxSet = result.maxSet;
-	    } else if (opts.type == 'bubble-scattered') {
-
+	    } else if (self.componentName == 'bubble.scatter') {
 	      var result = api.getBubbleScatterScale(data, rows, len, yAxis);
 	      min = result.min;
 	      max = result.max;
 	      ySecs = result.ySecs;
 	    } else {
-
 	      var result = api.getSimpleScale(data, rows, len, yAxis, min, max);
 	      min = result.min;
 	      max = result.max;
@@ -2897,21 +2712,7 @@
 	};
 
 /***/ },
-/* 26 */
-/***/ function(module, exports, __webpack_require__) {
-
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-
-	exports['default'] = function () {
-	  return '#' + Math.floor(Math.random() * 16777215).toString(16);
-	};
-
-	module.exports = exports['default'];
-
-/***/ },
-/* 27 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2934,7 +2735,21 @@
 	};
 
 /***/ },
-/* 28 */
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	exports['default'] = function () {
+	  return '#' + Math.floor(Math.random() * 16777215).toString(16);
+	};
+
+	module.exports = exports['default'];
+
+/***/ },
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2984,7 +2799,7 @@
 	}
 
 /***/ },
-/* 29 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
