@@ -378,6 +378,9 @@ The super class of ```append``` is referenced [here](https://github.com/alfredka
 var svg = require('yako').svg;
 ```
 
+#####.create(svgElement) [draft]
+Returns a yako obj, can be converted into an svg string
+
 #####.path.getScale(attr)
 Returns the scale for the path and returns min, height, interval, heightRatio, height, width in json object.  Expects attr to contain
 ```javascript
