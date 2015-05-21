@@ -16,12 +16,19 @@ Demo [http://alfredkam.com/yakojs](http://alfredkam.com/yakojs) or ```gulp dev``
 
 Supports Chrome, Firefox, Safari, and IE 9+;
 
+###Note on upgrading 0.4.X to 0.5.X
+- Deprecate the old bubble usage and with a new interface
+- Simplify ```<graph>.timeseries``` require usage - It is now no longer needed to include ```.timeseries``` to use those graphs
+- Simplify chart configuration by flattern out ```<graph>.attr({})```
+
 ### Install
-```npm install yako```
-
-<i>or</i>
-
+```npm install yako```<br
+<i>Alternatively</i><br>
 ```bower install yako```
+
+### Building the package
+```gulp build```<br>
+This will build the ```lib``` directory, by converting ```src``` directory from es6 to es5.
 
 ### API Ready
 - Simple Graphs
