@@ -1,9 +1,10 @@
 ## Yako
-[![NPM Version](https://img.shields.io/npm/v/yako.svg)](https://npmjs.org/package/yako)
+[![npm version](https://badge.fury.io/js/yako.svg)](http://badge.fury.io/js/yako)
 [![Downloads](https://img.shields.io/npm/dm/yako.svg)](https://npmjs.org/package/yako)
 [![Dependencies](https://david-dm.org/alfredkam/yakojs.svg)](https://david-dm.org/alfredkam/yakojs)
-[![Build Status](https://img.shields.io/travis/alfredkam/yakojs.svg)](https://travis-ci.org/alfredkam/yakojs)
+[![Build Status](https://travis-ci.org/alfredkam/yakojs.svg?branch=master)](https://travis-ci.org/alfredkam/yakojs)
 [![Coverage Status](https://coveralls.io/repos/alfredkam/yakojs/badge.svg?branch=master)](https://coveralls.io/r/alfredkam/yakojs?branch=master)
+[![bitHound Score](https://www.bithound.io/github/alfredkam/yakojs/badges/score.svg)](https://www.bithound.io/github/alfredkam/yakojs/master)
 
 A tiny **DOM-less** graph library, build for fast front end and server side rendering in CommonJs pattern.
 This library is intend to generate light weight and simple SVG graphs, and is more performable compare to highcharts / flot / c3 / d3 when **front end matters**.

@@ -377,9 +377,31 @@ The super class of ```append``` is referenced [here](https://github.com/alfredka
 ```javascript
 var svg = require('yako').svg;
 ```
+This svg api helps you to create and simplify the process of creating svg contents.
+#####.create(svgTagName)
+Returns a yako svg obj
+```javascript
+// example
+var obj = svg.create("g");
+```
+######obj.attr({})
+Sets the attributes for an svg object, using the standard svg attributes
+```javascript
+// examples
+var obj = svg.create("rect");
+obj.attr({
+    x: 1,
+    y: 10,
+    height: 100,
+    width: 100
+});
+```
 
-#####.create(svgElement) [draft]
-Returns a yako obj, can be converted into an svg string
+######obj.append(string)
+
+######obj.append(obj)
+
+######obj.append(array)
 
 #####.path.getScale(attr)
 Returns the scale for the path and returns min, height, interval, heightRatio, height, width in json object.  Expects attr to contain
