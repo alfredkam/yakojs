@@ -398,10 +398,81 @@ obj.attr({
 ```
 
 ######obj.append(string)
+Appends the string content as a children of a svg object.
+```javascript
+// example
+var obj = svg.create("g");
+
+obj.append("<rect fill='#000' height='100' width='100'></rect>");
+```
 
 ######obj.append(obj)
+Appends a svg obj as a children of another svg object
+```javascript
+// example
+var parentObj = svg.create("g");
+var childObj = svg.create("rect");
+
+childObj.attr({
+    x: 1,
+    y: 10,
+    height: 100,
+    width: 100
+});
+
+parentObj.append(childObj);
+
+```
 
 ######obj.append(array)
+Appends an array of svg objects as children of another svg object
+```javascript
+// example
+var parentObj = svg.create("g");
+var group = [];
+
+for (var i = 0; i < 3; i++) {
+    group.push(
+        svg
+        .create("rect")
+        .attr({
+            x: 1+i,
+            y: 1+i,
+            height: 100,
+            width: 100
+        }));
+}
+
+parentObj.append(group);
+```
+
+######obj.stringify()
+Returns an svg string
+```javascript
+// example
+var parentObj = svg.create("g");
+var group = [];
+
+for (var i = 0; i < 3; i++) {
+    group.push(
+        svg
+        .create("rect")
+        .attr({
+            x: 1+i,
+            y: 1+i,
+            height: 100,
+            width: 100
+        }));
+}
+
+parentObj.append(group);
+parentObj.stringify();
+
+//outputs
+<g><rect width="100" height="100" y="1" x="1"></rect><rect width="100" height="100" y="2" x="2"></rect><rect width="100" height="100" y="3" x="3"></rect></g>
+
+
+```
 
 #####.path.getScale(attr)
 Returns the scale for the path and returns min, height, interval, heightRatio, height, width in json object.  Expects attr to contain
