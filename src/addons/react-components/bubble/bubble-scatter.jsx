@@ -80,16 +80,18 @@ module.exports = React.createClass({
       if (ToolTipReactElement) {
         content.push(
             <ToolTipReactElement
+              key={1}
               content={self._eventData} />
           );
       }
 
       content.push(<Bubble
+            key={2}
             events={self.eventsHandler}
             attr={attr} />);
 
       if (Legend){
-        content.push(<Legend />);
+        content.push(<Legend key={3}/>);
       }
 
       if (CustomComponent) {
