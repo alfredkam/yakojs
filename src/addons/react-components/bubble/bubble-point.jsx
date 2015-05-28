@@ -6,6 +6,7 @@ var GraphPureRenderMixin = require('../utils/GraphPureRenderMixin');
 
 /* Bubble Component */
 var Bubble = React.createClass({
+    displayName: 'BubblePoint',
     mixin: [
       PureRenderMixin,
       GraphPureRenderMixin
@@ -32,6 +33,7 @@ var Bubble = React.createClass({
 // TODO:: Decouple tooltip logics
 /* EventHandling Component */
 module.exports = React.createClass({
+    displayName: 'BubblePointEventHandler',
     _eventData: {},
     eventsHandler: '',
     setScale: function (scale) {
@@ -72,16 +74,18 @@ module.exports = React.createClass({
       if (ToolTipReactElement) {
         content.push(
           <ToolTipReactElement
+            key={1}
             content={self._eventData} />
         );
       }
 
       content.push(<Bubble
+            key={2}
             events={self.eventsHandler}
             attr={ attr } />);
 
       if (Legend){
-        content.push(<Legend />);
+        content.push(<Legend key={3} />);
       }
 
       if (CustomComponent) {

@@ -6,6 +6,7 @@ var GraphPureRenderMixin = require('../utils/GraphPureRenderMixin');
 
 /* Bubble Component */
 var Bubble = React.createClass({
+    displayName: 'BubbleScatter',
     mixin: [
       PureRenderMixin,
       GraphPureRenderMixin
@@ -32,6 +33,7 @@ var Bubble = React.createClass({
 // TODO:: Decouple tooltip logics
 /* EventHandling Component */
 module.exports = React.createClass({
+    displayName: 'BubbleScatterEventHandler',
 
     _eventData: {},
 
