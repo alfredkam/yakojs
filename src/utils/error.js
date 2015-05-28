@@ -12,5 +12,9 @@ module.exports = {
 
   eventFeedback: function (componentName) {
     warn("No event feedback associated with chart component " + componentName);
+  },
+
+  insufficientRange: function (componentName) {
+    warn("A 'maxRange: [x, y, z]' must be passed in for " + componentName);
   }
 };

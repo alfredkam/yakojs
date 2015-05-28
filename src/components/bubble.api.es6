@@ -1,6 +1,7 @@
 // TODO:: Consolidate code
 import composer from '../svg/composer';
 import randomColor from '../utils/randomColor';
+import error from '../utils/error';
 
 module.exports = {
 
@@ -35,7 +36,7 @@ module.exports = {
     for (var i = 0; i < len; i++) {
         var props = data[i];
         var point = props.data;
-        
+
         if (scale.hasEvents) {
             // c = column for reference
             refs = {
@@ -103,6 +104,14 @@ module.exports = {
     var { _data, height, width, len, innerPaddingLeft, innerPaddingTop, innerPaddingRight, innerPaddingBottom, minRadius } = scale;
     var data = _data;
     // bubble as a scattered graph
+
+    if (scale.maxRange && scale.maxRange.length != 3) {
+      error.insufficientRange(this.componentName);
+    }
+
+    scale.max[2] = (scale.maxRange? scale.maxRange[2] || scale.max[2] : scale.max[2]);
+    scale.max[1] = (scale.maxRange? scale.maxRange[1] || scale.max[1] : scale.max[1]);
+    scale.max[0] = (scale.maxRange? scale.maxRange[0] || scale.max[0] : scale.max[0]);
 
     var maxRadius = scale.maxRadius = parseInt(scale.maxRadius) || Math.sqrt(width * height / len) / 2;
     scale.minRadius = minRadius || 0;
