@@ -377,15 +377,15 @@ The super class of ```append``` is referenced [here](https://github.com/alfredka
 ```javascript
 var svg = require('yako').svg;
 ```
-This svg api helps you to create and simplify the process of creating svg contents.
+The below svg api helps you to create and simplify the process of creating svg contents.
 #####.create(svgTagName)
-Returns a yako svg obj
+Returns a yako svg obj, and permits method chaining
 ```javascript
 // example
 var obj = svg.create("g");
 ```
 ######obj.attr({})
-Sets the attributes for an svg object, using the standard svg attributes
+Sets the attributes for an svg object, using the standard svg attributes and permits method chaining
 ```javascript
 // examples
 var obj = svg.create("rect");
@@ -398,7 +398,7 @@ obj.attr({
 ```
 
 ######obj.append(string)
-Appends the string content as a children of a svg object.
+Appends the string content as a children of a svg object and permits method chaining
 ```javascript
 // example
 var obj = svg.create("g");
@@ -407,7 +407,7 @@ obj.append("<rect fill='#000' height='100' width='100'></rect>");
 ```
 
 ######obj.append(obj)
-Appends a svg obj as a children of another svg object
+Appends a svg obj as a children of another svg object and permits method chaining
 ```javascript
 // example
 var parentObj = svg.create("g");
@@ -425,7 +425,7 @@ parentObj.append(childObj);
 ```
 
 ######obj.append(array)
-Appends an array of svg objects as children of another svg object
+Appends an array of svg objects as children of another svg object and permits method chaining
 ```javascript
 // example
 var parentObj = svg.create("g");
@@ -473,7 +473,8 @@ parentObj.stringify();
 
 
 ```
-
+###Additional SVG Helper functions
+These svg helper functions will help you to build the svg paths base on your data composition
 #####.path.getScale(attr)
 Returns the scale for the path and returns min, height, interval, heightRatio, height, width in json object.  Expects attr to contain
 ```javascript

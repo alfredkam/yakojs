@@ -30,10 +30,12 @@ class Draw {
 
         if (Array.isArray(svgElement)) {
           node.children = node.children.concat(svgElement);
+        } else if (typeof svgElement == 'string') {
+          node.children.push(svgElement);
         } else {
-            var svg = new Draw();
-            svgElement = svg.create(svgElement);
-            node.children.push(svgElement);
+          var svg = new Draw();
+          svgElement = svg.create(svgElement);
+          node.children.push(svgElement);
         }
         return self;
     }
@@ -63,6 +65,9 @@ class Draw {
       var self = this;
       var { node } = self.getNode();
       var childContent = (node.children || []).map(function (svgObj) {
+        if (typeof svgObj == 'string') {
+           return svgObj;
+        }
         return svgObj.stringify();
       });
 
