@@ -3,7 +3,11 @@ var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 var extend = require('../../utils/extend');
 
 module.exports = React.createClass({
+
+    displayName: 'YakoLegend',
+
     mixins: [PureRenderMixin],
+
     render: function () {
       var self = this;
       var defaultStyle = {
