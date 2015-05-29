@@ -37,7 +37,7 @@ var Bubble = React.createClass({
 /* EventHandling Component */
 module.exports = React.createClass({
 
-    displayName: 'BubblePointEventHandler',
+    displayName: 'YakoBubblePointEventHandler',
 
     _eventData: {},
 
