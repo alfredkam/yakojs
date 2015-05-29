@@ -5,11 +5,16 @@ var Legend = require('./legend');
 var cssPrefix = ['Moz','Webkit','ms','O'];
 
 module.exports = React.createClass({
+    displayName: 'YakoSpark',
+
     _eventData: {},
+
     eventsHandler: '',
+
     setScale: function (scale) {
       this._scale = scale;
     },
+
     // base
     componentWillMount: function () {
       var self = this;
@@ -19,12 +24,14 @@ module.exports = React.createClass({
       Events.on = userEvents.on || {};
       Events.hydrate();
     },
+
     triggers: function (e) {
       var self = this;
       this.eventsHandler._associateTriggers(e, function (props) {
         self._eventData = props;
       });
     },
+
     render: function () {
       var self = this;
       var Events = this.eventsHandler;

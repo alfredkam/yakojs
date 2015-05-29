@@ -2,6 +2,8 @@ var React = require('react');
 var spark = require('../../index').spark;
 
 module.exports = React.createClass({
+    displayName: 'YakoSimpleSpark',
+
     render: function () {
       var self = this;
       var svg = spark()

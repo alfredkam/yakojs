@@ -3,13 +3,17 @@ var Label = require('../../Label');
 var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
 module.exports = React.createClass({
+    displayName: 'YakoSparkEventHandler',
+
     mixin: [PureRenderMixin],
+
     shouldComponentUpdate: function (nextProps) {
       if (this.props.data == nextProps.data) {
         return false;
       }
       return true;
     },
+
     render: function () {
       var self = this;
       var spark = require('../../../index').spark;

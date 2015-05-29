@@ -6,10 +6,14 @@ var GraphPureRenderMixin = require('../utils/GraphPureRenderMixin');
 
 /* Bubble Component */
 var Bubble = React.createClass({
+
+    displayName: 'YakoBubblePoint',
+
     mixin: [
       PureRenderMixin,
       GraphPureRenderMixin
     ],
+
     render: function () {
       var self = this;
       var bubblePoint = require('../../../index').bubble.point;
@@ -32,11 +36,17 @@ var Bubble = React.createClass({
 // TODO:: Decouple tooltip logics
 /* EventHandling Component */
 module.exports = React.createClass({
+
+    displayName: 'YakoBubblePointEventHandler',
+
     _eventData: {},
+
     eventsHandler: '',
+
     setScale: function (scale) {
       this._scale = scale;
     },
+
     // base
     componentWillMount: function () {
       var self = this;
@@ -46,12 +56,14 @@ module.exports = React.createClass({
       Events.on = userEvents.on || {};
       Events.hydrate();
     },
+
     triggers: function (e) {
       var self = this;
       this.eventsHandler._associateTriggers(e, function (props) {
         self._eventData = props;
       });
     },
+
     render: function () {
       var self = this;
       var Events = this.eventsHandler;
@@ -72,16 +84,18 @@ module.exports = React.createClass({
       if (ToolTipReactElement) {
         content.push(
           <ToolTipReactElement
+            key={1}
             content={self._eventData} />
         );
       }
 
       content.push(<Bubble
+            key={2}
             events={self.eventsHandler}
             attr={ attr } />);
 
       if (Legend){
-        content.push(<Legend />);
+        content.push(<Legend key={3} />);
       }
 
       if (CustomComponent) {

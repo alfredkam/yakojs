@@ -2,6 +2,9 @@ var React = require('react');
 var bar = require('../../index').bar;
 
 module.exports = React.createClass({
+
+    displayName: 'YakoBar',
+
     render: function () {
       var self = this;
       var svg = bar()
