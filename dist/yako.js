@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "4ccfd99a984eaf5b8310"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "a1bfd8cf629e0dad6a0f"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -895,7 +895,7 @@
 	    var self = this;
 	    var appendTo = self._append;
 	    var append = prepend = '';
-	    var scale = self.props.opts; // (self.props.scale || self.props.opts);
+	    var scale = self.props.opts;
 	    var opts = self.props.opts;
 	    var svg = self.make('svg', {
 	      width: scale.width,
