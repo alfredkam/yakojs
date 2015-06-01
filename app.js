@@ -220,7 +220,7 @@ while (amount--) {
     strokeColor: '#000',                // Set default stroke color
     strokeWidth: 2,                     // Set default stroke width
     fill: '#333',                       // Sets default fill color
-    // startDate: 1418885572796,
+    startDate: 1418885572796,
     // endDate: 1439253572796,
     // points: [
     // {

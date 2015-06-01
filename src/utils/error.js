@@ -16,5 +16,9 @@ module.exports = {
 
   insufficientRange: function (componentName) {
     warn("A 'maxRange: [x, y, z]' must be passed in for " + componentName);
+  },
+
+  missingDate: function (componentName) {
+    warn("Missing date object in data for " + componentName);
   }
 };

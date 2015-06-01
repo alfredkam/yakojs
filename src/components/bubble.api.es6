@@ -137,7 +137,8 @@ module.exports = {
       startTick = 0;
       endTick = len - 1;
     } else {
-      startTick = ((scale.startDate || data[0].date) || 0).getTime();
+      // Date time not provided, it will error out
+      startTick = (scale.startDate || data[0].date).getTime();
       endTick = (scale.endDate || data[len - 1].date).getTime();
     }
 
