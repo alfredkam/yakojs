@@ -250,7 +250,7 @@ bar('.graph').attr({
 A bubble graph, best use to represnet a cohort's sample size and consumes a data object
 
 ```javascript
-var bubblePoint = requrie('yako').bubble.scatter
+var bubbleScatter = requrie('yako').bubble.scatter
 var points = [{
     data: [0,1,3],
     fill: '#000',
