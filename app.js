@@ -19,7 +19,8 @@ var http = require('http');
 var express = require('express');
 var app = express();
 
-var Label = require('./addons').addons.Label;
+var addons = require('./src/addons/index.es6');
+var Label = addons.Label;
 
 // TODO:: fix edge case of 1 data Point
 var dataPoints = 30;
@@ -115,7 +116,14 @@ while (amount--) {
         /* Optional parameters */
         /* Options for the circle */
         maxRadius: 10,            // Overrides default & sets a cap for a max radius for the bubble
-        maxRange: [0, 1000, 1000],
+        maxRange: {
+          x: 1000,
+          y: 1000
+        },
+        minRange: {
+          x: 100,
+          y: 100
+        },
         fill: '#000',             // Sets the default fill color
         inverse: [],
         /* Padding options for the chart */
