@@ -23,7 +23,7 @@ module.exports = {
   },
 
   describeBubbleByObject (data, scale) {
-    var { height, width, heightRatio, widthRatio, len, max, innerPaddingLeft, paddingLeft, innerPaddingTop, paddingTop, min } = scale;
+    var { height, width, heightRatio, widthRatio, len, max, innerPaddingLeft, paddingLeft, innerPaddingTop, paddingTop, minRange } = scale;
     var self = this;
     var defaultFill = scale.fill || 0;
     var defaultStrokeColor = scale.strokeColor || 0;
@@ -47,8 +47,8 @@ module.exports = {
         var r = (scale.maxRadius - minRadius) * (point[2]/max[2]);
         r = r ? r + minRadius : 0;
         paths.push(composer.make('circle', {
-            cx: (inverse.x ? (point[0] * widthRatio) + innerPaddingLeft + paddingLeft : width - ((point[0] - min[0]) * widthRatio) - innerPaddingLeft - paddingLeft),
-            cy: (inverse.y ? paddingTop + innerPaddingTop + (point[1] * heightRatio) : height - ((point[1] - min[1]) * heightRatio) - innerPaddingTop - paddingTop),
+            cx: (inverse.x ? (point[0] * widthRatio) + innerPaddingLeft + paddingLeft : width - ((point[0] - minRange.x) * widthRatio) - innerPaddingLeft - paddingLeft),
+            cy: (inverse.y ? paddingTop + innerPaddingTop + (point[1] * heightRatio) : height - ((point[1] - minRange.y) * heightRatio) - innerPaddingTop - paddingTop),
             r: r,
             fill: props.fill || (defaultFill || randomColor())
         }, refs));
@@ -109,10 +109,10 @@ module.exports = {
     scale.max[1] = (scale.maxRange && scale.maxRange.y ? scale.maxRange.y : scale.max[1]);
     scale.max[0] = (scale.maxRange && scale.maxRange.x ? scale.maxRange.x : scale.max[0]);
 
-
-    scale.min[2] = (scale.minRange && scale.minRange.z ? scale.minRange.z : 0);
-    scale.min[1] = (scale.minRange && scale.minRange.y ? scale.minRange.y : 0);
-    scale.min[0] = (scale.minRange && scale.minRange.x ? scale.minRange.x : 0);
+    scale.minRange = scale.minRange || {};
+    scale.minRange.z = scale.minRange.z || 0;
+    scale.minRange.y = scale.minRange.y || 0;
+    scale.minRange.x = scale.minRange.x || 0;
 
     var maxRadius = scale.maxRadius = parseInt(scale.maxRadius) || Math.sqrt(width * height / len) / 2;
     scale.minRadius = minRadius || 0;
@@ -120,8 +120,8 @@ module.exports = {
     scale.innerPaddingRight = innerPaddingRight < maxRadius ? maxRadius : innerPaddingRight;
     scale.innerPaddingTop = innerPaddingTop < maxRadius ? maxRadius : innerPaddingTop;
     scale.innerPaddingBottom = innerPaddingBottom < maxRadius ? maxRadius : innerPaddingBottom;
-    scale.widthRatio = (width - scale.innerPaddingLeft - scale.innerPaddingRight) / (scale.max[0] - scale.min[0]);
-    scale.heightRatio = (height - scale.innerPaddingTop - scale.innerPaddingBottom) / (scale.max[1] - scale.min[1]);
+    scale.widthRatio = (width - scale.innerPaddingLeft - scale.innerPaddingRight) / (scale.max[0] - scale.minRange.x);
+    scale.heightRatio = (height - scale.innerPaddingTop - scale.innerPaddingBottom) / (scale.max[1] - scale.minRange.y);
   },
 
   // Extends default ratio w/ auto scaling for Bubble point
