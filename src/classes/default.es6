@@ -106,7 +106,8 @@ export default class Base extends Common {
     finalize (content) {
       var self = this;
       var appendTo = self._append;
-      var append = prepend = '';
+      var append = '';
+      var prepend = '';
       var scale = self.props.opts;
       var opts = self.props.opts;
       var svg = self.make('svg',{

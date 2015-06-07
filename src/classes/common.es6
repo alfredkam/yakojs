@@ -1,9 +1,8 @@
-require('../utils/adjustDecimal');
-var randomColor = require('../utils/randomColor');
-var Class = require('./class');
-var Errors = require('../utils/error');
-var api = require('../components/api');
-var composer = require('../svg/composer');
+import '../utils/adjustDecimal';
+import randomColor from '../utils/randomColor';
+import Errors from '../utils/error';
+import api from '../components/api';
+import composer from '../svg/composer';
 
 var isArray = function (obj) {
     return obj instanceof Array;
