@@ -9,7 +9,6 @@ import pie from './components/pie';
 import donut from './components/donut';
 import bar from './components/bar';
 import svg from './svg/svg';
-import mixin from './utils/mixin';
 // time series / object base
 import bubblePoint from './components/bubble.point';
 import bubbleScatter from './components/bubble.scatter';

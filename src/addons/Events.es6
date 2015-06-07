@@ -2,6 +2,9 @@
  * An add on to interact and trigger events
  */
 
+ import eventFeedback from './Events.feedback';
+ import error from '../utils/error';
+
 /**
  * Event filter definitions
  */
@@ -16,36 +19,44 @@ var shortHandBindFilterDefinitions = {
   'mouseLeave': ['onMouseLeave'],
   'doubleClick': ['onDoubleClick']
 };
-var ignore = function () {};
-var Class = require('../classes/class');
-var eventFeedback  = require('./Events.feedback');
-var error = require('../utils/error');
+var ignore = () => {};
 
-module.exports = Class.extend({
+export default class Events {
 
-  // A list of tagName w/ event combination in key - value format for fast filtering. Hydrate from `hydrate` function
-  _events: {},
+  constructor () {
+      // A list of tagName w/ event combination in key - value format for fast filtering. Hydrate from `hydrate` function
+      this._events = {};
+      this._props = {};
+      // The events should register with the top level binding
+      this._toRegister = {};
+      /**
+      * A user defined event map, eg:
+      * 'container:mouseLeave': function (e) {
+      *    // do something
+      *  },
+      *  'svg:mousemove': function (e) {
+      *    // do something
+      *  }
+      */
+      this.on = {};
+      return this;
+  }
 
   // Sets props
-  setProps: function (scale, data) {
+  setProps (scale, data) {
     this._props = {
       scale: scale,
       data: data
     };
-  },
-
-  _props: {},
-
-  // The events should register with the top level binding
-  _toRegister: {},
+  }
 
   // The external call back for the top level event binding to emit the event
-  _emit: function (e) {
+  _emit (e) {
     this._associateTriggers(e);
-  },
+  }
 
   // Manually pass the domObj thats pass in, and add the events
-  listen: function (domObj) {
+  listen (domObj) {
     var self = this;
     self._element = domObj;
     self.hydrate();
@@ -58,10 +69,10 @@ module.exports = Class.extend({
         false
       );
     }
-  },
+  }
 
   // Manually removes the event listener
-  removeListener: function () {
+  removeListener () {
     var self = this;
     var domObj = self._element;
     var props = self._toRegister;
@@ -69,21 +80,10 @@ module.exports = Class.extend({
     for(var i = 0; i < keys.length; i++) {
       domObj.removeEventListener(keys[i].replace('on','').toLowerCase(),props[keys[i]], false);
     }
-  },
-
-   /**
-   * A user defined event map, eg:
-   * 'container:mouseLeave': function (e) {
-   *    // do something
-   *  },
-   *  'svg:mousemove': function (e) {
-   *    // do something
-   *  }
-   */
-  on: {},
+  }
 
   // Registers the events list we want to listen to
-  hydrate: function () {
+  hydrate () {
     var self = this;
     var filters = Object.keys(self.on);
     var list = {};
@@ -106,11 +106,11 @@ module.exports = Class.extend({
     }
     self._events = list;
     self._toRegister = eventsToRegister;
-  },
+  }
 
   // TODO:: handle case when child event provides a stop pragation
   // Entry point for top level event binding that will distribute to rest of binding
-  _associateTriggers: function (e, next) {
+  _associateTriggers (e, next) {
     e = e || window.event;
     var self = this;
     var events = self._events;
@@ -129,12 +129,12 @@ module.exports = Class.extend({
         }
       }
     }
-  },
+  }
 
 
   // Common entry point for each _associateTrigger once the eventName is associated
   // Here it provides the material at those event points - if the data is avaliable
-  _trigger: function (eventName, e, props, next) {
+  _trigger (eventName, e, props, next) {
     var self = this;
     var scale = props.scale;
     // For react, uses nativeEvent
@@ -153,4 +153,4 @@ module.exports = Class.extend({
     self.on[eventName](e, properties);
     next(properties);
   }
-});
+}

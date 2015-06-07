@@ -28,38 +28,28 @@ export default class Common {
       return this;
   }
 
-  // _sumOfData: api.sumOfData,
-  //
-  // // accepts a N * 1 array
-  // // finds total sum then creates a relative measure base on total sum
-  // _dataSetRelativeToTotal: api.dataSetRelativeToTotal,
-  //
-  // // random color generator
-  // _randomColor: randomColor,
-  //
-  // // appends the elements
-  // // accepts multiple child
-  // _append: composer.append,
-  //
-  // // alternate to one level deep
-  // make: composer.make,
-
   _sumOfData () {
       return api.sumOfData.apply(this, arguments);
   }
 
+  // accepts a N * 1 array
+  // finds total sum then creates a relative measure base on total sum
   _dataSetRelativeToTotal () {
       return api.dataSetRelativeToTotal.apply(this, arguments);
   }
 
+  // random color generator
   _randomColor () {
       return randomColor.apply(this, arguments);
   }
 
+  // appends the elements
+  // accepts multiple child
   _append () {
       return composer.append.apply(this, arguments);
   }
 
+  // alternate to one level deep
   make () {
       return composer.make.apply(this, arguments);
   }
