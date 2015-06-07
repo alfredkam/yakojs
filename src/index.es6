@@ -16,9 +16,6 @@ import bubbleScatter from './components/bubble.scatter';
 import line from './components/line';
 
 var initialize = (component, obj) => {
-  if (typeof obj === 'object') {
-    return new (obj.mixin ? mixin(mixin(component, obj.mixin), obj) : mixin(component, obj))();
-  }
   return new component(obj);
 };
 

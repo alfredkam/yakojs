@@ -3,7 +3,7 @@ import composer from '../svg/composer';
 import randomColor from '../utils/randomColor';
 import error from '../utils/error';
 
-module.exports = {
+export default {
 
   // TODO::  Should refer to a function in path to build this
   // Describes the xAxis for bubble point graph

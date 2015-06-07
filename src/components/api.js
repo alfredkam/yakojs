@@ -195,6 +195,7 @@ var api = module.exports = {
   // find min max between multiple rows of data sets
   // also handles the scale needed to work with multi axis
   scale: function (data, opts) {
+
       opts = opts || 0;
       data = typeof data[0] === 'object' ? data : [data];
       var max = 0;

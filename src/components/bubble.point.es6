@@ -1,13 +1,15 @@
 // Supports time series & object base
-import Base from '../classes/default';
+import Default from '../classes/default';
 import api from './bubble.api';
 
-module.exports = Base.extend({
+export default class BubblePoint extends Default {
 
-    componentName: 'bubble.point',
+    get componentName() {
+        return 'bubble.point';
+    }
 
     // Start of a life cyle
-    _startCycle: function () {
+    _startCycle () {
         var self = this;
         var chart = self.attributes.opts.chart;
         var data = self.attributes.data;
@@ -24,14 +26,20 @@ module.exports = Base.extend({
             paths.unshift(self._describeXAxis(chart.height, chart.width, newScale));
             return paths;
         });
-    },
+    }
 
     // Extends default ratio w/ auto scaling
-    _getRatio: api.getRatioByTimeSeries,
+    _getRatio (...args) {
+        return api.getRatioByTimeSeries(...args);
+    }
 
     // Describes the xAxis for bubble point graph
-    _describeXAxis: api.describeXAxisForBubbleLine,
+    _describeXAxis (...args) {
+        return api.describeXAxisForBubbleLine(...args);
+    }
 
     // Describes bubble point graph
-    _describeBubble: api.describeBubbleLineByObject
-});
+    _describeBubble (...args){
+        return api.describeBubbleLineByObject(...args);
+    }
+}

@@ -19,59 +19,81 @@ var inverseList = {
  * @param  {object} object
  * @return {object} global function object
  */
-module.exports = Class.extend({
+
+export default class Common {
 
   // default
-  init: function () {
-    return this;
-  },
+  constructor () {
+      // data properties
+      this.props = {};
+      return this;
+  }
 
-  // data properties
-  props: {},
+  // _sumOfData: api.sumOfData,
+  //
+  // // accepts a N * 1 array
+  // // finds total sum then creates a relative measure base on total sum
+  // _dataSetRelativeToTotal: api.dataSetRelativeToTotal,
+  //
+  // // random color generator
+  // _randomColor: randomColor,
+  //
+  // // appends the elements
+  // // accepts multiple child
+  // _append: composer.append,
+  //
+  // // alternate to one level deep
+  // make: composer.make,
 
-  _sumOfData: api.sumOfData,
+  _sumOfData () {
+      return api.sumOfData.apply(this, arguments);
+  }
 
-  // accepts a N * 1 array
-  // finds total sum then creates a relative measure base on total sum
-  _dataSetRelativeToTotal: api.dataSetRelativeToTotal,
+  _dataSetRelativeToTotal () {
+      return api.dataSetRelativeToTotal.apply(this, arguments);
+  }
 
-  // random color generator
-  _randomColor: randomColor,
+  _randomColor () {
+      return randomColor.apply(this, arguments);
+  }
 
-  // appends the elements
-  // accepts multiple child
-  _append: composer.append,
+  _append () {
+      return composer.append.apply(this, arguments);
+  }
 
-  // alternate to one level deep
-  make: composer.make,
+  make () {
+      return composer.make.apply(this, arguments);
+  }
 
   // Deep copies an object
   // TODO:: improve this
-  _deepCopy: function (objToCopy) {
+  _deepCopy (objToCopy) {
     return JSON.parse(JSON.stringify(objToCopy));
-  },
+  }
 
   /**
    * A super class calls right before return the svg content to the user
    */
-  postRender: function (svgContent) {
+  postRender (svgContent) {
     return svgContent;
-  },
+  }
 
   /**
    * [_isArray check if variable is an array]
    * @param  any type
    * @return {Boolean}   true if its an array
    */
-  _isArray: isArray,
+  _isArray () {
+      return isArray.apply(this, arguments);
+  }
 
   // Default ratio
-  _getRatio: function (scale) {
+  _getRatio (scale) {
     scale.heightRatio = scale.height - (scale.paddingTop + scale.paddingBottom) / scale.max;
-  },
+  }
 
   // Gets invert chart props defined by user
-  _getInvertProps: function (scale) {
+  _getInvertProps (scale) {
     // Acceptable inverse flags to inverse the data set
     var inverse = {};
     if (scale.invert) {
@@ -82,7 +104,7 @@ module.exports = Class.extend({
         }
     }
     scale.hasInverse = inverse;
-  },
+  }
 
   /**
    * [_defineBaseScaleProperties defines the common scale properties]
@@ -90,10 +112,10 @@ module.exports = Class.extend({
    * @param  {[obj]} chart [chart properties passed by the user]
    * @return {[obj]}       [return an obj that describes the scale base on the data & chart properties]
    */
-  _defineBaseScaleProperties: function (data, chart) {
+  _defineBaseScaleProperties (data, chart) {
     var self = this;
     var opts = this.attributes.opts;
-    var chart = opts.chart;
+    // var chart = opts.chart;
     var xAxis = chart.xAxis || opts.xAxis;
     var yAxis = chart.yAxis || opts.yAxis;
     var scale = self._scale(data, chart);
@@ -110,14 +132,14 @@ module.exports = Class.extend({
     self._getRatio(scale);
     self.props.scale = scale;
     return scale;
-  },
+  }
 
   /**
    * base on the feedback and mange the render of the life cycle
    * it passes a immutable obj to preRender and audits the user feedback
    */
   // TODO:: Rename lifeCycleManager, incorrect term usage
-  _lifeCycleManager: function (data, chart, describe) {
+  _lifeCycleManager (data, chart, describe) {
     var self = this;
     var scale = self._defineBaseScaleProperties(data, chart);
     scale.componentName = self.componentName;
@@ -137,13 +159,15 @@ module.exports = Class.extend({
     paths = paths.concat(properties.append ? properties.append : []);
     return paths;
     // return summary
-  },
+  }
 
   // only supports 1 level deep
-  _makePairs: composer.makePairs,
+  _makePairs () {
+      return composer.makePairs.apply(this, arguments);
+  }
 
   // deep extend
-  _extend: function (attr, json) {
+  _extend (attr, json) {
     var self = this;
     if (!json || !attr) return;
 
@@ -159,22 +183,28 @@ module.exports = Class.extend({
         }
     }
     return this;
-  },
+  }
 
-  isFn: function (object) {
+  isFn (object) {
     return !!(object && object.constructor && object.call && object.apply);
-  },
+  }
 
-  _makeToken: function () {
+  _makeToken () {
     return Math.random().toString(36).substr(2);
-  },
+  }
 
   //sig fig rounding
-  _sigFigs: api.sigFigs,
+  _sigFigs () {
+      return api.sigFigs.apply(this, arguments);
+  }
 
-  _getSplits: api.getSplits,
+  _getSplits () {
+      return api.getSplits.apply(this, arguments);
+  }
 
   // find min max between multiple rows of data sets
   // also handles the scale needed to work with multi axis
-  _scale: api.scale
-});
+  _scale () {
+      return api.scale.apply(this, arguments);
+  }
+}

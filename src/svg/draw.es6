@@ -1,7 +1,7 @@
 import composer from './composer';
 import extend from '../utils/extend';
 
-class Draw {
+export default class Draw {
 
     constructor () {
         var self = this;
@@ -74,5 +74,3 @@ class Draw {
       return composer.make(node.element, node.attrs, {}, childContent.join(""));
     }
 }
-
-module.exports = Draw;

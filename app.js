@@ -136,12 +136,14 @@ while (amount--) {
     prepend: function (svgString, scale) {
       var layout = scale.layout;
       var lines = [svg.create('line').attr({
+            fill: '#000',
             x1: 0,
             x2: layout.width,
             y1: Math.floor(layout.height / 3),
             y2: Math.floor(layout.height / 3)
           }),
           svg.create('line').attr({
+            fill: '#000',
             x1: 0,
             x2: layout.width,
             y1: Math.floor(2 * layout.height / 3),
