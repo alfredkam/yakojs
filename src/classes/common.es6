@@ -130,15 +130,15 @@ export default class Common {
   // TODO:: Rename lifeCycleManager, incorrect term usage
   _lifeCycleManager (data, chart, describe) {
     var self = this;
-    var scale = self._defineBaseScaleProperties(data, chart);
-    scale.componentName = self.componentName;
+    var scale = this._defineBaseScaleProperties(data, chart);
+    scale.componentName = this.componentName;
     // check if there is any external steps needed to be done
-    if (self._call) {
-      self._call(scale);
+    if (this._call) {
+      this._call(scale);
     }
     // make the obj's shallow properties immutable
     // we can know if we want to skip the entire process to speed up the computation
-    var properties = (self.preRender ? self.preRender(Object.freeze(self._deepCopy(scale))) : 0);
+    var properties = (this.preRender ? this.preRender(Object.freeze(this._deepCopy(scale))) : 0);
 
     // properties we will except
     // - append
