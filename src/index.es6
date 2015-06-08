@@ -3,7 +3,7 @@
   MIT LICENSE
   Alfred Kam (@alfredkam)
 */
-
+import './utils/polyfill';
 import sparkLine from './components/spark';
 import pie from './components/pie';
 import donut from './components/donut';
