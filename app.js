@@ -134,6 +134,7 @@ while (amount--) {
     },
     points: dataSet7,
     prepend: function (svgString, scale) {
+
       var layout = scale.layout;
       var lines = [svg.create('line').attr({
             fill: '#000',

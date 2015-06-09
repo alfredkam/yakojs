@@ -119,7 +119,6 @@ export default class Common {
       }
     }
     self._getRatio(scale);
-    self.props.scale = scale;
     return scale;
   }
 
@@ -132,6 +131,7 @@ export default class Common {
     var self = this;
     var scale = this._defineBaseScaleProperties(data, chart);
     scale.componentName = this.componentName;
+    self.props.scale = scale;
     // check if there is any external steps needed to be done
     if (this._call) {
       this._call(scale);
