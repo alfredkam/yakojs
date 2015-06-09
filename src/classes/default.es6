@@ -80,9 +80,7 @@ export default class Base extends Common {
 
     // Add chart layout property into scale
     _addChartLayoutProps (scale) {
-      var height = scale.height;
-      var width = scale.width;
-      var { paddingTop, paddingLeft, paddingRight, paddingBottom, innerPaddingLeft, innerPaddingRight, innerPaddingTop, innerPaddingBottom } = scale;
+      var { height, width, paddingTop, paddingLeft, paddingRight, paddingBottom, innerPaddingLeft, innerPaddingRight, innerPaddingTop, innerPaddingBottom } = scale;
 
       scale.layout = {
         x: paddingLeft,
@@ -108,8 +106,9 @@ export default class Base extends Common {
       var appendTo = self._append;
       var append = '';
       var prepend = '';
-      var scale = self.props.opts;
+      var scale = self.props.scale;
       var opts = self.props.opts;
+
       var svg = self.make('svg',{
         width: scale.width,
         height: scale.height,
