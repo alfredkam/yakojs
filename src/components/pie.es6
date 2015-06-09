@@ -1,7 +1,9 @@
-var arcBase = require('../classes/arc');
-var pie = module.exports = arcBase.extend({
+import Arc from '../classes/arc';
+export default class Pie extends Arc {
 
-    componentName: 'pie',
+    get componentName() {
+        return 'pie';
+    }
 
     /**
      * [_describePath genereates the paths for each pie segment]
@@ -10,7 +12,7 @@ var pie = module.exports = arcBase.extend({
      * @param  {[json]}  chart          [user specified chart options]
      * @return {[string]}               [the html string for the pie]
      */
-    _describePath: function (radius, data, chart) {
+    _describePath (radius, data, chart) {
         if (!data) return '';
         var paths = [];
         var startAngle = 0;
@@ -42,7 +44,7 @@ var pie = module.exports = arcBase.extend({
             startAngle = endAngle;
         }
         return paths;
-    },
+    }
 
     /**
      * [_describeEmptyPie describes a full pie using paths]
@@ -55,5 +57,5 @@ var pie = module.exports = arcBase.extend({
       var y2 = y+r;
       var path  = 'M'+x+' '+y1+    'A'+R+' '+R+' 0 1 1 '+(x+0.001)+' '+y1; // Outer circle
       return path;
-    },
-});
+    }
+}

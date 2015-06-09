@@ -1,12 +1,14 @@
 // Object base
-import Base from '../classes/default';
+import Default from '../classes/default';
 import api from './bubble.api';
 
-module.exports = Base.extend({
+export default class BubbleScatter extends Default {
 
-    componentName: 'bubble.scatter',
+    get componentName() {
+        return 'bubble.scatter';
+    }
 
-    _startCycle: function () {
+    _startCycle () {
         var self = this;
         var chart = self.attributes.opts.chart;
         var data = self.attributes.data;
@@ -14,11 +16,15 @@ module.exports = Base.extend({
         return self._lifeCycleManager(data, chart, function (newScale) {
             return self._describeBubbleChart(data, newScale);
         });
-    },
+    }
 
     // Describes bubble scattered graph
     // Extends default ratio w/ auto scaling
-    _getRatio: api.getRatioByObject,
+    _getRatio (...args) {
+        return api.getRatioByObject(...args);
+    }
 
-    _describeBubbleChart: api.describeBubbleByObject
-});
+    _describeBubbleChart (...args) {
+        return api.describeBubbleByObject(...args);
+    }
+}

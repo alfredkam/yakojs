@@ -3,7 +3,7 @@ import composer from '../svg/composer';
 import randomColor from '../utils/randomColor';
 import error from '../utils/error';
 
-module.exports = {
+export default {
 
   // TODO::  Should refer to a function in path to build this
   // Describes the xAxis for bubble point graph
@@ -46,9 +46,14 @@ module.exports = {
 
         var r = (scale.maxRadius - minRadius) * (point[2]/max[2]);
         r = r ? r + minRadius : 0;
+
+        var xAxis = point[0] - minRange.x;
+        var yAxis = point[1] - minRange.y;
+        xAxis = xAxis < 0 ? 0 : xAxis;
+        yAxis = yAxis < 0 ? 0 : yAxis;
         paths.push(composer.make('circle', {
-            cx: (inverse.x ? (point[0] * widthRatio) + innerPaddingLeft + paddingLeft : width - ((point[0] - minRange.x) * widthRatio) - innerPaddingLeft - paddingLeft),
-            cy: (inverse.y ? paddingTop + innerPaddingTop + (point[1] * heightRatio) : height - ((point[1] - minRange.y) * heightRatio) - innerPaddingTop - paddingTop),
+            cx: (inverse.x ? width - (xAxis * widthRatio) - innerPaddingLeft - paddingLeft : (xAxis * widthRatio) + innerPaddingLeft + paddingLeft),
+            cy: (inverse.y ? paddingTop + innerPaddingTop + (yAxis * heightRatio) : height - (yAxis * heightRatio) - innerPaddingTop - paddingTop),
             r: r,
             fill: props.fill || (defaultFill || randomColor())
         }, refs));

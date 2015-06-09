@@ -1,10 +1,12 @@
-var Base = require('../classes/default');
+import Default from '../classes/default';
 
-var bar = module.exports = Base.extend({
+export default class Bar extends Default {
 
-    componentName: 'bar',
+    get componentName() {
+        return 'bar';
+    }
 
-    _startCycle: function () {
+    _startCycle () {
         var data = this.attributes.data;
         var self = this;
         var chart = this.attributes.opts.chart;
@@ -13,10 +15,10 @@ var bar = module.exports = Base.extend({
         return self._lifeCycleManager(data, chart, function (newScale) {
             return self._describeBar(data, newScale);
         });
-    },
+    }
 
     // Describes the svg that builds out the bar
-    _describeBar: function (data, scale) {
+    _describeBar (data, scale) {
         if (!data.length) return '';
         // TODO:: need to account paddings for labels
         // Wrap in array for consistency
@@ -63,5 +65,5 @@ var bar = module.exports = Base.extend({
             }
         }
         return paths;
-    },
-});
+    }
+}

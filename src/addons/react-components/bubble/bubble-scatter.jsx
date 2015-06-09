@@ -19,11 +19,13 @@ var Bubble = React.createClass({
       var bubblePoint = require('../../../index').bubble.scatter;
       var attr = self.props.attr || {};
       var svg = bubblePoint({
+        mixin: {
           _call: function (scale) {
             scale.hasEvents = true;
             scale.parentType = 'bubble';
             self.props.events.setProps(scale, this.attributes.data);
           }
+        }
       }).attr(attr);
       return React.createElement("span", {
         dangerouslySetInnerHTML: {

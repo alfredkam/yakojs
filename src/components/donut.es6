@@ -1,7 +1,10 @@
-var arcBase = require('../classes/arc');
-var pie = module.exports = arcBase.extend({
+import Arc from '../classes/arc';
 
-    componentName: 'donut',
+export default class Donut extends Arc {
+
+    get componentName() {
+        return 'donut';
+    }
 
     /**
      * [_describePath genereates the paths for each pie segment]
@@ -10,7 +13,7 @@ var pie = module.exports = arcBase.extend({
      * @param  {[json]} chart     [user specified chart options]
      * @return {[string]}           [the html string for the pie]
      */
-    _describePath: function (radius, data, chart) {
+    _describePath (radius, data, chart) {
         if (!data) return '';
         var paths = [];
         var outerRadius = chart.outerRadius || radius;
@@ -45,7 +48,7 @@ var pie = module.exports = arcBase.extend({
         }
 
         return paths;
-    },
+    }
 
     /**
      * [_describeDonutRing describes donut ring path]
@@ -60,7 +63,7 @@ var pie = module.exports = arcBase.extend({
       var path  = 'M'+x+' '+y1+    'A'+R+' '+R+' 0 1 1 '+(x+0.001)+' '+y1; // Outer circle
               path += 'M'+x+' '+y2+    'A'+r+' '+r+' 0 1 0 '+(x-0.001)+' '+y2; // Inner Circle
       return path;
-    },
+    }
 
     /**
      * [_describeDonut describes donut path]
@@ -97,4 +100,4 @@ var pie = module.exports = arcBase.extend({
             'Z'
         ].join(" ");
     }
-});
+}

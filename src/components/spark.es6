@@ -1,28 +1,29 @@
-var Base = require('../classes/default');
-var Errors = require('../utils/error');
-var svgPath = require('../svg/path');
-var api = require('./line.api');
+import Default from '../classes/default';
+import Errors from '../utils/error';
+import svgPath from '../svg/path';
+import api from './line.api';
 
-var spark = module.exports = Base.extend({
+export default class Spark extends Default {
 
-  componentName: 'spark',
+  get componentName () {
+      return 'spark';
+  }
 
   /**
    * The parent generator that manages the svg generation
    * @return {object} global function object
    */
-  _startCycle: function () {
-    var self = this;
-    var data = self.attributes.data;
-    var opts = self.attributes.opts;
+  _startCycle () {
+    var data = this.attributes.data;
+    var opts = this.attributes.opts;
     var chart = opts.chart;
     var xAxis = chart.xAxis || opts.xAxis;
     var yAxis = chart.yAxis || opts.yAxis;
-    var append = self._append;
+    var append = this._append;
     var svg;
     var paths = [];
 
-    if (!self._isArray(data)) {
+    if (!this._isArray(data)) {
       data = [data];
     }
 
@@ -34,23 +35,24 @@ var spark = module.exports = Base.extend({
       chart.yAxis = yAxis;
     }
 
-    return self._lifeCycleManager(data, chart, function (scale) {
+
+    return this._lifeCycleManager(data, chart, function (scale) {
         for (var x = 0; x < scale.rows; x++) {
             if (yAxis && yAxis.multi) {
               scale.heightRatio = scale.pHeight / scale.max[x];
             }
-            var g = self.make('g');
+            var g = this.make('g');
             // pass in a ref for event look up, here `ref` is x
             paths.push(
-              append(g, self._describePath(data[x], scale.paddingLeft, scale.paddingTop, scale, x))
+              append(g, this._describePath(data[x], scale.paddingLeft, scale.paddingTop, scale, x))
             );
         }
         return paths;
-    });
-  },
+    }.bind(this));
+  }
 
   // Extends default getRatio in lib/base/common.js
-  _getRatio: function (scale) {
+  _getRatio (scale) {
     var self = this;
     var data = self.attributes.data;
 
@@ -83,13 +85,15 @@ var spark = module.exports = Base.extend({
     scale.pWidth = scale.width - scale.paddingLeft - scale.paddingRight - scale.innerPadding;
     scale.heightRatio = scale.pHeight / scale.max;
     scale.tickSize = self._sigFigs((scale.pWidth / (scale.len - 1)),8);
-  },
+  }
 
   // Describes scattered graph
-  _describeScatteredGraph: api.describeScatter,
+  _describeScatteredGraph () {
+      return api.describeScatter.apply(this, arguments);
+  }
 
   // Svg path builder
-  _describePath : function (data, paddingLeft, paddingTop, scale, ref) {
+  _describePath (data, paddingLeft, paddingTop, scale, ref) {
     ref = ref || 0;
     var self = this;
     var pathToken = svgPath.describeAttributeD(data.data, paddingLeft, paddingTop, scale, ref);
@@ -128,4 +132,4 @@ var spark = module.exports = Base.extend({
 
     return paths;
   }
-});
+}

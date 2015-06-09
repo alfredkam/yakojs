@@ -1,10 +1,10 @@
-var Base = require('./default');
-var arc = require('../svg/arc');
+import Default from './default';
+import arc from '../svg/arc';
 
-module.exports = Base.extend({
+export default class Arc extends Default {
 
     // Parent generator that manages the svg
-    _startCycle: function (){
+    _startCycle (){
         var self = this;
         var chart = self.attributes.opts.chart;
         var data = self.attributes.data;
@@ -12,10 +12,10 @@ module.exports = Base.extend({
         return self._lifeCycleManager(data, chart, function (scale) {
             return self._describePath(scale.outerRadius, scale.relativeDataSet, scale);
         });
-    },
+    }
 
     // Extends _defineBaseScaleProperties in lib/base/common.js
-    _defineBaseScaleProperties: function (data, chart) {
+    _defineBaseScaleProperties (data, chart) {
         var self = this;
         var total = self._sumOfData(data);
         var scale = {
@@ -28,19 +28,25 @@ module.exports = Base.extend({
 
         self._extend(scale, chart);
         return scale;
-    },
+    }
 
-    _polarToCartesian: arc.polarToCartesian,
+    _polarToCartesian () {
+        return arc.polarToCartesian.apply(this, arguments);
+    }
 
-    _describeArc: arc.describeArc,
+    _describeArc () {
+        return arc.describeArc.apply(this, arguments);
+    }
 
-    _describePie: arc.describePie,
+    _describePie () {
+        return arc.describePie.apply(this, arguments);
+    }
 
     /**
      * [_describePath super class]
      * @return {[type]} [empty string]
      */
-    _describePath: function () {
+    _describePath () {
         return '';
     }
-});
+}

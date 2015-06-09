@@ -51,15 +51,23 @@
   });
 */
 
-var api = require('./line.api');
-var Base = require('../classes/default');
+import api from './line.api';
+import Default from '../classes/default';
 
-module.exports = Base.extend({
+export default class Line extends Default {
 
-  componentName: 'line',
+  constructor (...args) {
+      super(...args);
+      this.componentName = 'line';
+      return this;
+  }
+
+  get componentName() {
+      return 'line';
+  }
 
   // Find min max in time series data
-  _scale: function (content, opts) {
+  _scale (content, opts) {
     content = content[0];
     opts = opts || 0;
     var chart = opts.chart || opts;
@@ -149,9 +157,9 @@ module.exports = Base.extend({
         heightRatio: heightRatio,
         color: colors
     };
-  },
+  }
 
-  _startCycle: function () {
+  _startCycle () {
     var self = this;
     var data = self.attributes.data;
     var opts = self.attributes.opts;
@@ -165,10 +173,10 @@ module.exports = Base.extend({
     return self._lifeCycleManager(data, chart, function (scale) {
         return self._describeSeries(data[0], scale.paddingLeft, scale.paddingTop, scale);
     });
-  },
+  }
 
   // Extends default getRatio in lib/base/common.js
-  _getRatio: function (scale) {
+  _getRatio (scale) {
     var self = this;
     scale.type = 'timeSeries';
 
@@ -183,19 +191,19 @@ module.exports = Base.extend({
     // Need to calculate a tickSize relative to time
     // Javascript MIN_VALUE is 5e-324, so should be fine
     scale.tickSize = self._sigFigs((scale.pWidth / (max - min)),8);
-  },
+  }
 
   // Describes the path to close the open path
-  _describeCloseAttributeD: function (point, height, heightRatio, paddingLeft, paddingTop) {
+  _describeCloseAttributeD (point, height, heightRatio, paddingLeft, paddingTop) {
     return [
             'V',(height - paddingTop),
             'H', paddingLeft,
             'L', paddingLeft,
             (height - (point * heightRatio) - paddingTop)
           ].join(" ");
-  },
+  }
 
-  _describePathAndCircle: function (dataObj, labels, paddingLeft, paddingTop, scale, isScattered, isLine, isFill) {
+  _describePathAndCircle (dataObj, labels, paddingLeft, paddingTop, scale, isScattered, isLine, isFill) {
     var height = scale.height;
     var heightRatio = {};
     var tickSize = scale.tickSize;
@@ -283,12 +291,12 @@ module.exports = Base.extend({
       }
     }
     return paths;
-  },
+  }
 
   // Svg path builder
-  _describeSeries: function (data, paddingLeft, paddingTop, scale) {
+  _describeSeries (data, paddingLeft, paddingTop, scale) {
     var self = this;
     var paths = self._describePathAndCircle(data.data, data.labels, paddingLeft, paddingTop, scale, scale.scattered, scale.line, scale.fill);
     return paths;
   }
-});
+}
