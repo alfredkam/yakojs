@@ -55,7 +55,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "1891fc927ce98938ca43";
+/******/ 	var hotCurrentHash = "5166feadec79203adb13";
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = [];
 /******/ 	
@@ -661,7 +661,7 @@
 
 	  name: 'yakojs',
 
-	  VERSION: '0.5.1',
+	  VERSION: '0.5.2',
 
 	  spark: function spark(opts) {
 	    return initialize(_componentsSpark2['default'], opts);
@@ -2594,8 +2594,9 @@
 	      var appendTo = self._append;
 	      var append = '';
 	      var prepend = '';
-	      var scale = self.props.opts;
+	      var scale = self.props.scale;
 	      var opts = self.props.opts;
+
 	      var svg = self.make('svg', {
 	        width: scale.width,
 	        height: scale.height,
@@ -3194,9 +3195,14 @@
 
 	      var r = (scale.maxRadius - minRadius) * (point[2] / max[2]);
 	      r = r ? r + minRadius : 0;
+
+	      var xAxis = point[0] - minRange.x;
+	      var yAxis = point[1] - minRange.y;
+	      xAxis = xAxis < 0 ? 0 : xAxis;
+	      yAxis = yAxis < 0 ? 0 : yAxis;
 	      paths.push(_svgComposer2['default'].make('circle', {
-	        cx: inverse.x ? point[0] * widthRatio + innerPaddingLeft + paddingLeft : width - (point[0] - minRange.x) * widthRatio - innerPaddingLeft - paddingLeft,
-	        cy: inverse.y ? paddingTop + innerPaddingTop + point[1] * heightRatio : height - (point[1] - minRange.y) * heightRatio - innerPaddingTop - paddingTop,
+	        cx: inverse.x ? width - xAxis * widthRatio - innerPaddingLeft - paddingLeft : xAxis * widthRatio + innerPaddingLeft + paddingLeft,
+	        cy: inverse.y ? paddingTop + innerPaddingTop + yAxis * heightRatio : height - yAxis * heightRatio - innerPaddingTop - paddingTop,
 	        r: r,
 	        fill: props.fill || (defaultFill || (0, _utilsRandomColor2['default'])())
 	      }, refs));
@@ -3514,7 +3520,6 @@
 	                }
 	            }
 	            self._getRatio(scale);
-	            self.props.scale = scale;
 	            return scale;
 	        }
 	    }, {
@@ -3529,6 +3534,7 @@
 	            var self = this;
 	            var scale = this._defineBaseScaleProperties(data, chart);
 	            scale.componentName = this.componentName;
+	            self.props.scale = scale;
 	            // check if there is any external steps needed to be done
 	            if (this._call) {
 	                this._call(scale);
