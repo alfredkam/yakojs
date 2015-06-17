@@ -49,7 +49,7 @@ var pie = yako.pie;                        // Pie chart
 ```javascript
 var set = [
   {
-    points: [214,3423],             // An array with numbers
+    data: [214,3423],             // An array with numbers
 
     /* Optional parameters */
     strokeColor: "rgb(200,94,54)",// Controls the stroke color. 
@@ -66,7 +66,7 @@ var set = [
     }
   },
   {
-    points: [13414,243243],         // An array with numbers
+    data: [13414,243243],         // An array with numbers
 
     /* Optional parameters */
     strokeColor: "#333",          // Controls the stroke color. if its not provided, it will randomly generate a color
