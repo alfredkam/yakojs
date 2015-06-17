@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/alfredkam/yakojs.png?label=ready&title=Ready)](https://waffle.io/alfredkam/yakojs)
 ## Yako
 [![npm version](https://badge.fury.io/js/yako.svg)](http://badge.fury.io/js/yako)
 [![Downloads](https://img.shields.io/npm/dm/yako.svg)](https://npmjs.org/package/yako)
