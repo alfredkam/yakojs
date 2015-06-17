@@ -1,7 +1,6 @@
-[![Stories in Ready](https://badge.waffle.io/alfredkam/yakojs.png?label=ready&title=Ready)](https://waffle.io/alfredkam/yakojs)
 ## Yako
 [![npm version](https://badge.fury.io/js/yako.svg)](http://badge.fury.io/js/yako)
-[![Downloads](https://img.shields.io/npm/dm/yako.svg)](https://npmjs.org/package/yako)
+[![Stories in Ready](https://badge.waffle.io/alfredkam/yakojs.png?label=ready&title=Ready)](https://waffle.io/alfredkam/yakojs)
 [![Dependencies](https://david-dm.org/alfredkam/yakojs.svg)](https://david-dm.org/alfredkam/yakojs)
 [![Build Status](https://travis-ci.org/alfredkam/yakojs.svg?branch=master)](https://travis-ci.org/alfredkam/yakojs)
 [![Coverage Status](https://coveralls.io/repos/alfredkam/yakojs/badge.svg?branch=master)](https://coveralls.io/r/alfredkam/yakojs?branch=master)

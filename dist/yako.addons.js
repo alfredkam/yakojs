@@ -55,7 +55,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "5166feadec79203adb13";
+/******/ 	var hotCurrentHash = "947a99fc7b7804760f22";
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = [];
 /******/ 	
@@ -2462,7 +2462,7 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-	var _common = __webpack_require__(29);
+	var _common = __webpack_require__(30);
 
 	var _common2 = _interopRequireDefault(_common);
 
@@ -2640,7 +2640,7 @@
 
 	// TODO:: shrink the argument
 
-	var api = __webpack_require__(30);
+	var api = __webpack_require__(29);
 
 	var path = module.exports = {
 	    /**
@@ -3007,7 +3007,7 @@
 
 	var _composer2 = _interopRequireDefault(_composer);
 
-	var _utilsExtend = __webpack_require__(31);
+	var _utilsExtend = __webpack_require__(32);
 
 	var _utilsExtend2 = _interopRequireDefault(_utilsExtend);
 
@@ -3133,7 +3133,7 @@
 
 	var _svgComposer2 = _interopRequireDefault(_svgComposer);
 
-	var _utilsRandomColor = __webpack_require__(32);
+	var _utilsRandomColor = __webpack_require__(31);
 
 	var _utilsRandomColor2 = _interopRequireDefault(_utilsRandomColor);
 
@@ -3350,278 +3350,6 @@
 
 /***/ },
 /* 29 */
-/***/ function(module, exports, __webpack_require__) {
-
-	Object.defineProperty(exports, '__esModule', {
-	    value: true
-	});
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-	__webpack_require__(33);
-
-	var _utilsRandomColor = __webpack_require__(32);
-
-	var _utilsRandomColor2 = _interopRequireDefault(_utilsRandomColor);
-
-	var _utilsError = __webpack_require__(19);
-
-	var _utilsError2 = _interopRequireDefault(_utilsError);
-
-	var _componentsApi = __webpack_require__(30);
-
-	var _componentsApi2 = _interopRequireDefault(_componentsApi);
-
-	var _svgComposer = __webpack_require__(26);
-
-	var _svgComposer2 = _interopRequireDefault(_svgComposer);
-
-	var isArray = function isArray(obj) {
-	    return obj instanceof Array;
-	};
-
-	var inverseList = {
-	    'x': 'x',
-	    'y': 'y'
-	};
-	/**
-	 * deep extend object or json properties
-	 * @param  {object} object to extend
-	 * @param  {object} object
-	 * @return {object} global function object
-	 */
-
-	var Common = (function () {
-
-	    // default
-
-	    function Common() {
-	        _classCallCheck(this, Common);
-
-	        // data properties
-	        this.props = {};
-	        return this;
-	    }
-
-	    _createClass(Common, [{
-	        key: '_sumOfData',
-	        value: function _sumOfData() {
-	            return _componentsApi2['default'].sumOfData.apply(this, arguments);
-	        }
-	    }, {
-	        key: '_dataSetRelativeToTotal',
-
-	        // accepts a N * 1 array
-	        // finds total sum then creates a relative measure base on total sum
-	        value: function _dataSetRelativeToTotal() {
-	            return _componentsApi2['default'].dataSetRelativeToTotal.apply(this, arguments);
-	        }
-	    }, {
-	        key: '_randomColor',
-
-	        // random color generator
-	        value: function _randomColor() {
-	            return _utilsRandomColor2['default'].apply(this, arguments);
-	        }
-	    }, {
-	        key: '_append',
-
-	        // appends the elements
-	        // accepts multiple child
-	        value: function _append() {
-	            return _svgComposer2['default'].append.apply(this, arguments);
-	        }
-	    }, {
-	        key: 'make',
-
-	        // alternate to one level deep
-	        value: function make() {
-	            return _svgComposer2['default'].make.apply(this, arguments);
-	        }
-	    }, {
-	        key: '_deepCopy',
-
-	        // Deep copies an object
-	        // TODO:: improve this
-	        value: function _deepCopy(objToCopy) {
-	            return JSON.parse(JSON.stringify(objToCopy));
-	        }
-	    }, {
-	        key: 'postRender',
-
-	        /**
-	         * A super class calls right before return the svg content to the user
-	         */
-	        value: function postRender(svgContent) {
-	            return svgContent;
-	        }
-	    }, {
-	        key: '_isArray',
-
-	        /**
-	         * [_isArray check if variable is an array]
-	         * @param  any type
-	         * @return {Boolean}   true if its an array
-	         */
-	        value: function _isArray() {
-	            return isArray.apply(this, arguments);
-	        }
-	    }, {
-	        key: '_getRatio',
-
-	        // Default ratio
-	        value: function _getRatio(scale) {
-	            scale.heightRatio = scale.height - (scale.paddingTop + scale.paddingBottom) / scale.max;
-	        }
-	    }, {
-	        key: '_getInvertProps',
-
-	        // Gets invert chart props defined by user
-	        value: function _getInvertProps(scale) {
-	            // Acceptable inverse flags to inverse the data set
-	            var inverse = {};
-	            if (scale.invert) {
-	                for (var x in scale.invert) {
-	                    if (inverseList[scale.invert[x]]) {
-	                        inverse[inverseList[scale.invert[x]]] = true;
-	                    }
-	                }
-	            }
-	            scale.hasInverse = inverse;
-	        }
-	    }, {
-	        key: '_defineBaseScaleProperties',
-
-	        /**
-	         * [_defineBaseScaleProperties defines the common scale properties]
-	         * @param  {[obj]} data  [raw data set from user]
-	         * @param  {[obj]} chart [chart properties passed by the user]
-	         * @return {[obj]}       [return an obj that describes the scale base on the data & chart properties]
-	         */
-	        value: function _defineBaseScaleProperties(data, chart) {
-	            var self = this;
-	            var opts = this.attributes.opts;
-	            // var chart = opts.chart;
-	            var xAxis = chart.xAxis || opts.xAxis;
-	            var yAxis = chart.yAxis || opts.yAxis;
-	            var scale = self._scale(data, chart);
-	            self._extend(scale, chart);
-	            scale._data = data;
-	            self._getInvertProps(scale);
-
-	            if (chart.type != 'bubble-point' && (yAxis || xAxis)) {
-	                self._getExternalProps(scale, yAxis, xAxis);
-	                if (!self.describeYAxis) {
-	                    _utilsError2['default'].label();
-	                }
-	            }
-	            self._getRatio(scale);
-	            return scale;
-	        }
-	    }, {
-	        key: '_lifeCycleManager',
-
-	        /**
-	         * base on the feedback and mange the render of the life cycle
-	         * it passes a immutable obj to preRender and audits the user feedback
-	         */
-	        // TODO:: Rename lifeCycleManager, incorrect term usage
-	        value: function _lifeCycleManager(data, chart, describe) {
-	            var self = this;
-	            var scale = this._defineBaseScaleProperties(data, chart);
-	            scale.componentName = this.componentName;
-	            self.props.scale = scale;
-	            // check if there is any external steps needed to be done
-	            if (this._call) {
-	                this._call(scale);
-	            }
-	            // make the obj's shallow properties immutable
-	            // we can know if we want to skip the entire process to speed up the computation
-	            var properties = this.preRender ? this.preRender(Object.freeze(this._deepCopy(scale))) : 0;
-
-	            // properties we will except
-	            // - append
-	            // - prepend
-	            var paths = properties.prepend ? properties.prepend : [];
-	            paths = paths.concat(describe(scale));
-	            paths = paths.concat(properties.append ? properties.append : []);
-	            return paths;
-	            // return summary
-	        }
-	    }, {
-	        key: '_makePairs',
-
-	        // only supports 1 level deep
-	        value: function _makePairs() {
-	            return _svgComposer2['default'].makePairs.apply(this, arguments);
-	        }
-	    }, {
-	        key: '_extend',
-
-	        // deep extend
-	        value: function _extend(attr, json) {
-	            var self = this;
-	            if (!json || !attr) return;
-
-	            var k = Object.keys(json),
-	                len = k.length;
-	            while (len--) {
-	                if (typeof json[k[len]] !== 'object' || isArray(json[k[len]])) {
-	                    attr[k[len]] = json[k[len]];
-	                } else {
-	                    //it has child objects, copy them too.
-	                    if (!attr[k[len]]) {
-	                        attr[k[len]] = {};
-	                    }
-	                    self._extend(attr[k[len]], json[k[len]]);
-	                }
-	            }
-	            return this;
-	        }
-	    }, {
-	        key: 'isFn',
-	        value: function isFn(object) {
-	            return !!(object && object.constructor && object.call && object.apply);
-	        }
-	    }, {
-	        key: '_makeToken',
-	        value: function _makeToken() {
-	            return Math.random().toString(36).substr(2);
-	        }
-	    }, {
-	        key: '_sigFigs',
-
-	        //sig fig rounding
-	        value: function _sigFigs() {
-	            return _componentsApi2['default'].sigFigs.apply(this, arguments);
-	        }
-	    }, {
-	        key: '_getSplits',
-	        value: function _getSplits() {
-	            return _componentsApi2['default'].getSplits.apply(this, arguments);
-	        }
-	    }, {
-	        key: '_scale',
-
-	        // find min max between multiple rows of data sets
-	        // also handles the scale needed to work with multi axis
-	        value: function _scale() {
-	            return _componentsApi2['default'].scale.apply(this, arguments);
-	        }
-	    }]);
-
-	    return Common;
-	})();
-
-	exports['default'] = Common;
-	module.exports = exports['default'];
-
-/***/ },
-/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var asc = function asc(a, b) {
@@ -3891,7 +3619,293 @@
 	};
 
 /***/ },
+/* 30 */
+/***/ function(module, exports, __webpack_require__) {
+
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	__webpack_require__(33);
+
+	var _utilsRandomColor = __webpack_require__(31);
+
+	var _utilsRandomColor2 = _interopRequireDefault(_utilsRandomColor);
+
+	var _utilsError = __webpack_require__(19);
+
+	var _utilsError2 = _interopRequireDefault(_utilsError);
+
+	var _componentsApi = __webpack_require__(29);
+
+	var _componentsApi2 = _interopRequireDefault(_componentsApi);
+
+	var _svgComposer = __webpack_require__(26);
+
+	var _svgComposer2 = _interopRequireDefault(_svgComposer);
+
+	var isArray = function isArray(obj) {
+	    return obj instanceof Array;
+	};
+
+	var inverseList = {
+	    'x': 'x',
+	    'y': 'y'
+	};
+	/**
+	 * deep extend object or json properties
+	 * @param  {object} object to extend
+	 * @param  {object} object
+	 * @return {object} global function object
+	 */
+
+	var Common = (function () {
+
+	    // default
+
+	    function Common() {
+	        _classCallCheck(this, Common);
+
+	        // data properties
+	        this.props = {};
+	        return this;
+	    }
+
+	    _createClass(Common, [{
+	        key: '_sumOfData',
+	        value: function _sumOfData() {
+	            return _componentsApi2['default'].sumOfData.apply(this, arguments);
+	        }
+	    }, {
+	        key: '_dataSetRelativeToTotal',
+
+	        // accepts a N * 1 array
+	        // finds total sum then creates a relative measure base on total sum
+	        value: function _dataSetRelativeToTotal() {
+	            return _componentsApi2['default'].dataSetRelativeToTotal.apply(this, arguments);
+	        }
+	    }, {
+	        key: '_randomColor',
+
+	        // random color generator
+	        value: function _randomColor() {
+	            return _utilsRandomColor2['default'].apply(this, arguments);
+	        }
+	    }, {
+	        key: '_append',
+
+	        // appends the elements
+	        // accepts multiple child
+	        value: function _append() {
+	            return _svgComposer2['default'].append.apply(this, arguments);
+	        }
+	    }, {
+	        key: 'make',
+
+	        // alternate to one level deep
+	        value: function make() {
+	            return _svgComposer2['default'].make.apply(this, arguments);
+	        }
+	    }, {
+	        key: '_deepCopy',
+
+	        // Deep copies an object
+	        // TODO:: improve this
+	        value: function _deepCopy(objToCopy) {
+	            return JSON.parse(JSON.stringify(objToCopy));
+	        }
+	    }, {
+	        key: 'postRender',
+
+	        /**
+	         * A super class calls right before return the svg content to the user
+	         */
+	        value: function postRender(svgContent) {
+	            return svgContent;
+	        }
+	    }, {
+	        key: '_isArray',
+
+	        /**
+	         * [_isArray check if variable is an array]
+	         * @param  any type
+	         * @return {Boolean}   true if its an array
+	         */
+	        value: function _isArray() {
+	            return isArray.apply(this, arguments);
+	        }
+	    }, {
+	        key: '_getRatio',
+
+	        // Default ratio
+	        value: function _getRatio(scale) {
+	            scale.heightRatio = scale.height - (scale.paddingTop + scale.paddingBottom) / scale.max;
+	        }
+	    }, {
+	        key: '_getInvertProps',
+
+	        // Gets invert chart props defined by user
+	        value: function _getInvertProps(scale) {
+	            // Acceptable inverse flags to inverse the data set
+	            var inverse = {};
+	            if (scale.invert) {
+	                for (var x in scale.invert) {
+	                    if (inverseList[scale.invert[x]]) {
+	                        inverse[inverseList[scale.invert[x]]] = true;
+	                    }
+	                }
+	            }
+	            scale.hasInverse = inverse;
+	        }
+	    }, {
+	        key: '_defineBaseScaleProperties',
+
+	        /**
+	         * [_defineBaseScaleProperties defines the common scale properties]
+	         * @param  {[obj]} data  [raw data set from user]
+	         * @param  {[obj]} chart [chart properties passed by the user]
+	         * @return {[obj]}       [return an obj that describes the scale base on the data & chart properties]
+	         */
+	        value: function _defineBaseScaleProperties(data, chart) {
+	            var self = this;
+	            var opts = this.attributes.opts;
+	            // var chart = opts.chart;
+	            var xAxis = chart.xAxis || opts.xAxis;
+	            var yAxis = chart.yAxis || opts.yAxis;
+	            var scale = self._scale(data, chart);
+	            self._extend(scale, chart);
+	            scale._data = data;
+	            self._getInvertProps(scale);
+
+	            if (chart.type != 'bubble-point' && (yAxis || xAxis)) {
+	                self._getExternalProps(scale, yAxis, xAxis);
+	                if (!self.describeYAxis) {
+	                    _utilsError2['default'].label();
+	                }
+	            }
+	            self._getRatio(scale);
+	            return scale;
+	        }
+	    }, {
+	        key: '_lifeCycleManager',
+
+	        /**
+	         * base on the feedback and mange the render of the life cycle
+	         * it passes a immutable obj to preRender and audits the user feedback
+	         */
+	        // TODO:: Rename lifeCycleManager, incorrect term usage
+	        value: function _lifeCycleManager(data, chart, describe) {
+	            var self = this;
+	            var scale = this._defineBaseScaleProperties(data, chart);
+	            scale.componentName = this.componentName;
+	            self.props.scale = scale;
+	            // check if there is any external steps needed to be done
+	            if (this._call) {
+	                this._call(scale);
+	            }
+	            // make the obj's shallow properties immutable
+	            // we can know if we want to skip the entire process to speed up the computation
+	            var properties = this.preRender ? this.preRender(Object.freeze(this._deepCopy(scale))) : 0;
+
+	            // properties we will except
+	            // - append
+	            // - prepend
+	            var paths = properties.prepend ? properties.prepend : [];
+	            paths = paths.concat(describe(scale));
+	            paths = paths.concat(properties.append ? properties.append : []);
+	            return paths;
+	            // return summary
+	        }
+	    }, {
+	        key: '_makePairs',
+
+	        // only supports 1 level deep
+	        value: function _makePairs() {
+	            return _svgComposer2['default'].makePairs.apply(this, arguments);
+	        }
+	    }, {
+	        key: '_extend',
+
+	        // deep extend
+	        value: function _extend(attr, json) {
+	            var self = this;
+	            if (!json || !attr) return;
+
+	            var k = Object.keys(json),
+	                len = k.length;
+	            while (len--) {
+	                if (typeof json[k[len]] !== 'object' || isArray(json[k[len]])) {
+	                    attr[k[len]] = json[k[len]];
+	                } else {
+	                    //it has child objects, copy them too.
+	                    if (!attr[k[len]]) {
+	                        attr[k[len]] = {};
+	                    }
+	                    self._extend(attr[k[len]], json[k[len]]);
+	                }
+	            }
+	            return this;
+	        }
+	    }, {
+	        key: 'isFn',
+	        value: function isFn(object) {
+	            return !!(object && object.constructor && object.call && object.apply);
+	        }
+	    }, {
+	        key: '_makeToken',
+	        value: function _makeToken() {
+	            return Math.random().toString(36).substr(2);
+	        }
+	    }, {
+	        key: '_sigFigs',
+
+	        //sig fig rounding
+	        value: function _sigFigs() {
+	            return _componentsApi2['default'].sigFigs.apply(this, arguments);
+	        }
+	    }, {
+	        key: '_getSplits',
+	        value: function _getSplits() {
+	            return _componentsApi2['default'].getSplits.apply(this, arguments);
+	        }
+	    }, {
+	        key: '_scale',
+
+	        // find min max between multiple rows of data sets
+	        // also handles the scale needed to work with multi axis
+	        value: function _scale() {
+	            return _componentsApi2['default'].scale.apply(this, arguments);
+	        }
+	    }]);
+
+	    return Common;
+	})();
+
+	exports['default'] = Common;
+	module.exports = exports['default'];
+
+/***/ },
 /* 31 */
+/***/ function(module, exports, __webpack_require__) {
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	exports['default'] = function () {
+	  return '#' + Math.floor(Math.random() * 16777215).toString(16);
+	};
+
+	module.exports = exports['default'];
+
+/***/ },
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -3912,20 +3926,6 @@
 	  }
 	  return self;
 	};
-
-/***/ },
-/* 32 */
-/***/ function(module, exports, __webpack_require__) {
-
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-
-	exports['default'] = function () {
-	  return '#' + Math.floor(Math.random() * 16777215).toString(16);
-	};
-
-	module.exports = exports['default'];
 
 /***/ },
 /* 33 */
