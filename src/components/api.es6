@@ -28,6 +28,7 @@ var api = module.exports = {
   // calculates the number of yAxis sections base on the maxium value
   getSplits: function (value) {
       var set = {};
+      var splits = 0;
       value = Math.ceil(value, 0); // make sure its a whole number
       if (value === 0) return { max : 2, splits: 2};
 
@@ -92,6 +93,7 @@ var api = module.exports = {
     var ySecs = {};
     var min = [];
     var max = [];
+    var ans = {};
 
     for (var i = 0; i < rows; i++) {
       // check if scale is a valid entry
@@ -101,7 +103,7 @@ var api = module.exports = {
           max[i] = ans.max;
           ySecs[i] = ans.splits;
       } else {
-          temp = data[i].slice(0).sort(asc);
+          var temp = data[i].slice(0).sort(asc);
           min[i] = temp[0];
           ans = api.getSplits(temp[len - 1]);
           max[i] = ans.max;
@@ -133,7 +135,7 @@ var api = module.exports = {
     }
 
     if (yAxis) {
-      ans = api.getSplits(max);
+      var ans = api.getSplits(max);
       max = ans.max;
       ySecs = ans.splits;
     }
@@ -187,15 +189,15 @@ var api = module.exports = {
         min = data[i].scale[0];
         max = data[i].scale[1];
       } else {
-        temp = data[i].slice(0).sort(asc);
+        var temp = data[i].slice(0).sort(asc);
         min = min > temp[0] ? temp[0] : min;
         max = max < temp[len - 1] ? temp[len - 1] : max;
-        // delete temp;  
+        // delete temp;
       }
     }
 
     if (yAxis) {
-      ans = api.getSplits(max);
+      var ans = api.getSplits(max);
       max = ans.max;
       ySecs = ans.splits;
     }
