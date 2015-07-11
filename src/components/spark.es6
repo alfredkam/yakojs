@@ -2,6 +2,7 @@ import Default from '../classes/default';
 import Errors from '../utils/error';
 import svgPath from '../svg/path';
 import api from './line.api';
+import * as _ from '../utils/utility';
 
 export default class Spark extends Default {
 
@@ -23,7 +24,7 @@ export default class Spark extends Default {
     var svg;
     var paths = [];
 
-    if (!this._isArray(data)) {
+    if (!_.isArray(data)) {
       data = [data];
     }
 
@@ -35,6 +36,11 @@ export default class Spark extends Default {
       chart.yAxis = yAxis;
     }
 
+    if (chart.scale) {
+        data.forEach(set => {
+            set.scale = set.scale || chart.scale;
+        });
+    }
 
     return this._lifeCycleManager(data, chart, function (scale) {
         for (var x = 0; x < scale.rows; x++) {
@@ -43,6 +49,7 @@ export default class Spark extends Default {
             }
             var g = this.make('g');
             // pass in a ref for event look up, here `ref` is x
+
             paths.push(
               append(g, this._describePath(data[x], scale.paddingLeft, scale.paddingTop, scale, x))
             );

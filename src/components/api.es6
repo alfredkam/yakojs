@@ -1,4 +1,6 @@
 var asc = function (a,b) { return a - b; };
+// import as _ , to have the option to use lodash in the future
+import * as _ from '../utils/utility';
 
 var api = module.exports = {
 
@@ -92,12 +94,20 @@ var api = module.exports = {
     var max = [];
 
     for (var i = 0; i < rows; i++) {
-      temp = data[i].slice(0).sort(asc);
-      min[i] = temp[0];
-      ans = api.getSplits(temp[len - 1]);
-      max[i] = ans.max;
-      ySecs[i] = ans.splits;
-      // delete temp;
+      // check if scale is a valid entry
+      if (data[i].scale && _.isArray(data[i].scale) && data[i].scale.length == 2) {
+          min[i] = data[i].scale[0];
+          ans = api.getSplits(data[i].max);
+          max[i] = ans.max;
+          ySecs[i] = ans.splits;
+      } else {
+          temp = data[i].slice(0).sort(asc);
+          min[i] = temp[0];
+          ans = api.getSplits(temp[len - 1]);
+          max[i] = ans.max;
+          ySecs[i] = ans.splits;
+          // delete temp;
+      }
     }
 
     return {
@@ -173,10 +183,15 @@ var api = module.exports = {
   getSimpleScale: function (data, rows, len, yAxis, min, max) {
     var ySecs = 0;
     for (var i = 0; i < rows; i++) {
-      temp = data[i].slice(0).sort(asc);
-      min = min > temp[0] ? temp[0] : min;
-      max = max < temp[len - 1] ? temp[len - 1] : max;
-      // delete temp;
+      if (data[i].scale && _.isArray(data[i].scale) && data[i].scale.length == 2) {
+        min = data[i].scale[0];
+        max = data[i].scale[1];
+      } else {
+        temp = data[i].slice(0).sort(asc);
+        min = min > temp[0] ? temp[0] : min;
+        max = max < temp[len - 1] ? temp[len - 1] : max;
+        // delete temp;  
+      }
     }
 
     if (yAxis) {
