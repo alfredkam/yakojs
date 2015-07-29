@@ -1,6 +1,7 @@
 // TODO:: shrink the argument
 
-var api = require('../components/api');
+import api from '../components/api';
+import * as _ from '../utils/utility';
 
 var path = module.exports = {
     /**
@@ -35,17 +36,22 @@ var path = module.exports = {
       var hasInverse = scale.hasInverse || {};
       var pathToken = '';
 
-      if (hasInverse.y) {
-            if (typeof scale.max == 'object') {
-              max = scale.max[ref];
-          } else {
-              max = scale.max;
-          }
+      if (_.isArray(scale.max)) {
+          max = scale.max[ref];
+          min = scale.min[ref];
+      } else {
+          max = scale.max;
+          min = scale.min;
       }
+      // need to find proper min / max;
+      // min max is tainted by scale
+      // need to find a new key for min max for usage here
+      console.log(max, min);
 
       // Path generator
       for (var i = 0; i < numArr.length; i++) {
-          var pointY = (hasInverse.y ? height - ((max - numArr[i]) * heightRatio) :  (height - (numArr[i] * heightRatio))) - paddingTop - scale.innerPaddingTop;
+          let value = max < numArr[i] ? max : numArr[i];
+          var pointY = (hasInverse.y ? height - (value * heightRatio) :  (height - (value * heightRatio))) - paddingTop - scale.innerPaddingTop;
           if (i === 0) {
             // X Y
               pathToken += 'M ' + (paddingLeft + scale.innerPadding) + ' ' + pointY;

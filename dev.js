@@ -26,11 +26,15 @@ var template = "";
 template = "<div style='background:beige'>" + yako.spark().attr({
   width: 300,
   height: 100,
-  // yAxis: { multi: true },
+  yAxis: { multi: true },
   points: [{
-    data: [1, 1, 1, 1, 1, 1, 3, 4],
-    // scale: [2, 3] // 0 is min 2 is max
-  }]
+    data: [1, 1, 1, 1, 1, 1, 3, 1, 1],
+    scale: [0, 1] // 0 is min 2 is max
+    },
+    {
+      data: [1, 1, 1, 1, 1, 1, 3, 4, 3],
+      scale: [2, 3] // 0 is min 2 is max
+    }]
   // scale: [0, 2] // possibly a scale for every data set since spark can have multiple
 }) + "</div>";
 
