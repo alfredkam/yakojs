@@ -87,7 +87,7 @@ var api = module.exports = {
       };
   },
 
-  getScaleForMulti: function(data, rows, len) {
+  getScaleForMulti: function(data, rows, len, individualScales) {
     // across multi set
     // each set of data needs ot have thier own individual min / max
     var ySecs = {};
@@ -97,9 +97,9 @@ var api = module.exports = {
 
     for (var i = 0; i < rows; i++) {
       // check if scale is a valid entry
-      if (data[i].scale && _.isArray(data[i].scale) && data[i].scale.length == 2) {
-          min[i] = data[i].scale[0];
-          ans = api.getSplits(data[i].max);
+      if (!_.isEmpty(individualScales) && _.isArray(individualScales) && individualScales[i].length == 2) {
+          min[i] = individualScales[i][0];
+          ans = api.getSplits(individualScales[i][1]);
           max[i] = ans.max;
           ySecs[i] = ans.splits;
       } else {
@@ -182,12 +182,12 @@ var api = module.exports = {
   },
 
   // find min / max across the entire data set
-  getSimpleScale: function (data, rows, len, yAxis, min, max) {
+  getSimpleScale: function (data, rows, len, yAxis, min, max, individualScales) {
     var ySecs = 0;
     for (var i = 0; i < rows; i++) {
-      if (data[i].scale && _.isArray(data[i].scale) && data[i].scale.length == 2) {
-        min = data[i].scale[0];
-        max = data[i].scale[1];
+      if (!_.isEmpty(individualScales) && _.isArray(individualScales) && individualScales[i].length == 2) {
+        min = individualScales[i][0];
+        max = individualScales[i][1];
       } else {
         var temp = data[i].slice(0).sort(asc);
         min = min > temp[0] ? temp[0] : min;
@@ -212,7 +212,6 @@ var api = module.exports = {
   // find min max between multiple rows of data sets
   // also handles the scale needed to work with multi axis
   scale: function (data, opts) {
-
       opts = opts || 0;
       data = typeof data[0] === 'object' ? data : [data];
       var max = 0;
@@ -225,13 +224,17 @@ var api = module.exports = {
       var ySecs = 0;
       var getSplits = api.getSplits;
       var color = [];
+      var individualScales = [];
 
       // change up the structure if the data set is an object
-      if (data[0].data || (data[0].data == 0)) {
+      if (data[0].data || (data[0].data === 0)) {
         temp = [];
         for (var x = 0; x < data.length; x++) {
           temp.push(data[x].data);
           color.push(data[x].strokeColor);
+          if (!_.isEmpty(data[x].scale)) {
+              individualScales.push(data[x].scale);
+          }
         }
 
         if (this.componentName == 'bubble.point' || this.componentName == 'bubble.scatter') {
@@ -245,28 +248,27 @@ var api = module.exports = {
       var len = data[0].length;
 
       if (yAxis && yAxis.multi) {
-
-        var result = api.getScaleForMulti(data, rows, len);
+        let result = api.getScaleForMulti(data, rows, len, individualScales);
         min = result.min;
         max = result.max;
         ySecs = result.ySecs;
 
       } else if (opts.stack) {
 
-        var result = api.getStackedScale(data, rows, len, yAxis, min, max);
+        let result = api.getStackedScale(data, rows, len, yAxis, min, max);
         min = result.min;
         max = result.max;
         ySecs = result.ySecs;
         maxSet= result.maxSet;
 
       } else if (self.componentName == 'bubble.scatter') {
-        var result = api.getBubbleScatterScale(data, rows, len, yAxis);
+        let result = api.getBubbleScatterScale(data, rows, len, yAxis);
         min = result.min;
         max = result.max;
         ySecs = result.ySecs;
 
       } else {
-        var result = api.getSimpleScale(data, rows, len, yAxis, min, max);
+        let result = api.getSimpleScale(data, rows, len, yAxis, min, max, individualScales);
         min = result.min;
         max = result.max;
         ySecs = result.ySecs;

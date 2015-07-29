@@ -137,7 +137,7 @@ gulp.task('dev', function () {
   var nodemon = plugins.nodemon;
 
   nodemon({
-    scripts: 'app',
+    scripts: 'dev',
     ignore: ['node_modules'],
     ext: 'js jsx html es6'
   })
