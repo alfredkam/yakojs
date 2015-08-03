@@ -134,4 +134,4 @@ class Spark extends Default {
   }
 }
 
-export default Spark
+export default Spark;
