@@ -33,7 +33,7 @@ This will build the ```lib``` directory, by converting ```src``` directory from 
 
 ### API Ready
 - Simple Graphs
-  - Line 
+  - Spark
     - Scattered
     - Line
     - Area Graphs
@@ -61,7 +61,7 @@ This will build the ```lib``` directory, by converting ```src``` directory from 
 
 ### How to run unit test
 ```npm test```
- 
+
 ### Latest Release
 Please refer to the release branch - [https://github.com/alfredkam/yakojs/tree/release](https://github.com/alfredkam/yakojs/tree/release)
 

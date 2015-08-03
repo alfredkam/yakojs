@@ -2,7 +2,10 @@
  * TEMPLATE for hovering with multiple axis in react
  */
 var React = require('react');
+var yako = require('../../../src');
 var Line = require('../../../src/addons/react-components/line');
+var svg = yako.svg;
+
 var PureRenderMixin = React.addons.PureRenderMixin;
 
 /* Tool Tip Component */
@@ -24,6 +27,18 @@ var ToolTip = React.createClass({
      *     label      : String, // data label,
      *     value      : Number  // value at X segment on a path
      *   },
+    //  *   exactPoint : { // only included if hovered on a path / circle
+    //  *     data      : {
+    //             x : Number (eg. time),
+    //             y : Number (sample size),
+    //             meta : {}
+    //        },
+    //  *     eY        : mouse event y,
+    //  *     eX        : mouse event x,
+    //  *     cY        : center y of the bubble that is relative to the chart
+    //  *     cX        : center x of the bubble that is relative to the chart
+    //  *     r         : radius of the bubble
+    //  *   },
      *   _segmentXRef : Number, // reference to X segment
      *   _data        : Object, // reference to user data
      *   _scale       : Object  // reference to the mathematical values used to calculate the graph
@@ -114,6 +129,30 @@ module.exports = React.createClass({
         // or if wanted custom label
         // format: 'label',
         // labels: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
+      },
+      prepend: function (svgString, scale) {
+
+        var layout = scale.layout;
+        var lines = [svg.create('line').attr({
+              "stroke": '#000',
+              "stroke-width": 2,
+              x1: 0,
+              y1: Math.floor(layout.height / 3),
+              x2: layout.width,
+              y2: Math.floor(layout.height / 3)
+            }),
+            svg.create('line').attr({
+              "stroke": '#000',
+              "stroke-width": 2,
+              x1: 0,
+              x2: layout.width,
+              y1: Math.floor(2 * layout.height / 3),
+              y2: Math.floor(2 * layout.height / 3)
+            })
+        ];
+
+        var grouping = svg.create('g').append(lines);
+        return grouping;
       }
     };
 

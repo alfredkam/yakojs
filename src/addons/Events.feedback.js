@@ -5,9 +5,49 @@
 module.exports = {
 
   spark: function (e, props, eX, eY) {
+    var target = e.target;
+    var self = this;
     var ref = ((target.dataset || '')._ref || target.getAttribute('data-_ref')) || 0;
     var points = [];
+    var scale = props.scale;
+    var data = props.data;
+    // if out of quadrant should return
+    var quadrantX = (eX - scale.paddingLeft - scale.innerPaddingLeft + (scale.tickSize / 2)) / (scale.tickSize * scale.len);
+    quadrantX = Math.floor(quadrantX * scale.len);
+
+    var properties = {
+      _scale: scale,
+      _segmentXRef: quadrantX
+    };
+
+   if (ref && (data[ref])) {
+      properties.exactPoint = {
+          label: data[ref].label,
+          value: data[ref].data[quadrantX]
+      };
+      properties._data = data[ref];
+    }
+
+    for (var i in data) {
+      points.push({
+          label: data[i].label,
+          value: data[i].data[quadrantX]
+      });
+    }
+
+    properties.points = points;
+
+    if(!ref) {
+      properties._data = data;
+    }
+    return properties;
+  },
+
+  line: function (e, props, eX, eY) {
+    var target = e.target;
     var self = this;
+    var ref = ((target.dataset || '')._ref || target.getAttribute('data-_ref')) || 0;
+    var points = [];
     var scale = props.scale;
     var data = props.data;
     // if out of quadrant should return

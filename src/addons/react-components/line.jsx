@@ -1,7 +1,6 @@
 var React = require('react');
 var EventsClass = require('../Events');
 var Legend = require('./legend');
-var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 var GraphPureRenderMixin = require('./utils/GraphPureRenderMixin');
 var cssPrefix = ['Moz','Webkit','ms','O'];
 
@@ -10,10 +9,9 @@ var Line = React.createClass({
 
   displayName: 'YakoLineChart',
 
-  // mixins: [
-  //   PureRenderMixin,
-  //   GraphPureRenderMixin
-  // ],
+  mixins: [
+    GraphPureRenderMixin
+  ],
 
   render: function () {
     var self = this;
@@ -21,7 +19,7 @@ var Line = React.createClass({
     var attr = self.props.attr || {};
 
     var svg = line({
-      mixins: {
+      mixin: {
         _call: function (scale) {
           scale.hasEvents = true;
           scale.parentType = 'line';
@@ -89,8 +87,6 @@ module.exports = React.createClass({
             content={self._eventData} />
         );
     }
-
-    console.log(this.props);
 
     content.push(<Line
           key={2}

@@ -1,15 +1,22 @@
 import Default from '../classes/default';
 import Errors from '../utils/error';
+import * as _ from '../utils/utility';
 import svgPath from '../svg/path';
 import api from './line.api';
 
 import Label from '../addons/Label';
 
 class Line extends Default {
-  constructor () {
-    super({
-      mixin: Label
-    });
+  constructor (...args) {
+    if (!_.isEmpty(args)) {
+      var mixinObj = Object.assign(Label, args[0].mixin);
+      args[0].mixin = mixinObj;
+      super(...args);
+    } else {
+      super({
+        mixin: Label
+      });
+    }
   }
 
   get componentName () {
@@ -49,7 +56,6 @@ class Line extends Default {
             }
             var g = this.make('g');
             // pass in a ref for event look up, here `ref` is x
-            console.log('line', data);
             paths.push(
               append(g, this._describePath(data[x], scale.paddingLeft, scale.paddingTop, scale, x))
             );
