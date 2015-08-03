@@ -3,7 +3,7 @@ import Errors from '../utils/error';
 import svgPath from '../svg/path';
 import api from './line.api';
 
-export default class Line extends Default {
+class Spark extends Default {
 
   get componentName () {
       return 'spark';
@@ -133,3 +133,5 @@ export default class Line extends Default {
     return paths;
   }
 }
+
+export default Spark

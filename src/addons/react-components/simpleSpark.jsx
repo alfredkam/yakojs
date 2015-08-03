@@ -2,7 +2,7 @@ var React = require('react');
 var spark = require('../../index').spark;
 
 module.exports = React.createClass({
-    displayName: 'YakoSimpleLine',
+    displayName: 'YakoSimpleSpark',
 
     render: function () {
       var self = this;

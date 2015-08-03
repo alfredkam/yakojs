@@ -1,6 +1,6 @@
 ##Content
 - [General Usage](#Usage)
-  - [Line Graph Attributes](#spark-graph-attributes)
+  - [Spark Graph Attributes](#spark-graph-attributes)
   - [Line Graph Attributes](#line-graph-attributes)
   - [Pie Chart Attributes](#pie-chart-attributes)
   - [Donut Chart Attributes](#donut-chart-attributes)
@@ -13,8 +13,8 @@
   - [Label](#label)
   - [ReturnAsObject](#returnasobject)
   - [React Components](#react-components)
-    - [Line](#spark)
-    - [Line with Events in react](#spark-with-events-in-react)
+    - [Spark](#spark)
+    - [Spark with Events in react](#spark-with-events-in-react)
     - [Pie](#pie)
     - [Donut](#donut)
     - [Bubble](#bubble)
@@ -32,7 +32,7 @@ var bar = yako.bar;                        // Bar graph
 var bubbleScatter = yako.bubble.scater;    // Bubble (scatter) graph
 var bubblePoint = yako.bubble.point;       // Bubble point (line) graph
 var donut = yako.donut;                    // Donut chart
-var spark = yako.spark;                    // Line graph
+var spark = yako.spark;                    // Spark graph
 var line = yako.line;                      // Line graph
 var pie = yako.pie;                        // Pie chart
 ```
@@ -45,14 +45,14 @@ var pie = yako.pie;                        // Pie chart
 <i>graph</i>(".graph").attr(<i>attributes</i>) <br>
 &nbsp;&nbsp; => returns a string ```<div class='graph'><svg>...</svg></div>```<br>
 
-####Line Graph Attributes
+####Spark Graph Attributes
 ```javascript
 var set = [
   {
     data: [214,3423],             // An array with numbers
 
     /* Optional parameters */
-    strokeColor: "rgb(200,94,54)",// Controls the stroke color. 
+    strokeColor: "rgb(200,94,54)",// Controls the stroke color.
                                   // If its not provided, it will randomly generate a color
     strokeWidth: 2,               // Controls the stroke width
     fill: '#F0FFF0'               // Controls the fill color. if its not provided, it will not fill
@@ -83,7 +83,7 @@ var set = [
   }
 ];
 
-// Line accepts multiple data sets
+// Spark accepts multiple data sets
 spark().attr({
                                // Width & height controls the svg view box
   width: 300,                  // Default 200
@@ -98,7 +98,7 @@ spark().attr({
   invert: ['y']                // Optionally if want to invert the data set
 
   /* Padding options for the chart */
-  paddingLeft: 0, 
+  paddingLeft: 0,
   paddingRight: 0,
   paddingTop: 0,
   paddingBottom: 0,
@@ -123,7 +123,7 @@ var dataPoints = {
               "strokeColor": "#15b74",  // Set stroke color
               "strokeWidth": "2",       // Set stroke width
               "fill": "black"           // Set fill color
-              
+
               /* Options for scatter, by including the scatter option - scatter will be enable  */
               "scattered": {
                   "strokeWidth": "1",   // Set the scatter's circle stroke width
@@ -132,7 +132,7 @@ var dataPoints = {
               }
             },
 
-            // 
+            //
             "labelTwo": {
               "strokeColor": "#2ff158",  // Set stroke color
               "strokeWidth": "2",       // Set stroke width
@@ -161,13 +161,13 @@ line().attr({
   scattered: false,            // Override to enable scattered
 
   /* Padding options for the chart */
-  paddingLeft: 0, 
+  paddingLeft: 0,
   paddingRight: 0,
   paddingTop: 0,
   paddingBottom: 0,
 
   /* Graph data to be drawn */
-  points: dataPoints 
+  points: dataPoints
 });
 ```
 ####Pie Chart Attributes
@@ -180,13 +180,13 @@ pie('.graph').attr({
 
   /* Optional parameters */
   strokeColor: '#000',            // Sets default stroke color
-  strokeColors: ["#333","#444"],  // This will override the default 
+  strokeColors: ["#333","#444"],  // This will override the default
                                   // Stroke color and matches with the adjacent data set
   fills: ['#123',"#555"]          // This will by matching with the adjacent data set
-                                  // Note: if strokeColor / strokeColors / 
+                                  // Note: if strokeColor / strokeColors /
                                   // Fills are not provided - it will randomly generate a color
   /* Padding options for the chart */
-  paddingLeft: 0, 
+  paddingLeft: 0,
   paddingRight: 0,
   paddingTop: 0,
   paddingBottom: 0,
@@ -206,13 +206,13 @@ donut('.graph').attr({
   outerRadius: 100,                   // Overrides default & sets the outerRadius of the donut
   innerRadius: 25,                    // Overrides the default & controls the innerRadius of the donut
   strokeColor: '#000',                // Sets default stroke color
-  strokeColors: ["#f0f","#000",...],  // This will override the default 
+  strokeColors: ["#f0f","#000",...],  // This will override the default
                                       // Stroke color and matches with the adjacent data set
   fills: ["#f0f","#000",...]          // This will by matching with the adjacent data set
                                       // Note: if strokeColor / strokeColors / fills are not provided - it will randomly generate a color
 
   /* Padding options for the chart */
-  paddingLeft: 0, 
+  paddingLeft: 0,
   paddingRight: 0,
   paddingTop: 0,
   paddingBottom: 0,
@@ -277,7 +277,7 @@ bubbleScatter().attr({
    x: 0,
    y: 0
   },
-  
+
   /* Data Set */
   points: points
 });
@@ -298,7 +298,7 @@ var points = [{
   },{
     ...
   }];
-  
+
 bubblePoint().attr({
   // Width & height controls the svg view box
   width: 1200,
@@ -317,7 +317,7 @@ bubblePoint().attr({
   fill: '#333',                       // Sets default fill color
   startDate: new Date(2015,2,13),     // Sets the default start date
   endDate: new Date(2015,2,15),       // Sets the default end date
-  
+
   /* Data Set */
   points: points
 });
@@ -517,7 +517,7 @@ returns the polar to cartesian coordinate in ```javascript {x:Number, y:Number} 
 returns attribute D of ```<path>``` that descibes an arc
 
 #####.arc.describePie(centerX, centerY, radius, startAngle, endAngle)
-returns attribute D of ```<path>``` that decribes an arc w/ the path closed ~ equivalent to a piece of pie 
+returns attribute D of ```<path>``` that decribes an arc w/ the path closed ~ equivalent to a piece of pie
 
 ##Addons
 ###Label
@@ -576,7 +576,7 @@ var svg = spark({
     }
   }
 })
-  
+
 ```
 
 NOTE:: <br>
@@ -611,16 +611,16 @@ spark({
 
 Example result
 ```javascript
-{ 
-  svg: [ 
+{
+  svg: [
     g: {
-      path: { 
+      path: {
         'stroke-linecap': 'round',
         'stroke-linejoin': 'round',
         'stroke-width': 2,
         stroke: '#22e98e',
-        d: 'M0.8958407394241024 50 L60 298.5709207252044' 
-      } 
+        d: 'M0.8958407394241024 50 L60 298.5709207252044'
+      }
     }
   ]
 }
@@ -633,10 +633,10 @@ var yako = require('yako/components');
 ```
 Note:: Here ```yako``` also includes ```yako.addons```
 
-###Line
+###Spark
 ```javascript
 var yako = require('yako/components');
-var Line = yako.components.SimpleLine;
+var Spark = yako.components.SimpleSpark;
 // Assumes the data type & chart configurations from above
 var data = [
   {...},
@@ -645,17 +645,17 @@ var data = [
 var chartConfig = {...}
 chartConfig.points = data;
 React.render(
-<Line attr={chartConfig} />,
+<Spark attr={chartConfig} />,
 document.getElementsByTagName('body')[0]);
 ```
-###Line with Events in react
-Yako includes a react component for the more complex ```spark``` graphs.  In this component you could hook in events and react base on the props passed back from the response.  This component also supports tooltips and legends, an [example of the code usage could be found here](https://github.com/alfredkam/yakojs/tree/master/demo/example/react-spark-hover-tooltip) that takes full advantage of tooltip hovering with events 
+###Spark with Events in react
+Yako includes a react component for the more complex ```spark``` graphs.  In this component you could hook in events and react base on the props passed back from the response.  This component also supports tooltips and legends, an [example of the code usage could be found here](https://github.com/alfredkam/yakojs/tree/master/demo/example/react-spark-hover-tooltip) that takes full advantage of tooltip hovering with events
 
 The snippet below explains the events hooks usage
 
 ```javascript
 var yako = require('yako/components');
-var Line = yako.components.Line;
+var Spark = yako.components.Spark;
 // Assumes the data type & chart configurations from above
 var data = [
   {...},
@@ -697,7 +697,7 @@ var events = {
 };
 
 React.render(
-  <Line
+  <Spark
     attr={chartConfig}
     events={events} />,
 document.getElementsByTagName('body')[0]);
@@ -706,7 +706,7 @@ Notice when your registering an event, you would register with ```container``` o
 
 List of supported events:
 
-Event Name | Reference To 
+Event Name | Reference To
 -----------|---------------
 hover | onMouseOver & onMouseLeave
 click | onClick
@@ -807,10 +807,10 @@ Say you wanted to create your own or modify the library to do something extra. y
 
 For example you think its smarter to append the svg objects into dom object, during the mid process you would
 ```javascript
-var defaultLine = require('yako/lib/spark');
-var myLineGraph = defaultLine.extend({
+var defaultSpark = require('yako/lib/spark');
+var mySparkGraph = defaultSpark.extend({
 
-  // This will have myLineGraph's internal call to default to this function
+  // This will have mySparkGraph's internal call to default to this function
   make: function (tag, props, data) {
     var node = doc.createElementNS('http://www.w3.org/2000/svg',tag);
     this.assign(node, props);
@@ -819,9 +819,8 @@ var myLineGraph = defaultLine.extend({
   },
 });
 
-var spark = new myLineGraph('.graph');
+var spark = new mySparkGraph('.graph');
 spark.set({
   ...
 });
 ```
-

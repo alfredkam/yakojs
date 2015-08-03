@@ -1,5 +1,5 @@
 var React = require('react');
-var Line = require('./event-ready/spark-event');
+var Spark = require('./event-ready/spark-event');
 var EventsClass = require('../Events');
 var Legend = require('./legend');
 var cssPrefix = ['Moz','Webkit','ms','O'];
@@ -83,7 +83,7 @@ module.exports = React.createClass({
           </span>);
       }
 
-      content.push(<Line
+      content.push(<Spark
             attr={attr}
             events={self.eventsHandler} />);
 

@@ -1,11 +1,11 @@
 var chai = require('chai');
 var expect = chai.expect;
-var LineLine = require('../../src/components/spark');
+var SparkLine = require('../../src/components/spark');
 
 describe('src/spark', function () {
     var spark;
     before(function () {
-        spark = new LineLine();
+        spark = new SparkLine();
     });
 
     after(function () {
@@ -30,7 +30,7 @@ describe('src/spark', function () {
                 innerPaddingBottom: 0
             }
         );
-        
+
         expect(path)
             .to.be.a('array')
             .to.satisfy(function (arr) {

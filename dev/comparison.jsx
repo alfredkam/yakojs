@@ -2,9 +2,9 @@
  * Graph ready comparison
  */
 var React = require('react');
-var Line = require('./base');
-var SimpleLine = require('../addons/react-components/simpleLine');
-var NoReactLine = require('../index').spark;
+var Spark = require('./base');
+var SimpleSpark = require('../addons/react-components/simpleSpark');
+var NoReactSpark = require('../index').spark;
 
 var dataPoints = 10;
 var dataSet = [];
@@ -52,13 +52,13 @@ var chart = {
 
 var start = Date.now();
 React.render(
-    // <SimpleLine data={set} chart={chart} />,
-    <Line set={set} />,
+    // <SimpleSpark data={set} chart={chart} />,
+    <Spark set={set} />,
   document.getElementsByTagName('body')[0]);
 console.log('REACT:' + (Date.now() - start) + 'ms');
 
 var start = Date.now();
-  var nodes = NoReactLine('.graph').attr({
+  var nodes = NoReactSpark('.graph').attr({
     chart : {
       width: 1200,
       height: 100,
