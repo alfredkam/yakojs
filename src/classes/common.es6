@@ -113,7 +113,9 @@ export default class Common {
     self._getInvertProps(scale);
 
     if ((chart.type != 'bubble-point') && (yAxis || xAxis)) {
-      self._getExternalProps(scale, yAxis, xAxis);
+      if (self._getExternalProps) {
+        self._getExternalProps(scale, yAxis, xAxis);
+      }
       if (!self.describeYAxis) {
         Errors.label();
       }

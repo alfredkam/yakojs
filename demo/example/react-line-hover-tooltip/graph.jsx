@@ -1,20 +1,39 @@
 /**
  * TEMPLATE for hovering with multiple axis in react
- * @type {[type]}
  */
 var React = require('react');
-var Line = require('../addons/react-components/spark');
+var Line = require('../../../src/addons/react-components/line');
 var PureRenderMixin = React.addons.PureRenderMixin;
 
+/* Tool Tip Component */
 var ToolTip = React.createClass({
   mixin: [PureRenderMixin],
   render: function () {
-    var html = {};
-    if (Object.keys(this.props.content).length !== 0) {
-      if (this.props.content.exactPoint) {
-        html = 'point at value : ' + this.props.content.exactPoint.label + ',' + this.props.content.exactPoint.value;
+    var html;
+    var content = this.props.content;
+    /**
+     * You would expect this.props.content to include
+     * {
+     *   points : [             // values unders X segment
+     *     {
+     *       label    : String, // data label
+     *       value    : Number  // value at X segment
+     *     }
+     *   ],
+     *   exactPoint : { // only included if hovered on a path / circle
+     *     label      : String, // data label,
+     *     value      : Number  // value at X segment on a path
+     *   },
+     *   _segmentXRef : Number, // reference to X segment
+     *   _data        : Object, // reference to user data
+     *   _scale       : Object  // reference to the mathematical values used to calculate the graph
+     * }
+     */
+    if (Object.keys(content).length !== 0) {
+      if (content.exactPoint) {
+        html = 'point at value : ' + content.exactPoint.label + ',' + content.exactPoint.value;
       } else {
-        html = this.props.content.points.map(function (key) {
+        html = content.points.map(function (key) {
           return key.label + ':' + key.value;
         });
       }
@@ -27,6 +46,7 @@ var ToolTip = React.createClass({
   }
 });
 
+/* Legend Component */
 var Legend = React.createClass({
   mixin: [PureRenderMixin],
   render: function () {
@@ -38,55 +58,39 @@ var Legend = React.createClass({
   }
 });
 
-
+/* Graph Component */
 module.exports = React.createClass({
   getInitialState: function () {
-    // Normally this should be controlled by props
     return {
-      toolTip: {
-        shouldShow: false,
-      },
-      useSetOne: true
+      shouldShow: false,
     };
   },
-  useSetOne: true,
   componentWillMount: function () {
     var onActivity = function (e, props) {
       self.setState({
-        toolTip: {
-          shouldShow: true
-        }
+        shouldShow: true
       });
     }
     var self = this;
     self.events = {
-      // Event call backs base on bind
+      // Register events for call back
       on: {
         'path:mouseMove': onActivity,
         'svg:mouseMove': onActivity,
         'container:mouseLeave': function (e) {
           self.setState({
-            toolTip: {
-              shouldShow: false
-            }
+            shouldShow: false
           });
         }
       }
     };
   },
-  componentDidMount: function () {
-    // var self = this;
-    // setTimeout(function () {
-    //   self.setState({
-    //     useSetOne: false
-    //   });
-    // },5000);
-  },
   render: function () {
     var self = this;
-    var chart = {
+    var attr = {
       width: 1200,
       height: 150,
+      points: self.props.set,
       yAxis: {
         multi: true
       },
@@ -120,32 +124,18 @@ module.exports = React.createClass({
       self.events = {};
     } else {
       toolTip = {
-        shouldShow: self.state.toolTip.shouldShow,
+        shouldShow: self.state.shouldShow,
         reactElement: ToolTip
       }
     }
 
-
     var self = this;
-    // if (self.state.useSetOne) {
-       return (
-        <Line 
-          chart={chart} 
-          data={self.props.set}
-          events={self.events}
-          toolTip={toolTip}
-          legend={legend} />
-      );
-    // } else {
-    //    return (
-    //     <Line 
-    //       chart={chart} 
-    //       data={self.props.set2}
-    //       events={self.events}
-    //       toolTip={self.state.toolTip}
-    //       legend={self.state.legend} />
-    //   );
-    // }
-   
+     return (
+      <Line
+        attr={attr}
+        events={self.events}
+        toolTip={toolTip}
+        legend={legend} />
+    );
   }
 });

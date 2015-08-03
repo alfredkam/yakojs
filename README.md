@@ -33,7 +33,7 @@ This will build the ```lib``` directory, by converting ```src``` directory from 
 
 ### API Ready
 - Simple Graphs
-  - Spark 
+  - Line 
     - Scattered
     - Line
     - Area Graphs
@@ -46,7 +46,7 @@ This will build the ```lib``` directory, by converting ```src``` directory from 
 - Multi axis for spark graphs
 - Labels
     - Bar graph
-    - Spark Graph
+    - Line Graph
     - Bubble Graph
 - Programmatic point of access (Only Avaliable for React)
 - Events & Emitters (Only Avaliable for React)

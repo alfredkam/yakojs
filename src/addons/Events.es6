@@ -2,9 +2,8 @@
  * An add on to interact and trigger events
  */
 
- import eventFeedback from './Events.feedback';
- import error from '../utils/error';
-
+import eventFeedback from './Events.feedback';
+import error from '../utils/error';
 /**
  * Event filter definitions
  */

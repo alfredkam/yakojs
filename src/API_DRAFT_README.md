@@ -38,8 +38,8 @@ yako({
 })
 ```
 
-##Spark
-Spark is designed for simple trivial graph, and works with a simple set of data.
+##Line
+Line is designed for simple trivial graph, and works with a simple set of data.
 
 ```javascript
 spark: [

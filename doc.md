@@ -1,6 +1,6 @@
 ##Content
 - [General Usage](#Usage)
-  - [Spark Graph Attributes](#spark-graph-attributes)
+  - [Line Graph Attributes](#spark-graph-attributes)
   - [Line Graph Attributes](#line-graph-attributes)
   - [Pie Chart Attributes](#pie-chart-attributes)
   - [Donut Chart Attributes](#donut-chart-attributes)
@@ -13,8 +13,8 @@
   - [Label](#label)
   - [ReturnAsObject](#returnasobject)
   - [React Components](#react-components)
-    - [Spark](#spark)
-    - [Spark with Events in react](#spark-with-events-in-react)
+    - [Line](#spark)
+    - [Line with Events in react](#spark-with-events-in-react)
     - [Pie](#pie)
     - [Donut](#donut)
     - [Bubble](#bubble)
@@ -32,7 +32,7 @@ var bar = yako.bar;                        // Bar graph
 var bubbleScatter = yako.bubble.scater;    // Bubble (scatter) graph
 var bubblePoint = yako.bubble.point;       // Bubble point (line) graph
 var donut = yako.donut;                    // Donut chart
-var spark = yako.spark;                    // Spark graph
+var spark = yako.spark;                    // Line graph
 var line = yako.line;                      // Line graph
 var pie = yako.pie;                        // Pie chart
 ```
@@ -45,7 +45,7 @@ var pie = yako.pie;                        // Pie chart
 <i>graph</i>(".graph").attr(<i>attributes</i>) <br>
 &nbsp;&nbsp; => returns a string ```<div class='graph'><svg>...</svg></div>```<br>
 
-####Spark Graph Attributes
+####Line Graph Attributes
 ```javascript
 var set = [
   {
@@ -83,7 +83,7 @@ var set = [
   }
 ];
 
-// Spark accepts multiple data sets
+// Line accepts multiple data sets
 spark().attr({
                                // Width & height controls the svg view box
   width: 300,                  // Default 200
@@ -633,10 +633,10 @@ var yako = require('yako/components');
 ```
 Note:: Here ```yako``` also includes ```yako.addons```
 
-###Spark
+###Line
 ```javascript
 var yako = require('yako/components');
-var Spark = yako.components.SimpleSpark;
+var Line = yako.components.SimpleLine;
 // Assumes the data type & chart configurations from above
 var data = [
   {...},
@@ -645,17 +645,17 @@ var data = [
 var chartConfig = {...}
 chartConfig.points = data;
 React.render(
-<Spark attr={chartConfig} />,
+<Line attr={chartConfig} />,
 document.getElementsByTagName('body')[0]);
 ```
-###Spark with Events in react
+###Line with Events in react
 Yako includes a react component for the more complex ```spark``` graphs.  In this component you could hook in events and react base on the props passed back from the response.  This component also supports tooltips and legends, an [example of the code usage could be found here](https://github.com/alfredkam/yakojs/tree/master/demo/example/react-spark-hover-tooltip) that takes full advantage of tooltip hovering with events 
 
 The snippet below explains the events hooks usage
 
 ```javascript
 var yako = require('yako/components');
-var Spark = yako.components.Spark;
+var Line = yako.components.Line;
 // Assumes the data type & chart configurations from above
 var data = [
   {...},
@@ -697,7 +697,7 @@ var events = {
 };
 
 React.render(
-  <Spark
+  <Line
     attr={chartConfig}
     events={events} />,
 document.getElementsByTagName('body')[0]);
@@ -807,10 +807,10 @@ Say you wanted to create your own or modify the library to do something extra. y
 
 For example you think its smarter to append the svg objects into dom object, during the mid process you would
 ```javascript
-var defaultSpark = require('yako/lib/spark');
-var mySparkGraph = defaultSpark.extend({
+var defaultLine = require('yako/lib/spark');
+var myLineGraph = defaultLine.extend({
 
-  // This will have mySparkGraph's internal call to default to this function
+  // This will have myLineGraph's internal call to default to this function
   make: function (tag, props, data) {
     var node = doc.createElementNS('http://www.w3.org/2000/svg',tag);
     this.assign(node, props);
@@ -819,7 +819,7 @@ var mySparkGraph = defaultSpark.extend({
   },
 });
 
-var spark = new mySparkGraph('.graph');
+var spark = new myLineGraph('.graph');
 spark.set({
   ...
 });

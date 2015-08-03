@@ -3,7 +3,7 @@ var Label = require('../../Label');
 var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
 module.exports = React.createClass({
-    displayName: 'YakoSparkEventHandler',
+    displayName: 'YakoLineEventHandler',
 
     mixin: [PureRenderMixin],
 

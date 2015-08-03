@@ -450,7 +450,7 @@ var sparkInstance = spark({
   mixin: Label
 });
 
-nodes = '<div class=".graph">' + sparkInstance.attr({
+nodes = '<div class=".graph">' + yako.line().attr({
     chart : {
       width: 1200,
       height: 150,
@@ -482,7 +482,7 @@ nodes = '<div class=".graph">' + sparkInstance.attr({
       // format: 'label',
       // labels: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
     }
-}) + '</div><div class=".graph">'  + sparkInstance.attr({
+}) + '</div><div class=".graph">'  + yako.line().attr({
     chart : {
       width: 1200,
       height: 150,

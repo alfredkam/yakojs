@@ -14,7 +14,7 @@ var express = require('express');
 var app = express();
 var fs = require('fs');
 
-var Label = require('./addons/Label');
+var Label = require('./src/addons/Label');
 var testData = {};
 try {
   testData = require('./testData/testData.json');
@@ -57,7 +57,7 @@ for (var i = 0; i < testData.length; i++) {
       // fill: yako.spark()._randomColor()
     };
   }
-  
+
   nodes += "<div id='.graph'>" + lineGraph({
           mixin: [Label]
         }).attr({

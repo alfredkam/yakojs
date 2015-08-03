@@ -3,6 +3,6 @@ module.exports = {
   Bubble: require('./bubble'),
   Donut: require('./donut'),
   Pie: require('./pie'),
-  Spark: require('./spark'),
-  SimpleSpark: require('./simpleSpark')
+  Line: require('./spark'),
+  SimpleLine: require('./simpleLine')
 };

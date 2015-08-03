@@ -1,11 +1,11 @@
 var chai = require('chai');
 var expect = chai.expect;
-var SparkLine = require('../../src/components/spark');
+var LineLine = require('../../src/components/spark');
 
 describe('src/spark', function () {
     var spark;
     before(function () {
-        spark = new SparkLine();
+        spark = new LineLine();
     });
 
     after(function () {

@@ -3,6 +3,7 @@
   MIT LICENSE
   Alfred Kam (@alfredkam)
 */
+
 import './utils/polyfill';
 import sparkLine from './components/spark';
 import pie from './components/pie';
@@ -12,6 +13,7 @@ import svg from './svg/svg';
 // time series / object base
 import bubblePoint from './components/bubble.point';
 import bubbleScatter from './components/bubble.scatter';
+import lineTimeSeries from './components/line.timeSeries';
 import line from './components/line';
 
 var initialize = (component, obj) => {
@@ -22,7 +24,7 @@ export default {
 
   name: 'yakojs',
 
-  VERSION: '0.5.3',
+  VERSION: '0.5.4',
 
   spark (opts) {
     return initialize(sparkLine, opts);
@@ -53,6 +55,14 @@ export default {
     scatter (opts) {
       return initialize(bubbleScatter, opts);
     }
+  },
+
+  timeSeries: {
+
+    line (opts) {
+      return initialize(lineTimeSeries, opts);
+    }
+
   },
 
   svg: svg
