@@ -2,8 +2,8 @@
  * TEMPLATE for hovering with multiple axis in react
  */
 var React = require('react');
-var yako = require('../../../components');
-var Bubble = yako.components.Bubble.Point;
+var yako = require('../../../src');
+var Bubble = require('../../../src/addons/react-components/bubble/bubble-point');
 var PureRenderMixin = React.addons.PureRenderMixin;
 
 /* Tool Tip Component */
