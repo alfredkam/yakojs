@@ -54,7 +54,10 @@ var set2 = [
         strokeWidth: 2,
         radius: 5
       },
-      label: 'pink'
+      label: 'pink',
+      meta : {
+        // your own content
+      }
   },
   {
       data: dataSet4,
@@ -66,7 +69,10 @@ var set2 = [
         strokeWidth: 2,
         radius: 5
       },
-      label: 'green'
+      label: 'green',
+      meta: {
+
+      }
   }
 ];
 

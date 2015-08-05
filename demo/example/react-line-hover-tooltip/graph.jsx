@@ -20,28 +20,24 @@ var ToolTip = React.createClass({
      *   points : [             // values unders X segment
      *     {
      *       label    : String, // data label
-     *       value    : Number  // value at X segment
+     *       data     : {
+              x: Number  // value at X segment
+              y: Number // Value at Y segment,
      *     }
      *   ],
      *   exactPoint : { // only included if hovered on a path / circle
-     *     label      : String, // data label,
-     *     value      : Number  // value at X segment on a path
+     *     data      : {
+                x : Number (eg. time),
+                y : Number (sample size),
+                meta : {}
+           },
+     *     eY        : mouse event y,
+     *     eX        : mouse event x,
+     *     r         : radius of the bubble
      *   },
-    //  *   exactPoint : { // only included if hovered on a path / circle
-    //  *     data      : {
-    //             x : Number (eg. time),
-    //             y : Number (sample size),
-    //             meta : {}
-    //        },
-    //  *     eY        : mouse event y,
-    //  *     eX        : mouse event x,
-    //  *     cY        : center y of the bubble that is relative to the chart
-    //  *     cX        : center x of the bubble that is relative to the chart
-    //  *     r         : radius of the bubble
-    //  *   },
-     *   _segmentXRef : Number, // reference to X segment
-     *   _data        : Object, // reference to user data
-     *   _scale       : Object  // reference to the mathematical values used to calculate the graph
+     *   segmentXRef : Number, // reference to X segment
+     *   _scale       : Object  // reference to the mathematical values used to calculate the graph,
+         event        : event object
      * }
      */
     if (Object.keys(content).length !== 0) {
