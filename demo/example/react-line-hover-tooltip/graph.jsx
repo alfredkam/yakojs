@@ -17,7 +17,7 @@ var ToolTip = React.createClass({
     /**
      * You would expect this.props.content to include
      * {
-     *   points : [             // values unders X segment
+     *   points : [             // values under X segment
      *     {
      *       label    : String, // data label
      *       data     : {

@@ -47,23 +47,19 @@ export default {
   },
 
   bubble: {
-
     point (opts) {
       return initialize(bubblePoint, opts);
     },
-
     scatter (opts) {
       return initialize(bubbleScatter, opts);
     }
   },
 
   timeSeries: {
-
     line (opts) {
       return initialize(lineTimeSeries, opts);
     }
-
   },
 
-  svg: svg
+  svg: svg,
 };

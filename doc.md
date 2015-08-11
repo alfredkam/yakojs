@@ -107,7 +107,7 @@ spark().attr({
 ```
 
 ####Line Graph Attributes
-Line graph - a spark graph with labels
+Line graph - a spark graph with labels support
 
 ```javascript
 var points = [{
@@ -127,7 +127,7 @@ var points = [{
 {
   "data": [100, 200, 300, 400, 2, 3],
   "strokeColor": "#2ff158",  // Set stroke color
-  "strokeWidth": "2",       // Set stroke width
+  "strokeWidth": "2",        // Set stroke width
   "fill": "black",           // Set fill color
 
   /* Options for scatter, by including the scatter option - scatter will be enable  */
@@ -637,13 +637,13 @@ Example result
 Yako offers a wild range of Reactjs ready graph components.
 
 ```javascript
-var yako = require('yako/components');
+var yako = require('yako/addons');
 ```
 Note:: Here ```yako``` also includes ```yako.addons```
 
 ###Spark
 ```javascript
-var yako = require('yako/components');
+var yako = require('yako/addons');
 var Spark = yako.components.SimpleSpark;
 // Assumes the data type & chart configurations from above
 var data = [
@@ -662,7 +662,7 @@ Yako includes a react component for the more complex ```spark``` graphs.  In thi
 The snippet below explains the events hooks usage
 
 ```javascript
-var yako = require('yako/components');
+var yako = require('yako/addons');
 var Spark = yako.components.Spark;
 // Assumes the data type & chart configurations from above
 var data = [
@@ -676,21 +676,29 @@ var events = {
   on: {
     'path:mouseMove': function (e, props) {
       /**
-       * You would expect props to include
+       * You would expect this.props.content to include
        * {
-       *   points : [             // values unders X segment
+       *   points : [             // values under X segment
        *     {
        *       label    : String, // data label
-       *       value    : Number  // value at X segment
+       *       data     : {
+                x: Number  // value at X segment
+                y: Number // Value at Y segment,
        *     }
        *   ],
        *   exactPoint : { // only included if hovered on a path / circle
-       *     label      : String, // data label,
-       *     value      : Number  // value at X segment on a path
+       *     data      : {
+                  x : Number (eg. time),
+                  y : Number (sample size),
+                  meta : {}
+             },
+       *     eY        : mouse event y,
+       *     eX        : mouse event x,
+       *     r         : radius of the bubble
        *   },
-       *   _segmentXRef : Number, // reference to X segment
-       *   _data        : Object, // reference to user data
-       *   _scale       : Object  // reference to the mathematical values used to calculate the graph
+       *   segmentXRef : Number, // reference to X segment
+       *   _scale       : Object  // reference to the mathematical values used to calculate the graph,
+           event        : event object
        * }
        */
       // do something
@@ -727,7 +735,7 @@ doubleClick | onDoubleClick
 
 ###Pie
 ```javascript
-var yako = require('yako/components');
+var yako = require('yako/addons');
 var Pie = yako.components.Pie
 
 /* Assumes the data type & chart configurations from above */
@@ -744,7 +752,7 @@ document.getElementsByTagName('body')[0]);
 
 ###Donut
 ```javascript
-var yako = require('yako/components');
+var yako = require('yako/addons');
 var Donut = yako.components.Donut;
 
 /* Assumes the data type & chart configurations from above */
@@ -761,7 +769,7 @@ document.getElementsByTagName('body')[0]);
 
 ###Bubble
 ```javascript
-var yako = require('yako/components');
+var yako = require('yako/addons');
 var Bubble = yako.components.Bubble.Scatter
 
 /* Assumes the data type & chart configurations from above */
@@ -778,7 +786,7 @@ document.getElementsByTagName('body')[0]);
 
 ###Bubble Point (Line)
 ```javascript
-var yako = require('yako/components');
+var yako = require('yako/addons');
 var Bubble = yako.components.Bubble.Point
 
 /* Assumes the data type & chart configurations from above */
@@ -795,7 +803,7 @@ document.getElementsByTagName('body')[0]);
 
 ###Bar
 ```javascript
-var yako = require('yako/components');
+var yako = require('yako/addons');
 var Bar = yako.components.Bar;
 
 /* Assumes the data type & chart configurations from above */
