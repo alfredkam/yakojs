@@ -107,46 +107,36 @@ spark().attr({
 ```
 
 ####Line Graph Attributes
-Line graph is relatively similar to spark graph, except line graph works with time series data.
+Line graph - a spark graph with labels
 
 ```javascript
-var dataPoints = {
+var points = [{
+  "data": [1, 2, 3, 4, 100, 22],
+  "strokeColor": "#15b74",  // Set stroke color
+  "strokeWidth": "2",       // Set stroke width
+  "fill": "black",          // Set fill color
 
-  data: [
-    {"labelOne":"951", "labelTwo":"119695", "timestamp":"2014-06-06"},
-    {"labelOne":"912", "labelTwo":"119263", "timestamp":"2014-07-01"}
-  ],
+  /* Options for scatter, by including the scatter option - scatter will be enable  */
+  "scattered": {
+      "strokeWidth": "1",   // Set the scatter's circle stroke width
+      "radius": "1.5",      // Set the scatter's circle radius
+      "fill": "red"         // Set the scatter's circle fill color
+  },
+  label: 'red'
+},
+{
+  "data": [100, 200, 300, 400, 2, 3],
+  "strokeColor": "#2ff158",  // Set stroke color
+  "strokeWidth": "2",       // Set stroke width
+  "fill": "black",           // Set fill color
 
-  /* A config for each data's key must be include in labels in order for that data set to be drawn. */
-  labels: {
-            "labelOne": {
-              "strokeColor": "#15b74",  // Set stroke color
-              "strokeWidth": "2",       // Set stroke width
-              "fill": "black"           // Set fill color
-
-              /* Options for scatter, by including the scatter option - scatter will be enable  */
-              "scattered": {
-                  "strokeWidth": "1",   // Set the scatter's circle stroke width
-                  "radius": "1.5",      // Set the scatter's circle radius
-                  "fill": "red"         // Set the scatter's circle fill color
-              }
-            },
-
-            //
-            "labelTwo": {
-              "strokeColor": "#2ff158",  // Set stroke color
-              "strokeWidth": "2",       // Set stroke width
-              "fill": "black"           // Set fill color
-
-              /* Options for scatter, by including the scatter option - scatter will be enable  */
-              "scattered": {
-                "strokeWidth": "1",   // Set the scatter's circle stroke width
-                "radius": "1.5",      // Set the scatter's circle radius
-                "fill": "red"         // Set the scatter's circle fill color
-              }
-            }
-          }
-};
+  /* Options for scatter, by including the scatter option - scatter will be enable  */
+  "scattered": {
+    "strokeWidth": "1",   // Set the scatter's circle stroke width
+    "radius": "1.5",      // Set the scatter's circle radius
+    "fill": "red"         // Set the scatter's circle fill color
+  }
+}];
 
 line().attr({
                                // Width & height controls the svg view box
@@ -154,12 +144,30 @@ line().attr({
   height: 100,                 // Default 100
 
   /* Optional parameters */
-  stroke: false                // It will disable the stroke from drawn
-  line: true,                  // Override to disable the line to be drawn
-  fill: true,                  // Defaults is true, override to disable fill
-                               // Say if you want to only have scattered graph, you will set line & fill properties to false
-  scattered: false,            // Override to enable scattered
-
+  yAxis: {
+    multi: true                // Option to enable multi y-axis
+  },
+  xAxis : {                    // xAxis options
+    // including format will show the xAxis Label
+    format : 'dateTime',
+    // interval indicates the data interval, the number of the interval indicates the label tick interval
+    // same representation is also used for `dateTimeLabelFormat`
+    // s - seconds
+    // m - minutes
+    // h - hours
+    // D - days
+    // M - months
+    // Y - years
+    interval: '4h',  //[1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
+    // uses the min start date and increment the label by the set interval.  interval will be converted to miliseconds
+    minUTC: Date.UTC(2013,8,7),
+    //this controls the dateTime label format
+    //depending on the format, it will affect the label, try :: dateTimeLabelFormat: 'hhh'
+    dateTimeLabelFormat: 'MM/DD hh ap'
+    // or if wanted custom label
+    // format: 'label',
+    // labels: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
+  },
   /* Padding options for the chart */
   paddingLeft: 0,
   paddingRight: 0,
@@ -167,7 +175,7 @@ line().attr({
   paddingBottom: 0,
 
   /* Graph data to be drawn */
-  points: dataPoints
+  points: dataSet
 });
 ```
 ####Pie Chart Attributes

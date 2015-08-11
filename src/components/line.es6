@@ -122,7 +122,7 @@ class Line extends Default {
     });
     var paths = [];
 
-    if (data.fill && scale.fill) {
+    if (data.fill) {
       paths.push(self.make('path', {
         d: pathToken + svgPath.describeCloseAttributeD(data.data, paddingLeft, paddingTop, scale, ref),
         stroke: 'none',
@@ -135,11 +135,9 @@ class Line extends Default {
       }));
     }
 
-    if (scale.line) {
-      paths.push(pathNode);
-    }
+    paths.push(pathNode);
 
-    if (scale.scattered) {
+    if (data.scattered) {
       paths.push(self._describeScatteredGraph(data, data.data, paddingLeft, paddingTop, scale, ref));
     }
 

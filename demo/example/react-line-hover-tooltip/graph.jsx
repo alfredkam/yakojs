@@ -88,6 +88,7 @@ module.exports = React.createClass({
       on: {
         'path:mouseMove': onActivity,
         'svg:mouseMove': onActivity,
+        'circle:mouseOver': onActivity,
         'container:mouseLeave': function (e) {
           self.setState({
             shouldShow: false
@@ -127,21 +128,20 @@ module.exports = React.createClass({
         // labels: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
       },
       prepend: function (svgString, scale) {
-
         var layout = scale.layout;
         var lines = [svg.create('line').attr({
               "stroke": '#000',
               "stroke-width": 2,
-              x1: 0,
+              x1: layout.x,
               y1: Math.floor(layout.height / 3),
-              x2: layout.width,
+              x2: layout.width + layout.x,
               y2: Math.floor(layout.height / 3)
             }),
             svg.create('line').attr({
               "stroke": '#000',
               "stroke-width": 2,
-              x1: 0,
-              x2: layout.width,
+              x1: layout.x,
+              x2: layout.width + layout.x,
               y1: Math.floor(2 * layout.height / 3),
               y2: Math.floor(2 * layout.height / 3)
             })
