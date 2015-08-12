@@ -52,7 +52,7 @@ var set = [
     data: [214,3423],             // An array with numbers
 
     /* Optional parameters */
-    strokeColor: "rgb(200,94,54)",// Controls the stroke color. 
+    strokeColor: "rgb(200,94,54)",// Controls the stroke color.
                                   // If its not provided, it will randomly generate a color
     strokeWidth: 2,               // Controls the stroke width
     fill: '#F0FFF0'               // Controls the fill color. if its not provided, it will not fill
@@ -98,7 +98,7 @@ spark().attr({
   invert: ['y']                // Optionally if want to invert the data set
 
   /* Padding options for the chart */
-  paddingLeft: 0, 
+  paddingLeft: 0,
   paddingRight: 0,
   paddingTop: 0,
   paddingBottom: 0,
@@ -107,46 +107,36 @@ spark().attr({
 ```
 
 ####Line Graph Attributes
-Line graph is relatively similar to spark graph, except line graph works with time series data.
+Line graph - a spark graph with labels support
 
 ```javascript
-var dataPoints = {
+var points = [{
+  "data": [1, 2, 3, 4, 100, 22],
+  "strokeColor": "#15b74",  // Set stroke color
+  "strokeWidth": "2",       // Set stroke width
+  "fill": "black",          // Set fill color
 
-  data: [
-    {"labelOne":"951", "labelTwo":"119695", "timestamp":"2014-06-06"},
-    {"labelOne":"912", "labelTwo":"119263", "timestamp":"2014-07-01"}
-  ],
+  /* Options for scatter, by including the scatter option - scatter will be enable  */
+  "scattered": {
+      "strokeWidth": "1",   // Set the scatter's circle stroke width
+      "radius": "1.5",      // Set the scatter's circle radius
+      "fill": "red"         // Set the scatter's circle fill color
+  },
+  label: 'red'
+},
+{
+  "data": [100, 200, 300, 400, 2, 3],
+  "strokeColor": "#2ff158",  // Set stroke color
+  "strokeWidth": "2",        // Set stroke width
+  "fill": "black",           // Set fill color
 
-  /* A config for each data's key must be include in labels in order for that data set to be drawn. */
-  labels: {
-            "labelOne": {
-              "strokeColor": "#15b74",  // Set stroke color
-              "strokeWidth": "2",       // Set stroke width
-              "fill": "black"           // Set fill color
-              
-              /* Options for scatter, by including the scatter option - scatter will be enable  */
-              "scattered": {
-                  "strokeWidth": "1",   // Set the scatter's circle stroke width
-                  "radius": "1.5",      // Set the scatter's circle radius
-                  "fill": "red"         // Set the scatter's circle fill color
-              }
-            },
-
-            // 
-            "labelTwo": {
-              "strokeColor": "#2ff158",  // Set stroke color
-              "strokeWidth": "2",       // Set stroke width
-              "fill": "black"           // Set fill color
-
-              /* Options for scatter, by including the scatter option - scatter will be enable  */
-              "scattered": {
-                "strokeWidth": "1",   // Set the scatter's circle stroke width
-                "radius": "1.5",      // Set the scatter's circle radius
-                "fill": "red"         // Set the scatter's circle fill color
-              }
-            }
-          }
-};
+  /* Options for scatter, by including the scatter option - scatter will be enable  */
+  "scattered": {
+    "strokeWidth": "1",   // Set the scatter's circle stroke width
+    "radius": "1.5",      // Set the scatter's circle radius
+    "fill": "red"         // Set the scatter's circle fill color
+  }
+}];
 
 line().attr({
                                // Width & height controls the svg view box
@@ -154,20 +144,38 @@ line().attr({
   height: 100,                 // Default 100
 
   /* Optional parameters */
-  stroke: false                // It will disable the stroke from drawn
-  line: true,                  // Override to disable the line to be drawn
-  fill: true,                  // Defaults is true, override to disable fill
-                               // Say if you want to only have scattered graph, you will set line & fill properties to false
-  scattered: false,            // Override to enable scattered
-
+  yAxis: {
+    multi: true                // Option to enable multi y-axis
+  },
+  xAxis : {                    // xAxis options
+    // including format will show the xAxis Label
+    format : 'dateTime',
+    // interval indicates the data interval, the number of the interval indicates the label tick interval
+    // same representation is also used for `dateTimeLabelFormat`
+    // s - seconds
+    // m - minutes
+    // h - hours
+    // D - days
+    // M - months
+    // Y - years
+    interval: '4h',  //[1-9]s, [1-9]m, [1-9]h, [1-9]D, [1-9]M, [1-9]Y
+    // uses the min start date and increment the label by the set interval.  interval will be converted to miliseconds
+    minUTC: Date.UTC(2013,8,7),
+    //this controls the dateTime label format
+    //depending on the format, it will affect the label, try :: dateTimeLabelFormat: 'hhh'
+    dateTimeLabelFormat: 'MM/DD hh ap'
+    // or if wanted custom label
+    // format: 'label',
+    // labels: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
+  },
   /* Padding options for the chart */
-  paddingLeft: 0, 
+  paddingLeft: 0,
   paddingRight: 0,
   paddingTop: 0,
   paddingBottom: 0,
 
   /* Graph data to be drawn */
-  points: dataPoints 
+  points: dataSet
 });
 ```
 ####Pie Chart Attributes
@@ -180,13 +188,13 @@ pie('.graph').attr({
 
   /* Optional parameters */
   strokeColor: '#000',            // Sets default stroke color
-  strokeColors: ["#333","#444"],  // This will override the default 
+  strokeColors: ["#333","#444"],  // This will override the default
                                   // Stroke color and matches with the adjacent data set
   fills: ['#123',"#555"]          // This will by matching with the adjacent data set
-                                  // Note: if strokeColor / strokeColors / 
+                                  // Note: if strokeColor / strokeColors /
                                   // Fills are not provided - it will randomly generate a color
   /* Padding options for the chart */
-  paddingLeft: 0, 
+  paddingLeft: 0,
   paddingRight: 0,
   paddingTop: 0,
   paddingBottom: 0,
@@ -206,13 +214,13 @@ donut('.graph').attr({
   outerRadius: 100,                   // Overrides default & sets the outerRadius of the donut
   innerRadius: 25,                    // Overrides the default & controls the innerRadius of the donut
   strokeColor: '#000',                // Sets default stroke color
-  strokeColors: ["#f0f","#000",...],  // This will override the default 
+  strokeColors: ["#f0f","#000",...],  // This will override the default
                                       // Stroke color and matches with the adjacent data set
   fills: ["#f0f","#000",...]          // This will by matching with the adjacent data set
                                       // Note: if strokeColor / strokeColors / fills are not provided - it will randomly generate a color
 
   /* Padding options for the chart */
-  paddingLeft: 0, 
+  paddingLeft: 0,
   paddingRight: 0,
   paddingTop: 0,
   paddingBottom: 0,
@@ -277,7 +285,7 @@ bubbleScatter().attr({
    x: 0,
    y: 0
   },
-  
+
   /* Data Set */
   points: points
 });
@@ -298,7 +306,7 @@ var points = [{
   },{
     ...
   }];
-  
+
 bubblePoint().attr({
   // Width & height controls the svg view box
   width: 1200,
@@ -317,7 +325,7 @@ bubblePoint().attr({
   fill: '#333',                       // Sets default fill color
   startDate: new Date(2015,2,13),     // Sets the default start date
   endDate: new Date(2015,2,15),       // Sets the default end date
-  
+
   /* Data Set */
   points: points
 });
@@ -517,7 +525,7 @@ returns the polar to cartesian coordinate in ```javascript {x:Number, y:Number} 
 returns attribute D of ```<path>``` that descibes an arc
 
 #####.arc.describePie(centerX, centerY, radius, startAngle, endAngle)
-returns attribute D of ```<path>``` that decribes an arc w/ the path closed ~ equivalent to a piece of pie 
+returns attribute D of ```<path>``` that decribes an arc w/ the path closed ~ equivalent to a piece of pie
 
 ##Addons
 ###Label
@@ -576,7 +584,7 @@ var svg = spark({
     }
   }
 })
-  
+
 ```
 
 NOTE:: <br>
@@ -611,16 +619,16 @@ spark({
 
 Example result
 ```javascript
-{ 
-  svg: [ 
+{
+  svg: [
     g: {
-      path: { 
+      path: {
         'stroke-linecap': 'round',
         'stroke-linejoin': 'round',
         'stroke-width': 2,
         stroke: '#22e98e',
-        d: 'M0.8958407394241024 50 L60 298.5709207252044' 
-      } 
+        d: 'M0.8958407394241024 50 L60 298.5709207252044'
+      }
     }
   ]
 }
@@ -629,13 +637,13 @@ Example result
 Yako offers a wild range of Reactjs ready graph components.
 
 ```javascript
-var yako = require('yako/components');
+var yako = require('yako/addons');
 ```
 Note:: Here ```yako``` also includes ```yako.addons```
 
 ###Spark
 ```javascript
-var yako = require('yako/components');
+var yako = require('yako/addons');
 var Spark = yako.components.SimpleSpark;
 // Assumes the data type & chart configurations from above
 var data = [
@@ -649,12 +657,12 @@ React.render(
 document.getElementsByTagName('body')[0]);
 ```
 ###Spark with Events in react
-Yako includes a react component for the more complex ```spark``` graphs.  In this component you could hook in events and react base on the props passed back from the response.  This component also supports tooltips and legends, an [example of the code usage could be found here](https://github.com/alfredkam/yakojs/tree/master/demo/example/react-spark-hover-tooltip) that takes full advantage of tooltip hovering with events 
+Yako includes a react component for the more complex ```spark``` graphs.  In this component you could hook in events and react base on the props passed back from the response.  This component also supports tooltips and legends, an [example of the code usage could be found here](https://github.com/alfredkam/yakojs/tree/master/demo/example/react-spark-hover-tooltip) that takes full advantage of tooltip hovering with events
 
 The snippet below explains the events hooks usage
 
 ```javascript
-var yako = require('yako/components');
+var yako = require('yako/addons');
 var Spark = yako.components.Spark;
 // Assumes the data type & chart configurations from above
 var data = [
@@ -668,21 +676,29 @@ var events = {
   on: {
     'path:mouseMove': function (e, props) {
       /**
-       * You would expect props to include
+       * You would expect this.props.content to include
        * {
-       *   points : [             // values unders X segment
+       *   points : [             // values under X segment
        *     {
        *       label    : String, // data label
-       *       value    : Number  // value at X segment
+       *       data     : {
+                x: Number  // value at X segment
+                y: Number // Value at Y segment,
        *     }
        *   ],
        *   exactPoint : { // only included if hovered on a path / circle
-       *     label      : String, // data label,
-       *     value      : Number  // value at X segment on a path
+       *     data      : {
+                  x : Number (eg. time),
+                  y : Number (sample size),
+                  meta : {}
+             },
+       *     eY        : mouse event y,
+       *     eX        : mouse event x,
+       *     r         : radius of the bubble
        *   },
-       *   _segmentXRef : Number, // reference to X segment
-       *   _data        : Object, // reference to user data
-       *   _scale       : Object  // reference to the mathematical values used to calculate the graph
+       *   segmentXRef : Number, // reference to X segment
+       *   _scale       : Object  // reference to the mathematical values used to calculate the graph,
+           event        : event object
        * }
        */
       // do something
@@ -706,7 +722,7 @@ Notice when your registering an event, you would register with ```container``` o
 
 List of supported events:
 
-Event Name | Reference To 
+Event Name | Reference To
 -----------|---------------
 hover | onMouseOver & onMouseLeave
 click | onClick
@@ -719,7 +735,7 @@ doubleClick | onDoubleClick
 
 ###Pie
 ```javascript
-var yako = require('yako/components');
+var yako = require('yako/addons');
 var Pie = yako.components.Pie
 
 /* Assumes the data type & chart configurations from above */
@@ -736,7 +752,7 @@ document.getElementsByTagName('body')[0]);
 
 ###Donut
 ```javascript
-var yako = require('yako/components');
+var yako = require('yako/addons');
 var Donut = yako.components.Donut;
 
 /* Assumes the data type & chart configurations from above */
@@ -753,7 +769,7 @@ document.getElementsByTagName('body')[0]);
 
 ###Bubble
 ```javascript
-var yako = require('yako/components');
+var yako = require('yako/addons');
 var Bubble = yako.components.Bubble.Scatter
 
 /* Assumes the data type & chart configurations from above */
@@ -770,7 +786,7 @@ document.getElementsByTagName('body')[0]);
 
 ###Bubble Point (Line)
 ```javascript
-var yako = require('yako/components');
+var yako = require('yako/addons');
 var Bubble = yako.components.Bubble.Point
 
 /* Assumes the data type & chart configurations from above */
@@ -787,7 +803,7 @@ document.getElementsByTagName('body')[0]);
 
 ###Bar
 ```javascript
-var yako = require('yako/components');
+var yako = require('yako/addons');
 var Bar = yako.components.Bar;
 
 /* Assumes the data type & chart configurations from above */
@@ -824,4 +840,3 @@ spark.set({
   ...
 });
 ```
-

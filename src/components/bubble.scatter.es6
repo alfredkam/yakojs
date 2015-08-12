@@ -1,8 +1,7 @@
-// Object base
 import Default from '../classes/default';
 import api from './bubble.api';
 
-export default class BubbleScatter extends Default {
+class BubbleScatter extends Default {
 
     get componentName() {
         return 'bubble.scatter';
@@ -28,3 +27,5 @@ export default class BubbleScatter extends Default {
         return api.describeBubbleByObject(...args);
     }
 }
+
+export default BubbleScatter;

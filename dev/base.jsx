@@ -129,8 +129,8 @@ module.exports = React.createClass({
     var self = this;
     // if (self.state.useSetOne) {
        return (
-        <Spark 
-          chart={chart} 
+        <Spark
+          chart={chart}
           data={self.props.set}
           events={self.events}
           toolTip={toolTip}
@@ -138,14 +138,14 @@ module.exports = React.createClass({
       );
     // } else {
     //    return (
-    //     <Spark 
-    //       chart={chart} 
+    //     <Spark
+    //       chart={chart}
     //       data={self.props.set2}
     //       events={self.events}
     //       toolTip={self.state.toolTip}
     //       legend={self.state.legend} />
     //   );
     // }
-   
+
   }
 });

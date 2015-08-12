@@ -2,8 +2,10 @@
  * TEMPLATE for hovering with multiple axis in react
  */
 var React = require('react');
-var yako = require('../../../components');
-var Spark = yako.components.Spark;
+var yako = require('../../../src');
+var Line = require('../../../src/addons/react-components/line');
+var svg = yako.svg;
+
 var PureRenderMixin = React.addons.PureRenderMixin;
 
 /* Tool Tip Component */
@@ -15,19 +17,27 @@ var ToolTip = React.createClass({
     /**
      * You would expect this.props.content to include
      * {
-     *   points : [             // values unders X segment
+     *   points : [             // values under X segment
      *     {
      *       label    : String, // data label
-     *       value    : Number  // value at X segment
+     *       data     : {
+              x: Number  // value at X segment
+              y: Number // Value at Y segment,
      *     }
      *   ],
      *   exactPoint : { // only included if hovered on a path / circle
-     *     label      : String, // data label,
-     *     value      : Number  // value at X segment on a path
+     *     data      : {
+                x : Number (eg. time),
+                y : Number (sample size),
+                meta : {}
+           },
+     *     eY        : mouse event y,
+     *     eX        : mouse event x,
+     *     r         : radius of the bubble
      *   },
-     *   _segmentXRef : Number, // reference to X segment
-     *   _data        : Object, // reference to user data
-     *   _scale       : Object  // reference to the mathematical values used to calculate the graph
+     *   segmentXRef : Number, // reference to X segment
+     *   _scale       : Object  // reference to the mathematical values used to calculate the graph,
+         event        : event object
      * }
      */
     if (Object.keys(content).length !== 0) {
@@ -78,6 +88,7 @@ module.exports = React.createClass({
       on: {
         'path:mouseMove': onActivity,
         'svg:mouseMove': onActivity,
+        'circle:mouseOver': onActivity,
         'container:mouseLeave': function (e) {
           self.setState({
             shouldShow: false
@@ -88,9 +99,10 @@ module.exports = React.createClass({
   },
   render: function () {
     var self = this;
-    var chart = {
+    var attr = {
       width: 1200,
       height: 150,
+      points: self.props.set,
       yAxis: {
         multi: true
       },
@@ -114,6 +126,29 @@ module.exports = React.createClass({
         // or if wanted custom label
         // format: 'label',
         // labels: [Array of label], this label must match the data value length, if not the data will be limited.  We will not aggregate the data for you.
+      },
+      prepend: function (svgString, scale) {
+        var layout = scale.layout;
+        var lines = [svg.create('line').attr({
+              "stroke": '#000',
+              "stroke-width": 2,
+              x1: layout.x,
+              y1: Math.floor(layout.height / 3),
+              x2: layout.width + layout.x,
+              y2: Math.floor(layout.height / 3)
+            }),
+            svg.create('line').attr({
+              "stroke": '#000',
+              "stroke-width": 2,
+              x1: layout.x,
+              x2: layout.width + layout.x,
+              y1: Math.floor(2 * layout.height / 3),
+              y2: Math.floor(2 * layout.height / 3)
+            })
+        ];
+
+        var grouping = svg.create('g').append(lines);
+        return grouping;
       }
     };
 
@@ -131,9 +166,8 @@ module.exports = React.createClass({
 
     var self = this;
      return (
-      <Spark 
-        chart={chart} 
-        data={self.props.set}
+      <Line
+        attr={attr}
         events={self.events}
         toolTip={toolTip}
         legend={legend} />

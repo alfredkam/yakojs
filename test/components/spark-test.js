@@ -30,7 +30,7 @@ describe('src/spark', function () {
                 innerPaddingBottom: 0
             }
         );
-        
+
         expect(path)
             .to.be.a('array')
             .to.satisfy(function (arr) {

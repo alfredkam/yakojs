@@ -15,8 +15,9 @@ module.exports = {
   ],
   module: {
     loaders: [
-      {test: /\.jsx$/, loaders: ['react-hot', 'jsx-loader?harmony']},
-      {test: /\.es6\.js$/, loader: 'babel-loader'},
+      {test: /\.jsx$/, loader: 'babel-loader?blacklist=strict'},
+      {test: /\.es6\.js$/, loader: 'babel-loader?blacklist=strict'},
+      {test: /\.es6$/, loader: 'babel-loader?blacklist=strict'},
 
       // compile and include less files
       {test: /\.less$/, loader: 'style-loader!css-loader!autoprefixer-loader!less-loader'},
@@ -27,6 +28,6 @@ module.exports = {
     ]
   },
   resolve : {
-    extensions: ['', '.js', '.es6.js', '.jsx']
+    extensions: ['', '.js', '.es6.js', '.jsx', '.es6']
   }
 };

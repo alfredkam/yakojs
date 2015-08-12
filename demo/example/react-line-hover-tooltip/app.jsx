@@ -1,5 +1,5 @@
 var React = require('react');
-var Spark = require('./graph');
+var Line = require('./graph');
 
 var dataPoints = 10;
 var dataSet = [];
@@ -54,7 +54,10 @@ var set2 = [
         strokeWidth: 2,
         radius: 5
       },
-      label: 'pink'
+      label: 'pink',
+      meta : {
+        // your own content
+      }
   },
   {
       data: dataSet4,
@@ -66,13 +69,16 @@ var set2 = [
         strokeWidth: 2,
         radius: 5
       },
-      label: 'green'
+      label: 'green',
+      meta: {
+
+      }
   }
 ];
 
 React.render(
   <div>
-    <Spark set={set} set2={set2}/>
-    <Spark set={set2} set2={set}/>
+    <Line set={set}/>
+    <Line set={set2}/>
   </div>,
   document.getElementsByTagName('body')[0]);

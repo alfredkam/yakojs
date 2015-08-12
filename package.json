@@ -7,9 +7,9 @@
     "url": "https://github.com/alfredkam/yakojs.git"
   },
   "scripts": {
-    "test": "./node_modules/babel/bin/babel-node -r ./node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha test -- --recursive",
+    "test": "./node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha test -- --require ./build-tools/pre-require-es.js --recursive",
     "start": "node app",
-    "coveralls": "./node_modules/babel/bin/babel-node -r ./node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha test -- --recursive --report loconly -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
+    "coveralls": "./node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha test -- --require ./build-tools/pre-require-es.js --recursive --report loconly -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "pack": "gulp build && gulp pack",
     "prepublish": "gulp build && gulp pack",
     "postpublish": "gulp clean:build",
@@ -38,8 +38,6 @@
   "readmeFilename": "README.md",
   "devDependencies": {
     "autoprefixer-loader": "^1.2.0",
-    "babel": "^5.3.3",
-    "babel-core": "^5.3.3",
     "babel-loader": "^5.0.0",
     "chai": "^2.0.0",
     "coveralls": "^2.11.2",
@@ -69,5 +67,10 @@
     "webpack": "^1.5.3",
     "webpack-dev-middleware": "^1.0.11",
     "webpack-dev-server": "^1.7.0"
+  },
+  "dependencies": {
+    "babel-core": "^5.8.22",
+    "babel-loader": "^5.3.2",
+    "webpack": "^1.11.0"
   }
 }

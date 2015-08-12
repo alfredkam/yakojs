@@ -33,7 +33,7 @@ This will build the ```lib``` directory, by converting ```src``` directory from 
 
 ### API Ready
 - Simple Graphs
-  - Spark 
+  - Spark
     - Scattered
     - Line
     - Area Graphs
@@ -46,7 +46,7 @@ This will build the ```lib``` directory, by converting ```src``` directory from 
 - Multi axis for spark graphs
 - Labels
     - Bar graph
-    - Spark Graph
+    - Line Graph
     - Bubble Graph
 - Programmatic point of access (Only Avaliable for React)
 - Events & Emitters (Only Avaliable for React)
@@ -61,7 +61,7 @@ This will build the ```lib``` directory, by converting ```src``` directory from 
 
 ### How to run unit test
 ```npm test```
- 
+
 ### Latest Release
 Please refer to the release branch - [https://github.com/alfredkam/yakojs/tree/release](https://github.com/alfredkam/yakojs/tree/release)
 

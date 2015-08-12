@@ -4,5 +4,6 @@ module.exports = {
   Donut: require('./donut'),
   Pie: require('./pie'),
   Spark: require('./spark'),
+  Line: require('./line'),
   SimpleSpark: require('./simpleSpark')
 };
