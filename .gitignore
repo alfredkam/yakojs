@@ -3,7 +3,6 @@ coverage/
 .coveralls.yml
 *.sublime-*
 .DS_Store
-app.js
 .tmp
 .build
 npm-debug.log

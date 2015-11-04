@@ -17,7 +17,7 @@ import lineTimeSeries from './components/line.timeSeries';
 import line from './components/line';
 
 var initialize = (component, obj) => {
-  return new component(obj);
+  return new component(obj || {});
 };
 
 export default {
@@ -61,5 +61,5 @@ export default {
     }
   },
 
-  svg: svg,
+  svg: svg
 };

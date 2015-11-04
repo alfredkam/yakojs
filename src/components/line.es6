@@ -97,7 +97,7 @@ class Line extends Default {
     scale.pHeight = scale.height - scale.paddingTop - scale.paddingBottom - scale.innerPaddingTop - scale.innerPaddingBottom;
     scale.pWidth = scale.width - scale.paddingLeft - scale.paddingRight - scale.innerPadding;
     scale.heightRatio = scale.max ? scale.pHeight / scale.max : scale.pHeight;
-    scale.tickSize = self._sigFigs((scale.pWidth / (scale.len - 1)),8);
+    scale.tickSize = self._sigFigs((scale.pWidth / (scale.len - 1)), 8);
   }
 
   // Describes scattered graph
