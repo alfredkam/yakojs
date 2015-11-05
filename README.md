@@ -13,7 +13,7 @@ This library also works great with webpack & react w/ [prepared react graph comp
 
 Documentation [https://github.com/alfredkam/yakojs/blob/master/doc.md](https://github.com/alfredkam/yakojs/blob/master/doc.md)
 
-Demo [http://alfredkam.com/yakojs](http://alfredkam.com/yakojs) or ```gulp dev``` and visit ```http://localhost:3000```
+Demo [http://alfredkam.com/yakojs](http://alfredkam.com/yakojs) or ```gulp dev``` and visit ```http://localhost:5000```
 
 Supports Chrome, Firefox, Safari, and IE 9+;
 
