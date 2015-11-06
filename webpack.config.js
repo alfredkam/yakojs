@@ -1,3 +1,22 @@
+require('babel-core/register')({
+  ignore: /(node_modules|__tests__)/,
+  optional : [
+    'es7.asyncFunctions',
+    'es7.classProperties',
+    'es7.comprehensions',
+    'es7.decorators',
+    'es7.doExpressions',
+    'es7.exponentiationOperator',
+    'es7.exportExtensions',
+    'es7.objectRestSpread',
+    'es7.trailingFunctionCommas'
+  ],
+
+  blacklist: ['strict'],
+
+  extensions: [".es6", ".es", ".jsx", ".es6.js", ".js" ]
+});
+
 var webpack = require('webpack');
 var path = require('path');
 
@@ -8,6 +27,8 @@ module.exports = {
   entry : {
       yako : './build-tools/expose.build'
   },
+
+  devtool: 'source-map',
 
   output : {
     path: path.join(__dirname, 'dist'),
@@ -27,8 +48,8 @@ module.exports = {
       },
 
       {
-          test: /\.es6$/,
-          loader: 'babel-loader?blacklist=strict'
+          test: /\.(es6|js)$/,
+          loader: 'babel-loader?stage=0&blacklist=useStrict'
       },
 
       // allow less files to load urls pointing to font assets
