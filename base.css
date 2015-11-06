@@ -1,0 +1,59 @@
+
+/* base */
+body {
+    background: #fff;
+    font-family: Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+a {
+    text-decoration: none;
+    color: #333;
+}
+
+header {
+    width: 96%;
+    background: #FFEB3B;
+    padding: 0 2%;
+}
+
+header > * {
+    display: inline-block;
+   
+}
+
+header .brand {
+    width: 20%;
+}
+
+header .brand a {
+    font-weight: bold;
+    color: #333;
+}
+
+header .module {
+    width: 60%;
+    text-align: center;
+}
+
+header .module a {
+    font-weight: bold;
+    color: #333;
+}
+
+header .module span {
+    font-weight: bold;
+    color: #666;
+    text-decoration: none;
+    padding: 0 10px;
+    font-size: 12px;
+}
+
+header .links {
+    width: 19%;
+    text-align: right;
+}
+
+header .links ul {
+    list-style-type: none;
+}

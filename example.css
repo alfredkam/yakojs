@@ -1,0 +1,25 @@
+.graph {
+  display:inline-block;
+}
+
+.col {
+    width: 50%;
+    display: inline-block;
+    float: left;
+}
+
+.row {
+    width: 100%;
+    display: inline-block;
+}
+
+pre {
+    word-wrap: break-word;
+    font-size: 12px;
+}
+
+section {
+    margin-left:auto;
+    margin-right: auto;
+    width: 800px;
+}
