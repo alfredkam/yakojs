@@ -4,7 +4,7 @@
  */
 var React = require('react');
 var Spark = require('../addons/react-components/spark');
-var PureRenderMixin = React.addons.PureRenderMixin;
+var PureRenderMixin = require('react-addons-pure-render-mixin');
 
 var ToolTip = React.createClass({
   mixin: [PureRenderMixin],

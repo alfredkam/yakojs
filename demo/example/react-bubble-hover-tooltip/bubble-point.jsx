@@ -4,7 +4,7 @@
 var React = require('react');
 var yako = require('../../../src');
 var Bubble = require('../../../src/addons/react-components/bubble/bubble-point');
-var PureRenderMixin = React.addons.PureRenderMixin;
+var PureRenderMixin = require('react-addons-pure-render-mixin');
 
 /* Tool Tip Component */
 var ToolTip = React.createClass({
