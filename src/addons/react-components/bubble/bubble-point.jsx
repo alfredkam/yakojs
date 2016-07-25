@@ -1,7 +1,7 @@
-var React = require('react/addons');
+var React = require('react');
 var EventsClass = require('../../Events');
 var cssPrefix = ['Moz','Webkit','ms','O'];
-var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+var PureRenderMixin = require('react-addons-pure-render-mixin');
 var GraphPureRenderMixin = require('../utils/GraphPureRenderMixin');
 
 /* Bubble Component */

@@ -6,7 +6,7 @@ var yako = require('../../../src');
 var Line = require('../../../src/addons/react-components/line');
 var svg = yako.svg;
 
-var PureRenderMixin = React.addons.PureRenderMixin;
+var PureRenderMixin = require('react-addons-pure-render-mixin');
 
 /* Tool Tip Component */
 var ToolTip = React.createClass({

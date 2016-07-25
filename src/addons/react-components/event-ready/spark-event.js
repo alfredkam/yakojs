@@ -1,6 +1,6 @@
 var React = require('react');
 var Label = require('../../Label');
-var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+var PureRenderMixin = require('react-addons-pure-render-mixin');
 
 module.exports = React.createClass({
     displayName: 'YakoSparkEventHandler',

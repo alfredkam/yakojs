@@ -1,5 +1,5 @@
 var React = require('react');
-var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+var PureRenderMixin = require('react-addons-pure-render-mixin');
 var extend = require('../../utils/extend');
 
 module.exports = React.createClass({
